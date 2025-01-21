@@ -1,10 +1,14 @@
-import axios from "axios";
+"use client";
+
+// import axios from "axios";
 import React from "react";
 
 export default function EcomercePage() {
   async function first() {
-    const data = await axios.get("http://127.0.0.1:8010/api/users");
-    console.log(data);
+    // const data = await axios.get("https://api.publicapis.org/entries");
+    // console.log(data);
+
+    return "The ecomerce page";
   }
   return (
     <div>
