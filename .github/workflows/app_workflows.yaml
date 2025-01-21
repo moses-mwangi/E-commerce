@@ -1,0 +1,39 @@
+name: Deploy Frontend to Vercel
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment on push to the 'main' branch
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App to deploy"
+        required: true
+        type: choice
+        options:
+          - company_site
+          - e-commerce
+        default: company_site
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies for selected app
+        run: |
+          cd ${{ github.event.inputs.app }}
+          yarn install
+
+      - name: Deploy to Vercel
+        run: |
+          cd ${{ github.event.inputs.app }}
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }}

@@ -1,0 +1,45 @@
+name: Deploy Backend to Heroku
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment on push to the 'main' branch
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App to deploy"
+        required: true
+        type: choice
+        options:
+          - backend_service_1
+          - backend_service_2
+        default: backend_service_1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (or your backend environment)
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Adjust the version depending on your environment
+
+      - name: Install dependencies for selected app
+        run: |
+          cd ${{ github.event.inputs.app }}
+          npm install # Or 'yarn install' depending on your setup
+
+      - name: Login to Heroku
+        uses: akshnz/heroku-cli-action@v1.0.0
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }} # Store your Heroku API Key in GitHub Secrets
+
+      - name: Deploy to Heroku
+        run: |
+          cd ${{ github.event.inputs.app }}
+          git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+          git push heroku main
