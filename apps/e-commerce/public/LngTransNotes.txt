@@ -1,0 +1,16 @@
+import axios from "axios";
+
+async function translateText(text: string, targetLang: string) {
+  const API_KEY = "YOUR_GOOGLE_TRANSLATE_API_KEY";
+  const url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
+
+  const response = await axios.post(url, {
+    q: text,
+    target: targetLang,
+  });
+
+  return response.data.data.translations[0].translatedText;
+}
+
+// Example Usage
+translateText("A high-performance laptop.", "fr").then(console.log);

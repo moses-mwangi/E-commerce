@@ -1,25 +1,16 @@
-"use client";
-
-// import axios from "axios";
 import React from "react";
+import Navbar from "./home-page/navbar/Navbar";
+import Hero_Section from "./home-page/hero_section/Hero_Section";
+import Footer from "./home-page/footer/Footer";
+// import DiagonalDivider from "./home-page/hero_section/try";
 
-export default function EcomercePage() {
-  async function first() {
-    // const data = await axios.get("https://api.publicapis.org/entries");
-    // console.log(data);
-
-    return "The ecomerce page";
-  }
+export default function HomePage() {
   return (
     <div>
-      <div>E-commerce page</div>
-      <div
-        onClick={() => {
-          console.log(first());
-        }}
-      >
-        <button>CLICK ME</button>
-      </div>
+      <Navbar />
+      <Hero_Section />
+      <Footer />
+      {/* <DiagonalDivider /> */}
     </div>
   );
 }
