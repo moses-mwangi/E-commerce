@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 "use client";
 
 import React, { useState } from "react";
@@ -8,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FaGoogle, FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
+import { FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -22,49 +19,21 @@ import {
 } from "@/components/ui/select";
 import { SiWeb3Dotjs } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
-
-const phoneRegexByCountry: { [key: string]: RegExp } = {
-  kenya: /^(?:\+254|0)(7\d{8}|1\d{8})$/,
-  ghana: /^(?:\+233|0)[235][0-9]{8}$/,
-  nigeria: /^(?:\+234|0)[789][01]\d{8}$/,
-  tanzania: /^(?:\+255|0)7\d{8}$/,
-  uganda: /^(?:\+256|0)7\d{8}$/,
-  dubai: /^(?:\+971|0)5\d{8}$/,
-};
-
-const schema = z
-  .object({
-    email: z.string().email("Invalid email format"),
-    name: z.string().min(1, "Full name is required"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    passwordConfirm: z.string().min(6, "Confirm password is required"),
-    telephone: z
-      .string()
-      .min(1, "Telephone number is required")
-      .regex(/^\d+$/, "Only numbers are allowed"),
-    tradeRole: z.enum(["buyer", "seller", "both"], {
-      errorMap: () => ({ message: "Trade role is required" }),
-    }),
-  })
-  .refine((data) => data.password === data.passwordConfirm, {
-    message: "Passwords must match",
-    path: ["passwordConfirm"],
-  });
-
-const countries = [
-  { country: "Kenya", value: "kenya", code: "254", flag: "🇰🇪" },
-  { country: "Ghana", value: "ghana", code: "233", flag: "🇬🇭" },
-  { country: "Nigeria", value: "nigeria", code: "234", flag: "🇳🇬" },
-  { country: "Tanzania", value: "tanzania", code: "255", flag: "🇹🇿" },
-  { country: "Uganda", value: "uganda", code: "256", flag: "🇺🇬" },
-  { country: "Dubai", value: "dubai", code: "971", flag: "🇦🇪" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { registerUserAsync } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { userSchema } from "@/utils/userSchema";
+import { countries, phoneRegexByCountry } from "@/utils/services";
+import { formToJSON } from "axios";
 
 export default function SignupForm() {
   const router = useRouter();
   const [selectedCountry, setSelectedCountry] = useState(countries[0].value);
   const [countryCode, setCountryCode] = useState(countries[0].code);
   const [flag, setFlag] = useState(countries[0].flag);
+
+  const { status, users } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
@@ -73,45 +42,54 @@ export default function SignupForm() {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(userSchema),
   });
 
   const handleFormSubmit = async (data: any) => {
-    console.log("Form Errors:", errors);
-
-    const selectedCountryData = countries.find(
-      (c) => c.value === selectedCountry
-    );
-
-    if (!selectedCountryData) {
-      alert("Invalid country selection");
-      return;
-    }
-    const tel =
-      data.telephone.length === 10 ? data.telephone.slice(1) : data.telephone;
-
-    console.log(tel);
-
-    const formData = {
-      email: data.email,
-      name: data.name,
-      password: data.password,
-      passwordConfirm: data.passwordConfirm,
-      telephone: `+${countryCode}${tel}`,
-      country: selectedCountry,
-      tradeRole: data.tradeRole,
-    };
-
-    const regex = phoneRegexByCountry[selectedCountryData.value];
-
-    if (!regex.test(formData.telephone)) {
-      alert(
-        `Phone number does not match the format for ${selectedCountryData.country}`
+    try {
+      const selectedCountryData = countries.find(
+        (c) => c.value === selectedCountry
       );
-      return;
-    }
 
-    console.log(formData);
+      if (!selectedCountryData) {
+        alert("Invalid country selection");
+        return;
+      }
+      const tel =
+        data.telephone.length === 10 ? data.telephone.slice(1) : data.telephone;
+
+      const formData = {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+        telephone: `+${countryCode}${tel}`,
+        country: selectedCountry,
+        tradeRole: data.tradeRole,
+      };
+
+      const regex = phoneRegexByCountry[selectedCountryData.value];
+      if (!regex.test(formData.telephone)) {
+        alert(
+          `Phone number does not match the format for ${selectedCountryData.country}`
+        );
+        return;
+      }
+
+      const uniqueUser = users.find((el) => el?.email === formData.email);
+
+      if (!uniqueUser) {
+        dispatch(registerUserAsync(formData));
+        reset();
+        router.push("/");
+        toast.success("Account created succefully");
+      } else {
+        toast.error("Failed to create:Try again");
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+      toast.error("Failed to create:Try again");
+    }
   };
 
   const handleCountryChange = (value: string) => {
@@ -122,6 +100,17 @@ export default function SignupForm() {
       setFlag(country.flag);
     }
   };
+
+  const loader = (
+    <div
+      className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+      role="status"
+    >
+      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+        Loading...
+      </span>
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
@@ -234,15 +223,30 @@ export default function SignupForm() {
             <Label>Trade Role</Label>
             <div className="flex gap-5">
               <span className="flex items-center gap-[5px]">
-                <input type="radio" value="buyer" {...register("tradeRole")} />
+                <input
+                  className=" cursor-pointer"
+                  type="radio"
+                  value="buyer"
+                  {...register("tradeRole")}
+                />
                 <p className=" text-sm font-medium text-gray-600">Buyer</p>
               </span>
               <span className="flex items-center gap-[5px]">
-                <input type="radio" value="seller" {...register("tradeRole")} />
+                <input
+                  className=" cursor-pointer"
+                  type="radio"
+                  value="seller"
+                  {...register("tradeRole")}
+                />
                 <p className=" text-sm font-medium text-gray-600">Seller</p>
               </span>
               <span className="flex items-center gap-[5px]">
-                <input type="radio" value="both" {...register("tradeRole")} />
+                <input
+                  className=" cursor-pointer"
+                  type="radio"
+                  value="both"
+                  {...register("tradeRole")}
+                />
                 <p className=" text-sm font-medium text-gray-600">Both</p>
               </span>
             </div>
@@ -252,15 +256,18 @@ export default function SignupForm() {
               </p>
             )}
           </div>
-          <Button className="w-full bg-orange-500 my-7 hover:bg-orange-600 text-white">
-            Sign Up
+          <Button
+            className="w-full bg-orange-500 disabled:cursor-not-allowed my-7 hover:bg-orange-600 text-white"
+            disabled={status === "loading"}
+          >
+            {status === "loading" ? loader : "Sign Up"}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?
           <button
             className="text-blue-600"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/reg/signin")}
           >
             Sign In
           </button>

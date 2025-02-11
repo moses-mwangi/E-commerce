@@ -9,6 +9,9 @@ class User extends Model {
   public googleId?: string;
   public facebookId?: string;
   public name!: string;
+  public tradeRole?: string;
+  public telephone?: string;
+  public country?: string;
 
   // Instance methods
   public async comparePassword(password: string): Promise<boolean> {
@@ -35,6 +38,15 @@ User.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    tradeRole: {
+      type: DataTypes.STRING,
+    },
+    telephone: {
+      type: DataTypes.STRING,
+    },
+    country: {
+      type: DataTypes.STRING,
     },
   },
   {

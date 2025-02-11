@@ -15,14 +15,21 @@ export const signInUser = catchAsync(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, name, password } = req.body;
+    const { email, name, password, tradeRole, telephone, country } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const newUser = await User.create({ email, passwordHash: password, name });
+    const newUser = await User.create({
+      email,
+      passwordHash: password,
+      name,
+      tradeRole,
+      telephone,
+      country,
+    });
     const token = generateToken({ id: newUser.id, email: newUser.email });
 
     const cookieOption = {

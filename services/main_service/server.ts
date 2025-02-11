@@ -8,7 +8,7 @@ const pg_connect = async () => {
   try {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
-    await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
   } catch (err) {
     console.log("Unable to connect to database", err);
   }

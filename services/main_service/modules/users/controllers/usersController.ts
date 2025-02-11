@@ -12,13 +12,15 @@ const validUserSignInput = [
     .withMessage("Password must be atleast 6 characters"),
 ];
 
-export const signInUser = catchAsync(
+export const getAllUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, name, passwordHash } = req.body;
 
-    const user = await User.create({ name, email, passwordHash });
-    res
-      .status(200)
-      .json({ msg: "The user has being succesfully sign in", user });
+    const users = await User.findAll();
+    res.status(200).json({
+      length: users.length,
+      msg: "users succesfully fetched",
+      users,
+    });
   }
 );

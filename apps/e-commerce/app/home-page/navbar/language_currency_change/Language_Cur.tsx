@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -10,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const currencyOptions = [
   { value: "usd", label: "USD ($)" },
@@ -26,6 +27,7 @@ const languageOptions = [
 
 export default function LanguageCurrencySelector() {
   const [dropDown, setDropDown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [selectedCurrency, setSelectedCurrency] = useState("usd");
@@ -51,6 +53,12 @@ export default function LanguageCurrencySelector() {
       <div
         className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-blue-500"
         onClick={() => setDropDown(!dropDown)}
+        // onMouseEnter={() => setDropDown(true)}
+        // onMouseLeave={(e) => {
+        //   if (!dropdownRef?.current?.contains(e.relatedTarget)) {
+        //     setDropDown(false);
+        //   }
+        // }}
       >
         🌍
         <div className="font-medium text-[14px] flex items-center flex-col">
@@ -60,7 +68,7 @@ export default function LanguageCurrencySelector() {
       </div>
 
       {dropDown && (
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50 w-[335px]">
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 z-50 w-[335px]">
           <Card className="p-4 bg-white shadow-lg rounded-lg border">
             <div className="space-y-4">
               <Label className="text-lg font-semibold text-gray-800">
