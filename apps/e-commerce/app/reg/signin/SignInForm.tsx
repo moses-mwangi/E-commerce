@@ -27,8 +27,7 @@ const schema = z.object({
 export default function SignInForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
-  const { status } = useSelector((state: RootState) => state.user);
+  const { status, users } = useSelector((state: RootState) => state.user);
 
   const {
     register,
@@ -42,12 +41,17 @@ export default function SignInForm() {
 
   const handleFormSubmit = async (data: any) => {
     try {
+      const uniqueUser = users.find((el) => el?.email === data.email);
+
       const formData = {
         email: data.email,
         password: data.password,
       };
-
-      dispatch(loginUserAsync(formData));
+      if (uniqueUser) {
+        dispatch(loginUserAsync(formData));
+        router.push("/");
+        router.refresh();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -116,6 +120,7 @@ export default function SignInForm() {
           <Button
             className="w-full bg-orange-500 my-7 disabled:cursor-not-allowed hover:bg-orange-600 text-white"
             disabled={status === "loading"}
+            // onClick={() => router.push("/")}
           >
             {status === "loading" ? loader : "Sign In"}
           </Button>

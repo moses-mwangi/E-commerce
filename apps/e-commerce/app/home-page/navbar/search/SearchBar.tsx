@@ -3,6 +3,7 @@
 
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -30,7 +31,6 @@ export default function SearchBar() {
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useTranslation();
 
-  // Voice Search Functionality
   const handleVoiceSearch = useCallback(() => {
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
       setErrorMessage("Voice search is not supported in this browser.");
@@ -65,11 +65,10 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div className="flex space-x-3 items-center justify-between w-[500px] bg-white rounded-full shadow-md px-4 py-2 border border-gray-200">
-      {/* Category Selector */}
+    <div className="flex items-center  focus-within:ring-1 focus-within:ring-orange-300  justify-between w-[600px] bg-white rounded-full shadow-md px-4 py-1 border border-gray-200">
       <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-        <SelectTrigger className="w-auto py-1 px-3 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 focus:ring-2 focus:ring-orange-500">
-          <SelectValue placeholder={t("All Products")} />
+        <SelectTrigger className=" space-x-1 focus:ring-0 focus:ring-orange-200 w-auto h-[30px] bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200">
+          <SelectValue className="" placeholder={t("All Products")} />
         </SelectTrigger>
         <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg">
           {categories.map((el) => (
@@ -80,23 +79,20 @@ export default function SearchBar() {
         </SelectContent>
       </Select>
 
-      {/* Search Bar */}
       <div className="flex items-center flex-grow relative">
         <Input
-          className="w-full py-2 px-4 text-gray-700 bg-transparent border-none focus:ring-0 placeholder-gray-500"
+          className="w-full py-2 px-4 text-gray-700 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-500"
           placeholder={t("Search for products...")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <div className="flex items-center gap-3 absolute right-2 text-gray-500">
-          {/* Image Search Icon */}
           <CameraIcon
             onClick={() => console.log("Image Search")}
             className="hover:cursor-pointer hover:text-orange-500 transition duration-200"
             size={20}
             aria-label="Search by Image"
           />
-          {/* Voice Search Mic Icon */}
           <MicIcon
             onClick={handleVoiceSearch}
             className="hover:cursor-pointer hover:text-orange-500 transition duration-200"
@@ -106,8 +102,7 @@ export default function SearchBar() {
         </div>
       </div>
 
-      {/* Search Button */}
-      <button
+      <Button
         onClick={() =>
           console.log(
             "Text Search:",
@@ -116,13 +111,12 @@ export default function SearchBar() {
             selectedCategory
           )
         }
-        className="ml-2 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-[5px] rounded-full font-medium shadow-md transition duration-200"
+        className="h-[30px] ml-2 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-[5px] rounded-full font-medium shadow-md transition duration-200"
         aria-label="Search"
       >
         <SearchIcon size={18} /> {t("Search")}
-      </button>
+      </Button>
 
-      {/* Error Message Display */}
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
     </div>
   );

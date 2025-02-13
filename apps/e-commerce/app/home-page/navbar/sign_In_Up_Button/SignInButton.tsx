@@ -6,17 +6,16 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import UserProfileImage from "@/app/components/users/UserProfileImage";
 
 export default function SignInBotton() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { isAuthenticated, currentUser } = useSelector(
-    (state: RootState) => state.user
-  );
-  const token = document.cookie.split("=")[1];
+  const { isAuthenticated } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
+    const token = document.cookie.split("=")[1];
     dispatch(fetchUsers());
 
     if (token && token.length > 20 && token !== "undefined") {
@@ -28,9 +27,7 @@ export default function SignInBotton() {
     <div>
       {isAuthenticated === true ? (
         <div>
-          <div className="bg-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center w-10 h-10">
-            {currentUser?.name[0].toUpperCase()}
-          </div>
+          <UserProfileImage />
         </div>
       ) : (
         <Button

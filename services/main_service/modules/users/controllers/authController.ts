@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -74,7 +74,8 @@ export const loginUser = catchAsync(
     const token = generateToken({ id: user.id, email: user.email });
 
     const cookieOption = {
-      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      // expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 2 * 60 * 1000),
       // httpOnly: true,
     };
 
@@ -137,6 +138,50 @@ export const protectJwtUser = catchAsync(async function (
   next();
 });
 
+// export const protect = catchAsync(async function (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) {
+//   let token: string | undefined;
+
+//   // Extract token from cookies (since you're using withCredentials)
+//   if (req.cookies.jwt) {
+//     token = req.cookies.jwt;
+//   }
+//   // Fallback: Check Authorization header
+//   else if (
+//     req.headers.authorization &&
+//     req.headers.authorization.startsWith("Bearer")
+//   ) {
+//     token = req.headers.authorization.split(" ")[1];
+//   }
+//   console.log("tokennnnnnnnn:", token);
+//   if (!token) {
+//     return res
+//       .status(401)
+//       .json({ msg: "You are not logged in! Please log in to get access." });
+//   }
+
+//   const decoded: any = await jwtVerify(
+//     token,
+//     String(process.env.JWT_SECRET_KEY)
+//   );
+
+//   // Verify user exists
+//   const currentUser = await User.findOne({ where: { id: decoded.id } });
+//   if (!currentUser) {
+//     return res
+//       .status(401)
+//       .json({ msg: "The user belonging to this token no longer exists." });
+//   }
+
+//   // Attach user to the request
+//   (req as any).user = currentUser;
+
+//   next();
+// });
+
 export const protect = catchAsync(async function (
   req: Request,
   res: Response,
@@ -144,12 +189,9 @@ export const protect = catchAsync(async function (
 ) {
   let token: string | undefined;
 
-  // Extract token from cookies (since you're using withCredentials)
   if (req.cookies.jwt) {
     token = req.cookies.jwt;
-  }
-  // Fallback: Check Authorization header
-  else if (
+  } else if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
@@ -162,23 +204,38 @@ export const protect = catchAsync(async function (
       .json({ msg: "You are not logged in! Please log in to get access." });
   }
 
-  const decoded: any = await jwtVerify(
-    token,
-    String(process.env.JWT_SECRET_KEY)
-  );
+  try {
+    const decoded = jwt.verify(
+      token,
+      String(process.env.JWT_SECRET_KEY)
+    ) as JwtPayload;
 
-  // Verify user exists
-  const currentUser = await User.findOne({ where: { id: decoded.id } });
-  if (!currentUser) {
-    return res
-      .status(401)
-      .json({ msg: "The user belonging to this token no longer exists." });
+    const currentUser = await User.findOne({ where: { id: decoded.id } });
+    if (!currentUser) {
+      return res
+        .status(401)
+        .json({ msg: "The user belonging to this token no longer exists." });
+    }
+
+    (req as any).user = currentUser;
+
+    next();
+  } catch (err) {
+    if (err instanceof TokenExpiredError) {
+      return res
+        .status(401)
+        .json({ msg: "Your session has expired. Please log in again." });
+    } else if (err instanceof jwt.JsonWebTokenError) {
+      return res
+        .status(401)
+        .json({ msg: "Invalid token. Please log in again." });
+    } else {
+      console.error("JWT Verification Error:", err);
+      return res
+        .status(500)
+        .json({ msg: "An unexpected error occurred. Please try again later." });
+    }
   }
-
-  // Attach user to the request
-  (req as any).user = currentUser;
-
-  next();
 });
 
 export const getMe = (req: Request, res: Response, next: NextFunction) => {
