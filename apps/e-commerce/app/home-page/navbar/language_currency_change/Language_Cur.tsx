@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -11,7 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const currencyOptions = [
   { value: "usd", label: "USD ($)" },
@@ -23,11 +23,14 @@ const languageOptions = [
   { value: "en", label: "English" },
   { value: "fr", label: "French" },
   { value: "it", label: "Italian" },
+  { value: "ar", label: "Arabic" },
 ];
 
 export default function LanguageCurrencySelector() {
   const [dropDown, setDropDown] = useState(false);
   const dropdownRef = useRef(null);
+
+  const { t, i18n } = useTranslation();
 
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [selectedCurrency, setSelectedCurrency] = useState("usd");
@@ -46,19 +49,24 @@ export default function LanguageCurrencySelector() {
     setSelectedLanguage(tempLanguage);
     setSelectedCurrency(tempCurrency);
     setDropDown(false);
+
+    i18n.changeLanguage(tempLanguage); // Use tempLanguage instead of selectedLanguage
+    localStorage.setItem("language", tempLanguage); // Save to localStorage
   }
+
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      setSelectedLanguage(storedLanguage);
+      i18n.changeLanguage(storedLanguage);
+    }
+  }, [i18n]);
 
   return (
     <div className="relative">
       <div
         className="flex items-center gap-2 cursor-pointer text-gray-700 hover:text-blue-500"
         onClick={() => setDropDown(!dropDown)}
-        // onMouseEnter={() => setDropDown(true)}
-        // onMouseLeave={(e) => {
-        //   if (!dropdownRef?.current?.contains(e.relatedTarget)) {
-        //     setDropDown(false);
-        //   }
-        // }}
       >
         🌍
         <div className="font-medium text-[14px] flex items-center flex-col">

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
+import { t } from "i18next";
 
 export default function SignInBotton() {
   const router = useRouter();
@@ -36,7 +37,8 @@ export default function SignInBotton() {
             router.push("/reg/signin");
           }}
         >
-          Sign Up
+          {/* Sign Up */}
+          {t("sign_up")}
         </Button>
       )}
     </div>

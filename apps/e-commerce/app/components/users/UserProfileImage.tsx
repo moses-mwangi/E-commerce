@@ -47,19 +47,41 @@ export default function UserProfileImage() {
         </HoverCardTrigger>
         <HoverCardContent className="w-80 px-0">
           <div className="flex flex-col justify-between space-y-4">
-            <div className=" px-4">
-              <h1>Hi {currentUser?.name}</h1>
+            <div className=" px-4 flex items-center gap-2">
+              <div className="flex items-center font-bold justify-center text-white h-11 w-11 rounded-full bg-pink-500">
+                {currentUser?.name[0].toUpperCase()}
+              </div>
+              <div>
+                <h1>{currentUser?.name}</h1>
+                <h1>{currentUser?.email}</h1>
+              </div>
             </div>
             <div className=" px-4">
               <Separator className="" />
             </div>
-            <div className=" px-4">gggg</div>
-            <div className=" px-4">
-              <Separator className="" />
+            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+              My Hypermat
             </div>
+
+            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+              Orders
+            </div>
+
+            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+              Messages
+            </div>
+
+            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+              Favourite
+            </div>
+
+            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+              Account
+            </div>
+
             <div>
               <div
-                className="px-6 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150"
+                className="px-4 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150"
                 onClick={() => {
                   handleLogOut();
                 }}

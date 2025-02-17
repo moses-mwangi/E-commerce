@@ -29,7 +29,10 @@ export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [errorMessage, setErrorMessage] = useState("");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+  };
 
   const handleVoiceSearch = useCallback(() => {
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
@@ -82,7 +85,7 @@ export default function SearchBar() {
       <div className="flex items-center flex-grow relative">
         <Input
           className="w-full py-2 px-4 text-gray-700 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-500"
-          placeholder={t("Search for products...")}
+          placeholder={t("Search for products")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -114,7 +117,7 @@ export default function SearchBar() {
         className="h-[30px] ml-2 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-[5px] rounded-full font-medium shadow-md transition duration-200"
         aria-label="Search"
       >
-        <SearchIcon size={18} /> {t("Search")}
+        <SearchIcon size={18} /> {t("search")}
       </Button>
 
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}

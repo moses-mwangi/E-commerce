@@ -74,8 +74,8 @@ export const loginUser = catchAsync(
     const token = generateToken({ id: user.id, email: user.email });
 
     const cookieOption = {
-      // expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      expires: new Date(Date.now() + 2 * 60 * 1000),
+      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      // expires: new Date(Date.now() + 2 * 60 * 1000),
       // httpOnly: true,
     };
 

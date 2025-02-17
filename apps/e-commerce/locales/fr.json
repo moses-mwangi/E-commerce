@@ -1,5 +1,6 @@
 {
-  "welcome": "Bienvenue sur notre site Web",
   "search": "Rechercher",
-  "selectLanguage": "Choisir la langue"
+  "deliver_to": "Livrer à",
+  "all_products": "Tous les produits",
+  "sign_up": "S'inscrire"
 }

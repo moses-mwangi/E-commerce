@@ -6,13 +6,12 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { store } from "@/redux/store";
 import { Toaster } from "react-hot-toast";
-// import I18nProvider from "./home-page/components/I18nProvider";
-// import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 
-// const I18nProvider = dynamic(
-//   () => import("./home-page/components/I18nProvider"),
-//   { ssr: false }
-// );
+const I18nProvider = dynamic(
+  () => import("./components/language_change/I18nProvider"),
+  { ssr: false }
+);
 
 const poppins = Poppins({
   variable: "--poppins",
@@ -30,9 +29,9 @@ export default function RootLayout({
       <body className={`${cn(poppins.variable)}`}>
         <Toaster position="top-center" reverseOrder={false} />
         <Provider store={store}>
-          {/* <I18nProvider> */}
-          <div>{children}</div>
-          {/* </I18nProvider> */}
+          <I18nProvider>
+            <div>{children}</div>
+          </I18nProvider>
         </Provider>
       </body>
     </html>

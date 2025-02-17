@@ -1,16 +1,3 @@
-// interface UserSliceType {
-//   users: UserType[];
-//   currentUser: null;
-//   isAuthenticated: boolean;
-// }
-
-// interface UserType {
-//   name: string;
-//   email: string;
-// }
-
-// export type { UserSliceType, UserType };
-
 interface User {
   id: string;
   name: string;
@@ -25,11 +12,3 @@ export interface UserState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
-
-const initialState: UserState = {
-  users: [],
-  currentUser: null,
-  isAuthenticated: false,
-  status: "idle",
-  error: null,
-};

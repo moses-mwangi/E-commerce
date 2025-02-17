@@ -6,6 +6,10 @@ import cors from "cors";
 
 import passport from "../main_service/shared/config/passport";
 import { authRouter, userRouter } from "./modules/users";
+import { orderRouter } from "./modules/order";
+import { stripeRouter, paypalRouter, webhookRouter } from "./modules/payments";
+import { productRouter } from "./modules/product";
+import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
 
 const app = express();
 app.use(express.json());
@@ -39,8 +43,8 @@ app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log("Testing middleware");
-  console.log("Middleware cookie:", req.cookies.jwt);
-  console.log("current users:", req.user);
+  // console.log("Middleware cookie:", req.cookies.jwt);
+  // console.log("current users:", req.user);
 
   next();
 });
@@ -66,5 +70,15 @@ app.use(passport.session());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+
+app.use("/api/product", productRouter);
+app.use("/api/order", orderRouter);
+
+app.use("/api/payment", paypalRouter);
+app.use("/api/payment", stripeRouter);
+app.use("/api/webhooks", webhookRouter);
+
+//globalError
+app.use(globalErrorHandler);
 
 export default app;

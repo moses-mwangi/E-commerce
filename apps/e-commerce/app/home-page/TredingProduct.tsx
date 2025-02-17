@@ -175,8 +175,8 @@ const trendingProducts = [
 
 export default function TrendingProducts() {
   return (
-    <section className="py-12 bg-gray-100">
-      <div className="container mx-auto px-6">
+    <section className="py-12 bg-white">
+      <div className="container mx-auto px-6 py-12 rounded-2xl">
         <h2 className="text-2xl font-bold mb-4">🔥 Trending Now</h2>
 
         <div className="relative">
@@ -187,15 +187,18 @@ export default function TrendingProducts() {
                 className="min-w-[250px] bg-white overflow-hidden p-4 hover:rounded-lg rounded-lg shadow hover:shadow-lg transition hover:-translate-y-1"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="w-full h-40 relative">
+                <div className="w-full h-40 relative cursor-pointer">
                   <Image
+                    className=""
                     src={product.image}
                     alt={product.name}
                     layout="fill"
                     objectFit="contain"
                   />
                 </div>
-                <h3 className="mt-3 text-lg font-semibold">{product.name}</h3>
+                <h3 className="mt-3 text-[17px] font-semibold">
+                  {product.name}
+                </h3>
                 <p className="text-orange-500 font-bold">{product.price}</p>
                 <Button className="mt-3 bg-orange-500 hover:bg-orange-600 text-white w-full">
                   Buy Now
@@ -204,7 +207,6 @@ export default function TrendingProducts() {
             ))}
           </motion.div>
 
-          {/* Navigation Buttons */}
           <button className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full">
             <ChevronLeft size={24} />
           </button>

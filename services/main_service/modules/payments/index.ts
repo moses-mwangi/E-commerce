@@ -1,5 +1,7 @@
-export { default as userRouter } from "../users/routes/userRoute";
-export * from "../users/controllers/usersController";
+export { default as stripeRouter } from "../payments/routes/stripePaymentRoute";
+export { default as paypalRouter } from "../payments/routes/payPalpaymentsRoutes";
+export { default as webhookRouter } from "../payments/routes/webhooks";
+export * from "../payments/controllers/webhooksHandler";
 
 // export * from './controllers/userController';
 // export * from './services/userService';

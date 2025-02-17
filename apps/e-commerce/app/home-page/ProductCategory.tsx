@@ -1,64 +1,6 @@
-// "use client";
-
-// import React from "react";
-// import { motion } from "framer-motion";
-// import Image from "next/image";
-// import fash_1 from "../../public/fashion/fash_1.png";
-
-// // Sample category data
-// const categories = [
-//   { name: "Fashion", icon: fash_1 },
-//   { name: "Electronics", icon: "/icons/electronics.png" },
-//   { name: "Beauty", icon: "/icons/beauty.png" },
-//   { name: "Kitchen", icon: "/icons/kitchen.png" },
-//   { name: "Fitness", icon: "/icons/fitness.png" },
-//   { name: "Gaming", icon: "/icons/gaming.png" },
-// ];
-
-// export default function ProductCategories() {
-//   return (
-//     <section className="py-16 bg-white">
-//       <div className="">
-//         <div className="container mx-auto px-8 py-14 rounded-lg">
-//           <motion.h2
-//             className="text-3xl font-bold text-gray-900 text-center mb-8"
-//             initial={{ opacity: 0, y: -30 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.5 }}
-//           >
-//             Explore Categories
-//           </motion.h2>
-
-//           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-//             {categories.map((category, index) => (
-//               <motion.div
-//                 key={index}
-//                 className="flex flex-col items-center bg-gray-50 p-4 rounded-lg shadow-md cursor-pointer hover:bg-orange-100 transition"
-//                 initial={{ opacity: 0, scale: 0.9 }}
-//                 animate={{ opacity: 1, scale: 1 }}
-//                 transition={{ duration: 0.3, delay: index * 0.1 }}
-//               >
-//                 <Image
-//                   className="w-24 h-24"
-//                   src={category.icon}
-//                   alt={category.name}
-//                   width={60}
-//                   height={60}
-//                 />
-//                 <p className="mt-2 text-gray-800 font-semibold">
-//                   {category.name}
-//                 </p>
-//               </motion.div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import fash_1 from "../../public/category_Image/fash_1.png";
@@ -68,6 +10,16 @@ import beauty from "../../public/category_Image/beauty.png";
 import fitness from "../../public/category_Image/fittness.png";
 import gaming from "../../public/category_Image/gaming.png";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  fetchProductById,
+  fetchProducts,
+  searchProducts,
+  filterProducts,
+} from "@/redux/slices/productSlice";
+import axios from "axios";
 
 // Sample category data
 const categories = [
@@ -129,11 +81,35 @@ const fadeInUp = {
 
 export default function ProductCategories() {
   const { push } = useRouter();
+  const { products, status, selectedProduct, filteredProduct, searchProduct } =
+    useSelector((state: RootState) => state.product);
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(fetchProductById(1));
+  }, [dispatch]);
+
+  const test = () => {
+    dispatch(filterProducts({ category: "fashion" }));
+    dispatch(searchProducts("Nike shoes"));
+    console.log(searchProduct);
+    console.log("filtere", filteredProduct);
+  };
+
   return (
     <section className="py-16 bg-white">
+      <Button
+        onClick={() => {
+          test();
+          // console.log(products);
+        }}
+      >
+        CLICK
+      </Button>
       <div className="container mx-auto px-8 py-14 rounded-2xl">
         <motion.h2
-          className="text-4xl font-extrabold text-gray-900 text-center mb-12"
+          className="text-2xl font-extrabold text-gray-900 mb-12"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -167,7 +143,7 @@ export default function ProductCategories() {
                   height={60}
                 />
               </div>
-              <p className="mt-4 text-gray-800 font-semibold text-lg">
+              <p className="mt-4 text-gray-800 font-semibold text-[17px]">
                 {category.name}
               </p>
             </motion.div>

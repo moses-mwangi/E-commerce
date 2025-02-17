@@ -1,5 +1,5 @@
-export { default as userRouter } from "../users/routes/userRoute";
-export * from "../users/controllers/usersController";
+export { default as orderRouter } from "./routes/orderRoute";
+export * from "../order/controllers/orderController";
 
 // export * from './controllers/userController';
 // export * from './services/userService';
