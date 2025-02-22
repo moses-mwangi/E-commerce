@@ -59,29 +59,29 @@ export default function UserProfileImage() {
             <div className=" px-4">
               <Separator className="" />
             </div>
-            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-700 hover:bg-slate-50 transition-all duration-300 px-4">
               My Hypermat
             </div>
 
-            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
               Orders
             </div>
 
-            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
               Messages
             </div>
 
-            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
               Favourite
             </div>
 
-            <div className="py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150 px-4">
+            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
               Account
             </div>
 
             <div>
               <div
-                className="px-4 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150"
+                className=" hover:text-blue-700 px-4 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150"
                 onClick={() => {
                   handleLogOut();
                 }}

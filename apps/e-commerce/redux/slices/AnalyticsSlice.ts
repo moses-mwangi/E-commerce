@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+/// Analytice services get Most view product,Best selling, aded to cart product,top category
+
 // Define types for events and analytics data
 interface AnalyticsState {
   events: Array<{
@@ -38,6 +40,7 @@ const analyticsSlice = createSlice({
       const productIndex = state.bestSellingProducts.findIndex(
         (product) => product.productId === action.payload
       );
+
       if (productIndex !== -1) {
         state.bestSellingProducts[productIndex].viewCount += 1;
       } else {
@@ -56,6 +59,7 @@ const analyticsSlice = createSlice({
     ) {
       const { productId, quantity } = action.payload;
       const timestamp = new Date().toISOString();
+      const time = "";
       state.events.push({
         type: "add_to_cart",
         productId,

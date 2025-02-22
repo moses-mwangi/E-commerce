@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -39,7 +38,6 @@ const ProductForm = () => {
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
     setImages((prev) => [...prev, ...newImages]);
-
     setValue("images", [...(watch("images") || []), ...newImages]);
   };
 
@@ -66,43 +64,32 @@ const ProductForm = () => {
   };
 
   const onSubmit = async (data: any) => {
-    const specifications = specs.reduce((acc, item) => {
-      acc[(item as any).key] = (item as any).value;
-      return acc;
-    }, {} as Record<string, string>);
-
-    const refined = { ...data, specifications };
-
-    const formData = new FormData();
-
-    if (refined.images.length < 1) {
+    if (!Array.isArray(data.images) || data.images.length < 5) {
       toast.error("Please select at least 5 images.");
       return;
     }
+    const refined = { ...data, specifications: specs };
 
-    if (Array.isArray(refined.images) && refined.images.length > 0) {
-      refined.images.forEach((image: File, index: number) => {
-        formData.append(`images`, image); // Append each image
-      });
-    }
-
-    formData.append("description", refined.description);
-    formData.append("name", refined.name);
-    formData.append("category", refined.category);
-    formData.append("stock", refined.stock.toString());
-    formData.append("brand", refined.brand);
-    formData.append("specifications", refined.specifications);
-    formData.append("ratings", refined.ratings.toString());
-    formData.append("price", refined.price.toString());
-    formData.append(" discount", refined.discount.toString());
-
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-    console.log(data);
     try {
+      const formData = new FormData();
+      formData.append("name", refined.name);
+      formData.append("category", refined.category);
+      formData.append("price", refined.price.toString());
+      formData.append("stock", refined.stock.toString());
+      formData.append("description", refined.description);
+      formData.append("discount", refined.discount.toString());
+      formData.append("ratings", refined.ratings.toString());
+      formData.append("brand", refined.brand);
+      formData.append("specifications", refined.specifications);
+
+      refined.images.forEach((image: File) => {
+        formData.append("images", image);
+      });
+
       await axios.post("http://127.0.0.1:8000/api/product", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       toast.success("Product added successfully!");

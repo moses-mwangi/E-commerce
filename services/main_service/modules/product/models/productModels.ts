@@ -10,7 +10,8 @@ class Product extends Model {
   public stock!: number;
   public brand?: string;
   public images!: string[];
-  public specifications?: object;
+  // public specifications?: object;
+  public specifications?: object[];
   public discount?: number;
   public ratings?: number;
   public reviews?: object[];
@@ -56,7 +57,7 @@ Product.init(
       allowNull: true,
     },
     specifications: {
-      type: DataTypes.JSONB,
+      type: DataTypes.ARRAY(DataTypes.JSONB),
       allowNull: true,
     },
     discount: {

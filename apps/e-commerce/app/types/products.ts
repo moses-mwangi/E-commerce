@@ -1,4 +1,7 @@
 export interface Product {
+  // image: any;
+  // rating: ReactI18NextChildren | Iterable<ReactI18NextChildren>;
+  // rating: number;
   id: number;
   name: string;
   category: string;
@@ -24,24 +27,13 @@ export interface ProductState {
   totalPages: number;
   pageSize: number;
   sortProduct: Product[];
-  searchTerm: string; // ✅ Store search input
+  searchTerm: string;
   filterParams: {
-    // ✅ Store applied filters
     category?: string;
     minPrice?: number;
     maxPrice?: number;
   };
-  sortOrder: "asc" | "desc"; // ✅ Keep track of sorting order
+  sortOrder: "asc" | "desc";
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
-
-// export interface ProductState {
-//   products: Product[];
-//   selectedProduct: Product | null;
-//   filteredProduct: Product[] | null;
-//   searchProduct: Product[] | null;
-//   sortProduct: Product[] | null;
-//   status: "idle" | "loading" | "succeeded" | "failed";
-//   error: string | null;
-// }

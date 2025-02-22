@@ -1,39 +1,9 @@
-// import multer from "multer";
-// import { CloudinaryStorage } from "multer-storage-cloudinary";
-// import cloudinary from "../../../shared/config/cloudinary";
-
-// const storage = new CloudinaryStorage({
-//   cloudinary: cloudinary,
-//   params: async (req, file) => {
-//     const extension = file.mimetype.split("/")[1];
-//     const allowedFormats = ["jpg", "png", "jpeg", "webp"];
-//     console.log("cloud_files:", file);
-
-//     if (allowedFormats.includes(extension)) {
-//       return {
-//         folder: "ecommerce-products",
-//         format: extension,
-//         public_id: `image_${Date.now()}`,
-//         resource_type: "image",
-//         transformation: [
-//           { width: 500, height: 400, crop: "limit" },
-//           { quality: "auto" },
-//           { fetch_format: "auto" },
-//         ],
-//       };
-//     } else {
-//       throw new Error("Invalid file format");
-//     }
-//   },
-// });
-
-// const upload = multer({ storage });
-
-// export default upload;
-
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../../../shared/config/cloudinary";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -41,7 +11,7 @@ const storage = new CloudinaryStorage({
     const extension = file.mimetype.split("/")[1];
     const allowedFormats = ["jpg", "png", "jpeg", "webp"];
 
-    console.log("Received file:", file.originalname); // Debugging
+    console.log("Received file from Upload:", file.originalname);
 
     if (allowedFormats.includes(extension)) {
       return {
@@ -49,8 +19,8 @@ const storage = new CloudinaryStorage({
         format: extension,
         public_id: `image_${Date.now()}`,
         resource_type: "image",
-        timeout: 60000, // Increased timeout
-        transformation: [{ width: 500, height: 400, crop: "limit" }],
+        timeout: 60000,
+        // transformation: [{ width: 500, height: 400, crop: "limit" }],
       };
     } else {
       throw new Error("Invalid file format");
@@ -59,8 +29,8 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB
-}).array("images", 10); // Allow up to 10 images
+  storage: storage,
+  // limits: { fileSize: 5 * 1024 * 1024 },
+}).array("images", 5);
 
 export default upload;

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import foldedlaptop from "../../public/newArrival/foldedLaptop.png";
+import foldedlaptop from "../../../public/newArrival/foldedLaptop.png";
 
 const getBrowsingHistory = () => {
   if (typeof window !== "undefined") {
