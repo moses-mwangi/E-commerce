@@ -4,9 +4,23 @@ import axios from "axios";
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
+type OrdersItemType = {
+  userId: string | undefined;
+  totalPrice: number;
+  status: string;
+  paymentStatus: string;
+  shippingAddress: any;
+  trackingNumber: string;
+  orderItems: {
+    productId: number;
+    quantity: number;
+    price: any;
+  }[];
+};
+
 export const createOrder = createAsyncThunk(
   "orders/create",
-  async (orderData: Order) => {
+  async (orderData: OrdersItemType) => {
     try {
       const res = await axios.post(`${API_URL}/order`, orderData);
       return res.data;
@@ -20,7 +34,7 @@ export const createOrder = createAsyncThunk(
 // Fetch user orders
 export const fetchOrders = createAsyncThunk("orders/fetchAll", async () => {
   try {
-    const res = await axios.get(`${API_URL}/orders`);
+    const res = await axios.get(`${API_URL}/order`);
     return res.data.orders;
   } catch (err) {
     console.error(err);

@@ -1,20 +1,24 @@
 "use client";
 
 import React, { useEffect } from "react";
-
-import { CalendarIcon } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { getCurrentUser, logoutUser } from "@/redux/slices/userSlice";
 import { Separator } from "@/components/ui/separator";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
+  ShoppingBag,
+  Heart,
+  User,
+  MessageSquare,
+  LogOut,
+  User2,
+} from "lucide-react";
 
 export default function UserProfileImage() {
   const router = useRouter();
@@ -25,73 +29,90 @@ export default function UserProfileImage() {
   );
   const token = document.cookie.split("=")[1];
 
-  // useEffect(() => {
-  // dispatch(fetchUsers());
-
-  //   if (token && token.length > 20 && token !== "undefined") {
-  //     dispatch(getCurrentUser());
-  //   }
-  // }, [dispatch]);
-
   function handleLogOut() {
     dispatch(logoutUser());
   }
 
   return (
-    <div>
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <div className="bg-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center w-10 h-10">
-            {currentUser?.name[0].toUpperCase()}
-          </div>
-        </HoverCardTrigger>
-        <HoverCardContent className="w-80 px-0">
-          <div className="flex flex-col justify-between space-y-4">
-            <div className=" px-4 flex items-center gap-2">
-              <div className="flex items-center font-bold justify-center text-white h-11 w-11 rounded-full bg-pink-500">
-                {currentUser?.name[0].toUpperCase()}
-              </div>
-              <div>
-                <h1>{currentUser?.name}</h1>
-                <h1>{currentUser?.email}</h1>
-              </div>
-            </div>
-            <div className=" px-4">
-              <Separator className="" />
-            </div>
-            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-700 hover:bg-slate-50 transition-all duration-300 px-4">
-              My Hypermat
-            </div>
+    <HoverCard>
+      <HoverCardTrigger className="p-0" asChild>
+        <div className="bg-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center w-10 h-10 transition-transform hover:scale-110">
+          {currentUser?.name?.[0]?.toUpperCase() || "U"}
+        </div>
+      </HoverCardTrigger>
 
-            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
-              Orders
+      <HoverCardContent className="w-80 px-0 shadow-xl rounded-lg overflow-hidden">
+        <div className="flex flex-col space-y-3">
+          <div className="px-4 flex items-center gap-3 py-3 bg-pink-100">
+            <div className="h-11 w-11 flex items-center justify-center font-bold text-white rounded-full bg-pink-500">
+              {currentUser?.name?.[0]?.toUpperCase() || "U"}
             </div>
-
-            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
-              Messages
-            </div>
-
-            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
-              Favourite
-            </div>
-
-            <div className="hover:font-bold hover:text-black/85 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-300 px-4">
-              Account
-            </div>
-
             <div>
-              <div
-                className=" hover:text-blue-700 px-4 py-2 text-[15px] cursor-pointer text-gray-600 hover:bg-slate-50 transition-all duration-150"
-                onClick={() => {
-                  handleLogOut();
-                }}
-              >
-                Log out
-              </div>
+              <h1 className="text-lg font-semibold">
+                {currentUser?.name || "Guest User"}
+              </h1>
+              <p className="text-sm text-gray-600">
+                {currentUser?.email || "No email available"}
+              </p>
             </div>
           </div>
-        </HoverCardContent>
-      </HoverCard>
+
+          <Separator />
+
+          <MenuItem
+            label="Orders"
+            icon={<ShoppingBag className="w-5 h-5" />}
+            onClick={() => router.push("/pages/order")}
+          />
+          <MenuItem
+            label="Messages"
+            icon={<MessageSquare className="w-5 h-5" />}
+          />
+          <MenuItem label="Favorites" icon={<Heart className="w-5 h-5" />} />
+          <MenuItem
+            label="Admin"
+            icon={<User2 className="w-5 h-5" />}
+            onClick={() => router.push("/admin")}
+          />
+          <MenuItem
+            label="Account Settings"
+            icon={<User className="w-5 h-5" />}
+          />
+
+          {/* Separator */}
+          <Separator />
+
+          {/* Logout */}
+          <div
+            className="py-3 px-4 hover:bg-gray-100 cursor-pointer flex items-center gap-3 text-gray-700 transition-all duration-200"
+            onClick={handleLogOut}
+          >
+            <LogOut className="w-5 h-5 text-red-500" />
+            <span className="text-red-500 font-semibold">Log Out</span>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
+}
+
+// Reusable MenuItem Component
+function MenuItem({
+  label,
+  icon,
+  onClick,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <div
+      className="flex items-center gap-3 py-3 px-4 text-gray-700 cursor-pointer hover:bg-gray-100 transition-all duration-200"
+      onClick={onClick}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
     </div>
   );
 }

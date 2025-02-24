@@ -39,7 +39,7 @@ import { FaCreditCard, FaPaypal, FaMoneyBillWave } from "react-icons/fa";
 
 export default function PaymentModal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[3px] bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-[400px]">
         <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
         <div className="space-y-3">

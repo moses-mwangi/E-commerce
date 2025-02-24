@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import SignInBotton from "./sign_In_Up_Button/SignInButton";
 import Logo from "./logo/Logo";

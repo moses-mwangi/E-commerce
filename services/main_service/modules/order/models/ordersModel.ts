@@ -2,11 +2,12 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../../../shared/config/pg_database";
 import User from "../../users/models/userMode";
 import Product from "../../product/models/productModels";
-import OrderItem from "./itemOrder"; // Import OrderItem model
+import OrderItem from "./itemOrder";
 
 class Order extends Model {
   public id!: number;
   public userId!: number;
+  public orderId!: number;
   public totalPrice!: number;
   public status!: "pending" | "shipped" | "delivered" | "cancelled";
   public paymentStatus!: "paid" | "unpaid" | "failed";
@@ -24,7 +25,7 @@ Order.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "users", key: "id" }, // Foreign key to Users
+      references: { model: "users", key: "id" },
     },
     totalPrice: {
       type: DataTypes.FLOAT,
@@ -54,15 +55,12 @@ Order.init(
   }
 );
 
-// 🔹 Explicitly define associations
 User.hasMany(Order, { foreignKey: "userId", onDelete: "CASCADE" });
 Order.belongsTo(User, { foreignKey: "userId" });
 
-// ✅ Correctly associate OrderItem with Order
 Order.hasMany(OrderItem, { foreignKey: "orderId", onDelete: "CASCADE" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId" });
 
-// ✅ Correctly associate OrderItem with Product
 Product.hasMany(OrderItem, { foreignKey: "productId", onDelete: "CASCADE" });
 OrderItem.belongsTo(Product, { foreignKey: "productId" });
 

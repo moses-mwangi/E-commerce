@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import { Identifier } from "sequelize";
 import axios from "axios";
 import sequelize from "../../../shared/config/pg_database";
+import User from "../../users/models/userMode";
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -93,7 +94,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export const createOrder = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, products, shippingAddress, paymentMethodId } = req.body;
+    const {
+      userId,
+      orderItems: products,
+      shippingAddress,
+      paymentMethodId,
+      trackingNumber,
+    } = req.body;
 
     if (!userId || !products || products.length === 0 || !shippingAddress) {
       return next(new AppError("Missing required fields", 400));
@@ -155,6 +162,7 @@ export const createOrder = catchAsync(
           shippingAddress,
           status: "pending",
           paymentStatus,
+          trackingNumber,
         },
         { transaction }
       );
@@ -204,7 +212,13 @@ export const createOrder = catchAsync(
 export const getAllOrders = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const orders = await Order.findAll({
-      include: [{ model: OrderItem, include: [Product] }],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "email", "telephone", "country"],
+        },
+        { model: OrderItem, include: [Product] },
+      ],
     });
 
     if (orders.length < 1) {

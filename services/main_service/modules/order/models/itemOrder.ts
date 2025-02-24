@@ -4,6 +4,7 @@ import Order from "./ordersModel"; // Import Order model
 import Product from "../../product/models/productModels"; // Import Product model
 
 class OrderItem extends Model {
+  public id!: number;
   public orderId!: number;
   public productId!: number;
   public quantity!: number;
@@ -21,11 +22,13 @@ OrderItem.init(
       type: DataTypes.INTEGER,
       references: { model: "orders", key: "id" },
       allowNull: false,
+      onDelete: "CASCADE", // Ensure order deletion cascades to order items
     },
     productId: {
       type: DataTypes.INTEGER,
       references: { model: "products", key: "id" },
       allowNull: false,
+      onDelete: "CASCADE", // Ensure product deletion cascades to order items
     },
     quantity: {
       type: DataTypes.INTEGER,
