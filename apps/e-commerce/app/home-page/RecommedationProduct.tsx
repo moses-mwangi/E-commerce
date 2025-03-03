@@ -72,10 +72,10 @@ export default function RecommendedForYou() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          🎯 Recommended For You
+          Recommended For You
         </motion.h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {recommendedProducts.map((product, index) => (
             <motion.div
               key={product.id}
@@ -110,7 +110,7 @@ export default function RecommendedForYou() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );

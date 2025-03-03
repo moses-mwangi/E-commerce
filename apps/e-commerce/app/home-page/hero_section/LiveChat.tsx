@@ -1,13 +1,23 @@
 "use client";
 import { Card } from "@/components/ui/card";
+import { RootState } from "@/redux/store";
 import { MessageCircleIcon } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { FaPaperPlane, FaComments } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function LiveChat() {
   const [showChat, setShowChat] = useState(false);
+  const { currentUser, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! How can I assist you today?" },
+    {
+      sender: "bot",
+      text: `Hello! ${
+        isAuthenticated === true ? currentUser?.name.split(" ")[0] : ""
+      } How can I assist you today?`,
+    },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -45,7 +55,9 @@ export default function LiveChat() {
   };
 
   return (
-    <div className="fixed bottom-5 z-50 right-5 w-80">
+    <div
+      className={`fixed bottom-5 z-50 right-5 ${showChat ? "w-80" : "w-52"}`}
+    >
       {showChat && (
         <div className="w-80 p-4 bg-white shadow-2xl rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
           <h3 className="text-lg font-bold flex items-center text-gray-800 dark:text-gray-200">
@@ -89,10 +101,10 @@ export default function LiveChat() {
         </div>
       )}
       <Card
-        className="flex items-center gap-3 cursor-pointer w-80 p-4 border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
+        className="flex justify-center items-center gap-3 cursor-pointer w-full p-4 border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
         onClick={() => setShowChat(!showChat)}
       >
-        <MessageCircleIcon className="text-blue-500" />
+        <MessageCircleIcon size={21} className="text-blue-500" />
         <p className="text-gray-800 dark:text-gray-200">Live Chat</p>
       </Card>
     </div>

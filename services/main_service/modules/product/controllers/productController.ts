@@ -22,11 +22,12 @@ export const createProduct = catchAsync(
       return next(new AppError("All fields are required", 400));
     }
 
-    if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-      return next(new AppError("No files uploaded", 400));
-    }
+    // if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+    //   return next(new AppError("No files uploaded", 400));
+    // }
 
-    const imageUrls = req.files.map((file: any) => file.path);
+    // const imageUrls = req.files.map((file: any) => file.path);
+    const imageUrls = "";
     console.log("Uploaded Image URLs:", imageUrls);
 
     const product = await Product.create({
@@ -40,7 +41,7 @@ export const createProduct = catchAsync(
       description,
       specifications,
 
-      images: imageUrls,
+      // images: imageUrls,
     });
     res.status(201).json({ msg: "Product created successfully!", product });
   }

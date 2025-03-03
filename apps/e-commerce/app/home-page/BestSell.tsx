@@ -162,11 +162,12 @@ export default function BestSellers() {
   return (
     <section className="py-12 bg-white ">
       <div className="container rounded-2xl py-12 mx-auto px-6">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
-          🏆 Best Sellers
+        <h2 className="text-2xl font-extrabold text-gray-900 mb-8">
+          {/* 🏆 Best Sellers */}
+          Best Sellers
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {bestSellers.map((product, index) => (
             <motion.div
               key={product.id}
@@ -177,7 +178,6 @@ export default function BestSellers() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              {/* 🏅 Ranking Badge */}
               <div className="flex items-center gap-2 mb-2">
                 <Award className="text-yellow-500" size={20} />
                 <span className="text-lg font-bold text-gray-800">
@@ -185,7 +185,6 @@ export default function BestSellers() {
                 </span>
               </div>
 
-              {/* Product Image */}
               <div className="relative w-full h-40">
                 <Image
                   src={product.image}
@@ -196,13 +195,11 @@ export default function BestSellers() {
                 />
               </div>
 
-              {/* Product Info */}
               <h3 className="mt-4 text-lg font-bold text-gray-900">
                 {product.name}
               </h3>
               <p className="text-orange-500 font-bold">{product.price}</p>
 
-              {/* ⭐ Ratings */}
               <div className="flex items-center mt-2 text-yellow-500">
                 {[...Array(Math.round(product.rating))].map((_, i) => (
                   <Star key={i} size={18} fill="currentColor" />
@@ -212,13 +209,12 @@ export default function BestSellers() {
                 </span>
               </div>
 
-              {/* Buy Button */}
               <Button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white w-full">
                 🛒 Buy Now
               </Button>
             </motion.div>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );

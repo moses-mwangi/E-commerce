@@ -146,8 +146,8 @@ export default function NewArrivals() {
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-6 py-12 rounded-2xl">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
-          🆕 New Arrivals
+        <h2 className="text-3xl font-extrabold text-gray-900 mb-8">
+          New Arrivals
         </h2>
 
         <div className="flex gap-6">

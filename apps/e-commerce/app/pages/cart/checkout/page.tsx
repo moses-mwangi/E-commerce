@@ -10,6 +10,7 @@ import { RootState } from "@/redux/store";
 export default function Page() {
   return (
     <div className="">
+      {/* <Navbar /> */}
       <Card className="bg-white shadow-sm rounded-none w-full px-10 py-4 ">
         <Label>Hypermart</Label>
       </Card>

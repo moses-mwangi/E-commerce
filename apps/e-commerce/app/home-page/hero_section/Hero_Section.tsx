@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import aiDashboard from "../../../public/images/image copy.png";
+import LiveChat from "./LiveChat";
+// import LiveChat from "@/app/pages/fashion/[id]/LiveChat";
 
 // Animation Variants
 const fadeInUp = {
@@ -73,6 +75,7 @@ export default function HeroSection() {
           />
         </motion.div>
       </div>
+      <LiveChat />
     </section>
   );
 }

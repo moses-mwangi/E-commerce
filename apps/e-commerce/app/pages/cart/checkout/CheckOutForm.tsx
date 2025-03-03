@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -14,8 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCheckOutForm } from "./formSchema";
+import PaymentModal from "../PaymentModal";
 
 export default function CheckoutPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     onSubmit,
     handleSubmit,
@@ -145,6 +147,14 @@ export default function CheckoutPage() {
           Proceed to Payment
         </Button>
       </form>
+      <Button
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+      >
+        PAYLOAD
+      </Button>
+      {isModalOpen && <PaymentModal onClose={() => setIsModalOpen(false)} />}
     </Card>
   );
 }

@@ -41,9 +41,9 @@ export default function UserProfileImage() {
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent className="w-80 px-0 shadow-xl rounded-lg overflow-hidden">
-        <div className="flex flex-col space-y-3">
-          <div className="px-4 flex items-center gap-3 py-3 bg-pink-100">
+      <HoverCardContent className="w-80 pt-0 px-0 shadow-xl rounded-lg overflow-hidden">
+        <div className="flex flex-col space-y-[6px]">
+          <div className="px-4 flex items-center gap-3 py-3 bg-pink-50">
             <div className="h-11 w-11 flex items-center justify-center font-bold text-white rounded-full bg-pink-500">
               {currentUser?.name?.[0]?.toUpperCase() || "U"}
             </div>
@@ -57,7 +57,7 @@ export default function UserProfileImage() {
             </div>
           </div>
 
-          <Separator />
+          {/* <Separator className=" pt-0 mt-0" /> */}
 
           <MenuItem
             label="Orders"
@@ -79,16 +79,16 @@ export default function UserProfileImage() {
             icon={<User className="w-5 h-5" />}
           />
 
-          {/* Separator */}
           <Separator />
 
-          {/* Logout */}
           <div
-            className="py-3 px-4 hover:bg-gray-100 cursor-pointer flex items-center gap-3 text-gray-700 transition-all duration-200"
+            className="py-2 px-4 hover:bg-gray-100 cursor-pointer flex items-center gap-3 text-gray-700 transition-all duration-200"
             onClick={handleLogOut}
           >
-            <LogOut className="w-5 h-5 text-red-500" />
-            <span className="text-red-500 font-semibold">Log Out</span>
+            <LogOut className="w-[18px] h-[18px] text-red-500" />
+            <span className="text-red-500 text-[15px] font-semibold">
+              Log Out
+            </span>
           </div>
         </div>
       </HoverCardContent>

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearCart,
@@ -11,7 +11,6 @@ import {
 } from "@/redux/slices/cartSlice";
 import DiscountInput from "./discountInput";
 import { RootState } from "@/redux/store";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 import { TbCreditCardRefund } from "react-icons/tb";
 import { HiMiniShieldCheck } from "react-icons/hi2";
 import { IoFileTrayFullOutline } from "react-icons/io5";
@@ -20,10 +19,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PaymentModal from "./PaymentModal";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
 
 export default function ProductCartPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -58,7 +55,6 @@ export default function ProductCartPage() {
         </h1>
         {cartItems.length === 0 && (
           <div className=" flex flex-col justify-center items-center">
-            {/* <ShoppingBasket size={40} /> */}
             <p className="text-lg">Your cart is empty. Add some products!</p>
           </div>
         )}
@@ -185,7 +181,6 @@ export default function ProductCartPage() {
             </div>
           )}
         </div>
-        {isModalOpen && <PaymentModal onClose={() => setIsModalOpen(false)} />}
       </div>
     </div>
   );

@@ -115,7 +115,7 @@
 //   );
 // }
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -174,14 +174,16 @@ const trendingProducts = [
 ];
 
 export default function TrendingProducts() {
+  const [stat, setStat] = useState(0);
+  const [end, setEnd] = useState(5);
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-6 py-12 rounded-2xl">
         <h2 className="text-2xl font-bold mb-4">🔥 Trending Now</h2>
 
-        <div className="relative">
-          <motion.div className="flex overflow-x-scroll overflow-y-hidden space-x-6">
-            {trendingProducts.map((product, index) => (
+        {/* <div className="relative">
+          <motion.div className="flex overflow-x-scroll hide-scrollbar overflow-y-hidden space-x-6">
+            {trendingProducts.slice(stat, end).map((product, index) => (
               <motion.div
                 key={product.id}
                 className="min-w-[250px] bg-white overflow-hidden p-4 hover:rounded-lg rounded-lg shadow hover:shadow-lg transition hover:-translate-y-1"
@@ -207,13 +209,29 @@ export default function TrendingProducts() {
             ))}
           </motion.div>
 
-          <button className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full">
+          <button
+            className="absolute -left-5 top-1/2 transform -translate-y-1/2 bg-gray-200 p-[10px] rounded-full"
+            onClick={() => {
+              if (stat > 1) {
+                setStat((el) => el - 1);
+                setEnd((el) => el - 1);
+              }
+            }}
+          >
             <ChevronLeft size={24} />
           </button>
-          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full">
+          <button
+            className="absolute -right-5 top-1/2 transform -translate-y-1/2 bg-gray-200 p-[10px] rounded-full"
+            onClick={() => {
+              if (end < 10) {
+                setStat((el) => el + 1);
+                setEnd((el) => el + 1);
+              }
+            }}
+          >
             <ChevronRight size={24} />
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

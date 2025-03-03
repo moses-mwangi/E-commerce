@@ -56,17 +56,11 @@ export default function BrowsingHistory() {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-8 py-12 rounded-xl">
-        <motion.h2
-          className="text-3xl font-bold text-gray-900 text-center mb-8"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* 🔄 Recently Viewed */}
+        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
           Your Browsing History
-        </motion.h2>
+        </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {history.map((product, index) => (
             <motion.div
               key={index}
@@ -92,7 +86,7 @@ export default function BrowsingHistory() {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );
