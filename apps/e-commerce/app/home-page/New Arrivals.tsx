@@ -94,7 +94,6 @@ import foldedlaptop from "../../public/newArrival/foldedLaptop.png";
 import blender from "../../public/newArrival/blender.png";
 import smartwatch from "../../public/newArrival/smart_watch.png";
 import tablet from "../../public/newArrival/tablet.png";
-
 // Sample New Arrivals Data
 const newArrivals = [
   {

@@ -46,7 +46,11 @@ export default function LiveChat() {
       } catch (error) {
         setMessages((prev) => [
           ...prev,
-          { sender: "bot", text: "Sorry, an error occurred. Try again later!" },
+          // { sender: "bot", text: "Sorry, an error occurred. Try again later!" },
+          {
+            sender: "bot",
+            text: "The chartbot is not available. Try again later!",
+          },
         ]);
       } finally {
         setIsTyping(false);
