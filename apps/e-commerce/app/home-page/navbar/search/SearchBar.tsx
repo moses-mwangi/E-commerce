@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -11,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CameraIcon, SearchIcon, MicIcon } from "lucide-react";
-import React, { useState, useCallback, useRef } from "react";
+import { SearchIcon } from "lucide-react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ImageSearch from "./ImageSearch";
+import VoiceSearch from "./VoiceSearch";
 
 const categories = [
   { value: "All", category: "All Products" },
@@ -27,62 +27,10 @@ const categories = [
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { t, i18n } = useTranslation();
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
-  };
-
-  const handleVoiceSearch = useCallback(() => {
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      setErrorMessage("Voice search is not supported in this browser.");
-      return;
-    }
-
-    const recognition = new (window.SpeechRecognition ||
-      window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-
-    recognition.onstart = () => setErrorMessage("");
-    recognition.onresult = (event: any) =>
-      setSearchQuery(event.results[0][0].transcript);
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error:", event.error);
-      if (event.error === "not-allowed") {
-        setErrorMessage(
-          "Microphone access is denied. Please allow microphone access."
-        );
-      } else {
-        setErrorMessage(
-          "An error occurred while using voice recognition. Please try again."
-        );
-      }
-    };
-
-    try {
-      recognition.start();
-    } catch (error) {
-      setErrorMessage("Failed to start speech recognition.");
-    }
-  }, []);
-
-  const handleImageSearch = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.type.startsWith("image/")) {
-        const imageUrl = URL.createObjectURL(file);
-        setSelectedImage(imageUrl);
-        setErrorMessage("");
-      } else {
-        setErrorMessage("Please select an image file.");
-      }
-    }
   };
 
   return (
@@ -109,20 +57,9 @@ export default function SearchBar() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <div className="flex items-center gap-3 absolute right-2 text-gray-500">
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={handleImageSelect}
-            />
             <ImageSearch />
-            <MicIcon
-              onClick={handleVoiceSearch}
-              className="hover:cursor-pointer hover:text-orange-500 transition duration-200"
-              size={20}
-              aria-label="Search by Voice"
-            />
+
+            <VoiceSearch setSearchQuery={setSearchQuery} />
           </div>
         </div>
 
@@ -141,24 +78,6 @@ export default function SearchBar() {
           <SearchIcon size={18} /> {t("search")}
         </Button>
       </div>
-
-      {selectedImage && (
-        <div className="mt-4 relative">
-          <img
-            src={selectedImage}
-            alt="Selected image"
-            className="max-h-40 rounded-lg shadow-md"
-          />
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
     </div>
   );
 }

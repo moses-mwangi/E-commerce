@@ -57,8 +57,6 @@ export default function UserProfileImage() {
             </div>
           </div>
 
-          {/* <Separator className=" pt-0 mt-0" /> */}
-
           <MenuItem
             label="Orders"
             icon={<ShoppingBag className="w-5 h-5" />}
@@ -72,11 +70,12 @@ export default function UserProfileImage() {
           <MenuItem
             label="Admin"
             icon={<User2 className="w-5 h-5" />}
-            onClick={() => router.push("/admin")}
+            onClick={() => router.push("/dashboard/admin")}
           />
           <MenuItem
             label="Account Settings"
             icon={<User className="w-5 h-5" />}
+            onClick={() => router.push("/pages/account")}
           />
 
           <Separator />

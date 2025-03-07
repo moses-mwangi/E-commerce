@@ -37,7 +37,6 @@ export default function SignInBotton() {
             router.push("/reg/signin");
           }}
         >
-          {/* Sign Up */}
           {t("sign_up")}
         </Button>
       )}
