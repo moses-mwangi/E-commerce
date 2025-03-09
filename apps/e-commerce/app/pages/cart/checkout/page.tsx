@@ -6,14 +6,20 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import Logo from "@/app/home-page/navbar/logo/Logo";
+import UserProfileImage from "@/app/components/users/UserProfileImage";
 
 export default function Page() {
   return (
     <div className="">
-      {/* <Navbar /> */}
-      <Card className="bg-white shadow-sm rounded-none w-full px-10 py-4 ">
-        <Label>Hypermart</Label>
-      </Card>
+      <div className="bg-white flex justify-between shadow-md py-4 px-6">
+        <div>
+          <Logo />
+        </div>
+        <div>
+          <UserProfileImage />
+        </div>
+      </div>
       <div className="py-14">
         <CheckOutForm />
       </div>

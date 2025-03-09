@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { fetchUsers, loginUserAsync } from "@/redux/slices/userSlice";
+import LoadingState from "@/app/components/LoadingState";
 
 const schema = z.object({
   email: z.string().email("Invalid email format"),
@@ -25,6 +26,8 @@ const schema = z.object({
 });
 
 export default function SignInForm() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { push, refresh } = useRouter();
   const dispatch = useAppDispatch();
   const { status, users } = useSelector((state: RootState) => state.user);
@@ -46,8 +49,6 @@ export default function SignInForm() {
   const handleFormSubmit = async (data: any) => {
     try {
       const foundUser = users.find((el) => el?.email === data.email);
-      console.log(foundUser);
-      console.log(users);
 
       if (!foundUser) {
         toast.error("Wrong credentials: Try to sign up.");
@@ -80,91 +81,100 @@ export default function SignInForm() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
-      <h1 className="text-4xl font-bold text-gray-900 mb-6">
-        Sign In into Your Account
-      </h1>
-      <Card className="w-[415px] max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-gray-800 text-center mb-4">
-          Welcome to Hypermat - AI-Powered Shopping
-        </h2>
-        <form className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
-          <div>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              {...register("email")}
-              className="border-gray-300 focus-visible:ring-orange-400"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">
-                {errors.email.message?.toString()}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label>Password</Label>
-            <Input
-              className=" focus-visible:ring-orange-400"
-              type="password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">
-                {errors.password?.message?.toString()}
-              </p>
-            )}
-
-            <div className=" py-1">
-              <p
-                className="text-blue-600 hover:text-blue-500 cursor-pointer text-sm px-0 bg-none hover:bg-none"
-                onClick={() => {
-                  push("/reg/forgotPassword");
-                }}
-              >
-                Forgot password?
-              </p>
+    <>
+      {isLoading && <LoadingState />}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
+        <h1 className="text-4xl font-bold text-gray-900 mb-6">
+          Sign In into Your Account
+        </h1>
+        <Card className="w-[415px] max-w-md p-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-gray-800 text-center mb-4">
+            Welcome to Hypermat - AI-Powered Shopping
+          </h2>
+          <form className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                {...register("email")}
+                className="border-gray-300 focus-visible:ring-orange-400"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
             </div>
-          </div>
 
-          <Button
-            className="w-full bg-orange-500 my-7 disabled:cursor-not-allowed hover:bg-orange-600 text-white"
-            disabled={status === "loading"}
-            // onClick={() => push("/")}
-          >
-            {status === "loading" ? loader : "Sign In"}
-          </Button>
-        </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Dont have an account?
-          <button className="text-blue-600" onClick={() => push("/reg/signup")}>
-            Sign Up
-          </button>
-        </p>
-        <div className="mt-6 flex items-center gap-2 text-center text-sm text-gray-600">
-          <div className="h-[2px] w-full bg-gray-200" />
-          <p>or</p>
-          <div className="h-[2px] w-full bg-gray-200" />
-        </div>
-        <div className="flex justify-center gap-4 mt-4">
-          <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
-            <FcGoogle size={20} />
-          </button>
-          <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
-            <FaApple size={20} />
-          </button>
-          <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
-            <FaFacebook size={20} />
-          </button>
-          <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
-            <SiWeb3Dotjs size={20} />
-          </button>
-          <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
-            <FaFingerprint size={20} />
-          </button>
-        </div>
-      </Card>
-    </div>
+            <div>
+              <Label>Password</Label>
+              <Input
+                className=" focus-visible:ring-orange-400"
+                type="password"
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password?.message?.toString()}
+                </p>
+              )}
+
+              <div className=" py-1">
+                <p
+                  className="text-blue-600 hover:text-blue-500 cursor-pointer text-sm px-0 bg-none hover:bg-none"
+                  onClick={() => {
+                    push("/reg/forgotPassword");
+                  }}
+                >
+                  Forgot password?
+                </p>
+              </div>
+            </div>
+
+            <Button
+              className="w-full bg-orange-500 my-7 disabled:cursor-not-allowed hover:bg-orange-600 text-white"
+              disabled={status === "loading"}
+              // onClick={() => push("/")}
+            >
+              {status === "loading" ? loader : "Sign In"}
+            </Button>
+          </form>
+          <p className="mt-4 text-center text-sm text-gray-600">
+            Dont have an account?
+            <button
+              className="text-blue-600"
+              onClick={() => {
+                setIsLoading(true);
+                push("/reg/signup");
+              }}
+            >
+              Sign Up
+            </button>
+          </p>
+          <div className="mt-6 flex items-center gap-2 text-center text-sm text-gray-600">
+            <div className="h-[2px] w-full bg-gray-200" />
+            <p>or</p>
+            <div className="h-[2px] w-full bg-gray-200" />
+          </div>
+          <div className="flex justify-center gap-4 mt-4">
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FcGoogle size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaApple size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFacebook size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <SiWeb3Dotjs size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFingerprint size={20} />
+            </button>
+          </div>
+        </Card>
+      </div>
+    </>
   );
 }
