@@ -4,6 +4,7 @@ import sequelize from "./shared/config/pg_database";
 import setupAssociations from "./modules/order/models/associations";
 import Order from "./modules/order/models/ordersModel";
 import OrderItem from "./modules/order/models/itemOrder";
+import User from "./modules/users/models/userMode";
 
 setupAssociations();
 
@@ -12,8 +13,10 @@ dotenv.config({ path: "./.env" });
 //////////////////////////////// updating Order and Order_item /////////////////
 
 // Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
+// Promise.all([User.sync({ alter: true })])
 //   .then(() => {
-//     console.log("✅ Order & OrderItem tables updated!");
+//     //     console.log("✅ Order & OrderItem tables updated!");
+//     console.log("✅ User tables updated!");
 //   })
 //   .catch((error) => {
 //     console.error("❌ Error syncing Order & OrderItem tables:", error);

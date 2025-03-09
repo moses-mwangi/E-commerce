@@ -35,7 +35,6 @@ export const registerUserAsync = createAsyncThunk(
     }
   }
 );
-
 export const loginUserAsync = createAsyncThunk(
   "user/login",
   async (data: { email: string; password: string }) => {
@@ -47,9 +46,10 @@ export const loginUserAsync = createAsyncThunk(
         return;
       }
       const token = response.data.token;
-      console.log(response.data);
+
       document.cookie = `token=${token}; path=/`;
       toast.success("Login succefully");
+      window.location.href = "/";
 
       return token;
     } catch (err) {
@@ -61,90 +61,34 @@ export const loginUserAsync = createAsyncThunk(
   }
 );
 
-export const loginUserAsaync = createAsyncThunk(
-  "user/login",
-  async (data: { email: string; password: string }, { rejectWithValue }) => {
+export const deleteUser = createAsyncThunk(
+  "user/deleteCurrentUser",
+  async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, data);
-      const token = response.data.token;
-      document.cookie = `token=${token}; path=/`;
-      console.log(response);
-      return token;
+      const response = await axios.delete(`${API_URL}/auth/deleteUser/${id}`);
+
+      if (response.data.error) {
+        toast.error("Deletion failed: " + response.data.error);
+        return rejectWithValue(response.data.error);
+      }
+
+      // document.cookie = `token=; path=/`;
+      // toast.success("Account deleted successfully");
+
+      return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      const axiosError = err as AxiosError;
+
+      console.error("Error:", axiosError);
+      // toast.error(axiosError.response?.data?.message || "Deletion failed");
+      // toast.error("Deletion failed");
+
+      return rejectWithValue(
+        axiosError.response?.data || "An error occurred while deleting user."
+      );
     }
   }
 );
-
-// export const getCurrentUser = createAsyncThunk(
-//   "user/getCurrentUser",
-//   async () => {
-//     const token = document.cookie.split("=")[1];
-
-//     try {
-//       if (token.length > 20 && token !== undefined) {
-//         const response = await axios.get(`${API_URL}/auth/me`, {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//           withCredentials: true,
-//         });
-
-//         return response.data.user;
-//       }
-//     } catch (err) {
-//       if (err?.response?.status === 401) {
-//         alert(err?.response?.data.msg); // Display the error message
-//         // navigate("/login"); // Redirect to the login page
-//       }
-//       // console.error("Error:", err);
-//       throw err;
-//     }
-//   }
-// );
-
-// export const getCurrentUser = createAsyncThunk(
-//   "user/getCurrentUser",
-//   async (_, { rejectWithValue }) => {
-//     const token = document.cookie.split("=")[1];
-
-//     try {
-//       if (!token || token.length <= 20) {
-//         throw new Error("No valid token found.");
-//       }
-
-//       const response = await axios.get(`${API_URL}/auth/me`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//         withCredentials: true,
-//       });
-//       console.log(response);
-//       return response.data.user;
-//     } catch (err) {
-//       const axiosError = err as AxiosError;
-//       if (AxiosError?.response?.status === 401) {
-//         const errorMessage =
-//           err?.response?.data?.msg ||
-//           "Your session has expired. Please log in again.";
-//         alert(errorMessage);
-
-//         document.cookie =
-//           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-//         // Redirect to the login page (if needed)
-//         // window.location.href = '/login';
-//       } else {
-//         console.error("Error:", err);
-//       }
-//       return rejectWithValue(
-//         err?.response?.data ||
-//           "An error occurred while fetching the current user."
-//       );
-//     }
-//   }
-// );
-
-// import axios, { AxiosError } from "axios";
 
 export const getCurrentUser = createAsyncThunk(
   "user/getCurrentUser",
@@ -165,18 +109,14 @@ export const getCurrentUser = createAsyncThunk(
 
       return response.data.user;
     } catch (err) {
-      const axiosError = err as AxiosError; // Type assertion
+      const axiosError = err as AxiosError;
       if (axiosError.response?.status === 401) {
-        // Token is expired or invalid
         const errorMessage = "Your session has expired. Please log in again.";
-        // axiosError.response?.data?.msg ||
-        // "Your session has expired. Please log in again.";
-        alert(errorMessage); // Display the error message
-        // Clear the token from cookies
+
+        alert(errorMessage);
         document.cookie =
-          "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // Redirect to the login page (if needed)
-        // window.location.href = '/login';
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        window.location.href = "/reg/signin";
       } else {
         // Handle other errors
         console.error("Error:", axiosError);
@@ -184,6 +124,116 @@ export const getCurrentUser = createAsyncThunk(
       return rejectWithValue(
         axiosError.response?.data ||
           "An error occurred while fetching the current user."
+      );
+    }
+  }
+);
+
+export const updatePassword = createAsyncThunk(
+  "user/updatePassword",
+  async (
+    data: { currentPassword: string; newPassword: string },
+    { rejectWithValue }
+  ) => {
+    const token = document.cookie.split("=")[1];
+
+    try {
+      if (!token || token.length <= 20) {
+        throw new Error("No valid token found." as unknown as ErrorProps);
+      }
+
+      const response = await axios.patch(
+        `${API_URL}/auth/updatePassword`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      toast.success("Password updated successfully");
+
+      const newToken = response.data.token;
+      document.cookie = `token=${newToken}; path=/`;
+
+      return newToken;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      if (axiosError.response?.status === 401) {
+        const errorMessage = "Your session has expired. Please log in again.";
+        console.error(errorMessage);
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      } else {
+        console.error("Error:", axiosError);
+        toast.error(axiosError.message);
+      }
+      return rejectWithValue(
+        axiosError.response?.data ||
+          "An error occurred while updating the password."
+      );
+    }
+  }
+);
+
+export const updateCurrentUser = createAsyncThunk(
+  "user/updateUser",
+  async (
+    data: {
+      name: string;
+      address: string;
+      city: string;
+      state: string;
+      telephone: string;
+      tradeRole: string;
+      zipcode: string;
+      currentUserId: string;
+    },
+
+    { rejectWithValue }
+  ) => {
+    const token = document.cookie.split("=")[1];
+
+    try {
+      if (!token || token.length <= 20) {
+        throw new Error("No valid token found." as unknown as ErrorProps);
+      }
+
+      const response = await axios.patch(
+        `${API_URL}/user/${data.currentUserId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      toast.success("User updated successfully");
+
+      const newToken = response.data.token;
+      document.cookie = `token=${newToken}; path=/`;
+
+      return newToken;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      if (axiosError.response?.status === 401) {
+        const errorMessage = "Your session has expired. Please log in again.";
+        console.error(errorMessage);
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      } else {
+        console.error("Error:", axiosError);
+        toast.error(axiosError.message);
+      }
+      return rejectWithValue(
+        axiosError.response?.data ||
+          "An error occurred while updating the password."
       );
     }
   }
@@ -238,11 +288,25 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.pending, (state, action) => {
         state.status = "loading";
       })
+      /////////////
+      .addCase(updatePassword.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+      })
+      // .addCase(updatePassword.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.isAuthenticated = false;
+      // })
+      .addCase(updatePassword.pending, (state, action) => {
+        state.status = "loading";
+      })
+      /////////////
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.currentUser = action.payload;
         state.isAuthenticated = true;
       })
+
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user";

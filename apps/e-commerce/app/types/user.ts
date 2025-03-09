@@ -2,6 +2,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  telephone: number;
   password?: string;
   tradeRole?: string;
 }

@@ -7,7 +7,6 @@ import crypto from "crypto";
 import catchAsync from "../../../shared/utils/catchSync";
 import User from "../models/userMode";
 import { generateToken } from "../utils/jwt";
-import AppError from "../../../shared/utils/AppError";
 
 export const signInUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -84,29 +83,6 @@ export const loginUser = catchAsync(
     res.status(200).json({ msg: "User succesfully LogIn", token });
 
     (req as any).user = user;
-  }
-);
-
-export const deleteCurrentUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-
-    const user = await User.findOne({ where: { id } });
-
-    if (!user) {
-      return next(new AppError("No user with those id found", 400));
-    }
-
-    const deletedAccount = await User.destroy({
-      where: {
-        email: user.email,
-      },
-    });
-
-    res.status(201).json({
-      msg: "Account have being deleted",
-      deletedAccount,
-    });
   }
 );
 
@@ -232,55 +208,3 @@ export const getMe = (req: Request, res: Response, next: NextFunction) => {
     console.log(err);
   }
 };
-
-export const updatePassword = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { currentPassword, newPassword } = req.body;
-    const userId = (req as any).user.id;
-
-    try {
-      const user = await User.findOne({ where: { id: userId } });
-      if (!user) {
-        return res.status(404).json({
-          status: "error",
-          message: "User not found",
-        });
-      }
-
-      // // Verify current password
-      const isPasswordValid = await user.comparePassword(currentPassword);
-
-      if (!isPasswordValid) {
-        return res.status(400).json({
-          status: "error",
-          message: "Current password is incorrect",
-        });
-      }
-
-      console.log(isPasswordValid);
-
-      const cookieOption = {
-        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        // httpOnly: true,
-      };
-
-      await user.update({ passwordHash: newPassword });
-
-      const token = generateToken({ id: user.id, email: user.email });
-      res.cookie("jwt", token, cookieOption);
-      (req.session as any).userId = user.id;
-
-      res.status(200).json({
-        status: "success",
-        message: "Password updated successfully",
-        token,
-      });
-    } catch (error) {
-      console.error("Password update error:", error);
-      res.status(500).json({
-        status: "error",
-        message: "Error updating password",
-      });
-    }
-  }
-);

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
-import { loginUserAsync } from "@/redux/slices/userSlice";
+import { fetchUsers, loginUserAsync } from "@/redux/slices/userSlice";
 
 const schema = z.object({
   email: z.string().email("Invalid email format"),
@@ -25,7 +25,7 @@ const schema = z.object({
 });
 
 export default function SignInForm() {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const dispatch = useAppDispatch();
   const { status, users } = useSelector((state: RootState) => state.user);
 
@@ -39,21 +39,32 @@ export default function SignInForm() {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
   const handleFormSubmit = async (data: any) => {
     try {
-      const uniqueUser = users.find((el) => el?.email === data.email);
+      const foundUser = users.find((el) => el?.email === data.email);
+      console.log(foundUser);
+      console.log(users);
 
+      if (!foundUser) {
+        toast.error("Wrong credentials: Try to sign up.");
+        reset();
+        return;
+      }
       const formData = {
         email: data.email,
         password: data.password,
       };
-      if (uniqueUser) {
-        dispatch(loginUserAsync(formData));
-        router.push("/");
-        router.refresh();
-      }
+
+      dispatch(loginUserAsync(formData));
+      refresh();
+      reset();
     } catch (err) {
       console.error(err);
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -109,7 +120,7 @@ export default function SignInForm() {
               <p
                 className="text-blue-600 hover:text-blue-500 cursor-pointer text-sm px-0 bg-none hover:bg-none"
                 onClick={() => {
-                  router.push("/reg/forgotPassword");
+                  push("/reg/forgotPassword");
                 }}
               >
                 Forgot password?
@@ -120,17 +131,14 @@ export default function SignInForm() {
           <Button
             className="w-full bg-orange-500 my-7 disabled:cursor-not-allowed hover:bg-orange-600 text-white"
             disabled={status === "loading"}
-            // onClick={() => router.push("/")}
+            // onClick={() => push("/")}
           >
             {status === "loading" ? loader : "Sign In"}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Dont have an account?
-          <button
-            className="text-blue-600"
-            onClick={() => router.push("/reg/signup")}
-          >
+          <button className="text-blue-600" onClick={() => push("/reg/signup")}>
             Sign Up
           </button>
         </p>

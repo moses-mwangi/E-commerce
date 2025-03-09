@@ -10,7 +10,7 @@ export default function Admin() {
       <div className=" py-6">
         <ProductForm />
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

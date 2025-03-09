@@ -6,6 +6,8 @@ import {
   protect,
   signInUser,
   protectJwtUser,
+  updatePassword,
+  deleteCurrentUser,
 } from "../controllers/authController";
 import passport from "../../../shared/config/passport";
 import { generateToken } from "../utils/jwt";
@@ -14,7 +16,9 @@ const router: Router = Router();
 
 router.route("/signup").post(validUserSignInput, signInUser);
 router.route("/login").post(loginUser);
+router.route("/deleteUser/:id").delete(deleteCurrentUser);
 
+router.route("/updatePassword").patch(protect, updatePassword);
 router.get("/mej", protectJwtUser, getMe);
 router.get("/me", protect, getMe);
 

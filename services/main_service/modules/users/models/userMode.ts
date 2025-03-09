@@ -12,6 +12,9 @@ class User extends Model {
   public tradeRole?: string;
   public telephone?: string;
   public country?: string;
+  public city?: string;
+  public state?: string;
+  public zipcode?: string;
 
   // Instance methods
   public async comparePassword(password: string): Promise<boolean> {
@@ -58,7 +61,7 @@ User.init(
 
 // Hook to hash password before saving
 User.beforeSave(async (user) => {
-  if (user.passwordHash) {
+  if (user.passwordHash && user.changed("passwordHash")) {
     const salt = await bcrypt.genSalt(10);
     user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
   }

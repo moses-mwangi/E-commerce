@@ -168,7 +168,9 @@ import {
   MessageSquare,
   LogOut,
   User2,
+  Settings2,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function UserProfileImage() {
   const router = useRouter();
@@ -179,9 +181,16 @@ export default function UserProfileImage() {
   );
   const token = document.cookie.split("=")[1];
 
-  function handleLogOut() {
-    dispatch(logoutUser());
-  }
+  const handleLogOut = () => {
+    try {
+      dispatch(logoutUser());
+      console.log("Logging out...");
+      toast.success("Log out succefully");
+      router.push("/");
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
 
   return (
     <HoverCard>
@@ -229,7 +238,7 @@ export default function UserProfileImage() {
           />
           <MenuItem
             label="Account"
-            icon={<User className="w-5 h-5" />}
+            icon={<Settings2 className="w-5 h-5" />}
             onClick={() => router.push("/pages/account")}
           />
 
@@ -262,7 +271,7 @@ function MenuItem({
 }) {
   return (
     <div
-      className="flex items-center gap-3 py-3 px-4 text-gray-700 cursor-pointer hover:bg-gray-100 transition-all duration-200"
+      className="flex text-[15px] items-center gap-3 py-[10px] px-4 text-gray-700 cursor-pointer hover:bg-gray-100 transition-all duration-200"
       onClick={onClick}
     >
       {icon}
