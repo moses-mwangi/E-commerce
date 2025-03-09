@@ -121,17 +121,28 @@ export default function UserProfileSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
-            <Input id="city" placeholder="City" {...register("city")} />
+            <Input
+              id="city"
+              {...register("city")}
+              defaultValue={currentUser?.city && currentUser.city}
+              placeholder={String(currentUser?.city) || "City"}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
-            <Input id="state" placeholder="State" {...register("state")} />
+            <Input
+              id="state"
+              defaultValue={currentUser?.state && currentUser.state}
+              placeholder={String(currentUser?.state) || "State"}
+              {...register("state")}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="zipCode">ZIP Code</Label>
             <Input
               id="zipCode"
-              placeholder="ZIP Code"
+              defaultValue={currentUser?.zipcode && currentUser.zipcode}
+              placeholder={String(currentUser?.city) || "ZIP Code"}
               {...register("zipcode")}
             />
           </div>

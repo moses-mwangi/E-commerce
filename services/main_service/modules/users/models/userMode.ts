@@ -51,6 +51,15 @@ User.init(
     country: {
       type: DataTypes.STRING,
     },
+    city: {
+      type: DataTypes.STRING,
+    },
+    state: {
+      type: DataTypes.STRING,
+    },
+    zipcode: {
+      type: DataTypes.STRING,
+    },
   },
   {
     sequelize,

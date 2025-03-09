@@ -5,6 +5,9 @@ interface User {
   telephone: number;
   password?: string;
   tradeRole?: string;
+  city?: string;
+  zipcode?: string;
+  state?: string;
 }
 
 export interface UserState {

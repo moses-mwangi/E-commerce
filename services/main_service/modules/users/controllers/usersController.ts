@@ -30,7 +30,7 @@ export const getAllUser = catchAsync(
 export const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const { email, ...updates } = req.body;
+    const { email, passwordHash, ...updates } = req.body;
 
     if (email) {
       return next(new AppError("You can't update Email", 400)); // Use 400 for bad request
