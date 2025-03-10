@@ -36,7 +36,7 @@ export default function ProductsPage() {
           className="bg-primary bg-orange-500 hover:bg-orange-600"
           onClick={() => {
             console.log("Moses Mwangi");
-            router.push("/dashboard/products/upload");
+            router.push("/admin/dashboard/products/upload");
           }}
         >
           <Plus className="w-4 h-4 mr-2" />
