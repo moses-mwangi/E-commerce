@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,35 +9,26 @@ import {
   setCart,
   updateQuantity,
 } from "@/redux/slices/cartSlice";
+import DiscountInput from "./discountInput";
 import { RootState } from "@/redux/store";
-import {
-  Shield,
-  CreditCard,
-  RefreshCw,
-  Package,
-  Trash2,
-  ArrowLeft,
-  ShoppingBag,
-  Loader2,
-  Plus,
-  Minus,
-} from "lucide-react";
+import { TbCreditCardRefund } from "react-icons/tb";
+import { HiMiniShieldCheck } from "react-icons/hi2";
+import { IoFileTrayFullOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
+import PaymentModal from "./PaymentModal";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import DiscountInput from "./discountInput";
+import LoadingState from "@/app/components/LoadingState";
+import Link from "next/link";
+import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
 
 export default function ProductCartPage() {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const [isRemoving, setIsRemoving] = useState<number | null>(null);
-  const [isUpdating, setIsUpdating] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
+  const dispatch = useDispatch();
   const { items: cartItems, totalPrice } = useSelector(
     (state: RootState) => state.cart
   );
@@ -48,224 +40,166 @@ export default function ProductCartPage() {
     }
   }, [dispatch]);
 
-  const handleRemove = async (productId: number) => {
-    setIsRemoving(productId);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Animation delay
+  const handleRemove = (productId: number) => {
     dispatch(removeFromCart(productId));
-    setIsRemoving(null);
-    toast.success("Item removed from cart");
   };
 
-  const handleUpdateQuantity = async (productId: number, quantity: number) => {
-    if (quantity < 1) return;
-    setIsUpdating(productId);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  const handleUpdateQuantity = (productId: number, quantity: number) => {
     dispatch(updateQuantity({ productId, quantity }));
-    setIsUpdating(null);
   };
 
   const handleClearCart = () => {
-    if (window.confirm("Are you sure you want to clear your cart?")) {
-      dispatch(clearCart());
-      toast.success("Cart cleared");
-    }
+    dispatch(clearCart());
   };
 
-  const cartFeatures = [
-    {
-      icon: <Shield className="w-5 h-5 text-green-500" />,
-      title: "Secure Payment",
-      description: "Your payment information is safe",
-    },
-    {
-      icon: <RefreshCw className="w-5 h-5 text-blue-500" />,
-      title: "Easy Returns",
-      description: "30-day return policy",
-    },
-    {
-      icon: <Package className="w-5 h-5 text-orange-500" />,
-      title: "Fast Delivery",
-      description: "2-3 business days",
-    },
-  ];
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-gray-50"
-    >
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <Link
-            href="/fashion"
-            className="flex items-center text-primary hover:underline"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Continue Shopping
-          </Link>
-        </div>
-
-        {cartItems.length === 0 ? (
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            className="text-center py-16"
-          >
-            <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-              Your cart is empty
-            </h2>
-            <p className="text-gray-500 mb-8">
-              Looks like you haven&apos;t added any items to your cart yet.
-            </p>
-            <Button
-              className="bg-primary hover:bg-primary/90"
-              onClick={() => router.push("/fashion")}
+    <>
+      {isLoading && <LoadingState />}
+      <div className=" min-h-screen">
+        <div className="containerCart rounded-xl mt-12 mb-10 mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+            <Link
+              href="/pages/fashion"
+              className="flex items-center text-blue-600 hover:underline"
             >
-              Start Shopping
-            </Button>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
-            <div className="space-y-4">
-              <AnimatePresence>
-                {cartItems.map((item) => (
-                  <motion.div
-                    key={item.productId}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="bg-white rounded-lg shadow-md overflow-hidden"
-                  >
-                    <div className="p-4 flex gap-4">
-                      <div className="relative w-32 h-32">
-                        <Image
-                          src={item.product.images[0]}
-                          alt={item.product.name}
-                          fill
-                          className="object-cover rounded-md"
-                        />
-                      </div>
-                      <div className="flex-1 space-y-2">
-                        <div className="flex justify-between">
-                          <h3 className="font-semibold text-lg">
-                            {item.product.name}
-                          </h3>
-                          <p className="font-bold text-lg">
-                            ${(item.product.price * item.quantity).toFixed(2)}
-                          </p>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Continue Shopping
+            </Link>
+          </div>
+          {cartItems.length === 0 && (
+            <div className="text-center py-16 min-h-[75svh]">
+              <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+                Your cart is empty
+              </h2>
+              <p className="text-gray-500 mb-8">
+                Looks like you haven&apos;t added any items to your cart yet.
+              </p>
+              <Button
+                className="bg-primary hover:bg-primary/90"
+                onClick={() => router.push("/fashion")}
+              >
+                Start Shopping
+              </Button>
+            </div>
+          )}
+          <div className="grid grid-cols-[2fr_1.1fr] gap-6">
+            <div className="cart-items space-y-6">
+              {cartItems.length > 0 &&
+                cartItems.map((item) => {
+                  const product = item.product;
+                  return (
+                    <div
+                      key={item.productId}
+                      className="cart-item flex items-center justify-between bg-white shadow-lg rounded-lg p-4"
+                    >
+                      <div className="grid grid-cols-[1fr_4fr] items-center space-x-4">
+                        <div>
+                          <img
+                            src={product?.images ? product?.images[0] : ""}
+                            alt={product.name}
+                            className="w-full h-28 object-cover rounded-md"
+                          />
                         </div>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {item.product.description}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
+                        <div className=" space-y-1">
+                          <h3 className="font-semibold text-lg">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm text-gray-500 text-nowrap">
+                            {product.description.slice(0, 92)}...
+                          </p>
+
+                          <div className="price text-gray-700 text-base font-semibold">
+                            ${product.price * item.quantity}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <Button
+                                className="text-lg w-9 h-9 text-black hover:bg-gray-100 font-semibold px-3 py-1 bg-gray-200 rounded-full"
+                                onClick={() =>
+                                  handleUpdateQuantity(
+                                    item.productId,
+                                    item.quantity - 1
+                                  )
+                                }
+                              >
+                                -
+                              </Button>
+                              <span className="text-lg font-medium">
+                                {item.quantity}
+                              </span>
+                              <Button
+                                className="text-lg w-9 h-9 text-black hover:bg-gray-100 font-semibold px-3 py-1 bg-gray-200 rounded-full"
+                                onClick={() =>
+                                  handleUpdateQuantity(
+                                    item.productId,
+                                    item.quantity + 1
+                                  )
+                                }
+                              >
+                                +
+                              </Button>
+                            </div>
                             <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={isUpdating === item.productId}
-                              onClick={() =>
-                                handleUpdateQuantity(
-                                  item.productId,
-                                  item.quantity - 1
-                                )
-                              }
+                              className="remove bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
+                              onClick={() => handleRemove(item.productId)}
                             >
-                              <Minus className="w-4 h-4" />
-                            </Button>
-                            <span className="w-12 text-center font-medium">
-                              {isUpdating === item.productId ? (
-                                <Loader2 className="w-4 h-4 mx-auto animate-spin" />
-                              ) : (
-                                item.quantity
-                              )}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              disabled={isUpdating === item.productId}
-                              onClick={() =>
-                                handleUpdateQuantity(
-                                  item.productId,
-                                  item.quantity + 1
-                                )
-                              }
-                            >
-                              <Plus className="w-4 h-4" />
+                              {/* <RiDeleteBin5Fill /> */}
+                              Remove
                             </Button>
                           </div>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            disabled={isRemoving === item.productId}
-                            onClick={() => handleRemove(item.productId)}
-                          >
-                            {isRemoving === item.productId ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="w-4 h-4" />
-                            )}
-                          </Button>
                         </div>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                  );
+                })}
             </div>
-
-            <div className="lg:sticky lg:top-4 space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow-md p-6"
-              >
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
+            <div className="sticky top-24 self-start">
+              {cartItems.length > 0 && (
+                <div className="cart-summary  bg-white shadow-lg rounded-lg p-6">
+                  <Label className="">Order Summary</Label>
+                  <div className="flex justify-between text-xl font-semibold mb-4">
+                    <p>Total amount :</p>
                     <span>${totalPrice.toFixed(2)}</span>
                   </div>
+                  <Separator className=" mb-4" />
                   <DiscountInput />
-                  <Separator />
-                  <div className="flex justify-between text-lg font-semibold">
-                    <span>Total</span>
-                    <span>${totalPrice.toFixed(2)}</span>
-                  </div>
                   <Button
-                    className="w-full bg-primary hover:bg-primary/90"
-                    onClick={() => router.push("/pages/cart/checkout")}
+                    className=" bg-orange-500 w-full rounded-lg hover:bg-orange-600 my-7"
+                    onClick={() => {
+                      setIsLoading(true);
+                      router.push("/pages/cart/checkout");
+                      // setIsModalOpen(true);
+                    }}
                   >
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Proceed to Checkout
+                    <HiMiniShieldCheck className="w-[19px] h-[19px]" />
+                    Check Out
                   </Button>
+                  <Separator className=" mb-4 mt-4" />
+                  <div className="flex flex-col mt-4 gap-[3px] text-gray-700 text-[14px]">
+                    <Label className=" text-black/85 font-semibold mb-[3px] text-base">
+                      You’re protected on Hypermart.com
+                    </Label>
+                    <span className="flex gap-2 items-center">
+                      <HiMiniShieldCheck className="text-green-500 w-[18px] h-[18px]" />
+                      Secure payment
+                    </span>
+                    <span className="flex gap-2 items-center">
+                      <TbCreditCardRefund className="text-green-500 w-[18px] h-[18px]" />
+                      Refund and returns
+                    </span>
+                    <span className="flex gap-2 items-center">
+                      <IoFileTrayFullOutline className="text-green-500 w-[18px] h-[18px]" />
+                      Fulfillment by Hypermart.com Logistics
+                    </span>
+                  </div>
                 </div>
-              </motion.div>
-
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="font-semibold mb-4">Shopping Protection</h3>
-                <div className="space-y-4">
-                  {cartFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      {feature.icon}
-                      <div>
-                        <p className="font-medium">{feature.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {feature.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+              )}
               {cartItems.length > 0 && (
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full rounded-lg mt-3 hover:bg-red-600 hover:text-white bg-red-500 text-white"
                   onClick={handleClearCart}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -274,8 +208,8 @@ export default function ProductCartPage() {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
-    </motion.div>
+    </>
   );
 }
