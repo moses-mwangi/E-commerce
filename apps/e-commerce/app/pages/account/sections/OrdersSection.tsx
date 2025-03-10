@@ -9,10 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { Package } from "lucide-react";
+import { fetchOrders } from "@/redux/slices/orderSlice";
 
 interface OrderItem {
   id: string;
@@ -30,7 +31,12 @@ interface Order {
 }
 
 export default function OrdersSection() {
+  const dispatch: AppDispatch = useDispatch();
   const { orders } = useSelector((state: RootState) => state.order);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {

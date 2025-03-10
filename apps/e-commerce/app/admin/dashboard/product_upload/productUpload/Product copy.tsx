@@ -80,17 +80,11 @@ const ProductForm = () => {
       formData.append("discount", refined.discount.toString());
       formData.append("ratings", refined.ratings.toString());
       formData.append("brand", refined.brand);
-      formData.append("specifications", JSON.stringify(refined.specifications));
-
-      // formData.append("specifications", refined.specifications);
+      formData.append("specifications", refined.specifications);
 
       refined.images.forEach((image: File) => {
         formData.append("images", image);
       });
-
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
 
       await axios.post("http://127.0.0.1:8000/api/product", formData, {
         headers: {
@@ -106,7 +100,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="max-w-3xl min-h-screen mx-auto mt-8 p-6 bg-white shadow-2xl rounded-lg">
+    <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-2xl rounded-lg">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Product Upload
       </h2>

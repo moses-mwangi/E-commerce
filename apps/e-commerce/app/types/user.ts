@@ -8,6 +8,7 @@ interface User {
   city?: string;
   zipcode?: string;
   state?: string;
+  createdAt?: string;
 }
 
 export interface UserState {

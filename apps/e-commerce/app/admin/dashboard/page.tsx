@@ -6,7 +6,6 @@ export default function Admin() {
   return (
     <div>
       <AdminDashboard />
-      {/* <ShadCnDashboard /> */}
     </div>
   );
 }

@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  createOrder,
+  // createOrder,
   getAllOrders,
   getOrderById,
   updateOrderStatus,
   deleteOrder,
-} from "../controllers/orderController copy";
+} from "../controllers/orderController";
 import { checkout } from "../controllers/checkout";
+import { createOrder } from "../controllers/orderController copy";
+// import { protect } from "../../users/controllers/authController copy";
+// import { protect } from "../../users/controllers/authController";
 
 const router = express.Router();
 

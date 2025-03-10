@@ -20,6 +20,7 @@ export type Order = {
 };
 
 type User = {
+  createdAt: string;
   id: number;
   name: string;
   email: string;

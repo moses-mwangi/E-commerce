@@ -106,7 +106,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="max-w-3xl min-h-screen mx-auto mt-8 p-6 bg-white shadow-2xl rounded-lg">
+    <div className="max-w-3xl mx-auto mt-8 p-6 bg-white shadow-2xl rounded-lg">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Product Upload
       </h2>

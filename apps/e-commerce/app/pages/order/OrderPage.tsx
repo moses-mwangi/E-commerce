@@ -25,15 +25,26 @@ function OrdersPage() {
     dispatch(fetchOrders());
   }, [dispatch]);
 
-  const getDate = (date: string | number | Date) => {
-    const orderDate = new Date(date).toLocaleString();
+  // const getDate = (date: string | number | Date) => {
+  //   const orderDate = new Date(date).toLocaleString();
 
-    return orderDate;
+  //   return orderDate;
+  // };
+
+  const getDate = (date: string) => {
+    const dates = new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    const time = new Date(date).toLocaleTimeString();
+    return `${dates}, ${time}`;
   };
 
   return (
     <div className="max-w-5xl min-h-screen mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Your Orders</h1>
+
       <Card className=" container p-4">
         <Accordion type="multiple" className="space-y-4">
           {orders.map((order) => (
@@ -42,7 +53,7 @@ function OrdersPage() {
                 <div>
                   <h2 className="font-semibold">Order #{order.id}</h2>
                   <p className="text-gray-600 text-sm">
-                    Tracking: {order.trackingNumber}
+                    Tracking : {order.trackingNumber}
                   </p>
 
                   <p className="text-gray-600 text-sm">
@@ -78,7 +89,7 @@ function OrdersPage() {
                   <CardContent>
                     <p>{order.shippingAddress}</p>
                     <p className="text-gray-500">
-                      {order.User.name} ({order.User.email})
+                      {order?.User?.name} ({order?.User?.email})
                     </p>
                     <p className="text-gray-500">
                       streat adress/P.O Box : off thika Road
@@ -175,7 +186,8 @@ function OrdersPage() {
                           <p>
                             <strong>Estimated Delivery : </strong>
                             {/* {order.estimatedDeliveryDate} */}
-                            {getDate(new Date())}
+                            {/* {getDate(new Date())} */}
+                            Mar 10, 2025, 12:05:44 AM
                           </p>
                         </div>
 

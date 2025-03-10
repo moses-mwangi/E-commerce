@@ -32,15 +32,32 @@ export const createOrder = createAsyncThunk(
 );
 
 // Fetch user orders
-export const fetchOrders = createAsyncThunk("orders/fetchAll", async () => {
-  try {
-    const res = await axios.get(`${API_URL}/order`);
-    return res.data.orders;
-  } catch (err) {
-    console.error(err);
-    throw new Error("Failed to fetch orders");
+const getToken = () => {
+  const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
+  return match ? match[1] : null;
+};
+
+export const fetchOrders = createAsyncThunk(
+  "orders/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      // const token = document.cookie.split("=")[1];
+      const token = getToken();
+      const res = await axios.get(`${API_URL}/order`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data.orders;
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      // console.log(getToken());
+      return rejectWithValue(
+        (err as any).response?.data?.message || "Failed to fetch orders"
+      );
+    }
   }
-});
+);
 
 // Fetch a single order by ID
 export const fetchOrderById = createAsyncThunk(

@@ -9,6 +9,8 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { Identifier } from "sequelize";
 import axios from "axios";
+import { model } from "mongoose";
+import User from "../../users/models/userMode";
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -171,21 +173,33 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 //   }
 // );
 
-// 📌 Get All Orders
-export const getAllOrders = catchAsync(async (req: Request, res: Response) => {
-  const orders = await Order.findAll({
-    include: [{ model: OrderItem, include: [Product] }],
-  });
+export const getAllOrders = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: User,
+          attributes: [
+            "id",
+            "name",
+            "email",
+            "telephone",
+            "country",
+            "createdAt",
+          ],
+        },
+        { model: OrderItem, include: [Product] },
+      ],
+    });
 
-  // const orders = await Order.findAll({});
+    if (!orders || orders.length === 0) {
+      return res.status(200).json({ success: "faill", orders: [] });
+    }
 
-  if (orders.length < 1) {
-    res.json({ msg: "Faile" });
+    res.status(200).json({ success: true, orders });
   }
-  res.status(200).json({ success: true, orders });
-});
+);
 
-// // // 📌 Get Single Order
 export const getOrderById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const order = await Order.findByPk(req.params.id, {
@@ -197,7 +211,6 @@ export const getOrderById = catchAsync(
   }
 );
 
-// 📌 Update Order Status
 export const updateOrderStatus = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { status } = req.body;
@@ -214,7 +227,6 @@ export const updateOrderStatus = catchAsync(
   }
 );
 
-// 📌 Delete Order
 export const deleteOrder = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const order = await Order.findByPk(req.params.id);
