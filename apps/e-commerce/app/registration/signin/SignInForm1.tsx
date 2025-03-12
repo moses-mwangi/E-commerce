@@ -32,6 +32,7 @@ const schema = z.object({
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { push, refresh } = useRouter();
   const dispatch = useAppDispatch();
@@ -48,6 +49,13 @@ export default function SignInForm() {
   });
 
   useEffect(() => {
+    const savedEmail = localStorage.getItem("userEmail");
+    const savedRememberMe = localStorage.getItem("rememberMe") === "true";
+
+    if (savedEmail && savedRememberMe) {
+      setRememberMe(true);
+    }
+
     dispatch(fetchUsers());
   }, [dispatch]);
 
@@ -65,18 +73,25 @@ export default function SignInForm() {
         password: data.password,
       };
 
+      if (rememberMe) {
+        localStorage.setItem("userEmail", formData.email);
+        localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("userEmail");
+      }
+
       dispatch(loginUserAsync(formData));
       refresh();
       reset();
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       toast.error("An error occurred. Please try again.");
     }
   };
 
   return (
     <div>
-      {isLoading && <LoadingState />}
+      {/* {isLoading && <LoadingState />} */}
 
       <div className="fixed top-4 left-4">
         <Button
@@ -153,10 +168,9 @@ export default function SignInForm() {
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2">
                 <Checkbox
-                  // checked={rememberMe}
+                  checked={rememberMe}
                   onCheckedChange={(checked) =>
-                    // setRememberMe(checked as boolean)
-                    console.log("")
+                    setRememberMe(checked as boolean)
                   }
                 />
                 <span className="text-sm text-gray-600">Remember me</span>

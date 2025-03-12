@@ -7,7 +7,7 @@ import SearchBar from "./search/SearchBar";
 import CartPage from "./cart/Cart";
 import Language from "./language_currency_change/Language_Cur";
 import DeliverTo from "./deliverTo/DeliverTo";
-import FavouriteProduct from "./favourite/FavouriteProduct";
+import FavouriteProduct from "./favouriteButton/FavouriteProductIcon";
 
 export default function Navbar() {
   return (

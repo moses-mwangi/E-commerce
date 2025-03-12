@@ -15,7 +15,8 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
     const res = await axios.get(`${API_URL}/user`);
     return res.data.users;
   } catch (err) {
-    console.error("Error:", err);
+    // console.error("Error:", err);
+    toast.error("Error in fetching user");
     throw err;
   }
 });
@@ -59,7 +60,9 @@ export const verifyEmail = createAsyncThunk(
 
       return "";
     } catch (err) {
-      console.error("Error:", err);
+      // console.error("Error:", err);
+      toast.error("Email Verification failed");
+
       // window.location.href = "/registration/email-verified-msg";
 
       throw err;
@@ -85,10 +88,10 @@ export const loginUserAsync = createAsyncThunk(
 
       return token;
     } catch (err) {
-      console.error("Error:", err);
+      // console.error("Error:", err);
+      // toast.error("Login failed");
       throw err;
-      toast.error("Login failed");
-      console.log(err);
+      // console.log(err);
     }
   }
 );
@@ -111,8 +114,8 @@ export const deleteUser = createAsyncThunk(
     } catch (err) {
       const axiosError = err as AxiosError;
 
-      console.error("Error:", axiosError);
-      // toast.error(axiosError.response?.data?.message || "Deletion failed");
+      // console.error("Error:", axiosError);
+      toast.error("Deletion failed");
       // toast.error("Deletion failed");
 
       return rejectWithValue(
@@ -148,10 +151,11 @@ export const getCurrentUser = createAsyncThunk(
         alert(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.location.href = "/registration/signin";
+        // window.location.href = "/registration/signin";
       } else {
         // Handle other errors
-        console.error("Error:", axiosError);
+        // toast.error("Error getting current user");
+        // console.error("Error:", axiosError);
       }
       return rejectWithValue(
         axiosError.response?.data ||

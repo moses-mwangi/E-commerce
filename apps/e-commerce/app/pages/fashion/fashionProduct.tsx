@@ -22,6 +22,7 @@ import { fetchProducts } from "@/redux/slices/productSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { addToCart, setCart } from "@/redux/slices/cartSlice";
+import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Slider } from "@/components/ui/slider";
 import toast from "react-hot-toast";
@@ -32,6 +33,7 @@ export default function CategoryProductPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { products } = useSelector((state: RootState) => state.product);
+  const { items } = useSelector((state: RootState) => state.favourite);
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
 
@@ -48,7 +50,9 @@ export default function CategoryProductPage() {
     dispatch(fetchProducts());
     if (typeof window !== "undefined") {
       const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const savedFav = JSON.parse(localStorage.getItem("fav") || "[]");
       dispatch(setCart(savedCart));
+      dispatch(setFav(savedFav));
     }
   }, [dispatch]);
 
@@ -56,9 +60,21 @@ export default function CategoryProductPage() {
     const product = products.find((el) => el.id === id);
     if (product) {
       dispatch(addToCart(product));
-      toast.success(`${product.name} added to cart!`, {
-        icon: "🛍️",
-      });
+      toast.success(`${product.name} added to cart!`);
+    }
+  };
+
+  const handleAddToFavourite = (id: any) => {
+    const product = products.find((el) => el.id === id);
+    const inFavourite = items.find((el) => el.product.id === id);
+
+    if (product) {
+      dispatch(addToFav(product));
+      if (inFavourite) {
+        toast.success(`Product already in favourite!`);
+      } else {
+        toast.success(`${product.name} added to Fav!`);
+      }
     }
   };
 
@@ -131,11 +147,7 @@ export default function CategoryProductPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    // onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center gap-2"
-                  >
+                  <Button variant="outline" className="flex items-center gap-2">
                     <Sliders className="w-4 h-4" />
                     Filters
                   </Button>
@@ -362,7 +374,10 @@ export default function CategoryProductPage() {
                     height={300}
                   />
 
-                  <Button className="bg-gray-100/65 hover:bg-gray-100 absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <Button
+                    onClick={() => handleAddToFavourite(product.id)}
+                    className="bg-gray-100/65 hover:bg-gray-100 absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
                     <Heart className="w-6 h-6 text-red-500" />
                   </Button>
                 </div>

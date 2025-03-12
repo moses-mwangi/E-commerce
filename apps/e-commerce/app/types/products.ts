@@ -1,7 +1,4 @@
 export interface Product {
-  // image: any;
-  // rating: ReactI18NextChildren | Iterable<ReactI18NextChildren>;
-  // rating: number;
   id: number;
   name: string;
   category: string;

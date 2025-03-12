@@ -96,6 +96,7 @@ export const deleteProduct = createAsyncThunk(
 
 const initialState: ProductState = {
   products: [],
+  // favourites: [],
   selectedProduct: null,
   filteredProduct: [],
   searchProduct: [],
