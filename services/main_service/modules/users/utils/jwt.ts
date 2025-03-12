@@ -3,10 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const secretKey = String(process.env.JWT_SECRET_KEY);
+const secretKey = String(process.env.JWT_SECRET_KEY) || "your-refresh-secret";
 
-export const generateToken = (user: { id: number; email: string }) => {
-  const token = jwt.sign(user, secretKey, { expiresIn: "1h" });
+export const generateToken = (
+  user: { id: number; email: string },
+  expiresIn = "1h"
+) => {
+  const token = jwt.sign(user, secretKey, { expiresIn: expiresIn });
   return token;
 };
 

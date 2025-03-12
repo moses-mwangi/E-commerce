@@ -22,7 +22,7 @@ import { fetchProducts } from "@/redux/slices/productSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { addToCart, setCart } from "@/redux/slices/cartSlice";
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 import { Slider } from "@/components/ui/slider";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";

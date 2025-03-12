@@ -13,14 +13,19 @@ dotenv.config({ path: "./.env" });
 //////////////////////////////// updating Order and Order_item /////////////////
 
 // Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
-//   // Promise.all([User.sync({ alter: true })])
-//   .then(() => {
-//     console.log("✅ Order & OrderItem tables updated!");
-//     // console.log("✅ User tables updated!");
-//   })
-//   .catch((error) => {
-//     console.error("❌ Error syncing Order & OrderItem tables:", error);
-//   });
+// Promise.all([User.sync({ alter: true })])
+// Promise.all([
+//   Order.destroy({ where: {},, truncate: true }),
+//   OrderItem.destroy({ where: {} }),
+//   User.destroy({ where: {} }),
+// ])
+// .then(() => {
+//   console.log("✅ Order & OrderItem tables updated!");
+//   console.log("✅ User tables updated!");
+// })
+// .catch((error) => {
+//   console.error("❌ Error syncing Order & OrderItem tables:", error);
+// });
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +34,7 @@ const pg_connect = async () => {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
     // await sequelize.sync({ force: true });
+    // await sequelize.sync({ alter: true }); /////does not delete data
   } catch (err) {
     console.log("Unable to connect to database", err);
   }

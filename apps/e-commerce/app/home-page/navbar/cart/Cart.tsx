@@ -38,7 +38,7 @@
 // }
 "use client";
 
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 import { Button } from "@/components/ui/button";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ShoppingCartIcon } from "lucide-react";

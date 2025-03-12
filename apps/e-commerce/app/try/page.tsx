@@ -1,7 +1,8 @@
 import React from "react";
-import LoadingState from "../components/LoadingState";
+import LoadingState from "../components/loaders/LoadingState";
 
 export default function page() {
+  const name = "         Moses Mwangi";
   return (
     <div>
       <p>
@@ -11,7 +12,9 @@ export default function page() {
         minus eius!
       </p>
       {/* <LoadingSpinner /> */}
-      <LoadingState />
+      <p>{name}</p>
+      <p>{name.trim()}</p>
+      {/* <LoadingState /> */}
     </div>
   );
 }

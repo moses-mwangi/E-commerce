@@ -8,7 +8,7 @@ import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
 import { t } from "i18next";
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 export default function SignInBotton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ export default function SignInBotton() {
             className=" bg-orange-500 font-semibold hover:bg-orange-600 hover:text-slate-100 transition-all duration-200 px-7 py-2 rounded-full"
             onClick={() => {
               setIsLoading(true);
-              router.push("/reg/signin");
+              router.push("/registration/signin");
             }}
           >
             {t("sign_up")}

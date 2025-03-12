@@ -1,6 +1,6 @@
 "use client";
 
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

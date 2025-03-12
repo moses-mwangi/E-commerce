@@ -17,4 +17,10 @@ export interface UserState {
   isAuthenticated: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  passwordReset: {
+    requestStatus: "idle" | "loading" | "succeeded" | "failed";
+    validationStatus: "idle" | "loading" | "succeeded" | "failed";
+    resetStatus: "idle" | "loading" | "succeeded" | "failed";
+    error: string | null;
+  };
 }

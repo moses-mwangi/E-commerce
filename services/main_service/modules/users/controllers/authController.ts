@@ -1,52 +1,166 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { validationResult } from "express-validator";
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 import catchAsync from "../../../shared/utils/catchSync";
 import User from "../models/userMode";
 import { generateToken } from "../utils/jwt";
 import AppError from "../../../shared/utils/AppError";
+import { sendEmail } from "../utils/email";
+import { Op } from "sequelize";
 
 export const signInUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        status: "fail",
+        errors: errors.array().map((err) => ({
+          field: (err as any).param,
+          message: err.msg,
+        })),
+      });
     }
 
     const { email, name, password, tradeRole, telephone, country } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email: email.toLowerCase() }, { telephone }],
+        // emailVerified: true,
+      },
+    });
+
     if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
+      return next(
+        new AppError(
+          "Account already exists with this email or phone number",
+          409
+        )
+      );
     }
 
-    const newUser = await User.create({
-      email,
-      passwordHash: password,
-      name,
-      tradeRole,
-      telephone,
-      country,
-    });
-    const token = generateToken({ id: newUser.id, email: newUser.email });
+    if (password.length < 6) {
+      return next(
+        new AppError("Password must be at least 6 characters long", 400)
+      );
+    }
 
-    const cookieOption = {
-      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      // httpOnly: true,
+    // if (!user.emailVerified) {
+    //   return res.status(403).json({
+    //     status: "fail",
+    //     message: "Your email is not verified. Please check your email.",
+    //   });
+    // }
+
+    const newUser = await User.create({
+      email: email.toLowerCase(),
+      name: name.trim(),
+      passwordHash: password,
+      tradeRole: tradeRole?.trim(),
+      telephone: telephone?.trim(),
+      country: country?.trim(),
+      emailVerified: false,
+      lastLogin: new Date(),
+    });
+    // console.log(req.body.name);
+
+    const accessToken = generateToken({
+      id: newUser.id,
+      email: newUser.email,
+    });
+
+    const refreshToken = generateToken(
+      { id: newUser.id, email: newUser.email },
+      "90d"
+    );
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict" as const,
+      maxAge: 90 * 24 * 60 * 60 * 1000,
     };
 
-    res.cookie("jwt", token, cookieOption);
-    (req.session as any).userId = newUser.id;
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("jwt", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, {
+      ...cookieOptions,
+      path: "/api/auth/refresh",
+    });
 
-    res.status(200).json({
-      msg: "Token has being succesfully created",
-      token,
+    if (req.session) {
+      (req.session as any).userId = newUser.id;
+    }
+
+    try {
+      await sendEmail({
+        email: newUser.email,
+        subject: "Welcome! Verify your email",
+        html: `
+          <h1>Welcome to Hypermart Ecommerce!</h1>
+          <p>Please verify your email by clicking the button below:</p>
+          <a href="${process.env.FRONTEND_URL}/registration/verify-email?token=${accessToken}"
+             style="padding: 12px 24px; background: #4F46E5; color: white;
+                    text-decoration: none; border-radius: 6px;">
+            Verify Email
+          </a>
+        `,
+      });
+    } catch (error) {
+      console.error("Failed to send verification email:", error);
+    }
+
+    res.status(201).json({
+      status: "success",
+      message: "Account created successfully",
+
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        tradeRole: newUser.tradeRole,
+        country: newUser.country,
+        emailVerified: newUser.emailVerified,
+      },
+      token: accessToken,
       session: (req.session as any).userId,
     });
+
     (req as any).user = newUser;
+    (req as any).verifyToken = accessToken;
+  }
+);
+
+export const verifyEmail = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.params;
+    console.log("VERIFY:", (req as any).verifyToken);
+    try {
+      const decoded = jwt.verify(
+        token,
+        String(process.env.JWT_SECRET_KEY)
+      ) as JwtPayload;
+
+      const user = await User.findOne({ where: { id: decoded.id } });
+      console.log(user);
+      if (!user) {
+        return res.status(400).json({
+          status: "fail",
+          message: "User not found",
+        });
+      }
+
+      await user.update({ emailVerified: true });
+
+      ///// res.redirect(`${process.env.FRONTEND_URL}/email-verified`);
+      res.json({ msg: "succesfully" });
+    } catch (error) {
+      ////////// res.redirect(`${process.env.FRONTEND_URL}/email-verification-failed`);
+      res.json({ msg: "failed" });
+    }
   }
 );
 
@@ -63,6 +177,7 @@ export const loginUser = catchAsync(
     const user = await User.findOne({
       where: {
         email: email,
+        emailVerified: true,
       },
     });
 
@@ -75,9 +190,11 @@ export const loginUser = catchAsync(
     const token = generateToken({ id: user.id, email: user.email });
 
     const cookieOption = {
-      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      // expires: new Date(Date.now() + 2 * 60 * 1000),
-      // httpOnly: true,
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+      maxAge: 8 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "strict" as const,
     };
 
     res.cookie("jwt", token, cookieOption);
@@ -149,7 +266,6 @@ export const protectJwtUser = catchAsync(async function (
     String(process.env.JWT_SECRET_KEY)
   );
 
-  // const currentUser = await User.findById(decoded.id);
   const currentUser = await User.findOne({ where: { id: decoded.id } });
   if (!currentUser) {
     res
@@ -218,8 +334,8 @@ export const protect = catchAsync(async function (
   }
 });
 
-export const getMe = (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const getMe = catchAsync(
+  (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user;
 
     if (!user) {
@@ -227,60 +343,252 @@ export const getMe = (req: Request, res: Response, next: NextFunction) => {
     }
 
     res.status(200).json({ status: "success", user });
-  } catch (err) {
-    res.status(400).json({ status: "Fail", err });
-    console.log(err);
   }
-};
+);
 
 export const updatePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { currentPassword, newPassword } = req.body;
     const userId = (req as any).user.id;
 
+    const user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const isPasswordValid = await user.comparePassword(currentPassword);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        status: "error",
+        message: "Current password is incorrect",
+      });
+    }
+
+    // const cookieOption = {
+    //   expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    //   // httpOnly: true,
+    // };
+
+    const cookieOption = {
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+      maxAge: 8 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "strict" as const,
+    };
+
+    await user.update({ passwordHash: newPassword });
+
+    const token = generateToken({ id: user.id, email: user.email });
+    res.cookie("jwt", token, cookieOption);
+    (req.session as any).userId = user.id;
+
+    res.status(200).json({
+      status: "success",
+      message: "Password updated successfully",
+      token,
+    });
+  }
+);
+
+export const requestPasswordReset = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "There is no user with this email address",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    const passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    await user.update({
+      passwordResetToken,
+      passwordResetExpires,
+    });
+
+    const resetURL = `${process.env.FRONTEND_URL}/registration/reset-password?token=${resetToken}`;
+
     try {
-      const user = await User.findOne({ where: { id: userId } });
-      if (!user) {
-        return res.status(404).json({
-          status: "error",
-          message: "User not found",
-        });
-      }
-
-      // // Verify current password
-      const isPasswordValid = await user.comparePassword(currentPassword);
-
-      if (!isPasswordValid) {
-        return res.status(400).json({
-          status: "error",
-          message: "Current password is incorrect",
-        });
-      }
-
-      console.log(isPasswordValid);
-
-      const cookieOption = {
-        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        // httpOnly: true,
-      };
-
-      await user.update({ passwordHash: newPassword });
-
-      const token = generateToken({ id: user.id, email: user.email });
-      res.cookie("jwt", token, cookieOption);
-      (req.session as any).userId = user.id;
+      await sendEmail({
+        email: user.email,
+        subject: "Password Reset Request (valid for 10 minutes)",
+        html: `
+          <h1>Password Reset Request</h1>
+          <p>You requested a password reset. Click the button below to reset your password:</p>
+          <a href="${resetURL}" style="
+            display: inline-block;
+            background-color: #4F46E5;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 16px 0;
+          ">Reset Password</a>
+          <p>If you didn't request this, please ignore this email.</p>
+          <p>This link will expire in 10 minutes.</p>
+        `,
+      });
 
       res.status(200).json({
         status: "success",
-        message: "Password updated successfully",
-        token,
+        message: "Password reset link sent to email",
       });
-    } catch (error) {
-      console.error("Password update error:", error);
-      res.status(500).json({
+    } catch (err) {
+      await user.update({
+        passwordResetToken: null,
+        passwordResetExpires: null,
+      });
+
+      return res.status(500).json({
         status: "error",
-        message: "Error updating password",
+        message: "There was an error sending the email. Try again later.",
       });
+    }
+  }
+);
+
+export const validateResetToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.body;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      where: {
+        passwordResetToken: hashedToken,
+        passwordResetExpires: {
+          // ["$gt"]: new Date(),
+          [Op.gt]: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Token is invalid or has expired",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Token is valid",
+    });
+  }
+);
+
+export const resetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { token, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Passwords do not match",
+      });
+    }
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    console.log("HashedToken:", hashedToken);
+
+    const user = await User.findOne({
+      where: {
+        passwordResetToken: hashedToken,
+        passwordResetExpires: {
+          // ["$gt"]: new Date(),
+          [Op.gt]: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Token is invalid or has expired",
+      });
+    }
+
+    await user.update({
+      passwordHash: password,
+      passwordResetToken: null,
+      passwordResetExpires: null,
+    });
+
+    const newToken = generateToken({ id: user.id, email: user.email });
+
+    res.status(200).json({
+      status: "success",
+      message: "Password has been reset successfully",
+      token: newToken,
+    });
+  }
+);
+
+export const resendVerificationEmail = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const user = await User.findOne({ where: { email } });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.emailVerified) {
+        return res.status(400).json({ message: "Email already verified" });
+      }
+
+      // console.log(user);
+
+      const token = generateToken({ id: user.id, email: user.email });
+
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict" as const,
+        maxAge: 90 * 24 * 60 * 60 * 1000,
+      };
+
+      res.cookie("jwt", token, cookieOptions);
+
+      await sendEmail({
+        email: user.email,
+        subject: "Resend Email Verification",
+        html: `
+        <h1>Verify Your Email</h1>
+        <p>Click the link below to verify your email:</p>
+        <a href="${process.env.FRONTEND_URL}/registration/verify-email?token=${token}"
+           style="padding: 12px 24px; background: #4F46E5; color: white; 
+                  text-decoration: none; border-radius: 6px;">
+          Verify Email
+        </a>
+      `,
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Verification email sent successfully!" });
+    } catch (error) {
+      console.error("Error resending email:", error);
+      return res
+        .status(500)
+        .json({ message: "Failed to send verification email." });
     }
   }
 );

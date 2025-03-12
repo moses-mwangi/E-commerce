@@ -171,7 +171,7 @@ import {
   Settings2,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import LoadingState from "../LoadingState";
+import LoadingState from "../loaders/LoadingState";
 
 export default function UserProfileImage() {
   const [isLoading, setIsLoading] = useState(false);

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import dotenv from "dotenv";
 import { UserState } from "../../app/types/user";
 import Error, { ErrorProps } from "next/error";
+import { useRouter } from "next/navigation";
 
 dotenv.config();
 
@@ -23,18 +24,49 @@ export const registerUserAsync = createAsyncThunk(
   "user/register",
   async (data: { email: string; name: string; password: string }) => {
     try {
+      console.log(data);
       const response = await axios.post(`${API_URL}/auth/signup`, data);
 
       const token = response.data.token;
-      document.cookie = `token=${token}; path=/`;
+      // document.cookie = `token=${token}; path=/`;
+
+      toast.success("Email sent Succefully");
+      window.location.href = "/registration/email-verified-msg";
 
       return token;
     } catch (err) {
-      console.error("Error:", err);
+      toast.error("Account creation Failed");
       throw err;
     }
   }
 );
+
+export const verifyEmail = createAsyncThunk(
+  "user/verify-email",
+  async (token: string) => {
+    try {
+      // console.log(token);
+      const response = await axios.post(
+        `${API_URL}/auth/verify-email/${token}`
+      );
+
+      // const token = response.data.token;
+      document.cookie = `token=${token}; path=/`;
+      toast.success("Account created succefully");
+
+      // return response;
+      // window.location.href = "/registration/email-verified-msg";
+
+      return "";
+    } catch (err) {
+      console.error("Error:", err);
+      // window.location.href = "/registration/email-verified-msg";
+
+      throw err;
+    }
+  }
+);
+
 export const loginUserAsync = createAsyncThunk(
   "user/login",
   async (data: { email: string; password: string }) => {
@@ -116,7 +148,7 @@ export const getCurrentUser = createAsyncThunk(
         alert(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.location.href = "/reg/signin";
+        window.location.href = "/registration/signin";
       } else {
         // Handle other errors
         console.error("Error:", axiosError);
@@ -239,12 +271,74 @@ export const updateCurrentUser = createAsyncThunk(
   }
 );
 
+export const requestPasswordReset = createAsyncThunk(
+  "user/requestPasswordReset",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/request-reset`, {
+        email,
+      });
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(
+        error.response?.data || "Failed to send reset email"
+      );
+    }
+  }
+);
+
+export const validateResetToken = createAsyncThunk(
+  "user/validateResetToken",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/auth/validate-reset-token`,
+        {
+          token,
+        }
+      );
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+
+      return rejectWithValue(
+        error.response?.data || "Invalid or expired reset token"
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "user/resetPassword",
+  async (
+    data: { token: string; password: string; confirmPassword: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/reset-password`, data);
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue(
+        error.response?.data || "Failed to reset password"
+      );
+    }
+  }
+);
+
 const initialState: UserState = {
   users: [],
   currentUser: null,
   isAuthenticated: false,
   status: "idle",
   error: null,
+  passwordReset: {
+    requestStatus: "idle",
+    validationStatus: "idle",
+    resetStatus: "idle",
+    error: null,
+  },
 };
 
 const userSlice = createSlice({
@@ -257,7 +351,16 @@ const userSlice = createSlice({
       state.currentUser = null;
       state.isAuthenticated = false;
     },
+    clearPasswordResetStatus: (state) => {
+      state.passwordReset = {
+        requestStatus: "idle",
+        validationStatus: "idle",
+        resetStatus: "idle",
+        error: null,
+      };
+    },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -271,12 +374,30 @@ const userSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch users";
       })
+
       .addCase(registerUserAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
+      })
+      .addCase(registerUserAsync.rejected, (state, action) => {
+        state.status = "failed";
       })
       .addCase(registerUserAsync.pending, (state, action) => {
         state.status = "loading";
       })
+
+      .addCase(verifyEmail.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(verifyEmail.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to verify email";
+      })
+
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.isAuthenticated = true;
@@ -310,9 +431,49 @@ const userSlice = createSlice({
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user";
+      })
+      .addCase(requestPasswordReset.pending, (state) => {
+        state.passwordReset.requestStatus = "loading";
+        state.passwordReset.error = null;
+      })
+      .addCase(requestPasswordReset.fulfilled, (state) => {
+        state.passwordReset.requestStatus = "succeeded";
+        state.passwordReset.error = null;
+      })
+      .addCase(requestPasswordReset.rejected, (state, action) => {
+        state.passwordReset.requestStatus = "failed";
+        state.passwordReset.error = action.payload as string;
+      })
+
+      // Validate Reset Token
+      .addCase(validateResetToken.pending, (state) => {
+        state.passwordReset.validationStatus = "loading";
+        state.passwordReset.error = null;
+      })
+      .addCase(validateResetToken.fulfilled, (state) => {
+        state.passwordReset.validationStatus = "succeeded";
+        state.passwordReset.error = null;
+      })
+      .addCase(validateResetToken.rejected, (state, action) => {
+        state.passwordReset.validationStatus = "failed";
+        state.passwordReset.error = action.payload as string;
+      })
+
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.passwordReset.resetStatus = "loading";
+        state.passwordReset.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.passwordReset.resetStatus = "succeeded";
+        state.passwordReset.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.passwordReset.resetStatus = "failed";
+        state.passwordReset.error = action.payload as string;
       });
   },
 });
 
-export const { logoutUser } = userSlice.actions;
+export const { logoutUser, clearPasswordResetStatus } = userSlice.actions;
 export default userSlice.reducer;

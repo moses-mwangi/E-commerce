@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PaymentModal from "./PaymentModal";
 import { useRouter } from "next/navigation";
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 import Link from "next/link";
 import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
 

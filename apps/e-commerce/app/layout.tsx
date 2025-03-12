@@ -7,10 +7,10 @@ import "./globals.css";
 import { store } from "@/redux/store";
 import { Toaster } from "react-hot-toast";
 import dynamic from "next/dynamic";
-import ErrorBoundary from "./components/ErrorBoundary";
-import PageLoadingIndicator from "./components/PageLoadingIndicator";
+import ErrorBoundary from "./components/errorBoundaries/ErrorBoundary";
+import PageLoadingIndicator from "./components/loaders/PageLoadingIndicator";
 import { Suspense } from "react";
-import LoadingState from "./components/LoadingState";
+import LoadingState from "./components/loaders/LoadingState";
 
 import "nprogress/nprogress.css";
 

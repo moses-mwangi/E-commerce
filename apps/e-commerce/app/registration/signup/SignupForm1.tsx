@@ -25,10 +25,14 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { userSchema } from "@/utils/userSchema";
 import { countries, phoneRegexByCountry } from "@/utils/services";
 import { formToJSON } from "axios";
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import Link from "next/link";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
   const [selectedCountry, setSelectedCountry] = useState(countries[0].value);
@@ -82,16 +86,17 @@ export default function SignupForm() {
 
       if (!uniqueUser) {
         dispatch(registerUserAsync(formData));
-        reset();
-        router.push("/");
-        toast.success("Account created succefully");
+
+        // reset();
       } else {
         toast.error("Failed to create:Try again");
+        setIsLoading(false);
       }
     } catch (err) {
-      console.error(err);
-      throw err;
+      // console.error(err);
+      setIsLoading(false);
       toast.error("Failed to create:Try again");
+      throw err;
     }
   };
 
@@ -104,28 +109,25 @@ export default function SignupForm() {
     }
   };
 
-  const loader = (
-    <div
-      className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-      role="status"
-    >
-      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-        Loading...
-      </span>
-    </div>
-  );
-
   return (
-    <>
+    <div>
+      <div className="fixed top-4 left-4">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          onClick={() => router.push("/")}
+        >
+          <ArrowLeft size={18} /> Back to Home
+        </Button>
+      </div>
       {isLoading && <LoadingState />}
+
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">
-          Create Your Account
-        </h1>
         <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-800 text-center mb-4">
-            Welcome to Hypermat - AI-Powered Shopping
-          </h2>
+          <div className="text-center pb-3 pt-1">
+            <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-gray-600 mt-2">Sign up to get started</p>
+          </div>
           <form className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
             <div>
               <Label>Country / Region</Label>
@@ -145,73 +147,132 @@ export default function SignupForm() {
                 </SelectContent>
               </Select>
             </div>
+            {/* <div className="flex gap-3"> */}
             <div>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                {...register("email")}
-                className="border-gray-300 focus-visible:ring-orange-400"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">
-                  {errors.email.message?.toString()}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label>Password</Label>
-              <Input
-                className=" focus-visible:ring-orange-400"
-                type="password"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password?.message?.toString()}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label>Confirm Password</Label>
-              <Input
-                className=" focus-visible:ring-orange-400"
-                type="password"
-                {...register("passwordConfirm", {
-                  validate: (val: string) => {
-                    if (watch("password") != val) {
-                      return "Your passwords do no match";
-                    }
-                  },
-                })}
-              />
-              {errors.passwordConfirm && (
-                <p className="text-red-500 text-sm">
-                  {errors.passwordConfirm.message?.toString()}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label>Full Name</Label>
-              <Input
-                type="text"
-                {...register("name")}
-                className="border-gray-300 focus-visible:ring-orange-400"
-              />
+              <div className="relative">
+                <User
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  {...register("name")}
+                  className={`focus-visible:ring-orange-400 pl-10 ${
+                    errors.name ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+              </div>
               {errors.name && (
                 <p className="text-red-500 text-sm">
                   {errors.name.message?.toString()}
                 </p>
               )}
             </div>
+            <div>
+              <div className="relative">
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  {...register("email")}
+                  className={`pl-10 border-gray-300 focus-visible:ring-orange-400 ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
+            </div>
+            {/* </div> */}
+            {/* <div className="flex gap-3"> */}
+            <div>
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  {...register("password")}
+                  className={`pl-10 pr-10 focus-visible:ring-orange-400 ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password?.message?.toString()}
+                </p>
+              )}
+            </div>
 
             <div>
-              <Label>Telephone Number</Label>
+              <div className=" relative">
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  className="pl-10 pr-10 focus-visible:ring-orange-400"
+                  placeholder="Confirm Password"
+                  type={showPassword ? "text" : "password"}
+                  {...register("passwordConfirm", {
+                    validate: (val: string) => {
+                      if (watch("password") != val) {
+                        return "Your passwords do no match";
+                      }
+                    },
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {errors.passwordConfirm && (
+                <p className="text-red-500 text-sm">
+                  {errors.passwordConfirm.message?.toString()}
+                </p>
+              )}
+            </div>
+            {/* </div> */}
 
+            <div>
               <div className="flex items-center relative gap-2 rounded-md border border-input bg-transparent pl-3 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
                 <div className="text-gray-700 text-sm text-nowrap flex gap-1">{`${flag} +${countryCode}`}</div>
                 <Input
                   type="text"
+                  placeholder="Phone Number"
                   className="focus-visible:ring-0 focus-visible:ring-ring border-0 shadow-none"
                   {...register("telephone")}
                 />
@@ -265,22 +326,22 @@ export default function SignupForm() {
               className="w-full bg-orange-500 disabled:cursor-not-allowed my-7 hover:bg-orange-600 text-white"
               disabled={status === "loading"}
             >
-              {status === "loading" ? loader : "Sign Up"}
+              {status === "loading" ? <ButtonLoader /> : "Sign Up"}
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Already have an account?
-            <button
-              className="text-blue-600"
-              onClick={() => {
-                setIsLoading(true);
-                router.push("/reg/signin");
-              }}
-            >
-              Sign In
-            </button>
-          </p>
-          <div className="mt-6 flex items-center gap-2 text-center text-sm text-gray-600">
+
+          <div className="text-center mt-4 text-sm">
+            <p className=" text-gray-600">
+              Already have an account ?
+              <Link
+                href="/registration/signin"
+                className="text-blue-600 pl-1 hover:underline font-medium"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+          <div className="mt-4 flex items-center gap-2 text-center text-sm text-gray-600">
             <div className="h-[2px] w-full bg-gray-200" />
             <p>or</p>
             <div className="h-[2px] w-full bg-gray-200" />
@@ -304,6 +365,6 @@ export default function SignupForm() {
           </div>
         </Card>
       </div>
-    </>
+    </div>
   );
 }

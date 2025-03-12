@@ -18,7 +18,7 @@ import {
   searchProducts,
   filterProducts,
 } from "@/redux/slices/productSlice";
-import LoadingState from "@/app/components/LoadingState";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 const categories = [
   {

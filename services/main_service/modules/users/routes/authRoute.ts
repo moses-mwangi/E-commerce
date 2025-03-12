@@ -8,6 +8,11 @@ import {
   protectJwtUser,
   updatePassword,
   deleteCurrentUser,
+  requestPasswordReset,
+  validateResetToken,
+  resetPassword,
+  verifyEmail,
+  resendVerificationEmail,
 } from "../controllers/authController";
 import passport from "../../../shared/config/passport";
 import { generateToken } from "../utils/jwt";
@@ -19,9 +24,16 @@ router.route("/login").post(loginUser);
 router.route("/deleteUser/:id").delete(deleteCurrentUser);
 
 router.route("/updatePassword").patch(protect, updatePassword);
+//resendVerificationEmail
+router.route("/request-reset").post(requestPasswordReset);
+router.route("/validate-reset-token").post(validateResetToken);
+router.route("/reset-password").post(resetPassword);
+router.route("/verify-email/:token").post(verifyEmail);
+router.route("/resend-verification").post(resendVerificationEmail);
+
 router.get("/mej", protectJwtUser, getMe);
 router.get("/me", protect, getMe);
-
+///requestPasswordReset, validate-reset-token, resetPassword
 router.route("/google").get(
   passport.authenticate("google", {
     scope: ["email", "profile"],

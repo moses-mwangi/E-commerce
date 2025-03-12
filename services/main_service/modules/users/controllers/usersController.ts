@@ -16,9 +16,11 @@ const validUserSignInput = [
 
 export const getAllUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, name, passwordHash } = req.body;
+    const users = await User.findAll({ where: { emailVerified: true } });
+    if (!users) {
+      return next(new AppError("No user found", 404));
+    }
 
-    const users = await User.findAll();
     res.status(200).json({
       length: users.length,
       msg: "users succesfully fetched",
@@ -33,7 +35,7 @@ export const updateUser = catchAsync(
     const { email, passwordHash, ...updates } = req.body;
 
     if (email) {
-      return next(new AppError("You can't update Email", 400)); // Use 400 for bad request
+      return next(new AppError("You can't update Email", 400));
     }
 
     if (Object.keys(updates).length === 0) {
@@ -46,10 +48,8 @@ export const updateUser = catchAsync(
       return next(new AppError("No user with that Id", 404));
     }
 
-    // Update user with allowed fields
     const updatedUser = await user.update(updates);
 
-    // If you really need a new token, ensure it's used correctly
     const token = generateToken({
       id: updatedUser.id,
       email: updatedUser.email,
@@ -65,10 +65,7 @@ export const updateUser = catchAsync(
     res.status(200).json({
       message: "User successfully updated",
       updatedUser,
-      token, // Only return token if necessary
+      token,
     });
   }
 );
-
-///// $2a$10$kCcEz7uy3v5OU0qsqQisQ./NDYgWlAzggHW2vqMgXUZ/wj1FuwhaW
-///// $2a$10$IEl6vq0/HA.uO0qM44MoT..q1A/PhTr5KzRnJwPaiKfwUK9HA75aq
