@@ -95,11 +95,11 @@ export const signInUser = catchAsync(
       (req.session as any).userId = newUser.id;
     }
 
-    try {
-      await sendEmail({
-        email: newUser.email,
-        subject: "Welcome! Verify your email",
-        html: `
+    // try {
+    await sendEmail({
+      email: newUser.email,
+      subject: "Welcome! Verify your email",
+      html: `
           <h1>Welcome to Hypermart Ecommerce!</h1>
           <p>Please verify your email by clicking the button below:</p>
           <a href="${process.env.FRONTEND_URL}/registration/verify-email?token=${accessToken}"
@@ -108,10 +108,11 @@ export const signInUser = catchAsync(
             Verify Email
           </a>
         `,
-      });
-    } catch (error) {
-      console.error("Failed to send verification email:", error);
-    }
+    });
+    // } catch (error) {
+    //   console.error("Failed to send verification email:", error);
+    //   return next(new AppError("Failed to send verification email", 500));
+    // }
 
     res.status(201).json({
       status: "success",
@@ -137,30 +138,25 @@ export const signInUser = catchAsync(
 export const verifyEmail = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { token } = req.params;
-    console.log("VERIFY:", (req as any).verifyToken);
-    try {
-      const decoded = jwt.verify(
-        token,
-        String(process.env.JWT_SECRET_KEY)
-      ) as JwtPayload;
 
-      const user = await User.findOne({ where: { id: decoded.id } });
-      console.log(user);
-      if (!user) {
-        return res.status(400).json({
-          status: "fail",
-          message: "User not found",
-        });
-      }
+    // try {
+    const decoded = jwt.verify(
+      token,
+      String(process.env.JWT_SECRET_KEY)
+    ) as JwtPayload;
 
-      await user.update({ emailVerified: true });
+    const user = await User.findOne({ where: { id: decoded.id } });
 
-      ///// res.redirect(`${process.env.FRONTEND_URL}/email-verified`);
-      res.json({ msg: "succesfully" });
-    } catch (error) {
-      ////////// res.redirect(`${process.env.FRONTEND_URL}/email-verification-failed`);
-      res.json({ msg: "failed" });
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User not found",
+      });
     }
+
+    await user.update({ emailVerified: true });
+
+    return res.json({ msg: "succesfully" });
   }
 );
 

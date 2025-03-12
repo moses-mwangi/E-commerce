@@ -8,13 +8,14 @@ import { useEffect, useState } from "react";
 import { verifyEmail } from "@/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 
 export default function EmailVerifiedPage() {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-  const { searchParams } = new URL(window.location.href);
+  // const { searchParams } = new URL(window.location.href);
+  const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
   const { error, isAuthenticated } = useSelector(
