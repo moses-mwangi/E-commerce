@@ -118,3 +118,109 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 };
 
 export default Sidebar;
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import Link from "next/link";
+// import { usePathname, useRouter } from "next/navigation";
+// import { cn } from "@/lib/utils";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { SidebarItemProps, sidebarItems } from "./sidebar_Type_Item";
+// import { useDispatch, useSelector } from "react-redux";
+// import { AppDispatch, RootState } from "@/redux/store";
+// import { getCurrentUser } from "@/redux/slices/userSlice";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// const Sidebar = () => {
+//   const [expanded, setExpanded] = useState(true);
+//   const pathname = usePathname();
+//   const { currentUser } = useSelector((state: RootState) => state.user);
+//   const dispatch: AppDispatch = useDispatch();
+
+//   useEffect(() => {
+//     dispatch(getCurrentUser());
+//   }, [dispatch]);
+
+//   return (
+//     <div className="relative">
+//       <aside
+//         className={cn(
+//           "h-screen bg-white shadow-md border-r transition-all duration-300 ease-in-out flex flex-col",
+//           expanded ? "w-[260px]" : "w-20"
+//         )}
+//       >
+//         {/* User Info */}
+//         <div className="p-4 border-b flex items-center space-x-4">
+//           <Avatar className="h-10 w-10">
+//             <AvatarImage src="/admin-avatar.png" alt="Admin" />
+//             <AvatarFallback className="bg-orange-100 text-orange-600">
+//               {currentUser?.name?.[0].toUpperCase()}
+//             </AvatarFallback>
+//           </Avatar>
+//           {expanded && (
+//             <div className="flex flex-col">
+//               <span className="text-sm font-semibold">{currentUser?.name}</span>
+//               <span className="text-xs text-gray-500">
+//                 {currentUser?.email}
+//               </span>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* Navigation Links */}
+//         <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+//           {sidebarItems.map((item) => (
+//             <SidebarItem
+//               key={item.link}
+//               icon={item.icon}
+//               text={item.text}
+//               link={item.link}
+//               expanded={expanded}
+//               active={pathname === item.link}
+//             />
+//           ))}
+//         </nav>
+
+//         {/* Collapse Button */}
+//         <button
+//           onClick={() => setExpanded(!expanded)}
+//           className="absolute -right-4 top-5 bg-white shadow-sm border border-gray-200 text-orange-600 hover:text-orange-500 rounded-full p-1.5 transition hover:bg-gray-100"
+//         >
+//           {expanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+//         </button>
+
+//         {/* Footer */}
+//         <div className="p-4 border-t text-xs text-gray-500">
+//           {expanded ? "v1.0.0 • © 2024 E-Commerce" : "v1.0.0"}
+//         </div>
+//       </aside>
+//     </div>
+//   );
+// };
+
+// const SidebarItem: React.FC<SidebarItemProps> = ({
+//   icon,
+//   text,
+//   link,
+//   expanded,
+//   active,
+// }) => {
+//   const { push } = useRouter();
+
+//   return (
+//     <Link
+//       href={`/admin${link}`}
+//       className={cn(
+//         "flex items-center cursor-pointer space-x-3 px-4 py-3 rounded-lg transition-all",
+//         active
+//           ? "bg-orange-100 text-orange-600"
+//           : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+//       )}
+//     >
+//       <div className={cn("text-xl", !expanded && "mx-auto")}>{icon}</div>
+//       {expanded && <span className="text-sm font-medium">{text}</span>}
+//     </Link>
+//   );
+// };
+
+// export default Sidebar;

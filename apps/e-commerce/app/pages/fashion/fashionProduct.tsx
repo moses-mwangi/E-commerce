@@ -130,7 +130,12 @@ export default function CategoryProductPage() {
         <div className="sticky top-0 z-10 bg-white rounded-lg my-4 dark:bg-gray-800 shadow-md p-4">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+              <h1
+                onClick={() => {
+                  console.log(products);
+                }}
+                className="text-3xl font-bold text-gray-800 dark:text-gray-200"
+              >
                 Fashion Products
               </h1>
 

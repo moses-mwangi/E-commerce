@@ -14,6 +14,7 @@ import {
   EyeOff,
   AlertCircle,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -23,12 +24,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { loginUser } from "@/redux/slices/userSlice copy";
+import ButtonLoader from "../components/loaders/ButtonLoader";
 
 export default function AdminEntryPage() {
   const { users, currentUser } = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch();
 
-  const router = useRouter();
+  const { push, back } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -102,7 +104,7 @@ export default function AdminEntryPage() {
           icon: "👋",
           duration: 4000,
         });
-        router.push("/admin/dashboard");
+        push("/admin/dashboard");
       } else {
         toast.error("Invalid credentials", {
           icon: "🚫",
@@ -131,14 +133,23 @@ export default function AdminEntryPage() {
       }));
     }
   };
-
+  //// bg-gradient-to-b from-orange-100 to-orange-300
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-4"
+      className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-200 flex items-center justify-center p-4"
     >
+      <div className="fixed top-6 left-6">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          onClick={() => back()}
+        >
+          <ArrowLeft size={18} /> Back to Home
+        </Button>
+      </div>
       <Card className="w-full max-w-md p-8 space-y-8 shadow-lg">
         <motion.div
           initial={{ scale: 0.95 }}
@@ -146,7 +157,7 @@ export default function AdminEntryPage() {
           transition={{ duration: 0.3 }}
           className="text-center space-y-2"
         >
-          <div className="flex justify-center mb-8">
+          {/* <div className="flex justify-center mb-8">
             <div className="relative w-20 h-20">
               <Image
                 src="/logo.png"
@@ -156,7 +167,7 @@ export default function AdminEntryPage() {
                 priority
               />
             </div>
-          </div>
+          </div> */}
           <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
           <p className="text-gray-600">
             Sign in to access your admin dashboard
@@ -251,13 +262,12 @@ export default function AdminEntryPage() {
 
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/90 transition-colors"
+            className="w-full bg-orange-500 hover:bg-orange-500/90 transition-colors"
             disabled={isLoading}
           >
-            {isLoading ? (
+            {isLoading === true ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Signing in...
+                <ButtonLoader />
               </>
             ) : (
               <>
@@ -270,7 +280,7 @@ export default function AdminEntryPage() {
 
         <div className="pt-4 border-t text-center">
           <p className="text-sm text-gray-600">
-            Having trouble logging in?{" "}
+            Having trouble logging in?
             <a
               href="#"
               className="text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary/50 rounded"
@@ -280,7 +290,7 @@ export default function AdminEntryPage() {
           </p>
         </div>
 
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_ENV === "development" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -295,7 +305,7 @@ export default function AdminEntryPage() {
               Password: admin123
             </p>
           </motion.div>
-        )}
+        )} */}
       </Card>
     </motion.div>
   );

@@ -25,12 +25,6 @@ function OrdersPage() {
     dispatch(fetchOrders());
   }, [dispatch]);
 
-  // const getDate = (date: string | number | Date) => {
-  //   const orderDate = new Date(date).toLocaleString();
-
-  //   return orderDate;
-  // };
-
   const getDate = (date: string) => {
     const dates = new Date(date).toLocaleDateString("en-US", {
       year: "numeric",

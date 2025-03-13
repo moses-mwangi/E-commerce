@@ -19,20 +19,6 @@ export const fetchProducts = createAsyncThunk("products/fetchAll", async () => {
   }
 });
 
-// export const fetchProducts = createAsyncThunk(
-//   "products/fetchAll",
-//   async ({ page, pageSize }: { page: number; pageSize: number }) => {
-//     try {
-//       const res = await axios.get(`${API_URL}/product?page=${page}&limit=${pageSize}`);
-//       return { products: res.data.products, totalPages: res.data.totalPages };
-//     } catch (err) {
-//       console.error(err);
-//       throw new Error("Failed to fetch products");
-//     }
-//   }
-// );
-
-// Fetch a single product
 export const fetchProductById = createAsyncThunk(
   "products/fetchById",
   async (id: number) => {
@@ -60,22 +46,57 @@ export const addProduct = createAsyncThunk(
   }
 );
 
-// Update an existing product
 export const updateProduct = createAsyncThunk(
-  "products/update",
-  async ({
-    id,
-    updatedData,
-  }: {
-    id: number;
-    updatedData: Partial<Product>;
-  }) => {
+  "product/update",
+  async (
+    {
+      id,
+      formData,
+      images,
+    }: {
+      id: number;
+      formData: FormData;
+      images: File[];
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await axios.put(`${API_URL}/product/${id}`, updatedData);
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      throw new Error("Failed to update product");
+      // Create form data for API
+      const form = new FormData();
+
+      // Append all product data
+      // Object.keys(formData).forEach((key) => {
+      //   if (key === "specifications") {
+      //     form.append(key, JSON.stringify(formData[key]));
+      //   } else if (key !== "images" && key !== "newImages") {
+      //     form.append(key, formData[key]);
+      //   }
+      // });
+
+      // Append existing images
+      // if (formData.images) {
+      //   form.append("existingImages", JSON.stringify(formData.images));
+      // }
+
+      // Append new images
+      images.forEach((file) => {
+        form.append("images", file);
+      });
+
+      const response = await axios.patch(`${API_URL}/products/${id}`, form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      // if (error instanceof AxiosError) {
+      //   return rejectWithValue(
+      //     error.response?.data?.message || "Failed to update product"
+      //   );
+      // }
+      return rejectWithValue("Failed to update product");
     }
   }
 );

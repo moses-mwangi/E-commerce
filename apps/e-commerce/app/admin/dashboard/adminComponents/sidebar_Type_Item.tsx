@@ -10,8 +10,6 @@ import {
   ShoppingCart,
   Layers,
   Star,
-  ChevronLeft,
-  ChevronRight,
   Bell,
   Tag,
   Truck,
