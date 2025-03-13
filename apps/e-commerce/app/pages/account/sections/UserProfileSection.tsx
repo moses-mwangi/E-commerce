@@ -61,6 +61,7 @@ export default function UserProfileSection() {
           <div className="space-y-2">
             <Label htmlFor="firstName">First Name</Label>
             <Input
+              className=" focus:ring-orange-500 focus-visible:ring-orange-500"
               id="firstName"
               defaultValue={currentUser?.name.split(" ")[0]}
               placeholder={currentUser?.name.split(" ")[0]}

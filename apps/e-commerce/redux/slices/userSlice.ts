@@ -413,7 +413,7 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      /////////////
+
       .addCase(updatePassword.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.isAuthenticated = true;
