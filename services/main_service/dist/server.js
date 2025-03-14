@@ -7,7 +7,9 @@ const app_1 = __importDefault(require("./app"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const pg_database_1 = __importDefault(require("./shared/config/pg_database"));
 const associations_1 = __importDefault(require("./modules/order/models/associations"));
+const associations_2 = __importDefault(require("./modules/product/models/associations"));
 (0, associations_1.default)();
+(0, associations_2.default)();
 dotenv_1.default.config({ path: "./.env" });
 //////////////////////////////// updating Order and Order_item /////////////////
 // Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])

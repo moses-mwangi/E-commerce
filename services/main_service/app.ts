@@ -9,6 +9,7 @@ import { authRouter, userRouter } from "./modules/users";
 import { orderRouter } from "./modules/order";
 import { stripeRouter, paypalRouter, webhookRouter } from "./modules/payments";
 import { productRouter } from "./modules/product";
+import { categoryRouter } from "./modules/product";
 import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
 
 const app = express();
@@ -74,6 +75,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 
 app.use("/api/product", productRouter);
+app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRouter);
 
 app.use("/api/payment", paypalRouter);

@@ -5,8 +5,10 @@ import setupAssociations from "./modules/order/models/associations";
 import Order from "./modules/order/models/ordersModel";
 import OrderItem from "./modules/order/models/itemOrder";
 import User from "./modules/users/models/userMode";
+import categoryAssociations from "./modules/product/models/associations";
 
 setupAssociations();
+categoryAssociations();
 
 dotenv.config({ path: "./.env" });
 

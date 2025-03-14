@@ -291,7 +291,16 @@ const categories = [
     itemCount: 1800,
     trending: true,
     featured: false,
-    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"],
+    subcategories: [
+      "Smartphones",
+      "Laptops",
+      "Audio",
+      "Cameras",
+      "Smartphoness",
+      "Laptopss",
+      "Audios",
+      "Camerass",
+    ],
   },
   {
     name: "Beauty",
@@ -299,6 +308,7 @@ const categories = [
     color: "from-purple-500 to-pink-500",
     description: "Cosmetics and skincare",
     itemCount: 1200,
+    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"],
   },
   {
     name: "Kitchen",
@@ -306,6 +316,7 @@ const categories = [
     color: "from-amber-500 to-orange-500",
     description: "Cookware and appliances",
     itemCount: 950,
+    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"],
   },
   {
     name: "Fitness",
@@ -313,6 +324,7 @@ const categories = [
     color: "from-green-500 to-emerald-500",
     description: "Exercise and wellness",
     itemCount: 800,
+    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"],
   },
   {
     name: "Gaming",
@@ -320,6 +332,7 @@ const categories = [
     color: "from-violet-500 to-purple-500",
     description: "Games and accessories",
     itemCount: 1500,
+    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"],
   },
 ];
 
@@ -344,7 +357,7 @@ export default function ProductCategories() {
 
   return (
     <section className="py-16 bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto rounded-lg px-4 py-6">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -424,7 +437,7 @@ export default function ProductCategories() {
                 exit={{ opacity: 0, y: -20 }}
                 className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
               >
-                {filteredCategories.map((category) => (
+                {filteredCategories?.map((category) => (
                   <motion.div
                     key={category.name}
                     whileHover={{ scale: 1.05 }}
@@ -441,13 +454,13 @@ export default function ProductCategories() {
                       />
 
                       <div className="relative space-y-4">
-                        <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm p-2">
+                        <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm">
                           <div className="relative w-full h-full">
                             <Image
                               src={category.icon}
                               alt={category.name}
                               fill
-                              className="object-contain p-2"
+                              className=" w-full h-full rounded-full"
                             />
                           </div>
                         </div>
@@ -471,13 +484,13 @@ export default function ProductCategories() {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 10 }}
-                              className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex flex-col justify-center"
+                              className="absolute inset-0 bg-white/95 custom-scroll backdrop-blur-sm rounded-xl p-4 flex flex-col justify-center"
                             >
                               <div className="space-y-2">
-                                {category.subcategories.map((sub) => (
+                                {category?.subcategories?.map((sub) => (
                                   <div
                                     key={sub}
-                                    className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
+                                    className="flex text-sm items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       router.push(
