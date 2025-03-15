@@ -11,14 +11,14 @@ import {
   SlArrowRight,
   SlArrowUp,
 } from "react-icons/sl";
-import { GrNext, GrPrevious } from "react-icons/gr";
 
 interface Image {
   images: string[] | undefined;
   setShowImage: React.Dispatch<React.SetStateAction<number>>;
+  showImage: number;
 }
 
-export default function ImageScrol({ images, setShowImage }: Image) {
+export default function ImageScrol({ images, setShowImage, showImage }: Image) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesPerPage, setImagesPerPage] = useState(5);
 
@@ -53,13 +53,18 @@ export default function ImageScrol({ images, setShowImage }: Image) {
         <div className=" flex gap-3">
           {images?.slice(currentIndex, imagesPerPage).map((image, idx) => (
             <Image
-              onMouseEnter={() => {
+              // onMouseEnter={() => {
+              //   setShowImage(idx);
+              // }}
+              // onMouseLeave={() => {
+              //   setShowImage(1);
+              // }}
+              onClick={() => {
                 setShowImage(idx);
               }}
-              onMouseLeave={() => {
-                setShowImage(1);
-              }}
-              className=" rounded-lg cursor-pointer w-24 h-20"
+              className={`${
+                showImage === idx ? "ring-2 ring-orange-500" : ""
+              } rounded-lg cursor-pointer w-24 h-20`}
               key={idx}
               src={image}
               alt="nnnn"

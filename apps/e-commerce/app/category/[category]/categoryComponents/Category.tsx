@@ -1,12 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
 
-import { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Star,
-  Filter,
   ShoppingCart,
   Search,
   Grid,
@@ -15,21 +13,12 @@ import {
   Eye,
   Sliders,
   Heart,
-  ChevronRight,
+  ArrowRight,
 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProducts } from "@/redux/slices/productSlice";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { addToCart, setCart } from "@/redux/slices/cartSlice";
-import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
-import { Slider } from "@/components/ui/slider";
-import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "framer-motion";
-import { fetchCategories } from "@/redux/slices/categorySlice";
 import Link from "next/link";
 import {
   Select,
@@ -39,9 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useSubCategoryContex from "@/hooks/useSubCategoryContex";
+import useCategoryContex from "@/hooks/useCategoryContex";
 
-export default function SubCategory() {
+export default function Category() {
   const {
     isLoading,
     gridView,
@@ -59,42 +48,51 @@ export default function SubCategory() {
     capitalizeWords,
     handleAddToCart,
     handleAddToFavourite,
-    decodedCategory,
     filteredProducts,
     handleRoute,
-    decodedSub,
-  } = useSubCategoryContex();
+    categoryData,
+  } = useCategoryContex();
 
   return (
     <>
       {isLoading && <LoadingState />}
-      <div className="px-6 containesr pb-16 bg-gray-50 dark:bg-gray-900 min-h-screen">
-        <div className="mx-auto px-">
-          <div className="flex items-center py-4 text-sm">
+
+      <div className="bg-gray-50 px-6 rounded-xl container pt-6  pb-16 dark:bg-gray-900 min-h-screen">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold mb-4">
+              Browse {capitalizeWords(String(category))} by Category
+            </h2>
             <Link
               href="/category"
-              className="text-gray-500  hover:underline hover:text-blue-500"
+              className="text-gray-900 px-2 py-1 bg-gray-200 rounded-md  hover:underline hover:text-blue-500"
             >
-              Categories
+              Back to category
             </Link>
-            <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
-            <Link
-              href={`/category/${category}`}
-              className="text-gray-500 hover:underline hover:text-blue-500 capitalize"
-            >
-              {decodedCategory}
-            </Link>
-            <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
-            <span className=" text-gray-800 capitalize">{decodedSub}</span>
           </div>
-        </div>
-        <div className=" grid gap-2 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-            {capitalizeWords(decodedSub)}
-          </h1>
-          <p className="text-gray-600">
-            {subFilter?.description.substring(0, 185)}....
-          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {categoryData?.subcategories.map((sub) => (
+              <Link
+                key={sub.name}
+                href={`/category/${category}/${sub.name.toLowerCase()}`}
+                className="group"
+              >
+                <div className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium text-gray-900 group-hover:text-blue-600">
+                        {sub.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {sub.itemCount} products
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
         <div className="sticky top-0 z-10 bg-white rounded-lg my-4 dark:bg-gray-800 shadow-md p-4">
           <div className="max-w-7xl mx-auto">

@@ -26,6 +26,7 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../home-page/navbar/Navbar";
 import Footer from "../home-page/footer/Footer";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 
 const trsy = {
   fashion: {
@@ -143,6 +144,15 @@ const categories = [
   },
 ];
 
+const defaultIcons: { [key: string]: any } = {
+  Fashion: fash_1,
+  Electronics: electronics,
+  Kitchen: kitchen,
+  Beauty: beauty,
+  Fitness: fitness,
+  Gaming: gaming,
+};
+
 export default function ProductCategories() {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
@@ -151,8 +161,11 @@ export default function ProductCategories() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "featured">("grid");
 
+  const { categories } = useSelector((state: RootState) => state.category);
+
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchCategories());
   }, [dispatch]);
 
   const filteredCategories = categories.filter((category) =>
@@ -218,7 +231,7 @@ export default function ProductCategories() {
               >
                 {trendingCategories.map((category) => (
                   <motion.div
-                    key={`trending-${category.name}`}
+                    key={`trending-${category.id}`}
                     whileHover={{ scale: 1.05 }}
                     className="flex-shrink-0"
                   >
@@ -249,7 +262,7 @@ export default function ProductCategories() {
                 >
                   {filteredCategories?.map((category) => (
                     <motion.div
-                      key={category.name}
+                      key={category.id}
                       whileHover={{ scale: 1.05 }}
                       className="group cursor-pointer relative"
                       onMouseEnter={() => setActiveCategory(category.name)}
@@ -267,7 +280,11 @@ export default function ProductCategories() {
                           <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm">
                             <div className="relative w-full h-full">
                               <Image
-                                src={category.icon}
+                                src={
+                                  defaultIcons[category.name] ||
+                                  defaultIcons.Electronics ||
+                                  category.icon
+                                }
                                 alt={category.name}
                                 fill
                                 className=" w-full h-full rounded-full"
@@ -283,7 +300,7 @@ export default function ProductCategories() {
                               {category.description}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {category.itemCount.toLocaleString()} items
+                              {category.itemCount} items
                             </p>
                           </div>
 
@@ -299,16 +316,18 @@ export default function ProductCategories() {
                                 <div className="space-y-2">
                                   {category?.subcategories?.map((sub) => (
                                     <div
-                                      key={sub}
+                                      key={sub.id}
                                       className="flex text-sm items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         router.push(
-                                          `/category/${category.name.toLowerCase()}/${sub.toLowerCase()}`
+                                          `/category/${category.name.toLowerCase()}/${
+                                            sub.name
+                                          }`
                                         );
                                       }}
                                     >
-                                      <span>{sub}</span>
+                                      <span>{sub.name}</span>
                                       <ArrowRight className="w-4 h-4" />
                                     </div>
                                   ))}
@@ -331,7 +350,7 @@ export default function ProductCategories() {
                 >
                   {featuredCategories.map((category) => (
                     <motion.div
-                      key={`featured-${category.name}`}
+                      key={`featured-${category.id}`}
                       whileHover={{ scale: 1.02 }}
                       className="group cursor-pointer"
                       onClick={() =>
@@ -346,7 +365,11 @@ export default function ProductCategories() {
                         <div className="relative p-6 flex items-center gap-6">
                           <div className="w-24 h-24 relative rounded-xl overflow-hidden">
                             <Image
-                              src={category.icon}
+                              src={
+                                defaultIcons[category.name] ||
+                                defaultIcons.Electronics ||
+                                category.icon
+                              }
                               alt={category.name}
                               fill
                               className="object-cover"
@@ -364,7 +387,7 @@ export default function ProductCategories() {
                             </p>
                             <div className="flex items-center gap-4">
                               <Badge variant="secondary">
-                                {category.itemCount.toLocaleString()} items
+                                {category.itemCount} items
                               </Badge>
                               <Button size="sm">
                                 Explore <ArrowRight className="w-4 h-4 ml-2" />

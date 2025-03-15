@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import Navbar from "./home-page/navbar/Navbar";
 import Hero_Section from "./home-page/hero_section/Hero_Section";
 import Hero_Section1 from "./home-page/hero_section/Hero_Section1";
-import ProductCategories from "./home-page/category/ProductCategory";
+import ProductCategories from "./home-page/category/ProductCategorySection";
 import TrendingProducts from "./home-page/TredingProduct";
 import RecommendedForYou from "./home-page/RecommedationProduct";
 import BestSellers from "./home-page/BestSell";

@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-// import { CategoryForm } from "@/components/admin/category/CategoryForm";
 import toast from "react-hot-toast";
 import { CategoryForm } from "./CategoryForm";
-// import { toast } from "sonner";
 
 export default function CategoryManagementPage() {
   const handleSubmit = async (data: any) => {
+    console.log(data);
     try {
       const response = await fetch("/api/v1/categories", {
         method: "POST",

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 // import "@google/model-viewer";
-import Scene from "../../../components/Scene";
+// import Scene from "../../../components/Scene";
 import { Card } from "@/components/ui/card";
 
 export default function ARProductViewer() {

@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   Star,
   Heart,
@@ -14,244 +13,387 @@ import {
   ChevronRight,
   Minus,
   Plus,
+  ArrowLeft,
+  Check,
+  Package,
+  RefreshCcw,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 
-// Demo product data (you would typically fetch this from an API)
-const product = {
-  id: "1",
-  name: "Premium Wireless Headphones",
-  description:
-    "Experience superior sound quality with our premium wireless headphones. Features active noise cancellation, long battery life, and comfortable design.",
-  price: 299.99,
-  originalPrice: 399.99,
-  images: [
-    "/products/headphones-1.jpg",
-    "/products/headphones-2.jpg",
-    "/products/headphones-3.jpg",
-    "/products/headphones-4.jpg",
-  ],
-  category: "electronics",
-  subcategory: "audio",
-  rating: 4.8,
-  reviews: 256,
-  stock: 15,
-  specifications: {
-    "Battery Life": "Up to 30 hours",
-    "Bluetooth Version": "5.0",
-    "Noise Cancellation": "Active",
-    "Driver Size": "40mm",
-    Weight: "250g",
+import { FaShoppingCart, FaHeart, FaCheck, FaTruck } from "react-icons/fa";
+
+import { addToCart, setCart } from "@/redux/slices/cartSlice";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import toast from "react-hot-toast";
+import { Input } from "@/components/ui/input";
+import ImageScrol from "./ImageScrol";
+import AIRecommendations from "./AIRecommendations";
+import ARProductViewer from "./ARProductViewer";
+import LiveChat from "./LiveChat";
+import { Card } from "@/components/ui/card";
+
+const productFeatures = [
+  {
+    icon: <Shield className="w-5 h-5" />,
+    title: "Genuine Product",
+    description: "100% Authentic Products",
   },
-  features: [
-    "Active Noise Cancellation",
-    "30-hour battery life",
-    "Quick charging - 5 hours in 10 minutes",
-    "Bluetooth 5.0 connectivity",
-    "Built-in voice assistant",
-  ],
-  colors: ["Black", "Silver", "Midnight Blue"],
-  sizes: null,
-};
+  {
+    icon: <Package className="w-5 h-5" />,
+    title: "Free Shipping",
+    description: "On orders above $50",
+  },
+  {
+    icon: <RefreshCcw className="w-5 h-5" />,
+    title: "Easy Returns",
+    description: "30-day return policy",
+  },
+];
 
 export default function SingleSuCategoricalProductPage() {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(product.colors?.[0]);
   const [quantity, setQuantity] = useState(1);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const { category, subcategory, singleProduct } = useParams();
+  const dispatch: AppDispatch = useDispatch();
+  const [showImage, setShowImage] = useState(1);
+
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(fetchCategories());
+
+    if (typeof window !== "undefined") {
+      const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      dispatch(setCart(savedCart));
+    }
+  }, [dispatch]);
+
+  const decodedCategory = decodeURIComponent(String(category));
+  const decodedSub = decodeURIComponent(String(subcategory));
+
+  const { products } = useSelector((state: RootState) => state.product);
+  const product = products.find((el) => el.id === Number(id));
+
+  const handleImageHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!showZoom) return;
+
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPosition({ x, y });
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      toast.error("Please select size and color");
+      return;
+    }
+
+    const productToAdd = {
+      ...product,
+      quantity,
+      selectedSize,
+      selectedColor,
+    };
+
+    dispatch(addToCart(productToAdd as any));
+    toast.success("Added to cart successfully!", {
+      icon: "🛍️",
+    });
+  };
+
+  const handleBuyNow = () => {
+    // handleAddToCart();
+    // Navigate to checkout
+    // router.push("/checkout");
+  };
+
+  if (!product)
+    return (
+      <div>
+        <p>N product</p>
+      </div>
+    );
 
   return (
-    <div className="">
+    <div className="py-6 px-6 lg:px-16">
       <div className="min-h-screen bg-gray-50d">
-        <div className="flex items-center text-sm px-6 py-8">
+        <div className="flex items-center text-sm pb-7 px-6">
           <Link
-            href={`/category/${product.category}`}
-            className="text-gray-500 hover:text-gray-900"
+            href={`/category`}
+            className="text-gray-500 hover:underline hover:text-blue-500"
           >
             Categories
           </Link>
           <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
           <Link
-            href={`/category/${product.category}`}
-            className="text-gray-500 hover:text-gray-900 capitalize"
+            href={`/category/${decodedCategory}`}
+            className="text-gray-500 hover:underline hover:text-blue-500 capitalize"
           >
-            {product.category}
+            {decodedCategory}
           </Link>
           <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
           <Link
-            href={`/category/${product.category}/${product.subcategory}`}
-            className="text-gray-500 hover:text-gray-900 capitalize"
+            href={`/category/${decodedCategory}/${decodedSub}`}
+            className="text-gray-500 hover:underline hover:text-blue-500 capitalize"
           >
-            {product.subcategory}
+            {decodedSub}
           </Link>
           <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
-          <Label className="text-gray-900 capitalize">{product.name}</Label>
+          <Label className="text-gray-900 capitalize">{product?.name}</Label>
         </div>
-        <div className="container mx-auto px-4 py-5">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Product Images */}
-            <div className="space-y-4">
-              <div className="relative aspect-square rounded-lg overflow-hidden bg-white">
-                <Image
-                  src={product.images[selectedImage]}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div
+              className="relative aspect-square rounded-lg overflow-hidden bg-gray-100"
+              onMouseEnter={() => setShowZoom(true)}
+              onMouseLeave={() => setShowZoom(false)}
+              onMouseMove={handleImageHover}
+            >
+              <Image
+                src={product.images[showImage]}
+                alt={product.name}
+                fill
+                className="object-cover"
+                priority
+              />
+              {showZoom && (
+                <div
+                  className="absolute inset-0 bg-white"
+                  style={{
+                    backgroundImage: `url(${product.images[selectedImage]})`,
+                    backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    backgroundSize: "200%",
+                  }}
                 />
-              </div>
-              <div className="grid grid-cols-4 gap-4">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative aspect-square rounded-lg overflow-hidden bg-white ${
-                      selectedImage === index
-                        ? "ring-2 ring-blue-600"
-                        : "hover:ring-2 hover:ring-gray-300"
-                    }`}
-                  >
-                    <Image
-                      src={image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+              )}
             </div>
+            <ImageScrol
+              images={product.images}
+              // selectedImage={selectedImage}
+              // setSelectedImage={setSelectedImage}
+              // images={selectedProduct?.images}
+              setShowImage={setShowImage}
+              showImage={showImage}
+            />
+          </div>
 
-            {/* Product Info */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {product.name}
-                </h1>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < product.rating
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-gray-600">
-                    {product.reviews} reviews
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-gray-600">{product.description}</p>
-
-              <div className="flex items-baseline gap-4">
-                <span className="text-3xl font-bold text-gray-900">
+          <Card className="flex rounded-lg flex-col shadow-xl gap-4 lg:w-full px-3 py-6">
+            <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+              {product.brand}
+            </h2>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              {product.name}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 text-[16px]">
+              {product.description}
+            </p>
+            <div className="flex gap-6 py-3">
+              <div className="flex items-center gap-3 text-xl font-semibold">
+                <p className="text-gray-800 dark:text-gray-200">
                   ${product.price}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-xl text-gray-500 line-through">
-                    ${product.originalPrice}
+                </p>
+                {product.discount > 0 && (
+                  <span className="text-red-500 bg-red-100 dark:bg-red-900 px-2 py-1 text-sm rounded-md">
+                    -{product.discount}% Off
                   </span>
                 )}
               </div>
 
-              {/* Color Selection */}
-              {product.colors && (
-                <div className="space-y-4">
-                  <h3 className="font-medium text-gray-900">Color</h3>
-                  <div className="flex gap-3">
-                    {product.colors.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={`px-3 py-1 rounded-full border ${
-                          selectedColor === color
-                            ? "border-blue-600 text-blue-600"
-                            : "border-gray-300 text-gray-600 hover:border-gray-400"
-                        }`}
-                      >
-                        {color}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Quantity */}
-              <div className="space-y-4">
-                <h3 className="font-medium text-gray-900">Quantity</h3>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <span className="w-12 text-center">{quantity}</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() =>
-                      setQuantity(Math.min(product.stock, quantity + 1))
-                    }
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-4">
-                <Button className="flex-1">Add to Cart</Button>
-                <Button variant="outline" size="icon">
-                  <Heart className="w-5 h-5" />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 className="w-5 h-5" />
-                </Button>
-              </div>
-
-              {/* Features */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Truck className="w-5 h-5" />
-                  <span className="text-sm">Free shipping</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Shield className="w-5 h-5" />
-                  <span className="text-sm">2-year warranty</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <RefreshCw className="w-5 h-5" />
-                  <span className="text-sm">30-day returns</span>
-                </div>
-              </div>
-
-              {/* Specifications */}
-              <div className="border-t pt-8">
-                <h3 className="font-medium text-gray-900 mb-4">
-                  Specifications
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(product.specifications).map(
-                    ([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="text-gray-600">{key}</span>
-                        <span className="text-gray-900">{value}</span>
-                      </div>
-                    )
-                  )}
-                </div>
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < product.ratings ? "text-yellow-500" : "text-gray-300"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm text-gray-600 ml-2">
+                  ({product.ratings} ratings)
+                </span>
               </div>
             </div>
-          </div>
+
+            <p className="text-sm text-[15px] text-gray-500">
+              {product.stock > 0 ? (
+                <span className="text-green-600 font-semibold flex items-center">
+                  <Check size={20} className="mr-1" /> In Stock
+                </span>
+              ) : (
+                <span className="text-red-500 font-semibold">Out of Stock</span>
+              )}
+            </p>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Size</label>
+              <div className="flex gap-2 mt-2">
+                {["S", "M", "L", "XL", "XXL"].map((size) => (
+                  <Button
+                    key={size}
+                    variant={selectedSize === size ? "default" : "outline"}
+                    onClick={() => setSelectedSize(size)}
+                    className="w-12 h-12"
+                  >
+                    {size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color Selection */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Color</label>
+              <div className="flex gap-2 mt-2">
+                {["Red", "Blue", "Green", "Black", "White"].map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    className={`w-8 h-8 rounded-full border-2 ${
+                      selectedColor === color
+                        ? "border-primary"
+                        : "border-transparent"
+                    }`}
+                    style={{ backgroundColor: color.toLowerCase() }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">
+                Quantity
+              </label>
+              <div className="flex items-center">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </Button>
+                <Input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                  }
+                  className="w-20 text-center mx-2"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex gap-4 py-4">
+              <Button
+                className="flex-1 bg-orange-600 hover:bg-orange-500"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Add to Cart
+              </Button>
+              <Button
+                className="flex-1 bg-orange-600 hover:bg-orange-500"
+                onClick={handleBuyNow}
+              >
+                Buy Now
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsWishlisted(!isWishlisted)}
+                className={isWishlisted ? "text-red-500" : ""}
+              >
+                <Heart className={isWishlisted ? "fill-current" : ""} />
+              </Button>
+              <Button variant="outline" size="icon">
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t">
+              {productFeatures.map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center p-4 rounded-lg bg-gray-50"
+                >
+                  {feature.icon}
+                  <h3 className="font-medium mt-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
+        <Tabs defaultValue="specifications" className="mt-12">
+          <TabsList className="w-full justify-start border-b">
+            <TabsTrigger value="specifications">Specifications</TabsTrigger>
+            <TabsTrigger value="details">Product Details</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews</TabsTrigger>
+          </TabsList>
+          <TabsContent value="specifications" className="mt-6">
+            <div className="grid grid-cols-2 gap-4">
+              {product.specifications?.map((spec: any, idx: number) => (
+                <div key={idx} className="flex gap-2 p-3 bg-gray-50 rounded-lg">
+                  <p className="font-semibold text-gray-900">{spec.key} :</p>
+                  <p className="text-gray-600">{spec.value}</p>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="details" className="mt-6">
+            <div className="prose max-w-none">
+              <h3 className="text-xl font-semibold mb-4">
+                Product Description
+              </h3>
+              <p className="text-gray-600">{product.description}</p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="mt-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-semibold">Customer Reviews</h3>
+                <Button>Write a Review</Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+        <div className="mt-10">
+          {/* <AIRecommendations productId={selectedProduct?.id} /> */}
+          <AIRecommendations />
+        </div>
+
+        <div className="mt-10">
+          <h3 className="text-2xl font-semibold mb-4">
+            3D & AR Product Viewer
+          </h3>
+          {/* <ARProductViewer product={selectedProduct} /> */}
+          <ARProductViewer />
+        </div>
+
+        <LiveChat />
       </div>
     </div>
   );

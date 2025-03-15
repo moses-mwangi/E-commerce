@@ -5,15 +5,18 @@ import { motion } from "framer-motion";
 import { Star, Heart } from "lucide-react";
 // import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import { Product } from "../../categoryComponents/product";
 // import { Product } from "../product";
 
 interface ProductCardProps {
-  // product: Product;
-  product: any;
-  view?: "grid" | "list";
+  product: Product;
+  view: string;
 }
 
-export function ProductCard({ product, view = "grid" }: ProductCardProps) {
+export function ProductCard({ product, view }: ProductCardProps) {
+  const { category, subcategory } = useParams();
+
   if (view === "list") {
     return (
       <motion.div
@@ -89,7 +92,7 @@ export function ProductCard({ product, view = "grid" }: ProductCardProps) {
       className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
     >
       <Link
-        href={`/category/${product.category}/${product.subcategory}/${product.name}`}
+        href={`/category/${product.category}/${subcategory}/${product.name}`}
         className="block"
       >
         <div className="relative aspect-square">

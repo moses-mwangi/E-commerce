@@ -539,14 +539,6 @@ exports.categoryController = {
                     include: [{ model: filterOption_1.default, as: "options" }],
                 },
             ],
-            // include: [
-            //   {
-            //     model: Subcategory,
-            //     as: "subcategories",
-            //     include: [{ model: Filter, as: "filters" }],
-            //   },
-            //   { model: Filter, as: "filters" },
-            // ],
         });
         if (!category) {
             throw new AppError_1.default("Category not found", 404);
