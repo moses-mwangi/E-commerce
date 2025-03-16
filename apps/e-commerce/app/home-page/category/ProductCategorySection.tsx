@@ -16,15 +16,19 @@ import { Search, ArrowRight, TrendingUp, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  fetchProductById,
-  fetchProducts,
-  searchProducts,
-  filterProducts,
-} from "@/redux/slices/productSlice";
+import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchCategories } from "@/redux/slices/categorySlice";
+
+const defaultIcons: { [key: string]: any } = {
+  Fashion: fash_1,
+  Electronics: electronics,
+  Kitchen: kitchen,
+  Beauty: beauty,
+  Fitness: fitness,
+  Gaming: gaming,
+};
 
 export default function ProductCategories() {
   const router = useRouter();
@@ -47,14 +51,13 @@ export default function ProductCategories() {
   const trendingCategories = categories.filter((cat) => cat.trending);
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-16 bg-gradient-to-b from-whitte to-gray-5u0">
       <div className="container mx-auto rounded-lg px-4 py-6">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="space-y-8"
         >
-          {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-4">
               <motion.h2
@@ -69,7 +72,6 @@ export default function ProductCategories() {
               </p>
             </div>
 
-            {/* Search and View Toggle */}
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -118,7 +120,6 @@ export default function ProductCategories() {
             </motion.div>
           </div>
 
-          {/* Main Categories Grid/Featured View */}
           <AnimatePresence mode="wait">
             {view === "grid" ? (
               <motion.div
@@ -147,12 +148,16 @@ export default function ProductCategories() {
                       <div className="relative space-y-4">
                         <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm">
                           <div className="relative w-full h-full">
-                            {/* <Image
-                              src={String(category.icon)}
+                            <Image
+                              src={
+                                defaultIcons[category.name] ||
+                                defaultIcons.Electronics ||
+                                category.icon
+                              }
                               alt={category.name}
                               fill
                               className=" w-full h-full rounded-full"
-                            /> */}
+                            />
                           </div>
                         </div>
 
@@ -175,7 +180,7 @@ export default function ProductCategories() {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 10 }}
-                              className="absolute inset-0 bg-white/95 custom-scroll backdrop-blur-sm rounded-xl p-4 flex flex-col justify-center"
+                              className="absolute inset-0 shadow-lg bg-white/90 custom-scroll backdrop-blur-sm rounded-xl p-4 flex flex-col justify-center"
                             >
                               <div className="space-y-2">
                                 {category?.subcategories?.map((sub, idx) => (
@@ -192,10 +197,6 @@ export default function ProductCategories() {
                                     }}
                                   >
                                     <span>{sub.name}</span>
-                                    {/* <span>{sub.banner}</span>
-                                    <span>{sub.description}</span>
-                                    <span>{sub.featured}</span>
-                                    <span>{sub.name}</span> */}
                                     <ArrowRight className="w-4 h-4" />
                                   </div>
                                 ))}
@@ -218,7 +219,7 @@ export default function ProductCategories() {
               >
                 {featuredCategories.map((category) => (
                   <motion.div
-                    key={`featured-${category.name}`}
+                    key={`featured-${category.id}`}
                     whileHover={{ scale: 1.02 }}
                     className="group cursor-pointer"
                     onClick={() =>
@@ -232,12 +233,16 @@ export default function ProductCategories() {
                       />
                       <div className="relative p-6 flex items-center gap-6">
                         <div className="w-24 h-24 relative rounded-xl overflow-hidden">
-                          {/* <Image
-                            src={category.icon!}
+                          <Image
+                            src={
+                              defaultIcons[category.name] ||
+                              defaultIcons.Electronics ||
+                              category.icon
+                            }
                             alt={category.name}
                             fill
                             className="object-cover"
-                          /> */}
+                          />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
@@ -246,14 +251,17 @@ export default function ProductCategories() {
                             </h3>
                             <Sparkles className="w-5 h-5 text-yellow-500" />
                           </div>
-                          <p className="text-gray-600 mb-4">
+                          <p className="text-gray-600 text-[14px] mb-4">
                             {category.description}
                           </p>
                           <div className="flex items-center gap-4">
                             <Badge variant="secondary">
                               {category.itemCount} items
                             </Badge>
-                            <Button size="sm">
+                            <Button
+                              size="sm"
+                              className="bg-orange-500/85 hover:bg-orange-600"
+                            >
                               Explore <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                           </div>
