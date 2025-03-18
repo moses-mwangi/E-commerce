@@ -12,8 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 export default function CategoriesPage() {
+  const { push } = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [categories] = useState([
     {
       id: 1,
@@ -35,8 +39,21 @@ export default function CategoriesPage() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-800">Categories</h1>
-        <Button className="bg-primary">
-          <Plus className="w-4 h-4 mr-2" /> Add Category
+        <Button
+          disabled={isLoading === true}
+          onClick={() => {
+            setIsLoading(true);
+            push("/admin/dashboard/categories/new_category");
+          }}
+          className="bg-orange-500/85  hover:bg-orange-600 w-36"
+        >
+          {isLoading === false ? (
+            <div className="flex items-center gap-2">
+              <Plus className="w-4 h-4" /> Add Category
+            </div>
+          ) : (
+            <ButtonLoader />
+          )}
         </Button>
       </div>
 

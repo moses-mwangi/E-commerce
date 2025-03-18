@@ -1,17 +1,25 @@
+"use client";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function FilterFieldset({ index, register, remove, control }: any) {
+export function FilterFieldset({
+  index,
+  register,
+  remove,
+  control,
+  prefix,
+}: any) {
   const {
     fields: optionFields,
     append: appendOption,
     remove: removeOption,
   } = useFieldArray({
     control,
-    name: `filters.${index}.options`,
+    // name: `filters.${index}.options`,
+    name: `${prefix}.${index}.options`,
   });
 
   return (
@@ -19,7 +27,8 @@ export function FilterFieldset({ index, register, remove, control }: any) {
       <div className="flex justify-between items-start">
         <div className="flex-1 mr-4">
           <Input
-            {...register(`filters.${index}.name`, {
+            // {...register(`filters.${index}.name`, {
+            {...register(`${prefix}.${index}.name`, {
               required: "Filter name is required",
             })}
             placeholder="Filter Name (e.g., Color, Size)"
@@ -39,7 +48,8 @@ export function FilterFieldset({ index, register, remove, control }: any) {
         {optionFields.map((optionField, optionIndex) => (
           <div key={optionField.id} className="flex gap-2">
             <Input
-              {...register(`filters.${index}.options.${optionIndex}`, {
+              // {...register(`filters.${index}.options.${optionIndex}`, {
+              {...register(`${prefix}.${index}.options.${optionIndex}`, {
                 required: "Option is required",
               })}
               placeholder="Filter Option"

@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Filter, ArrowRight, Grid2x2, LayoutList } from "lucide-react";
 import fash_1 from "../../../public/category_Image/fash_1.png";
-import fash_2 from "../../../public/fashion/image.png";
 import Navbar from "@/app/home-page/navbar/Navbar";
-import { ProductCard } from "./[subcategory]/subcategoryComponents/ProductCard";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/redux/slices/productSlice";
@@ -21,9 +14,6 @@ import Footer from "@/app/home-page/footer/Footer";
 
 export default function CategoryPage() {
   const { category } = useParams();
-  const [view, setView] = useState<"grid" | "list">("grid");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
   const dispatch: AppDispatch = useDispatch();
   const { categories } = useSelector((state: RootState) => state.category);
 
@@ -42,9 +32,6 @@ export default function CategoryPage() {
     <div className="">
       <Navbar />
       <div className="min-h-screen bg-gray-50">
-        {/* Category Banner */}
-        {/* {categories.map((categoryData) => (
-          <div key={categoryData.id}> */}
         <div className="relative h-[300px] bg-gray-900">
           <Image
             src={fash_1}

@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchIcon } from "lucide-react";
+import { CameraIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ImageSearch from "./ImageSearch";
@@ -27,11 +27,21 @@ const categories = [
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showPop, setShowPop] = useState(false);
 
   const { t, i18n } = useTranslation();
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
   };
+
+  const icon = (
+    <CameraIcon
+      className="hover:cursor-pointer hover:text-orange-500 transition duration-200"
+      onClick={() => setShowPop((el) => !el)}
+      size={22}
+      aria-label="Search by Image"
+    />
+  );
 
   return (
     <div className="flex flex-col items-center">
@@ -57,7 +67,7 @@ export default function SearchBar() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <div className="flex items-center gap-3 absolute right-2 text-gray-500">
-            <ImageSearch />
+            <ImageSearch icon={icon} showPop={showPop} setShowPo={setShowPop} />
 
             <VoiceSearch setSearchQuery={setSearchQuery} />
           </div>

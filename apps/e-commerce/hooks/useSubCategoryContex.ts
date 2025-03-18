@@ -3,13 +3,14 @@ import { fetchCategories } from "@/redux/slices/categorySlice";
 import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 function useSubCategoryContex() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const { items } = useSelector((state: RootState) => state.favourite);
@@ -43,12 +44,6 @@ function useSubCategoryContex() {
   const decodedCategory = decodeURIComponent(String(category));
   const decodedSub = decodeURIComponent(String(subcategory));
 
-  const data = categories.find((el) =>
-    el.subcategories.map(
-      (sub) => sub.name.toLowerCase() === decodedCategory.toLowerCase()
-    )
-  );
-
   const capitalizeWords = (str: string) => {
     return str
       .split(" ")
@@ -56,9 +51,22 @@ function useSubCategoryContex() {
       .join(" ");
   };
 
-  const subFilter = data?.subcategories.find(
-    (el) => el.name.toLowerCase() === decodedSub.toLowerCase()
-  );
+  // const subFilter = categories
+  //   .find((el) => el.name.toLowerCase() === decodedCategory.toLowerCase())
+  //   ?.subcategories?.find(
+  //     (sub) => sub.name.toLowerCase() === decodedSub.toLowerCase()
+  //   );
+
+  const id = searchParams.get("id");
+  const subFilter = categories
+    .find((el) => el.name.toLowerCase() === decodedCategory.toLowerCase())
+    ?.subcategories?.find(
+      (sub) =>
+        String(sub.id) === id ||
+        sub.name.toLowerCase() === decodedSub.toLowerCase()
+    );
+
+  console.log(subFilter);
 
   const handleAddToCart = (id: any) => {
     const product = products.find((el) => el.id === id);
@@ -146,6 +154,8 @@ function useSubCategoryContex() {
     filteredProducts,
     handleRoute,
     decodedSub,
+
+    categories,
   };
 }
 

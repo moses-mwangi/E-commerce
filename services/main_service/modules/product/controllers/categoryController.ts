@@ -316,7 +316,6 @@ import FilterOption from "../models/filterOption";
 // };
 
 export const categoryController = {
-  // Create a new category
   // createCategory: catchAsync(async (req: Request, res: Response) => {
   //   const categoryData = req.body;
 
@@ -337,112 +336,113 @@ export const categoryController = {
   //       { transaction: t }
   //     );
 
-  //     // if (categoryData.subcategories?.length) {
-  //     //   await Promise.all(
-  //     //     categoryData.subcategories.map(async (subData: any) => {
-  //     //       // Create subcategory
-  //     //       const subcategory = await Subcategory.create(
-  //     //         {
-  //     //           ...subData,
-  //     //           categoryId: newCategory.id,
-  //     //         },
-  //     //         { transaction: t }
-  //     //       );
-
-  //     //       // Create subcategory filters if provided
-  //     //       if (subData.filters?.length) {
-  //     //         await Promise.all(
-  //     //           subData.filters.map((filter: any) =>
-  //     //             Filter.create(
-  //     //               {
-  //     //                 ...filter,
-  //     //                 subcategoryId: subcategory.id,
-  //     //               },
-  //     //               { transaction: t }
-  //     //             )
-  //     //           )
-  //     //         );
-  //     //       }
-  //     //     })
-  //     //   );
-  //     // }
+  //     // Create subcategories if provided
   //     if (categoryData.subcategories?.length) {
   //       await Promise.all(
   //         categoryData.subcategories.map(async (subData: any) => {
   //           // Create subcategory
-  //           const subcategory = await Subcategory.create(
+  //           try {
+  //             const subcategory = await Subcategory.create(
+  //               {
+  //                 name: subData.name,
+  //                 slug: subData.slug,
+  //                 description: subData.description,
+  //                 itemCount: subData.itemCount,
+  //                 categoryId: newCategory.id,
+  //               },
+  //               { transaction: t }
+  //             );
+
+  //             console.log(req.body);
+  //             // console.log(subcategory);
+  //             // Create subcategory filters if provided
+  //             if (subData.filters?.length) {
+  //               await Promise.all(
+  //                 subData.filters.map(async (filter: any) => {
+  //                   const newFilter = await Filter.create(
+  //                     {
+  //                       name: filter.name,
+  //                       subcategoryId: subcategory.id,
+  //                     },
+  //                     { transaction: t }
+  //                   );
+
+  //                   // Create filter options
+  //                   if (filter.options?.length) {
+  //                     await Promise.all(
+  //                       filter.options.map((option: string) =>
+  //                         FilterOption.create(
+  //                           {
+  //                             option: option,
+  //                             filterId: newFilter.id,
+  //                           },
+  //                           { transaction: t }
+  //                         )
+  //                       )
+  //                     );
+  //                   }
+  //                 })
+  //               );
+  //             }
+  //           } catch (err) {
+  //             console.log(err);
+  //           }
+  //         })
+  //       );
+  //     }
+  //     console.log(req.body);
+  //     // Create category filters if provided
+  //     if (categoryData.filters?.length) {
+  //       await Promise.all(
+  //         categoryData.filters.map(async (filter: any) => {
+  //           const newFilter = await Filter.create(
   //             {
-  //               name: subData.name,
-  //               slug: subData.slug,
-  //               description: subData.description,
-  //               itemCount: subData.itemCount,
+  //               name: filter.name,
   //               categoryId: newCategory.id,
   //             },
   //             { transaction: t }
   //           );
 
-  //           // Create subcategory filters if provided
-  //           if (subData.filters?.length) {
+  //           // Create filter options
+  //           if (filter.options?.length) {
   //             await Promise.all(
-  //               subData.filters.map(async (filter: any) => {
-  //                 const newFilter = await Filter.create(
+  //               filter.options.map((option: string) =>
+  //                 FilterOption.create(
   //                   {
-  //                     name: filter.name,
-  //                     subcategoryId: subcategory.id,
+  //                     option: option, // ✅ Now correctly assigning the option name
+  //                     filterId: newFilter.id, // ✅ Linking to the newly created Filter
   //                   },
   //                   { transaction: t }
-  //                 );
-
-  //                 // Create filter options
-  //                 if (filter.options?.length) {
-  //                   await Promise.all(
-  //                     filter.options.map((option: string) =>
-  //                       FilterOption.create(
-  //                         {
-  //                           name: option,
-  //                           filterId: newFilter.id,
-  //                         },
-  //                         { transaction: t }
-  //                       )
-  //                     )
-  //                   );
-  //                   console.log("ggggggggggggggg", filter);
-  //                 }
-  //               })
+  //                 )
+  //               )
   //             );
   //           }
   //         })
   //       );
   //     }
 
-  //     //// Create category filters if provided
-  //     if (categoryData.filters?.length) {
-  //       console.log(categoryData.filters);
-  //       await Promise.all(
-  //         categoryData.filters.map((filter: any) =>
-  //           Filter.create(
-  //             {
-  //               ...filter,
-  //               categoryId: newCategory.id,
-  //             },
-  //             { transaction: t }
-  //           )
-  //         )
-  //       );
-  //     }
-
   //     return newCategory;
   //   });
 
-  //   //// Fetch the complete category with all associations
+  //   // Fetch the complete category with all associations
   //   const categoryWithAssociations = await Category.findByPk(category.id, {
   //     include: [
   //       {
   //         model: Subcategory,
   //         as: "subcategories",
-  //         include: [{ model: Filter, as: "filters" }],
+  //         include: [
+  //           {
+  //             model: Filter,
+  //             as: "filters",
+  //             include: [{ model: FilterOption, as: "options" }],
+  //           },
+  //         ],
   //       },
-  //       { model: Filter, as: "filters" },
+  //       {
+  //         model: Filter,
+  //         as: "filters",
+  //         include: [{ model: FilterOption, as: "options" }],
+  //       },
   //     ],
   //   });
 
@@ -453,9 +453,20 @@ export const categoryController = {
   //     },
   //   });
   // }),
-
   createCategory: catchAsync(async (req: Request, res: Response) => {
     const categoryData = req.body;
+
+    if (!categoryData.name || !categoryData.slug) {
+      throw new Error("Name and slug are required for a category.");
+    }
+
+    if (categoryData.subcategories) {
+      categoryData.subcategories.forEach((subData: any) => {
+        if (!subData.name || !subData.slug) {
+          throw new Error("Name and slug are required for a subcategory.");
+        }
+      });
+    }
 
     const category = await sequelize.transaction(async (t: Transaction) => {
       // Create category
@@ -478,46 +489,67 @@ export const categoryController = {
       if (categoryData.subcategories?.length) {
         await Promise.all(
           categoryData.subcategories.map(async (subData: any) => {
-            // Create subcategory
-            const subcategory = await Subcategory.create(
-              {
-                name: subData.name,
-                slug: subData.slug,
-                description: subData.description,
-                itemCount: subData.itemCount,
-                categoryId: newCategory.id,
-              },
-              { transaction: t }
-            );
-
-            // Create subcategory filters if provided
-            if (subData.filters?.length) {
-              await Promise.all(
-                subData.filters.map(async (filter: any) => {
-                  const newFilter = await Filter.create(
-                    {
-                      name: filter.name,
-                      subcategoryId: subcategory.id,
-                    },
-                    { transaction: t }
-                  );
-
-                  // Create filter options
-                  if (filter.options?.length) {
-                    await Promise.all(
-                      filter.options.map((option: string) =>
-                        FilterOption.create(
-                          {
-                            option: option,
-                            filterId: newFilter.id,
-                          },
-                          { transaction: t }
-                        )
-                      )
-                    );
-                  }
-                })
+            try {
+              // Create subcategory
+              const subcategory = await Subcategory.create(
+                {
+                  name: subData.name,
+                  slug: subData.slug,
+                  description: subData.description,
+                  itemCount: subData.itemCount,
+                  categoryId: Number(newCategory.id),
+                },
+                { transaction: t }
               );
+
+              // Create subcategory filters if provided
+              if (subData.filters?.length) {
+                await Promise.all(
+                  subData.filters.map(async (filter: any) => {
+                    console.log("Creating filter with data:", {
+                      name: subcategory.name,
+                      categoryId: subcategory.categoryId,
+                      subcategoryId: subcategory.id,
+                    });
+                    // try {
+                    // } catch (err) {
+                    // }
+
+                    if (
+                      subcategory.categoryId === null ||
+                      subcategory.id === null
+                    ) {
+                      res.json({ msg: "NO IDS " });
+                    }
+                    const newFilter = await Filter.create(
+                      {
+                        name: filter.name,
+                        subcategoryId: Number(subcategory.id),
+                        categoryId: Number(subcategory.categoryId),
+                      },
+                      { transaction: t }
+                    );
+
+                    // Create filter options
+                    if (filter.options?.length) {
+                      await Promise.all(
+                        filter.options.map((option: string) =>
+                          FilterOption.create(
+                            {
+                              option: option,
+                              filterId: newFilter.id,
+                            },
+                            { transaction: t }
+                          )
+                        )
+                      );
+                    }
+                  })
+                );
+              }
+            } catch (err) {
+              console.error("Error creating subcategory:", err);
+              throw err; // Propagate the error to roll back the transaction
             }
           })
         );
@@ -541,8 +573,8 @@ export const categoryController = {
                 filter.options.map((option: string) =>
                   FilterOption.create(
                     {
-                      option: option, // ✅ Now correctly assigning the option name
-                      filterId: newFilter.id, // ✅ Linking to the newly created Filter
+                      option: option,
+                      filterId: newFilter.id,
                     },
                     { transaction: t }
                   )

@@ -2,6 +2,7 @@ import { Product, ProductState } from "@/app/types/products";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import dotenv from "dotenv";
+import toast from "react-hot-toast";
 import { number } from "zod";
 
 dotenv.config();
@@ -101,16 +102,32 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-// Delete a product
+// export const deleteProduct = createAsyncThunk(
+//   "products/delete",
+//   async (id: number, { rejectWithValue }) => {
+//     try {
+//       await axios.delete(`${API_URL}/product/${id}`);
+//       toast.success("Product deleted successfully");
+//       return id;
+//     } catch (err: any) {
+//       console.error(err);
+//       throw new Error("Failed to delete product");
+//       toast.error("Failed to deleted product");
+//       return rejectWithValue(err?.response.data);
+//     }
+//   }
+// );
+
 export const deleteProduct = createAsyncThunk(
   "products/delete",
-  async (id: number) => {
+  async (id: number, { rejectWithValue }) => {
     try {
       await axios.delete(`${API_URL}/product/${id}`);
-      return id; // Return the deleted product ID for state update
-    } catch (err) {
-      console.error(err);
-      throw new Error("Failed to delete product");
+      toast.success("Product deleted successfully");
+      return id;
+    } catch (err: any) {
+      toast.error("Failed to delete product");
+      return rejectWithValue(err.response?.data || "Failed to delete product");
     }
   }
 );
@@ -204,9 +221,6 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = action.payload;
-
-        // state.products = action.payload.products;
-        // state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
@@ -223,10 +237,19 @@ const productSlice = createSlice({
           product.id === action.payload.id ? action.payload : product
         );
       })
+
+      .addCase(deleteProduct.pending, (state) => {
+        state.status = "loading";
+      })
       .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.products = state.products.filter(
           (product) => product.id !== action.payload
         );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = "Failed to delete product";
       });
   },
 });

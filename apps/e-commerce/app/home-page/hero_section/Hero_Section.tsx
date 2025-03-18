@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -17,6 +17,7 @@ import {
   Truck,
   Shield,
 } from "lucide-react";
+import ImageSearch from "../navbar/search/ImageSearch";
 
 const animations = {
   fadeInUp: {
@@ -61,27 +62,24 @@ const features = [
     description: "Free shipping on orders over $50",
   },
 ];
-
 const HeroSection: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <section className="relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
-      {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-300 rounded-full blur-3xl opacity-20" />
       </div>
 
-      {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
           <motion.div
             className="space-y-8"
             initial="hidden"
             animate="visible"
             variants={animations.stagger}
           >
-            {/* Main Heading */}
             <motion.div className="space-y-4" variants={animations.fadeInUp}>
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
                 Discover
@@ -94,12 +92,11 @@ const HeroSection: React.FC = () => {
               </p>
             </motion.div>
 
-            {/* CTA Buttons */}
             <motion.div
               className="flex flex-wrap gap-4"
               variants={animations.fadeInUp}
             >
-              <Link href="/pages/fashion">
+              <Link href="/category">
                 <Button
                   size="lg"
                   className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200 flex items-center gap-2"
@@ -119,20 +116,27 @@ const HeroSection: React.FC = () => {
                 <Mic className="w-5 h-5 mr-2" />
                 Voice Search
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 hover:bg-orange-50"
-                onClick={() =>
-                  window.dispatchEvent(new CustomEvent("openImageSearch"))
+
+              <ImageSearch
+                icon={
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 hover:bg-orange-50"
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent("openImageSearch"));
+                      setShowModal(true);
+                    }}
+                  >
+                    <Camera className="w-5 h-5 mr-2" />
+                    Image Search
+                  </Button>
                 }
-              >
-                <Camera className="w-5 h-5 mr-2" />
-                Image Search
-              </Button>
+                showModal={showModal}
+                setShowModal={setShowModal}
+              />
             </motion.div>
 
-            {/* Features */}
             <motion.div
               className="grid sm:grid-cols-3 gap-6 pt-8"
               variants={animations.fadeInUp}
@@ -155,7 +159,6 @@ const HeroSection: React.FC = () => {
               ))}
             </motion.div>
 
-            {/* Trust Badges */}
             <motion.div
               className="flex items-center gap-6 pt-4"
               variants={animations.fadeInUp}
@@ -171,6 +174,9 @@ const HeroSection: React.FC = () => {
                 </span>
               </div>
             </motion.div>
+            <Button>
+              <Link href="/category">Explore Category</Link>
+            </Button>
           </motion.div>
 
           {/* Right Side - Hero Images */}

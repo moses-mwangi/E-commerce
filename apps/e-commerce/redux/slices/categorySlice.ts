@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
+import toast from "react-hot-toast";
 
 dotenv.config();
 
-const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api/v1";
+const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
 interface Filter {
   id: string;
@@ -50,8 +51,8 @@ interface CategoryState {
 export const fetchCategories = createAsyncThunk(
   "category/fetchAll",
   async () => {
-    // const res = await axios.get(`${API_URL}/category`);
-    const res = await axios.get("http://127.0.0.1:8000/api/category");
+    const res = await axios.get(`${API_URL}/category`);
+    // const res = await axios.get("http://127.0.0.1:8000/api/category");
 
     const category = res.data.data.categories;
     return category;
@@ -67,12 +68,29 @@ export const fetchCategory = createAsyncThunk(
   }
 );
 
-// Create a new category with subcategories and filters
 export const createCategory = createAsyncThunk(
   "category/create",
-  async (categoryData: Category) => {
-    const res = await axios.post(`${API_URL}/categories`, categoryData);
-    return res.data.data.category;
+  async (categoryData: Category, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_URL}/category`, categoryData);
+      toast.success("Category created successfully!");
+
+      if (response.data.error) {
+        toast.error("category creation failed: " + response.data.error);
+        console.log(response.data.error);
+
+        window.location.href = "/admin/dashboard/categories";
+        return rejectWithValue(response.data.error);
+      }
+      return response.data.data.category;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      toast.error(error);
+      return rejectWithValue(
+        axiosError.response?.data || "An error occurred while deleting user."
+      );
+    }
   }
 );
 

@@ -38,6 +38,7 @@ export default function AdminEntryPage() {
     email: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",

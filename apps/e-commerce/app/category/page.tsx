@@ -204,10 +204,12 @@ export default function ProductCategories() {
                                       className="flex text-sm items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        const param = new URLSearchParams();
+                                        param.set("id", String(sub.id));
                                         router.push(
                                           `/category/${category.name.toLowerCase()}/${
                                             sub.name
-                                          }`
+                                          }?${param.toString()}`
                                         );
                                       }}
                                     >
@@ -266,14 +268,17 @@ export default function ProductCategories() {
                               </h3>
                               <Sparkles className="w-5 h-5 text-yellow-500" />
                             </div>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-gray-600 mb-4 text-[15px]">
                               {category.description}
                             </p>
                             <div className="flex items-center gap-4">
                               <Badge variant="secondary">
                                 {category.itemCount} items
                               </Badge>
-                              <Button size="sm">
+                              <Button
+                                size="sm"
+                                className=" bg-orange-500 hover:bg-orange-500/85"
+                              >
                                 Explore <ArrowRight className="w-4 h-4 ml-2" />
                               </Button>
                             </div>

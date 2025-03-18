@@ -1,12 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
 
-import { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Star,
-  Filter,
   ShoppingCart,
   Search,
   Grid,
@@ -17,19 +15,10 @@ import {
   Heart,
   ChevronRight,
 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProducts } from "@/redux/slices/productSlice";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { addToCart, setCart } from "@/redux/slices/cartSlice";
-import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
-import { Slider } from "@/components/ui/slider";
-import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "framer-motion";
-import { fetchCategories } from "@/redux/slices/categorySlice";
 import Link from "next/link";
 import {
   Select,

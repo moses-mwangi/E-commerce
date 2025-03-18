@@ -76,7 +76,7 @@ export default function RootLayout({
           <I18nProvider>
             <ErrorBoundary>
               <Suspense fallback={<LoadingState />}>
-                <main className="min-h-screen">{children}</main>
+                <main className=" min-h-screen">{children}</main>
               </Suspense>
             </ErrorBoundary>
           </I18nProvider>

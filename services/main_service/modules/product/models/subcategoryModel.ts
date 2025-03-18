@@ -43,7 +43,7 @@ Subcategory.init(
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      // unique: true,
     },
     itemCount: {
       type: DataTypes.INTEGER,
