@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { capitalizeWords } from "@/app/types/products";
 import DeleteProduct from "./DeleteProduct";
-import { number } from "zod";
 
 export default function ProductsPage() {
   const router = useRouter();

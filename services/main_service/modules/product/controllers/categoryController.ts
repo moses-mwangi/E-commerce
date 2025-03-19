@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../../shared/utils/catchSync";
 import sequelize from "../../../shared/config/pg_database";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import Category from "../models/categoryModel";
 import Subcategory from "../models/subcategoryModel";
 import Filter from "../models/categoryFilterModel";
@@ -650,14 +650,14 @@ export const categoryController = {
     });
   }),
 
-  // Get category by ID or slug
   getCategory: catchAsync(async (req: Request, res: Response) => {
-    const { identifier } = req.params;
+    const { identifier, id } = req.params;
 
     const category = await Category.findOne({
       where: sequelize.or(
-        { id: isNaN(+identifier) ? null : +identifier },
-        { slug: identifier }
+        { id: id }
+        // { id: isNaN(+identifier) ? null : +identifier }
+        // { slug: identifier }
       ),
       include: [
         {
@@ -736,23 +736,75 @@ export const categoryController = {
     });
   }),
 
-  // Delete category
-  deleteCategory: catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
+  deleteCategory: catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { id } = req.params;
 
-    const deleted = await Category.destroy({
-      where: { id },
-    });
+      const transaction = await sequelize.transaction();
 
-    if (!deleted) {
-      throw new AppError("Category not found", 404);
+      try {
+        const category = await Category.findOne({
+          where: { id },
+          transaction,
+        });
+
+        if (!category) {
+          await transaction.rollback();
+          return next(new AppError("Category not found", 404));
+        }
+
+        const subcategories = await Subcategory.findAll({
+          where: { categoryId: category.id },
+          transaction,
+        });
+
+        const subcategoryIds = subcategories.map((sub) => sub.id);
+
+        const filters = await Filter.findAll({
+          where: {
+            [Op.or]: [
+              { categoryId: category.id },
+              { subcategoryId: { [Op.in]: subcategoryIds } },
+            ],
+          },
+          transaction,
+        });
+
+        const filterIds = filters.map((filter) => filter.id);
+
+        await FilterOption.destroy({
+          where: { filterId: { [Op.in]: filterIds } },
+          transaction,
+        });
+
+        await Filter.destroy({
+          where: { id: { [Op.in]: filterIds } },
+          transaction,
+        });
+
+        await Subcategory.destroy({
+          where: { id: { [Op.in]: subcategoryIds } },
+          transaction,
+        });
+
+        await Category.destroy({
+          where: { id },
+          transaction,
+        });
+
+        await transaction.commit();
+
+        res.status(204).json({
+          status: "success",
+          data: null,
+        });
+      } catch (error) {
+        await transaction.rollback();
+        console.error("Error deleting category:", (error as any).message);
+        next(new AppError("Failed to delete category", 500));
+      }
     }
-
-    res.status(204).json({
-      status: "success",
-      data: null,
-    });
-  }),
+  ),
 
   // Add subcategory to category
   addSubcategory: catchAsync(async (req: Request, res: Response) => {
@@ -798,6 +850,18 @@ export const categoryController = {
       },
     });
   }),
+
+  //////////////////////////////
+  getSubcategory: catchAsync(async (req: Request, res: Response) => {
+    const { categoryId, subcategoryId } = req.params;
+    const subcategory = await Subcategory.findOne({
+      where: { categoryId: categoryId, id: subcategoryId },
+      include: [{ model: Filter, as: "filters" }],
+    });
+
+    res.status(2001).json({ subcategory });
+  }),
+  ///////////////////////////////////
 
   // Update subcategory
   updateSubcategory: catchAsync(async (req: Request, res: Response) => {

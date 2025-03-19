@@ -1,3 +1,9 @@
+import {
+  Category,
+  CategoryState,
+  Filter,
+  Subcategory,
+} from "@/app/types/category";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
@@ -7,52 +13,10 @@ dotenv.config();
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
-interface Filter {
-  id: string;
-  name: string;
-  options: any[];
-}
-
-interface Subcategory {
-  id?: number;
-  slug?: string;
-  name: string;
-  description: string;
-  itemCount?: number;
-
-  banner?: string;
-  featured: boolean;
-  filters: Filter[];
-}
-
-interface Category {
-  id?: number;
-  name: string;
-  slug?: string;
-  description: string;
-  itemCount?: number;
-  icon?: string;
-  banner?: string;
-  color?: string;
-  featured: boolean;
-  trending: boolean;
-  filters: Filter[];
-  subcategories: Subcategory[];
-}
-
-interface CategoryState {
-  categories: Category[];
-  selectedCategory: Category | null;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
-}
-
-// Fetch all categories
 export const fetchCategories = createAsyncThunk(
   "category/fetchAll",
   async () => {
     const res = await axios.get(`${API_URL}/category`);
-    // const res = await axios.get("http://127.0.0.1:8000/api/category");
 
     const category = res.data.data.categories;
     return category;
@@ -62,7 +26,7 @@ export const fetchCategories = createAsyncThunk(
 // Fetch category by ID or slug
 export const fetchCategory = createAsyncThunk(
   "category/fetch",
-  async (identifier: string | number) => {
+  async (identifier: number) => {
     const res = await axios.get(`${API_URL}/categories/${identifier}`);
     return res.data.data.category;
   }
@@ -107,8 +71,14 @@ export const updateCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   "category/delete",
   async (id: number) => {
-    await axios.delete(`${API_URL}/categories/${id}`);
-    return id;
+    try {
+      await axios.delete(`${API_URL}/category/${id}`);
+      toast.success("Category deleted succesfully");
+      // window.location.href = "/admin/dashboard/categories";
+      return id;
+    } catch (err) {
+      toast.error("Failed to delete category");
+    }
   }
 );
 

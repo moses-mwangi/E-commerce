@@ -4,6 +4,7 @@ import sequelize from "../../../shared/config/pg_database";
 class Category extends Model {
   public id!: number;
   public name!: string;
+  public status?: "active" | "not-Active";
   public longName?: string;
   public description!: string;
   public slug!: string;
@@ -25,6 +26,10 @@ Category.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM("active", "not-Active"),
+      defaultValue: "active",
     },
     longName: {
       type: DataTypes.STRING,
