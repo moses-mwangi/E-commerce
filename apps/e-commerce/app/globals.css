@@ -115,6 +115,13 @@ body {
   width: 100%;
 }
 
+.backg {
+  background-image: url("../public/category_Image/eletronicSBanner.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .loader {
   width: 10px;
   height: 10px;

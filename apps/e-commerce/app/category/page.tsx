@@ -157,7 +157,7 @@ export default function ProductCategories() {
                     >
                       <div className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 h-full">
                         <div
-                          className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-5 rounded-2xl group-hover:opacity-10 transition-opacity`}
+                          className={`absolute inset-0 bg-gradient-to-br ${category.color?.toLowerCase()} opacity-5 rounded-2xl group-hover:opacity-10 transition-opacity`}
                         />
 
                         <div className="relative space-y-4">

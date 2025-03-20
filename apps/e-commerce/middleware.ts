@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const protectedRoutes = ["/admin", "/account", "/orders"];
+  const protectedRoutes = ["/admins", "/account", "/orders"];
   const token = req.cookies.get("token")?.value;
 
   if (protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))) {
@@ -16,5 +16,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/account/:path*", "/orders/:path*"], // Match protected routes
+  matcher: ["/admins/:path*", "/account/:path*", "/orders/:path*"], // Match protected routes
 };

@@ -46,6 +46,17 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
             placeholder="Slug Details"
           />
         </div>
+        <div>
+          <div>
+            <Input
+              {...register(`subcategories.${index}.itemCount`, {
+                required: "itemCount is required",
+              })}
+              type="number"
+              placeholder="itemCount 10, 50, 200"
+            />
+          </div>
+        </div>
         <Textarea
           {...register(`subcategories.${index}.description`, {
             required: "Description is required",

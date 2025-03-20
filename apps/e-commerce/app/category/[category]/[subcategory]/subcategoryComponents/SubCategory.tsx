@@ -82,7 +82,7 @@ export default function SubCategory() {
             {capitalizeWords(decodedSub)}
           </h1>
           <p className="text-gray-600">
-            {subFilter?.description.substring(0, 185)}....
+            {subFilter?.description?.substring(0, 185)}....
           </p>
         </div>
         <div className="sticky top-0 z-10 bg-white rounded-lg my-4 dark:bg-gray-800 shadow-md p-4">

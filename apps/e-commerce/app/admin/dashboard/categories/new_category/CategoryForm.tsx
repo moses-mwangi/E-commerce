@@ -25,6 +25,7 @@ import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 interface CategoryFormData {
   name: string;
   slug: string;
+  itemCount: number;
   description: string;
   icon?: string;
   banner?: string;
@@ -37,6 +38,7 @@ interface CategoryFormData {
   }[];
   subcategories: {
     name: string;
+    itemCount: number;
     slug: string;
     description: string;
     banner?: string;
@@ -63,6 +65,7 @@ export function CategoryForm() {
         {
           name: "",
           slug: "",
+          itemCount: 0,
           description: "",
           featured: false,
           filters: [{ name: "", options: [""] }],
@@ -94,6 +97,8 @@ export function CategoryForm() {
     event?: React.BaseSyntheticEvent
   ) => {
     event?.preventDefault();
+
+    console.log(data);
     try {
       setIsLoading(true);
       dispatch(createCategory(data));
@@ -153,6 +158,31 @@ export function CategoryForm() {
                 <Input {...register("icon")} placeholder="Icon (optional)" />
               </div>
             </div>
+            <div className=" grid grid-cols-2 gap-5">
+              <div>
+                <Input
+                  {...register("itemCount", {
+                    required: "itemCount is required",
+                  })}
+                  type="number"
+                  placeholder="itemCount 10, 50, 200"
+                />
+                {errors.itemCount && (
+                  <span className="text-red-500">
+                    {errors.itemCount.message}
+                  </span>
+                )}
+              </div>
+              <div>
+                <Input
+                  {...register("slug", { required: "Name is required" })}
+                  placeholder="Slug Details"
+                />
+                {errors.slug && (
+                  <span className="text-red-500">{errors.slug.message}</span>
+                )}
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 {...register("banner")}
@@ -173,15 +203,7 @@ export function CategoryForm() {
                 Trending
               </label>
             </div>
-            <div>
-              <Input
-                {...register("slug", { required: "Name is required" })}
-                placeholder="Slug Details"
-              />
-              {errors.name && (
-                <span className="text-red-500">{errors.name.message}</span>
-              )}
-            </div>
+
             <div>
               <Textarea
                 {...register("description", {
@@ -232,6 +254,7 @@ export function CategoryForm() {
                   appendSubcategory({
                     name: "",
                     slug: "",
+                    itemCount: 0,
                     description: "",
                     featured: false,
                     filters: [{ name: "", options: [""] }],

@@ -155,12 +155,12 @@ export function UpdateFilterFieldset({
                 //   required: "Filter name is required",
                 // })}
 
-                {...register(
-                  `${prefix && index ? `${prefix}.${index}.name` : "name"} `,
-                  {
-                    required: "Filter name is required",
-                  }
-                )}
+                // {...register(
+                //   `${prefix && index ? `${prefix}.${index}.name` : "name"} `,
+                //   {
+                //     required: "Filter name is required",
+                //   }
+                // )}
                 value={filter.name}
                 onChange={
                   (e) => console.log("")
@@ -203,7 +203,7 @@ export function UpdateFilterFieldset({
                       //     required: "Option is required",
                       //   }
                       // )}
-                      defaultValue={el.option} // Ensure defaultValue is set
+                      value={el.option} // Ensure defaultValue is set
                       placeholder="Filter Option"
                     />
                     <Button
