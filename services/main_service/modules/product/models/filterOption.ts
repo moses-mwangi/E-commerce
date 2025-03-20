@@ -33,6 +33,7 @@ FilterOption.init(
     sequelize,
     tableName: "filter_options",
     modelName: "FilterOption",
+    indexes: [{ fields: ["filterId"] }],
     timestamps: true,
   }
 );

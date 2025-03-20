@@ -8,12 +8,19 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const pg_database_1 = __importDefault(require("./shared/config/pg_database"));
 const associations_1 = __importDefault(require("./modules/order/models/associations"));
 const associations_2 = __importDefault(require("./modules/product/models/associations"));
+const sequelize_1 = require("sequelize");
 (0, associations_1.default)();
 (0, associations_2.default)();
+dotenv_1.default.config();
+const url = String(process.env.PG_DATABASE_URL);
+const sequelizec = new sequelize_1.Sequelize(url, {
+    logging: console.log, // Logs SQL queries
+});
 dotenv_1.default.config({ path: "./.env" });
 //////////////////////////////// updating Order and Order_item /////////////////
 // Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
 // Promise.all([User.sync({ alter: true })])
+// Promise.all([User.sync({ force: true })])
 // Promise.all([
 //   Order.destroy({ where: {},, truncate: true }),
 //   OrderItem.destroy({ where: {} }),

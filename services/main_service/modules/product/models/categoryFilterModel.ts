@@ -44,6 +44,7 @@ Filter.init(
     sequelize,
     tableName: "filters",
     modelName: "Filter",
+    indexes: [{ fields: ["categoryId"] }],
     timestamps: true,
   }
 );

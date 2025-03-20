@@ -7,5 +7,8 @@ const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const url = String(process.env.PG_DATABASE_URL);
-const sequelize = new sequelize_1.Sequelize(url, { dialect: "postgres" });
+const sequelize = new sequelize_1.Sequelize(url, {
+    dialect: "postgres",
+    logging: console.log,
+});
 exports.default = sequelize;

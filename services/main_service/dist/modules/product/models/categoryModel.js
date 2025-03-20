@@ -17,6 +17,10 @@ Category.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
+    status: {
+        type: sequelize_1.DataTypes.ENUM("active", "not-Active"),
+        defaultValue: "active",
+    },
     longName: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
@@ -59,6 +63,7 @@ Category.init({
     sequelize: pg_database_1.default,
     tableName: "categories",
     modelName: "Category",
+    indexes: [{ fields: ["name"] }],
     timestamps: true,
 });
 exports.default = Category;

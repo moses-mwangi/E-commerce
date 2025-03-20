@@ -6,9 +6,17 @@ import Order from "./modules/order/models/ordersModel";
 import OrderItem from "./modules/order/models/itemOrder";
 import User from "./modules/users/models/userMode";
 import categoryAssociations from "./modules/product/models/associations";
+import { Sequelize } from "sequelize";
 
 setupAssociations();
 categoryAssociations();
+
+dotenv.config();
+const url = String(process.env.PG_DATABASE_URL);
+
+const sequelizec = new Sequelize(url, {
+  logging: console.log, // Logs SQL queries
+});
 
 dotenv.config({ path: "./.env" });
 
@@ -16,6 +24,7 @@ dotenv.config({ path: "./.env" });
 
 // Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
 // Promise.all([User.sync({ alter: true })])
+// Promise.all([User.sync({ force: true })])
 // Promise.all([
 //   Order.destroy({ where: {},, truncate: true }),
 //   OrderItem.destroy({ where: {} }),

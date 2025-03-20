@@ -41,6 +41,7 @@ Filter.init({
     sequelize: pg_database_1.default,
     tableName: "filters",
     modelName: "Filter",
+    indexes: [{ fields: ["categoryId"] }],
     timestamps: true,
 });
 exports.default = Filter;

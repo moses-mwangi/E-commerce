@@ -170,7 +170,7 @@ export default function ProductCategories() {
                               backgroundSize: "cover",
                               backgroundPosition: "center",
                             }}
-                          ></div>
+                          />
 
                           <div className="text-center space-y-2">
                             <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
@@ -209,7 +209,7 @@ export default function ProductCategories() {
                                         );
                                       }}
                                     >
-                                      <span>{sub.name}</span>
+                                      <span>{sub.name.split(" ")[0]}</span>
                                       <ArrowRight className="w-4 h-4" />
                                     </div>
                                   ))}

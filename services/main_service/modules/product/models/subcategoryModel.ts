@@ -55,6 +55,7 @@ Subcategory.init(
     sequelize,
     tableName: "subcategories",
     modelName: "Subcategory",
+    indexes: [{ fields: ["categoryId"] }],
     timestamps: true,
   }
 );

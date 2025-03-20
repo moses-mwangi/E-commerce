@@ -175,23 +175,164 @@ export const categoryController = {
 
   // Get all categories
   getAllCategories: catchAsync(async (req: Request, res: Response) => {
+    // const categories = await Category.findAll({
+    //   attributes: [
+    //     "id",
+    //     "name",
+    //     "status",
+    //     "slug",
+    //     "itemCount",
+    //     "banner",
+    //     "icon",
+    //     "description",
+    //   ],
+    //   include: [
+    //     {
+    //       model: Subcategory,
+    //       as: "subcategories",
+    //       attributes: ["id", "name", "slug", "itemCount", "description"],
+    //       include: [
+    //         {
+    //           model: Filter,
+    //           as: "filters",
+    //           attributes: ["id", "name"],
+    //           include: [
+    //             {
+    //               model: FilterOption,
+    //               as: "options",
+    //               attributes: ["id", "option"],
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       model: Filter,
+    //       as: "filters",
+    //       attributes: ["id", "name"],
+    //       include: [
+    //         {
+    //           model: FilterOption,
+    //           as: "options",
+    //           attributes: ["id", "option"],
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   limit: 10, // Implement pagination
+    //   offset: 0,
+    // });
+
+    // const categories = await Category.findAll({
+    //   attributes: [
+    //     "id",
+    //     "name",
+    //     "status",
+    //     "slug",
+    //     "itemCount",
+    //     "banner",
+    //     "icon",
+    //     "description",
+    //   ],
+    //   limit: 5, // Limit categories
+    //   offset: 0,
+    //   include: [
+    //     {
+    //       model: Subcategory,
+    //       as: "subcategories",
+    //       attributes: ["id", "name", "slug", "itemCount", "description"],
+    //       limit: 3, // Limit subcategories per category
+    //       include: [
+    //         {
+    //           model: Filter,
+    //           as: "filters",
+    //           attributes: ["id", "name"],
+    //           limit: 2, // Limit filters per subcategory
+    //           include: [
+    //             {
+    //               model: FilterOption,
+    //               as: "options",
+    //               attributes: ["id", "option"],
+    //               limit: 3, // Limit filter options per filter
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       model: Filter,
+    //       as: "filters",
+    //       attributes: ["id", "name"],
+    //       limit: 2, // Limit filters per category
+    //       include: [
+    //         {
+    //           model: FilterOption,
+    //           as: "options",
+    //           attributes: ["id", "option"],
+    //           limit: 3, // Limit filter options per filter
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
+
+    const limit = 6; // Number of categories per request
+    const categoryOffset = 0;
+
     const categories = await Category.findAll({
+      attributes: [
+        "id",
+        "name",
+        "status",
+        "slug",
+        "itemCount",
+        "banner",
+        "icon",
+        "description",
+      ],
+      limit: limit,
+      offset: categoryOffset, // Pagination for categories
       include: [
         {
           model: Subcategory,
           as: "subcategories",
+          attributes: ["id", "name", "slug", "itemCount", "description"],
+          limit: 3, // Limit subcategories
+          // offset: 0, // First round, start from 0
           include: [
             {
               model: Filter,
               as: "filters",
-              include: [{ model: FilterOption, as: "options" }],
+              attributes: ["id", "name"],
+              limit: 2, // Limit filters per subcategory
+              // offset: 0,
+              include: [
+                {
+                  model: FilterOption,
+                  as: "options",
+                  attributes: ["id", "option"],
+                  limit: 3,
+                  // offset: 0,
+                },
+              ],
             },
           ],
         },
         {
           model: Filter,
           as: "filters",
-          include: [{ model: FilterOption, as: "options" }],
+          attributes: ["id", "name"],
+          limit: 2, // Limit filters per category
+          // offset: 0,
+          include: [
+            {
+              model: FilterOption,
+              as: "options",
+              attributes: ["id", "option"],
+              limit: 3, // Limit filter options
+              // offset: 0,
+            },
+          ],
         },
       ],
     });

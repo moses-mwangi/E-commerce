@@ -31,6 +31,7 @@ FilterOption.init({
     sequelize: pg_database_1.default,
     tableName: "filter_options",
     modelName: "FilterOption",
+    indexes: [{ fields: ["filterId"] }],
     timestamps: true,
 });
 exports.default = FilterOption;

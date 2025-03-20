@@ -40,7 +40,7 @@ export default function CategoryPage() {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        ></div>
+        />
 
         <div className="containehr rounded-lg mt-4 mx-auto px-4 py-3">
           <Category />

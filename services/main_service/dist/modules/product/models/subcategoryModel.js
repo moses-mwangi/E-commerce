@@ -38,7 +38,7 @@ Subcategory.init({
     slug: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        // unique: true,
     },
     itemCount: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -49,6 +49,7 @@ Subcategory.init({
     sequelize: pg_database_1.default,
     tableName: "subcategories",
     modelName: "Subcategory",
+    indexes: [{ fields: ["categoryId"] }],
     timestamps: true,
 });
 exports.default = Subcategory;

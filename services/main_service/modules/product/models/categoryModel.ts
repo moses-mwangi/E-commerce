@@ -74,6 +74,8 @@ Category.init(
     sequelize,
     tableName: "categories",
     modelName: "Category",
+
+    indexes: [{ fields: ["name"] }],
     timestamps: true,
   }
 );
