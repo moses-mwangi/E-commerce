@@ -61,8 +61,8 @@ export default function Category() {
 
       <div className="bg-gray-50 px-6 rounded-xl mx-auto container pt-6  pb-16 dark:bg-gray-900 min-h-screen">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="flex items-center justify-between pb-6">
+            <h2 className="text-xl font-semibold">
               Browse {capitalizeWords(decodeURIComponent(String(category)))} by
               Category
             </h2>
@@ -77,7 +77,7 @@ export default function Category() {
             </Button>
           </div>
           <div className="grid cursor-pointer grid-cols-2 md:grid-cols-4 gap-4">
-            {categoryData?.subcategories.map((sub) => (
+            {categoryData?.subcategories.toReversed().map((sub) => (
               <div
                 onClick={() => {
                   const param = new URLSearchParams();
@@ -195,45 +195,47 @@ export default function Category() {
               <div className="col-span-1 p-4 bg-white dark:bg-gray-800 rounded shadow-md">
                 <h2 className="text-lg font-semibold mb-4">Filters</h2>
                 <div className="flex flex-col gap-3">
-                  {subFilter?.filters.map((el) => (
-                    <details key={el.id} className="border-b pb-2">
-                      <summary className="flex items-center justify-between cursor-pointer">
-                        {el.name} <ChevronDown />
-                      </summary>
-                      {el.options.map((opt) => (
-                        <div
-                          key={opt.id}
-                          className="flex justify-between mt-2 text-sm text-gray-600"
-                        >
-                          <label
+                  {subFilter?.filters
+                    .filter((fil) => fil.subcategoryId === null)
+                    .map((el) => (
+                      <details key={el.id} className="border-b pb-2">
+                        <summary className="flex items-center justify-between cursor-pointer">
+                          {el.name} <ChevronDown />
+                        </summary>
+                        {el.options.map((opt) => (
+                          <div
                             key={opt.id}
-                            className="flex items-center gap-2 cursor-pointer"
+                            className="flex justify-between mt-2 text-sm text-gray-600"
                           >
-                            <input
-                              type="checkbox"
-                              checked={selectedBrands.includes(opt.option)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedBrands([
-                                    ...selectedBrands,
-                                    opt.option,
-                                  ]);
-                                } else {
-                                  setSelectedBrands(
-                                    selectedBrands.filter(
-                                      (b) => b !== opt.option
-                                    )
-                                  );
-                                }
-                              }}
-                              className="rounded border-gray-300"
-                            />
-                            <span>{opt.option}</span>
-                          </label>
-                        </div>
-                      ))}
-                    </details>
-                  ))}
+                            <label
+                              key={opt.id}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedBrands.includes(opt.option)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedBrands([
+                                      ...selectedBrands,
+                                      opt.option,
+                                    ]);
+                                  } else {
+                                    setSelectedBrands(
+                                      selectedBrands.filter(
+                                        (b) => b !== opt.option
+                                      )
+                                    );
+                                  }
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                              <span>{opt.option}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </details>
+                    ))}
                 </div>
               </div>
             )}

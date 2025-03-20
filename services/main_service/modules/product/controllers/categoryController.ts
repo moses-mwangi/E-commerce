@@ -69,9 +69,6 @@ export const categoryController = {
                       categoryId: subcategory.categoryId,
                       subcategoryId: subcategory.id,
                     });
-                    // try {
-                    // } catch (err) {
-                    // }
 
                     if (
                       subcategory.categoryId === null ||

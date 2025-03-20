@@ -1,5 +1,6 @@
 export interface Filter {
   id: string;
+  subcategoryId: number;
   name: string;
   options: any[];
 }

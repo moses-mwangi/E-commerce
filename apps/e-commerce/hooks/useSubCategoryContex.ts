@@ -51,12 +51,6 @@ function useSubCategoryContex() {
       .join(" ");
   };
 
-  // const subFilter = categories
-  //   .find((el) => el.name.toLowerCase() === decodedCategory.toLowerCase())
-  //   ?.subcategories?.find(
-  //     (sub) => sub.name.toLowerCase() === decodedSub.toLowerCase()
-  //   );
-
   const id = searchParams.get("id");
   const subFilter = categories
     .find((el) => el.name.toLowerCase() === decodedCategory.toLowerCase())
@@ -65,8 +59,6 @@ function useSubCategoryContex() {
         String(sub.id) === id ||
         sub.name.toLowerCase() === decodedSub.toLowerCase()
     );
-
-  console.log(subFilter);
 
   const handleAddToCart = (id: any) => {
     const product = products.find((el) => el.id === id);
