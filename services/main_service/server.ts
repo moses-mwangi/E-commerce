@@ -7,18 +7,20 @@ import OrderItem from "./modules/order/models/itemOrder";
 import User from "./modules/users/models/userMode";
 import categoryAssociations from "./modules/product/models/associations";
 import { Sequelize } from "sequelize";
+import { cpus } from "os";
+import cluster, { Worker } from "cluster";
 
 setupAssociations();
 categoryAssociations();
 
 dotenv.config();
-const url = String(process.env.PG_DATABASE_URL);
-
-const sequelizec = new Sequelize(url, {
-  logging: console.log, // Logs SQL queries
-});
-
 dotenv.config({ path: "./.env" });
+
+process.on("uncaughtException", (err) => {
+  console.error("Handling Exceptional Error. Shutting down...💥💥💥💥");
+  console.error(err.name, err.message);
+  process.exit(1);
+});
 
 //////////////////////////////// updating Order and Order_item /////////////////
 
@@ -50,10 +52,40 @@ const pg_connect = async () => {
     console.log("Unable to connect to database", err);
   }
 };
-
 pg_connect();
 
-const port = Number(process.env.PORT);
-app.listen(port, "127.0.0.1", () => {
-  console.log(`Server running at ${port}`);
-});
+const numCpu = cpus().length + 6;
+
+if (cluster.isPrimary) {
+  console.log(`Primary process ${process.pid} is running`);
+
+  for (let i = 0; i < numCpu; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(
+      `Worker ${worker.process.pid} exit with code ${code}, signal ${signal}`
+    );
+    cluster.fork();
+  });
+} else {
+  const workerIndex = cluster.worker?.id;
+  const port = Number(process.env.PORT) + Number(workerIndex);
+
+  const server = app.listen(port, "127.0.0.1", () => {
+    console.log(`Server running at ${port}`);
+  });
+
+  // process.on("unhandledRejection", (err) => {
+  //   console.error("Unhandled Rejection. Shutting down...💥💥💥💥");
+  //   console.error(err);
+  //   server.close(() => {
+  //     process.exit(1);
+  //   });
+  //   app.use((req, res, next) => {
+  //     console.log(`Request received by Worker ${process.pid} on port ${port}`);
+  //     next();
+  //   });
+  // });
+}

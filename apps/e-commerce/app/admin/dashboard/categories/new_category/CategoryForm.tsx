@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { Plus, Minus, Save, Loader2, Upload } from "lucide-react";
+import { Plus, Minus, Save, Loader2, Upload, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { createCategory } from "@/redux/slices/categorySlice";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 interface CategoryFormData {
   name: string;
@@ -52,6 +54,7 @@ interface CategoryFormData {
 
 export function CategoryForm() {
   const dispatch: AppDispatch = useDispatch();
+  const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -119,8 +122,16 @@ export function CategoryForm() {
           </h1>
         </div>
         <div className="flex items-center space-x-3">
+          <Label
+            className="bg-gray-100 text-gray-800 transition-all duration-150 flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
+            onClick={() => {
+              push(`/admin/dashboard/categories`);
+            }}
+          >
+            <ArrowLeft size={17} />
+            Back
+          </Label>
           <Button variant="outline">Save as Draft</Button>
-
           <Button
             disabled={isLoading === true}
             className="bg-orange-500 w-40 hover:bg-orange-600"

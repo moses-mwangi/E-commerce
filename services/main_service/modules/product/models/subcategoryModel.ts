@@ -5,6 +5,7 @@ import Category from "./categoryModel";
 class Subcategory extends Model {
   public id!: number;
   public categoryId!: number;
+  public status?: string;
   public name!: string;
   public longName?: string;
   public description?: string;
@@ -32,6 +33,11 @@ Subcategory.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: "Active",
+    },
+
     longName: {
       type: DataTypes.STRING,
       allowNull: true,

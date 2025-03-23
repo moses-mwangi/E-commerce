@@ -1,6 +1,7 @@
+"use client";
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { Plus, Minus, Save, Loader2, Upload } from "lucide-react";
+import { Plus, Minus, Save, Loader2, Upload, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,13 +13,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SubcategoryFieldset } from "./SubcategoryFieldset";
 import { Card } from "@/components/ui/card";
-import { FilterFieldset } from "./FilterFieldset";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { addSubcategory, createCategory } from "@/redux/slices/categorySlice";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { FilterFieldset } from "../../../../new_category/FilterFieldset";
+import { useParams, useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
 
 interface CategoryFormData {
   name: string;
+  slug: string;
+  itemCount: number;
   description: string;
   icon?: string;
   banner?: string;
@@ -31,6 +40,8 @@ interface CategoryFormData {
   }[];
   subcategories: {
     name: string;
+    itemCount: number;
+    slug: string;
     description: string;
     banner?: string;
     featured: boolean;
@@ -41,9 +52,10 @@ interface CategoryFormData {
   }[];
 }
 
-const initialData: any = null;
-
-export function CategoryForm() {
+export default function AddNewSubcategory() {
+  const { id } = useParams();
+  const { back, push } = useRouter();
+  const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -56,6 +68,8 @@ export function CategoryForm() {
       subcategories: [
         {
           name: "",
+          slug: "",
+          itemCount: 0,
           description: "",
           featured: false,
           filters: [{ name: "", options: [""] }],
@@ -82,59 +96,63 @@ export function CategoryForm() {
     name: "subcategories",
   });
 
-  const categoryFormSubmit = async (data: any) => {
-    console.log("data", data);
+  const categoryFormSubmit = async (
+    data: any,
+    event?: React.BaseSyntheticEvent
+  ) => {
+    event?.preventDefault();
+
+    console.log(data);
     try {
-      // const response = await fetch("/api/v1/categories", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(data),
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error("Failed to create category");
-      // }
-
-      // const result = await response.json();
-      toast.success("Category created successfully!");
-
-      // Optionally redirect or update UI
+      setIsLoading(true);
+      const newCategory = { id: Number(id), data: data };
+      dispatch(addSubcategory(newCategory));
+      console.log(newCategory);
     } catch (error) {
       toast.error("Failed to create category");
-      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={() => handleSubmit(categoryFormSubmit)}
-      className="space-y-7 p-7"
-    >
+    <form onSubmit={handleSubmit(categoryFormSubmit)} className="space-y-7 p-7">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Create New Category</h1>
+          <h1 className="text-2xl font-bold">Create New Subcategory</h1>
           <h1 className="text-gray-600 mt-1">
-            Add a new category to your store
+            Add a new subcategory to your store
           </h1>
         </div>
         <div className="flex items-center space-x-3">
+          <Label
+            className="bg-gray-100 text-gray-800 transition-all duration-150 flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
+            onClick={() => {
+              push(`/admin/dashboard/categories/edit/${id}`);
+              push(`/admin/dashboard/categories/edit/${id}/subcategories`);
+            }}
+          >
+            <ArrowLeft size={17} />
+            Back
+          </Label>
           <Button variant="outline">Save as Draft</Button>
 
           <Button
-            // onClick={() => {
-            //   categoryFormSubmit();
-            // }}
-            type="submit"
-            className="bg-orange-500 hover:bg-orange-600"
+            disabled={isLoading === true}
+            className="bg-orange-500 w-[179px] hover:bg-orange-600"
           >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            {isLoading === false ? (
+              <div className="flex justify-between items-center">
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4 mr-2" />
+                )}
+                Publish Subcategory
+              </div>
             ) : (
-              <Upload className="w-4 h-4 mr-2" />
+              <ButtonLoader />
             )}
-            Publish Category
           </Button>
         </div>
       </div>
@@ -154,6 +172,31 @@ export function CategoryForm() {
               </div>
               <div>
                 <Input {...register("icon")} placeholder="Icon (optional)" />
+              </div>
+            </div>
+            <div className=" grid grid-cols-2 gap-5">
+              <div>
+                <Input
+                  {...register("itemCount", {
+                    required: "itemCount is required",
+                  })}
+                  type="number"
+                  placeholder="itemCount 10, 50, 200"
+                />
+                {errors.itemCount && (
+                  <span className="text-red-500">
+                    {errors.itemCount.message}
+                  </span>
+                )}
+              </div>
+              <div>
+                <Input
+                  {...register("slug", { required: "Name is required" })}
+                  placeholder="Slug Details"
+                />
+                {errors.slug && (
+                  <span className="text-red-500">{errors.slug.message}</span>
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -176,6 +219,7 @@ export function CategoryForm() {
                 Trending
               </label>
             </div>
+
             <div>
               <Textarea
                 {...register("description", {
@@ -207,78 +251,12 @@ export function CategoryForm() {
                 register={register}
                 remove={removeFilter}
                 control={control}
+                ///
+                prefix="filters"
               />
             ))}
           </Card>
         </div>
-        {/* Subcategories */}
-        <div>
-          <Card className="space-y-4 p-5">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg text-gray-800">Subcategories</h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  appendSubcategory({
-                    name: "",
-                    description: "",
-                    featured: false,
-                    filters: [{ name: "", options: [""] }],
-                  })
-                }
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Subcategory
-              </Button>
-            </div>
-            {subcategoryFields.map((field, index) => (
-              <SubcategoryFieldset
-                key={field.id}
-                index={index}
-                register={register}
-                remove={removeSubcategory}
-                control={control}
-              />
-            ))}
-          </Card>
-        </div>
-        <div className=" hidden">
-          <Card className="space-y-4 p-5">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg text-gray-800">Subcategories</h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  appendSubcategory({
-                    name: "",
-                    description: "",
-                    featured: false,
-                    filters: [{ name: "", options: [""] }],
-                  })
-                }
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Subcategory
-              </Button>
-            </div>
-            {subcategoryFields.map((field, index) => (
-              <SubcategoryFieldset
-                key={field.id}
-                index={index}
-                register={register}
-                remove={removeSubcategory}
-                control={control}
-              />
-            ))}
-          </Card>
-        </div>
-        <Button variant="outline" type="submit">
-          Submit
-        </Button>
       </div>
     </form>
   );

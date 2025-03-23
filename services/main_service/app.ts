@@ -11,6 +11,7 @@ import { stripeRouter, paypalRouter, webhookRouter } from "./modules/payments";
 import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
 import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
+import AppError from "./shared/utils/AppError";
 
 const app = express();
 app.use(express.json());
@@ -85,9 +86,23 @@ app.use("/api/webhooks", webhookRouter);
 //globalError
 app.use(globalErrorHandler);
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: err.message });
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//   console.error(err.stack);
+//   res.status(500).json({ error: err.message });
+// });
+
+app.use((req, res, next) => {
+  res.json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
+
+  next();
 });
+
+// app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
+//   const statusCode = err.statusCode || 500;
+//   res.status(statusCode).json({
+//     status: "error",
+//     message: err.isOperational ? err.message : "Internal Server Error",
+//   });
+// });
 
 export default app;

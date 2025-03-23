@@ -1,10 +1,10 @@
 import React from "react";
-import CategoryUpdate from "./updateCategory/CategoryUpdate";
+import SubCategoryTable from "./SubCategoryTable";
 
 export default function page() {
   return (
     <div>
-      <CategoryUpdate />
+      <SubCategoryTable />
     </div>
   );
 }

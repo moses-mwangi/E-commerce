@@ -12,8 +12,6 @@ export const categoryController = {
   createCategory: catchAsync(async (req: Request, res: Response) => {
     const categoryData = req.body;
 
-    console.log(categoryData);
-
     if (!categoryData.name || !categoryData.slug) {
       throw new Error("Name and slug are required for a category.");
     }
@@ -27,7 +25,6 @@ export const categoryController = {
     }
 
     const category = await sequelize.transaction(async (t: Transaction) => {
-      // Create category
       const newCategory = await Category.create(
         {
           name: categoryData.name,
@@ -43,12 +40,10 @@ export const categoryController = {
         { transaction: t }
       );
 
-      // Create subcategories if provided
       if (categoryData.subcategories?.length) {
         await Promise.all(
           categoryData.subcategories.map(async (subData: any) => {
             try {
-              // Create subcategory
               const subcategory = await Subcategory.create(
                 {
                   name: subData.name,
@@ -60,7 +55,6 @@ export const categoryController = {
                 { transaction: t }
               );
 
-              // Create subcategory filters if provided
               if (subData.filters?.length) {
                 await Promise.all(
                   subData.filters.map(async (filter: any) => {
@@ -104,7 +98,7 @@ export const categoryController = {
               }
             } catch (err) {
               console.error("Error creating subcategory:", err);
-              throw err; // Propagate the error to roll back the transaction
+              throw err;
             }
           })
         );
@@ -173,110 +167,8 @@ export const categoryController = {
     });
   }),
 
-  // Get all categories
   getAllCategories: catchAsync(async (req: Request, res: Response) => {
-    // const categories = await Category.findAll({
-    //   attributes: [
-    //     "id",
-    //     "name",
-    //     "status",
-    //     "slug",
-    //     "itemCount",
-    //     "banner",
-    //     "icon",
-    //     "description",
-    //   ],
-    //   include: [
-    //     {
-    //       model: Subcategory,
-    //       as: "subcategories",
-    //       attributes: ["id", "name", "slug", "itemCount", "description"],
-    //       include: [
-    //         {
-    //           model: Filter,
-    //           as: "filters",
-    //           attributes: ["id", "name"],
-    //           include: [
-    //             {
-    //               model: FilterOption,
-    //               as: "options",
-    //               attributes: ["id", "option"],
-    //             },
-    //           ],
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       model: Filter,
-    //       as: "filters",
-    //       attributes: ["id", "name"],
-    //       include: [
-    //         {
-    //           model: FilterOption,
-    //           as: "options",
-    //           attributes: ["id", "option"],
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   limit: 10, // Implement pagination
-    //   offset: 0,
-    // });
-
-    // const categories = await Category.findAll({
-    //   attributes: [
-    //     "id",
-    //     "name",
-    //     "status",
-    //     "slug",
-    //     "itemCount",
-    //     "banner",
-    //     "icon",
-    //     "description",
-    //   ],
-    //   limit: 5, // Limit categories
-    //   offset: 0,
-    //   include: [
-    //     {
-    //       model: Subcategory,
-    //       as: "subcategories",
-    //       attributes: ["id", "name", "slug", "itemCount", "description"],
-    //       limit: 3, // Limit subcategories per category
-    //       include: [
-    //         {
-    //           model: Filter,
-    //           as: "filters",
-    //           attributes: ["id", "name"],
-    //           limit: 2, // Limit filters per subcategory
-    //           include: [
-    //             {
-    //               model: FilterOption,
-    //               as: "options",
-    //               attributes: ["id", "option"],
-    //               limit: 3, // Limit filter options per filter
-    //             },
-    //           ],
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       model: Filter,
-    //       as: "filters",
-    //       attributes: ["id", "name"],
-    //       limit: 2, // Limit filters per category
-    //       include: [
-    //         {
-    //           model: FilterOption,
-    //           as: "options",
-    //           attributes: ["id", "option"],
-    //           limit: 3, // Limit filter options per filter
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // });
-
-    const limit = 6; // Number of categories per request
+    const limit = 6;
     const categoryOffset = 0;
 
     const categories = await Category.findAll({
@@ -290,28 +182,28 @@ export const categoryController = {
         "icon",
         "description",
       ],
-      limit: limit,
-      offset: categoryOffset, // Pagination for categories
+      // limit: limit,
+      // offset: categoryOffset, // Pagination for categories
       include: [
         {
           model: Subcategory,
           as: "subcategories",
           attributes: ["id", "name", "slug", "itemCount", "description"],
-          limit: 3, // Limit subcategories
+          // limit: 3, // Limit subcategories
           // offset: 0, // First round, start from 0
           include: [
             {
               model: Filter,
               as: "filters",
               attributes: ["id", "name"],
-              limit: 2, // Limit filters per subcategory
+              // limit: 2, // Limit filters per subcategory
               // offset: 0,
               include: [
                 {
                   model: FilterOption,
                   as: "options",
                   attributes: ["id", "option"],
-                  limit: 3,
+                  // limit: 3,
                   // offset: 0,
                 },
               ],
@@ -319,17 +211,18 @@ export const categoryController = {
           ],
         },
         {
+          where: { subcategoryId: null },
           model: Filter,
           as: "filters",
           attributes: ["id", "name"],
-          limit: 2, // Limit filters per category
+          // limit: 2, // Limit filters per category
           // offset: 0,
           include: [
             {
               model: FilterOption,
               as: "options",
               attributes: ["id", "option"],
-              limit: 3, // Limit filter options
+              // limit: 3, // Limit filter options
               // offset: 0,
             },
           ],
@@ -350,27 +243,58 @@ export const categoryController = {
     const { identifier, id } = req.params;
 
     const category = await Category.findOne({
-      where: sequelize.or(
-        { id: id }
-        // { id: isNaN(+identifier) ? null : +identifier }
-        // { slug: identifier }
-      ),
+      where: sequelize.or({ id: id }),
+      attributes: [
+        "id",
+        "name",
+        "status",
+        "slug",
+        "itemCount",
+        "banner",
+        "icon",
+        "description",
+      ],
+      // limit: limit,
+      // offset: categoryOffset, // Pagination for categories
       include: [
         {
           model: Subcategory,
           as: "subcategories",
+          attributes: ["id", "name", "slug", "itemCount", "description"],
+          // limit: 3, // Limit subcategories
+          // offset: 0, // First round, start from 0
           include: [
             {
               model: Filter,
               as: "filters",
-              include: [{ model: FilterOption, as: "options" }],
+              attributes: ["id", "name"],
+              // limit: 2, // Limit filters per subcategory
+              // offset: 0,
+              include: [
+                {
+                  model: FilterOption,
+                  as: "options",
+                  attributes: ["id", "option"],
+                  // limit: 3,
+                  // offset: 0,
+                },
+              ],
             },
           ],
         },
         {
+          where: { subcategoryId: null },
           model: Filter,
           as: "filters",
-          include: [{ model: FilterOption, as: "options" }],
+          attributes: ["id", "name"],
+
+          include: [
+            {
+              model: FilterOption,
+              as: "options",
+              attributes: ["id", "option"],
+            },
+          ],
         },
       ],
     });
@@ -387,50 +311,104 @@ export const categoryController = {
     });
   }),
 
-  // Update category
-  updateCategory: catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const updateData = req.body;
+  updateCategory: catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { id } = req.params;
+      const updateDatas = { ...req.body };
 
-    const category = await Category.findByPk(id);
+      delete updateDatas.id;
 
-    if (!category) {
-      throw new AppError("Category not found", 404);
-    }
+      const category = await Category.findByPk(id, {
+        include: [
+          {
+            model: Filter,
+            as: "filters",
+            where: { subcategoryId: null },
+            include: [{ model: FilterOption, as: "options" }],
+          },
+        ],
+      });
 
-    await sequelize.transaction(async (t: Transaction) => {
-      await category.update(updateData, { transaction: t });
-
-      // Update filters if provided
-      if (updateData.filters) {
-        await Filter.destroy({
-          where: { categoryId: id },
-          transaction: t,
-        });
-
-        await Promise.all(
-          updateData.filters.map((filter: any) =>
-            Filter.create({ ...filter, categoryId: id }, { transaction: t })
-          )
-        );
+      if (!category) {
+        return next(new AppError("Category not found", 404));
       }
-    });
 
-    // Fetch updated category with associations
-    const updatedCategory = await Category.findByPk(id, {
-      include: [
-        { model: Subcategory, as: "subcategories" },
-        { model: Filter, as: "filters" },
-      ],
-    });
+      const updateData = {
+        ...category.toJSON(),
+        ...Object.fromEntries(
+          Object.entries(updateDatas).filter(
+            ([_, value]) => value !== undefined
+          )
+        ),
+      };
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        category: updatedCategory,
-      },
-    });
-  }),
+      await sequelize.transaction(async (t: Transaction) => {
+        await category.update(updateData, { transaction: t });
+
+        if (updateData.filters?.length) {
+          const existingFilters = await Filter.findAll({
+            where: { categoryId: id, subcategoryId: null },
+            transaction: t,
+          });
+
+          await Promise.all(
+            existingFilters.map(async (filter) => {
+              await FilterOption.destroy({
+                where: { filterId: filter.id },
+                transaction: t,
+              });
+              await filter.destroy({ transaction: t });
+            })
+          );
+
+          await Promise.all(
+            updateData.filters.map(async (filter: any) => {
+              const newFilter = await Filter.create(
+                {
+                  name: filter.name,
+                  categoryId: id,
+                },
+                { transaction: t }
+              );
+
+              if (filter.options?.length) {
+                await Promise.all(
+                  filter.options.map((option: string) =>
+                    FilterOption.create(
+                      {
+                        option: option,
+                        filterId: newFilter.id,
+                      },
+                      { transaction: t }
+                    )
+                  )
+                );
+              }
+            })
+          );
+        }
+      });
+
+      const updatedCategory = await Category.findByPk(id, {
+        include: [
+          { model: Subcategory, as: "subcategories" },
+          {
+            model: Filter,
+            as: "filters",
+            where: { subcategoryId: null },
+            include: [{ model: FilterOption, as: "options" }],
+          },
+        ],
+      });
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          category: updatedCategory,
+        },
+      });
+    }
+  ),
 
   deleteCategory: catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -503,131 +481,384 @@ export const categoryController = {
   ),
 
   // Add subcategory to category
-  addSubcategory: catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const subcategoryData = req.body;
+  // addSubcategory: catchAsync(
+  //   async (req: Request, res: Response, next: NextFunction) => {
+  //     const { id } = req.params;
 
-    const category = await Category.findByPk(id);
+  //     const subcategoryData = req.body;
 
-    if (!category) {
-      throw new AppError("Category not found", 404);
-    }
+  //     const category = await Category.findByPk(id);
 
-    const subcategory = await sequelize.transaction(async (t: Transaction) => {
-      const newSubcategory = await Subcategory.create(
-        { ...subcategoryData, categoryId: id },
-        { transaction: t }
-      );
+  //     if (!category) {
+  //       throw new AppError("Category not found", 404);
+  //     }
 
-      // Create filters if provided
-      if (subcategoryData.filters?.length) {
-        await Promise.all(
-          subcategoryData.filters.map((filter: any) =>
-            Filter.create(
-              { ...filter, subcategoryId: newSubcategory.id },
-              { transaction: t }
-            )
-          )
-        );
+  //     const subcategory = await sequelize.transaction(
+  //       async (t: Transaction) => {
+  //         const newSubcategory = await Subcategory.create(
+  //           {
+  //             name: subcategoryData.name,
+  //             slug: subcategoryData.slug,
+  //             description: subcategoryData.description,
+  //             itemCount: subcategoryData.itemCount,
+  //             categoryId: Number(id),
+  //           },
+  //           { transaction: t }
+  //         );
+
+  //         if (subcategoryData.filters?.length) {
+  //           await Promise.all(
+  //             subcategoryData.filters.map(async (filter: any) => {
+  //               if (
+  //                 newSubcategory.categoryId === null ||
+  //                 newSubcategory.id === null
+  //               ) {
+  //                 res.json({ msg: "NO IDS " });
+  //               }
+
+  //               const newFilter = await Filter.create(
+  //                 {
+  //                   name: filter.name,
+  //                   subcategoryId: Number(newSubcategory.id),
+  //                   categoryId: Number(id),
+  //                 },
+  //                 { transaction: t }
+  //               );
+
+  //               if (filter.options?.length) {
+  //                 await Promise.all(
+  //                   filter.options.map((option: string) =>
+  //                     FilterOption.create(
+  //                       {
+  //                         option: option,
+  //                         filterId: newFilter.id,
+  //                       },
+  //                       { transaction: t }
+  //                     )
+  //                   )
+  //                 );
+  //               }
+  //             })
+  //           );
+  //         }
+
+  //         return newSubcategory;
+  //       }
+  //     );
+
+  //     // Fetch the subcategory with its filters
+  //     const subcategoryWithFilters = await Subcategory.findByPk(
+  //       subcategory.id,
+  //       {
+  //         include: [{ model: Filter, as: "filters" }],
+  //       }
+  //     );
+
+  //     res.status(201).json({
+  //       status: "success",
+  //       data: {
+  //         subcategory: subcategoryWithFilters,
+  //       },
+  //     });
+  //   }
+  // ),
+
+  addSubcategory: catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { id } = req.params;
+      const subcategoryData = req.body;
+
+      const category = await Category.findByPk(id);
+      if (!category) {
+        return next(new AppError("Category not found", 404));
       }
 
-      return newSubcategory;
+      const subcategory = await sequelize.transaction(
+        async (t: Transaction) => {
+          const newSubcategory = await Subcategory.create(
+            {
+              name: subcategoryData.name,
+              slug: subcategoryData.slug,
+              description: subcategoryData.description,
+              itemCount: subcategoryData.itemCount,
+              categoryId: Number(id),
+            },
+            { transaction: t }
+          );
+
+          if (subcategoryData.filters?.length) {
+            await Promise.all(
+              subcategoryData.filters.map(async (filter: any) => {
+                if (!newSubcategory.categoryId || !newSubcategory.id) {
+                  throw new AppError("Subcategory or category ID missing", 400);
+                }
+
+                const newFilter = await Filter.create(
+                  {
+                    name: filter.name,
+                    subcategoryId: Number(newSubcategory.id),
+                    categoryId: Number(id),
+                  },
+                  { transaction: t }
+                );
+
+                if (filter.options?.length) {
+                  await Promise.all(
+                    filter.options.map((option: string) =>
+                      FilterOption.create(
+                        {
+                          option: option,
+                          filterId: newFilter.id,
+                        },
+                        { transaction: t }
+                      )
+                    )
+                  );
+                }
+              })
+            );
+          }
+
+          return newSubcategory;
+        }
+      );
+
+      // Fetch the newly created subcategory with filters
+      const subcategoryWithFilters = await Subcategory.findByPk(
+        subcategory.id,
+        {
+          include: [{ model: Filter, as: "filters" }],
+        }
+      );
+
+      if (!subcategoryWithFilters) {
+        return next(new AppError("Subcategory could not be retrieved", 500));
+      }
+
+      res.status(201).json({
+        status: "success",
+        data: {
+          subcategory: subcategoryWithFilters,
+        },
+      });
+    }
+  ),
+
+  getSubcategories: catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const subcategory = await Subcategory.findAll({
+      where: { categoryId: id },
+      include: [
+        {
+          model: Filter,
+          as: "filters",
+          include: [{ model: FilterOption, as: "options" }],
+        },
+      ],
     });
 
-    // Fetch the subcategory with its filters
-    const subcategoryWithFilters = await Subcategory.findByPk(subcategory.id, {
-      include: [{ model: Filter, as: "filters" }],
-    });
-
-    res.status(201).json({
-      status: "success",
-      data: {
-        subcategory: subcategoryWithFilters,
-      },
-    });
+    res.status(201).json({ length: subcategory.length, subcategory });
   }),
 
-  //////////////////////////////
   getSubcategory: catchAsync(async (req: Request, res: Response) => {
     const { categoryId, subcategoryId } = req.params;
     const subcategory = await Subcategory.findOne({
       where: { categoryId: categoryId, id: subcategoryId },
-      include: [{ model: Filter, as: "filters" }],
+      include: [
+        {
+          attributes: ["id", "name", "categoryId", "subcategoryId"],
+          model: Filter,
+          as: "filters",
+          include: [
+            {
+              attributes: ["id", "filterId", "option"],
+              model: FilterOption,
+              as: "options",
+            },
+          ],
+        },
+      ],
     });
 
-    res.status(2001).json({ subcategory });
+    res.status(200).json({ subcategory });
   }),
-  ///////////////////////////////////
 
-  // Update subcategory
-  updateSubcategory: catchAsync(async (req: Request, res: Response) => {
-    const { categoryId, subcategoryId } = req.params;
-    const updateData = req.body;
+  ////////////////// Update subcategory
+  updateSubcategory: catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { categoryId, subcategoryId } = req.params;
+      const updateDatas = { ...req.body };
 
-    const subcategory = await Subcategory.findOne({
-      where: {
-        id: subcategoryId,
-        categoryId,
-      },
-    });
+      delete updateDatas.id;
 
-    if (!subcategory) {
-      throw new AppError("Subcategory not found", 404);
-    }
+      const subcategory = await Subcategory.findOne({
+        where: { categoryId: categoryId, id: subcategoryId },
+        include: [
+          {
+            attributes: ["id", "name", "categoryId", "subcategoryId"],
+            model: Filter,
+            as: "filters",
+            include: [
+              {
+                attributes: ["id", "filterId", "option"],
+                model: FilterOption,
+                as: "options",
+              },
+            ],
+          },
+        ],
+      });
 
-    await sequelize.transaction(async (t: Transaction) => {
-      await subcategory.update(updateData, { transaction: t });
-
-      // Update filters if provided
-      if (updateData.filters) {
-        await Filter.destroy({
-          where: { subcategoryId },
-          transaction: t,
-        });
-
-        await Promise.all(
-          updateData.filters.map((filter: any) =>
-            Filter.create({ ...filter, subcategoryId }, { transaction: t })
-          )
-        );
+      if (!subcategory) {
+        return next(new AppError("Subcategory not found", 404));
       }
-    });
 
-    // Fetch updated subcategory with filters
-    const updatedSubcategory = await Subcategory.findByPk(subcategoryId, {
-      include: [{ model: Filter, as: "filters" }],
-    });
+      // const updateData = {
+      //   ...subcategory.toJSON(),
+      //   ...Object.fromEntries(
+      //     Object.entries(updateDatas).filter(
+      //       ([_, value]) => value !== undefined
+      //     )
+      //   ),
+      // };
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        subcategory: updatedSubcategory,
-      },
-    });
-  }),
+      const updateData = {
+        ...updateDatas,
+      };
+
+      await sequelize.transaction(async (t: Transaction) => {
+        await subcategory.update(updateData, { transaction: t });
+
+        if (updateData.filters?.length) {
+          const existingFilters = await Filter.findAll({
+            where: { categoryId: categoryId, subcategoryId: subcategoryId },
+            transaction: t,
+          });
+
+          await Promise.all(
+            existingFilters.map(async (filter) => {
+              await FilterOption.destroy({
+                where: { filterId: filter.id },
+                transaction: t,
+              });
+
+              if (existingFilters.length > 0) {
+                await filter.destroy({ transaction: t });
+                await Filter.destroy({
+                  where: {
+                    categoryId: categoryId,
+                    subcategoryId: subcategoryId,
+                  },
+                  transaction: t,
+                });
+              }
+            })
+          );
+
+          await Promise.all(
+            updateData.filters.map(async (filter: any) => {
+              const newFilter = await Filter.create(
+                {
+                  name: filter.name,
+                  categoryId: categoryId,
+                  subcategoryId: subcategoryId,
+                },
+                { transaction: t }
+              );
+
+              if (filter.options?.length) {
+                await Promise.all(
+                  filter.options.map((option: string) =>
+                    FilterOption.create(
+                      {
+                        option: option,
+                        filterId: newFilter.id,
+                      },
+                      { transaction: t }
+                    )
+                  )
+                );
+              }
+            })
+          );
+        }
+      });
+
+      // Fetch updated subcategory with filters
+      const updatedSubcategory = await Subcategory.findByPk(subcategoryId, {
+        include: [{ model: Filter, as: "filters" }],
+      });
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          subcategory: updatedSubcategory,
+        },
+      });
+    }
+  ),
 
   // Remove subcategory
-  removeSubcategory: catchAsync(async (req: Request, res: Response) => {
-    const { categoryId, subcategoryId } = req.params;
+  removeSubcategory: catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { categoryId, subcategoryId } = req.params;
 
-    const deleted = await Subcategory.destroy({
-      where: {
-        id: subcategoryId,
-        categoryId,
-      },
-    });
+      const transaction = await sequelize.transaction();
 
-    if (!deleted) {
-      throw new AppError("Subcategory not found", 404);
+      try {
+        const subcategory = await Subcategory.findOne({
+          where: {
+            id: subcategoryId,
+            categoryId,
+          },
+          transaction,
+        });
+
+        if (!subcategory) {
+          await transaction.rollback();
+          return next(new AppError("SubCategory not found", 404));
+        }
+
+        const filters = await Filter.findAll({
+          where: {
+            categoryId: categoryId,
+            subcategoryId: subcategoryId,
+          },
+          transaction,
+        });
+
+        const filterIds = filters.map((filter) => filter.id);
+
+        await FilterOption.destroy({
+          where: { filterId: { [Op.in]: filterIds } },
+          transaction,
+        });
+
+        await Filter.destroy({
+          where: { id: { [Op.in]: filterIds } },
+          transaction,
+        });
+
+        await Subcategory.destroy({
+          where: { id: subcategoryId, categoryId: categoryId },
+          transaction,
+        });
+
+        await transaction.commit();
+
+        res.status(204).json({
+          status: "success",
+          data: null,
+        });
+      } catch (error) {
+        await transaction.rollback();
+        console.error("Error deleting category:", (error as any).message);
+        next(new AppError("Failed to delete category", 500));
+      }
     }
+  ),
 
-    res.status(204).json({
-      status: "success",
-      data: null,
-    });
-  }),
-
-  // Update category filters
+  // NOT USED Update category filters
   updateFilters: catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { filters } = req.body;

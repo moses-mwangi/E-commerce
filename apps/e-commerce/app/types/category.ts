@@ -11,7 +11,7 @@ export interface Subcategory {
   name: string;
   description: string;
   itemCount?: number;
-
+  status?: string;
   banner?: string;
   featured: boolean;
   filters: Filter[];
@@ -36,6 +36,7 @@ export interface Category {
 export interface CategoryState {
   categories: Category[];
   selectedCategory: Category | null;
+  selectedSubCategories: Subcategory[] | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }

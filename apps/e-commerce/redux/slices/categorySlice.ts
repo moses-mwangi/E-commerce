@@ -4,13 +4,12 @@ import {
   Filter,
   Subcategory,
 } from "@/app/types/category";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
 import toast from "react-hot-toast";
 
 dotenv.config();
-
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
 export const fetchCategories = createAsyncThunk(
@@ -23,11 +22,10 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
-// Fetch category by ID or slug
 export const fetchCategory = createAsyncThunk(
   "category/fetch",
   async (identifier: number) => {
-    const res = await axios.get(`${API_URL}/categories/${identifier}`);
+    const res = await axios.get(`${API_URL}/category/${identifier}`);
     return res.data.data.category;
   }
 );
@@ -52,7 +50,8 @@ export const createCategory = createAsyncThunk(
       const error = (axiosError.response?.data as any).message;
       toast.error(error);
       return rejectWithValue(
-        axiosError.response?.data || "An error occurred while deleting user."
+        axiosError.response?.data ||
+          "An error occurred while creating category."
       );
     }
   }
@@ -61,9 +60,16 @@ export const createCategory = createAsyncThunk(
 // Update category
 export const updateCategory = createAsyncThunk(
   "category/update",
-  async ({ id, data }: { id: number; data: Partial<Category> }) => {
-    const res = await axios.patch(`${API_URL}/categories/${id}`, data);
-    return res.data.data.category;
+  async ({ id, data }: { id: number; data: any }) => {
+    try {
+      const res = await axios.patch(`${API_URL}/category/${id}`, data);
+      toast.success("Category succesfully updated");
+      return res.data.data.category;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      toast.error(error || "An error occurred while updating category.");
+    }
   }
 );
 
@@ -85,15 +91,35 @@ export const deleteCategory = createAsyncThunk(
 // Add subcategory
 export const addSubcategory = createAsyncThunk(
   "category/addSubcategory",
-  async ({ categoryId, data }: { categoryId: number; data: Subcategory }) => {
-    const res = await axios.post(
-      `${API_URL}/categories/${categoryId}/subcategories`,
-      data
-    );
-    return {
-      categoryId,
-      subcategory: res.data.data.subcategory,
-    };
+  async ({ id, data }: { id: number; data: Subcategory }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/category/${id}/subcategories`,
+        data
+      );
+      toast.success("Subcategory added successfully");
+
+      return {
+        id,
+        subcategory: res.data.data.subcategory,
+      };
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      console.log(error);
+      toast.error(error || "An error occurred while adding subcategory.");
+    }
+  }
+);
+
+export const getSubcategories = createAsyncThunk(
+  "category/addSubcategory",
+  async (id: number) => {
+    const res = await axios.get(`${API_URL}/category/${id}/subcategories`);
+
+    const subcategory = res.data.subcategory;
+
+    return subcategory;
   }
 );
 
@@ -103,20 +129,28 @@ export const updateSubcategory = createAsyncThunk(
   async ({
     categoryId,
     subcategoryId,
-    data,
+    formData,
   }: {
     categoryId: number;
     subcategoryId: number;
-    data: Partial<Subcategory>;
+    formData: any;
   }) => {
-    const res = await axios.patch(
-      `${API_URL}/categories/${categoryId}/subcategories/${subcategoryId}`,
-      data
-    );
-    return {
-      categoryId,
-      subcategory: res.data.data.subcategory,
-    };
+    try {
+      const res = await axios.patch(
+        `${API_URL}/category/${categoryId}/subcategories/${subcategoryId}`,
+        formData
+      );
+      toast.success("Subcategory updated successfully");
+      return {
+        categoryId,
+        subcategory: res.data.data.subcategory,
+      };
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      console.log(error);
+      toast.error(error || "An error occurred while updating subcategory.");
+    }
   }
 );
 
@@ -128,12 +162,20 @@ export const deleteSubcategory = createAsyncThunk(
     subcategoryId,
   }: {
     categoryId: number;
-    subcategoryId: number;
+    subcategoryId: number | undefined;
   }) => {
-    await axios.delete(
-      `${API_URL}/categories/${categoryId}/subcategories/${subcategoryId}`
-    );
-    return { categoryId, subcategoryId };
+    try {
+      await axios.delete(
+        `${API_URL}/category/${categoryId}/subcategories/${subcategoryId}`
+      );
+      toast.success("You have deleted subcategory");
+      return { categoryId, subcategoryId };
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      console.log(error);
+      toast.error(error || "An error occurred while deleting subcategory.");
+    }
   }
 );
 
@@ -185,6 +227,7 @@ export const updateSubcategoryFilters = createAsyncThunk(
 const initialState: CategoryState = {
   categories: [],
   selectedCategory: null,
+  selectedSubCategories: null,
   status: "idle",
   error: null,
 };
@@ -225,6 +268,18 @@ const categorySlice = createSlice({
         state.categories.push(action.payload);
       })
 
+      .addCase(getSubcategories.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getSubcategories.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.selectedSubCategories = action.payload;
+      })
+      .addCase(getSubcategories.rejected, (state, action) => {
+        state.status = "failed";
+        state.selectedSubCategories = null;
+      })
+
       // Update category
       .addCase(updateCategory.fulfilled, (state, action) => {
         const index = state.categories.findIndex(
@@ -243,41 +298,41 @@ const categorySlice = createSlice({
       })
 
       // Add subcategory
-      .addCase(addSubcategory.fulfilled, (state, action) => {
-        const category = state.categories.find(
-          (cat) => cat.id === action.payload.categoryId
-        );
-        if (category) {
-          category.subcategories.push(action.payload.subcategory);
-        }
-      })
+      // .addCase(addSubcategory.fulfilled, (state, action) => {
+      //   const category = state.categories.find(
+      //     (cat) => cat.id === action.payload.categoryId
+      //   );
+      //   if (category) {
+      //     category.subcategories.push(action.payload.subcategory);
+      //   }
+      // })
 
       // Update subcategory
-      .addCase(updateSubcategory.fulfilled, (state, action) => {
-        const category = state.categories.find(
-          (cat) => cat.id === action.payload.categoryId
-        );
-        if (category) {
-          const index = category.subcategories.findIndex(
-            (sub) => sub.id === action.payload.subcategory.id
-          );
-          if (index !== -1) {
-            category.subcategories[index] = action.payload.subcategory;
-          }
-        }
-      })
+      // .addCase(updateSubcategory.fulfilled, (state, action) => {
+      //   const category = state.categories.find(
+      //     (cat) => cat.id === action.payload.categoryId
+      //   );
+      //   if (category) {
+      //     const index = category.subcategories.findIndex(
+      //       (sub) => sub.id === action.payload.subcategory.id
+      //     );
+      //     if (index !== -1) {
+      //       category.subcategories[index] = action.payload.subcategory;
+      //     }
+      //   }
+      // })
 
       // Delete subcategory
-      .addCase(deleteSubcategory.fulfilled, (state, action) => {
-        const category = state.categories.find(
-          (cat) => cat.id === action.payload.categoryId
-        );
-        if (category) {
-          category.subcategories = category.subcategories.filter(
-            (sub) => sub.id !== action.payload.subcategoryId
-          );
-        }
-      })
+      // .addCase(deleteSubcategory.fulfilled, (state, action) => {
+      //   const category = state.categories.find(
+      //     (cat) => cat.id === action.payload.categoryId
+      //   );
+      //   if (category) {
+      //     category.subcategories = category.subcategories.filter(
+      //       (sub) => sub.id !== action.payload.subcategoryId
+      //     );
+      //   }
+      // })
 
       // Update category filters
       .addCase(updateCategoryFilters.fulfilled, (state, action) => {

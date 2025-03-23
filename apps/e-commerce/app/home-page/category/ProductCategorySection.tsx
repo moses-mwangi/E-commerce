@@ -154,18 +154,16 @@ export default function ProductCategories() {
 
                         <div className="relative space-y-4">
                           <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm">
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={
-                                  defaultIcons[category.name] ||
-                                  defaultIcons.Electronics ||
-                                  category.icon
-                                }
-                                alt={category.name}
-                                fill
-                                className=" w-full h-full rounded-full"
-                              />
-                            </div>
+                            <div
+                              className="relative w-16 h-16 mx-auto bg-gray-100 rounded-full shadow-sm"
+                              style={{
+                                backgroundImage: category?.icon
+                                  ? `url(${category.icon})`
+                                  : "none",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                            />
                           </div>
 
                           <div className="text-center space-y-2">
@@ -205,7 +203,7 @@ export default function ProductCategories() {
                                         );
                                       }}
                                     >
-                                      <span>{sub.name}</span>
+                                      <span>{sub.name.split(" ")[0]}</span>
                                       <ArrowRight className="w-4 h-4" />
                                     </div>
                                   ))}

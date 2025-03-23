@@ -1,10 +1,10 @@
 import React from "react";
-import CategoryUpdate from "./updateCategory/CategoryUpdate";
+import AddNewSubcategory from "./AddNewSubcategory";
 
 export default function page() {
   return (
     <div>
-      <CategoryUpdate />
+      <AddNewSubcategory />
     </div>
   );
 }

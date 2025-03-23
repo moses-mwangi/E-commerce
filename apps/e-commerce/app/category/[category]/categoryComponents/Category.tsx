@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useCategoryContex from "@/hooks/useCategoryContex";
+import { Subcategory } from "@/app/types/category";
 
 export default function Category() {
   const {
@@ -66,46 +67,47 @@ export default function Category() {
               Browse {capitalizeWords(decodeURIComponent(String(category)))} by
               Category
             </h2>
-            <Button
-              className="text-gray-700 px-2 py-1 transition-all duration-150 bg-gray-200 hover:bg-gray-300/75 rounded-md hover:text-gray-600"
-              onClick={() => {
-                router.push(`/category`);
-              }}
-            >
-              <ArrowLeft />
-              Back to category
-            </Button>
+            <Card className="text-gray-700 bg-gray-50 text-sm px-2 py-1 transition-all duration-150  rounded-md hover:text-gray-600">
+              <Link href="/category" className="flex items-center gap-3">
+                <ArrowLeft size={17} />
+                Back to Category
+              </Link>
+            </Card>
           </div>
           <div className="grid cursor-pointer grid-cols-2 md:grid-cols-4 gap-4">
-            {categoryData?.subcategories.toReversed().map((sub) => (
-              <div
-                onClick={() => {
-                  const param = new URLSearchParams();
-                  param.set("id", String(sub.id));
-                  router.push(
-                    `/category/${category}/${sub.name.toLowerCase()}?${param.toString()}`
-                  );
-                }}
-                key={sub.name}
-                className="group"
-              >
-                <div className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900 group-hover:text-blue-600">
-                        {sub.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {sub.itemCount} products
-                      </p>
+            {categoryData?.subcategories
+              .toReversed()
+              .map((sub: Subcategory) => (
+                <div
+                  onClick={() => {
+                    const param = new URLSearchParams();
+                    param.set("id", String(sub.id));
+                    router.push(
+                      `/category/${category}/${sub.name.toLowerCase()}?${param.toString()}`
+                    );
+                  }}
+                  key={sub.name}
+                  className="group"
+                >
+                  <div className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 group-hover:text-blue-600">
+                          {sub.name}
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                          {sub.itemCount} products
+                        </p>
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
+
         <div className="sticky top-0 z-10 bg-white rounded-lg my-4 dark:bg-gray-800 shadow-md p-4">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -196,7 +198,7 @@ export default function Category() {
                 <h2 className="text-lg font-semibold mb-4">Filters</h2>
                 <div className="flex flex-col gap-3">
                   {subFilter?.filters
-                    .filter((fil) => fil.subcategoryId === null)
+                    // .filter((fil) => fil.subcategoryId === null)
                     .map((el) => (
                       <details key={el.id} className="border-b pb-2">
                         <summary className="flex items-center justify-between cursor-pointer">
