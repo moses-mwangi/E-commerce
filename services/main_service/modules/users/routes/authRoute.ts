@@ -14,7 +14,7 @@ import {
   verifyEmail,
   resendVerificationEmail,
 } from "../controllers/authController";
-import passport from "../../../shared/config/passport";
+// import passport from "../../../shared/config/passport";
 import { generateToken } from "../utils/jwt";
 
 const router: Router = Router();
@@ -34,6 +34,9 @@ router.route("/resend-verification").post(resendVerificationEmail);
 router.get("/mej", protectJwtUser, getMe);
 router.get("/me", protect, getMe);
 ///requestPasswordReset, validate-reset-token, resetPassword
+
+{
+  /*
 router.route("/google").get(
   passport.authenticate("google", {
     scope: ["email", "profile"],
@@ -68,6 +71,8 @@ router
       }
     }
   );
+*/
+}
 
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {

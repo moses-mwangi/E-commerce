@@ -8,7 +8,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_session_1 = __importDefault(require("express-session"));
 const cors_1 = __importDefault(require("cors"));
-const passport_1 = __importDefault(require("../main_service/shared/config/passport"));
+// import passport from "../main_service/shared/config/passport";
 const users_1 = require("./modules/users");
 const order_1 = require("./modules/order");
 const payments_1 = require("./modules/payments");
@@ -59,8 +59,8 @@ app.use((0, express_session_1.default)({
     },
 }));
 // Initialize Passport
-app.use(passport_1.default.initialize());
-app.use(passport_1.default.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.use("/api/auth", users_1.authRouter);
 app.use("/api/user", users_1.userRouter);
 app.use("/api/product", product_1.productRouter);
@@ -71,8 +71,19 @@ app.use("/api/payment", payments_1.stripeRouter);
 app.use("/api/webhooks", payments_1.webhookRouter);
 //globalError
 app.use(GlobalErrorHandler_1.default);
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: err.message });
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//   console.error(err.stack);
+//   res.status(500).json({ error: err.message });
+// });
+app.use((req, res, next) => {
+    res.json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
+    next();
 });
+// app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
+//   const statusCode = err.statusCode || 500;
+//   res.status(statusCode).json({
+//     status: "error",
+//     message: err.isOperational ? err.message : "Internal Server Error",
+//   });
+// });
 exports.default = app;

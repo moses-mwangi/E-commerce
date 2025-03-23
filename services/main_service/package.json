@@ -1,12 +1,12 @@
 {
   "name": "main_service",
   "version": "1.0.0",
-  "main": "server.ts",
+  "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon server.ts",
     "build": "tsc",
-    "start:prod": "node dist/server.js"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",

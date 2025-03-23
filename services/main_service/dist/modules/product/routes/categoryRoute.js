@@ -10,17 +10,15 @@ router
     .route("/")
     .get(categoryController_1.categoryController.getAllCategories)
     .post(categoryController_1.categoryController.createCategory);
-// router.get("/:identifier", categoryController.getCategory);
 router
     .route("/:id")
     .get(categoryController_1.categoryController.getCategory)
     .patch(categoryController_1.categoryController.updateCategory)
     .delete(categoryController_1.categoryController.deleteCategory);
-// Subcategory routes
 router
     .route("/:id/subcategories")
     .post(categoryController_1.categoryController.addSubcategory)
-    .get(categoryController_1.categoryController.getSubcategory);
+    .get(categoryController_1.categoryController.getSubcategories);
 router
     .route("/:categoryId/subcategories/:subcategoryId")
     .get(categoryController_1.categoryController.getSubcategory)

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import cors from "cors";
 
-import passport from "../main_service/shared/config/passport";
+// import passport from "../main_service/shared/config/passport";
 import { authRouter, userRouter } from "./modules/users";
 import { orderRouter } from "./modules/order";
 import { stripeRouter, paypalRouter, webhookRouter } from "./modules/payments";
@@ -69,8 +69,8 @@ app.use(
 );
 
 // Initialize Passport
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);

@@ -27,6 +27,10 @@ Subcategory.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
+    status: {
+        type: sequelize_1.DataTypes.STRING,
+        defaultValue: "Active",
+    },
     longName: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,

@@ -1,13 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const authController_1 = require("../controllers/authController");
-const passport_1 = __importDefault(require("../../../shared/config/passport"));
-const jwt_1 = require("../utils/jwt");
 const router = (0, express_1.Router)();
 router.route("/signup").post(authMiddleware_1.validUserSignInput, authController_1.signInUser);
 router.route("/login").post(authController_1.loginUser);
@@ -22,32 +17,44 @@ router.route("/resend-verification").post(authController_1.resendVerificationEma
 router.get("/mej", authController_1.protectJwtUser, authController_1.getMe);
 router.get("/me", authController_1.protect, authController_1.getMe);
 ///requestPasswordReset, validate-reset-token, resetPassword
-router.route("/google").get(passport_1.default.authenticate("google", {
-    scope: ["email", "profile"],
-}));
-router
+{
+    /*
+  router.route("/google").get(
+    passport.authenticate("google", {
+      scope: ["email", "profile"],
+    })
+  );
+  
+  router
     .route("/google/callback")
-    .get(passport_1.default.authenticate("google", { failureRedirect: "/" }), (req, res) => {
-    req.token = (0, jwt_1.generateToken)({
-        id: req.user.id,
-        email: req.user.email,
-    });
-    const token = req.token;
-    req.user = req.user;
-    const cookieOption = {
-        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-    };
-    res.cookie("token", token, cookieOption);
-    if (req.user && token) {
-        res.redirect("http://localhost:3000");
-    }
-    else {
-        res.status(400).json({
-            message: "Authentication failed",
+    .get(
+      passport.authenticate("google", { failureRedirect: "/" }),
+      (req, res) => {
+        (req as any).token = generateToken({
+          id: (req.user as any).id,
+          email: (req.user as any).email,
         });
-    }
-});
+  
+        const token = (req as any).token;
+        req.user = req.user;
+        const cookieOption = {
+          expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+          httpOnly: true,
+        };
+  
+        res.cookie("token", token, cookieOption);
+  
+        if (req.user && token) {
+          res.redirect("http://localhost:3000");
+        } else {
+          res.status(400).json({
+            message: "Authentication failed",
+          });
+        }
+      }
+    );
+  */
+}
 router.post("/logout", (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
