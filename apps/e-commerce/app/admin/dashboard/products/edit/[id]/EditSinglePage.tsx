@@ -27,21 +27,13 @@ import Image from "next/image";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import {
-  fetchProductById,
-  fetchProducts,
-  updateProduct,
-} from "@/redux/slices/productSlice";
-import { number } from "zod";
+import { fetchProductById, updateProduct } from "@/redux/slices/productSlice";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 interface ProductImage {
@@ -74,9 +66,7 @@ interface FormData {
 export default function EditProductPage() {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
-  const { selectedProduct, products } = useSelector(
-    (state: RootState) => state.product
-  );
+  const { selectedProduct } = useSelector((state: RootState) => state.product);
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -105,7 +95,6 @@ export default function EditProductPage() {
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(Number(id)));
-      dispatch(fetchProducts());
     }
   }, [id, dispatch]);
 
@@ -171,7 +160,6 @@ export default function EditProductPage() {
       };
 
       dispatch(updateProduct(updatingData)).unwrap();
-      // router.push("/admin/dashboard/products");
     } catch (error) {
       toast.error("Failed to update product");
     } finally {
@@ -249,14 +237,6 @@ export default function EditProductPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <Button
-        onClick={() => {
-          console.log(selectedProduct);
-          console.log(products);
-        }}
-      >
-        CLICK
-      </Button>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button

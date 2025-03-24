@@ -10,115 +10,11 @@ const AppError_1 = __importDefault(require("../../../shared/utils/AppError"));
 const cloudinary_1 = __importDefault(require("../../../shared/config/cloudinary"));
 const productImageModel_1 = __importDefault(require("../models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
-// export const createProduct = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const {
-//       name,
-//       category,
-//       price,
-//       stock,
-//       description,
-//       discount,
-//       ratings,
-//       brand,
-//       specifications,
-//     } = req.body;
-//     if (!name || !category || !price || !stock || !description) {
-//       return next(new AppError("All fields are required", 400));
-//     }
-//     let imageUrls: string[] = [];
-//     const files = req.files as Express.Multer.File[];
-//     if (req.files && Array.isArray(req.files)) {
-//       const uploadWithRetry = async (
-//         file: Express.Multer.File,
-//         retries = 4
-//       ) => {
-//         for (let i = 0; i < retries; i++) {
-//           try {
-//             const result = await new Promise((resolve) => {
-//               if (!file.buffer) {
-//                 console.error("File buffer is missing:", file.originalname);
-//                 return resolve(null);
-//               }
-//               const allowedFormats = [
-//                 "image/jpeg",
-//                 "image/jpg",
-//                 "image/png",
-//                 "image/webp",
-//               ];
-//               if (!allowedFormats.includes(file.mimetype)) {
-//                 console.error("Unsupported file format:", file.mimetype);
-//                 return resolve(null);
-//               }
-//               const uniqueId = `image_${Date.now()}_${Math.random()
-//                 .toString(36)
-//                 .substring(7)}`; // Ensure unique filename
-//               const uploadStream = cloudinary.uploader.upload_stream(
-//                 {
-//                   folder: "ecommerce-product",
-//                   // public_id: `image_${Date.now()}`,
-//                   public_id: uniqueId,
-//                   resource_type: "image",
-//                   timeout: 60000,
-//                 },
-//                 (error, result) => {
-//                   if (error) {
-//                     console.error("Cloudinary Upload Error:", error);
-//                     resolve(null);
-//                   } else {
-//                     resolve(result?.secure_url);
-//                   }
-//                 }
-//               );
-//               uploadStream.end(file.buffer);
-//             });
-//             if (result) return result;
-//           } catch (error) {
-//             console.error(`Upload attempt ${i + 1} failed:`, error);
-//           }
-//         }
-//         return null;
-//       };
-//       const uploadPromises = files.map((file) => uploadWithRetry(file));
-//       const results = await Promise.allSettled(uploadPromises);
-//       console.log("Upload Results:", results);
-//       imageUrls = results
-//         .filter((result) => result.status === "fulfilled" && result.value)
-//         .map((result) => (result as PromiseFulfilledResult<string>).value);
-//     }
-//     console.log(imageUrls);
-//     if (imageUrls.length < 4) {
-//       console.log("The image should bemore than 4");
-//       return next(new AppError("", 400));
-//     }
-//     const specificationsArray = JSON.parse(specifications);
-//     const data = {
-//       name,
-//       category,
-//       brand,
-//       price,
-//       stock,
-//       discount,
-//       ratings,
-//       description,
-//       specifications: specificationsArray,
-//       // images: imageUrls,
-//     };
-//     console.log(data);
-//     const product = await Product.create(data);
-//     if (imageUrls.length >= 4) {
-//       imageUrls.map((image, idx) => {
-//         const images = { url: image, isMain: idx === 0, productId: product.id };
-//         await ProductImage.create(images);
-//       });
-//     }
-//     res.status(201).json({ msg: "Product created successfully!", product });
-//   }
-// );
 exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
-    const { name, category, price, stock, description, discount, ratings, brand, specifications, } = req.body;
-    // Validate required fields
-    if (!name || !category || !price || !stock || !description) {
+    const { name, category, price, costPrice, stock, description, discount, ratings, brand, specifications, } = req.body;
+    //// Added cost price later
+    //// Validate required fields
+    if (!name || !category || !price || !stock || !description || !costPrice) {
         return next(new AppError_1.default("All fields are required", 400));
     }
     // Validate specifications
@@ -200,6 +96,7 @@ exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
             category,
             brand,
             price,
+            costPrice,
             stock,
             discount,
             ratings,
@@ -212,12 +109,10 @@ exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
             isMain: idx === 0,
             productId: product.id,
         }, { transaction })));
-        // Commit the transaction
         await transaction.commit();
         res.status(201).json({ msg: "Product created successfully!", product });
     }
     catch (error) {
-        // Rollback the transaction in case of error
         await transaction.rollback();
         console.error("Error creating product:", error);
         return next(new AppError_1.default("Failed to create product", 500));
@@ -252,11 +147,14 @@ exports.deleteProduct = (0, catchSync_1.default)(async (req, res, next) => {
 ///////////////////////////////////////////////////////////////////////
 exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
     const { id } = req.params;
-    const { name, category, price, stock, description, discount, ratings, brand, specifications, deletedImages, existingImages, } = req.body;
+    const { name, category, price, 
+    // costPrice,
+    stock, description, discount, ratings, brand, specifications, deletedImages, existingImages, } = req.body;
     if (!name || !category || !price || !stock || !description) {
         return next(new AppError_1.default("All fields are required", 400));
     }
-    // Validate specifications
+    //// Added cost price later
+    //// Validate specifications
     let specificationsArray = [];
     try {
         specificationsArray = JSON.parse(specifications);
@@ -410,6 +308,7 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
             category,
             brand,
             price,
+            // costPrice,
             stock,
             discount: discount === "" ? null : discount,
             ratings,

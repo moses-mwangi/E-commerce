@@ -25,7 +25,14 @@ export default function AIRecommendations() {
           <Card key={product.id} className=" bg-slate-50 p-4 h-auto">
             <div>
               <Image
-                src={product.images[0]}
+                src={
+                  product.productImages
+                    ? String(
+                        product.productImages.find((el) => el.isMain === true)
+                          ?.url
+                      )
+                    : ""
+                }
                 alt={product.name}
                 width={150}
                 height={50}
@@ -35,11 +42,15 @@ export default function AIRecommendations() {
             <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
             <p className="text-sm text-gray-500">${product.price}</p>
             <div className="text-sm text-gray-500">
-              {product.stock > 0 ? (
-                <p className="text-green-600">Stock Available</p>
-              ) : (
-                <p className="text-red-600">Out of stock</p>
-              )}
+              <p
+                className={`${
+                  product.status === "in stock"
+                    ? " text-green-600"
+                    : " text-red-600"
+                }`}
+              >
+                {product.status}
+              </p>
             </div>
           </Card>
         ))}

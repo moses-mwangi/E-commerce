@@ -110,6 +110,7 @@ export default function ProductUploadPage() {
       formData.append("name", product.name);
       formData.append("category", product.category);
       formData.append("price", product.price.toString());
+      formData.append("costPrice", product.costPrice.toString());
       formData.append("stock", product.stock.toString());
       formData.append("description", product.description);
       formData.append("discount", product.discount.toString());
@@ -144,12 +145,6 @@ export default function ProductUploadPage() {
     <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          {/* <Link
-            href="/dashboard/products"
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Link> */}
           <div>
             <h1 className="text-2xl font-semibold text-gray-800">
               Upload New Product
@@ -161,7 +156,6 @@ export default function ProductUploadPage() {
         </div>
         <div className="flex space-x-3">
           <Button variant="outline">Save as Draft</Button>
-          {/* <Button className="bg-primary"> */}
           <Button className="bg-orange-500 hover:bg-orange-600">
             {isUploading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -301,7 +295,7 @@ export default function ProductUploadPage() {
             <h2 className="text-lg font-medium mb-4">Pricing</h2>
             <div className="space-y-4">
               <div>
-                <Label>Regular Price</Label>
+                <Label>Selling Price</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                     $
@@ -315,7 +309,7 @@ export default function ProductUploadPage() {
                 </div>
               </div>
               <div>
-                <Label>Regular Price</Label>
+                <Label>Cost Price</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                     $
@@ -323,7 +317,7 @@ export default function ProductUploadPage() {
                   <Input
                     className="pl-8 focus-visible:ring-orange-500"
                     type="number"
-                    {...register("SalePrice", { required: true, min: 0 })}
+                    {...register("costPrice", { required: true, min: 0 })}
                     placeholder="0.00"
                   />
                 </div>

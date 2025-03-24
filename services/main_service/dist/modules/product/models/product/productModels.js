@@ -24,9 +24,20 @@ Product.init({
             isIn: [["beauty", "fashion", "electronics", "kitchen"]],
         },
     },
+    status: {
+        type: sequelize_1.DataTypes.ENUM("in stock", "out of stock"),
+        allowNull: false,
+        defaultValue: "in stock",
+        // validate: { isIn: [["in stock", "out of stock"]] },
+    },
     price: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,
+    },
+    costPrice: {
+        type: sequelize_1.DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0,
     },
     description: {
         type: sequelize_1.DataTypes.TEXT,

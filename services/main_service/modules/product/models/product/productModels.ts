@@ -6,11 +6,12 @@ class Product extends Model {
   public name!: string;
   public category!: "beauty" | "fashion" | "electronics" | "kitchen";
   public price!: number;
+  public costPrice!: number;
   public description!: string;
   public stock!: number;
+  // public status!: "in stock" | "out of stock";
   public brand?: string;
   public images!: string[];
-  // public specifications?: object;
   public specifications?: object[];
   public discount?: number;
   public ratings?: number;
@@ -35,9 +36,20 @@ Product.init(
         isIn: [["beauty", "fashion", "electronics", "kitchen"]],
       },
     },
+    status: {
+      type: DataTypes.ENUM("in stock", "out of stock"),
+      allowNull: false,
+      defaultValue: "in stock",
+      // validate: { isIn: [["in stock", "out of stock"]] },
+    },
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    costPrice: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0,
     },
     description: {
       type: DataTypes.TEXT,

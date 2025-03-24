@@ -269,7 +269,15 @@ export default function Category() {
                 >
                   <Image
                     className="h-full w-full hover:scale-110 transition-all duration-200 object-cover"
-                    src={product.images[0]}
+                    src={
+                      product.productImages
+                        ? String(
+                            product.productImages.find(
+                              (el) => el.isMain === true
+                            )?.url
+                          )
+                        : ""
+                    }
                     alt={product.name}
                     width={500}
                     height={300}

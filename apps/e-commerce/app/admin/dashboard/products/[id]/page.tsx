@@ -151,20 +151,24 @@ export default function ProductDetailsPage() {
           <Card className="p-6">
             <div className="aspect-square relative rounded-lg overflow-hidden mb-6">
               <Image
-                src={selectedProduct?.images ? selectedProduct?.images[0] : ""}
+                src={String(
+                  selectedProduct?.productImages.find(
+                    (el) => el.isMain === true
+                  )?.url
+                )}
                 alt={selectedProduct?.name ? selectedProduct?.name : ""}
                 fill
                 className="object-cover"
               />
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {selectedProduct?.images.map((image: string, index: number) => (
+              {selectedProduct?.productImages.map((image, index: number) => (
                 <div
                   key={index}
                   className="aspect-square relative rounded-lg overflow-hidden"
                 >
                   <Image
-                    src={image}
+                    src={image.url}
                     alt={`${
                       selectedProduct?.name ? selectedProduct?.name : ""
                     } ${index + 1}`}

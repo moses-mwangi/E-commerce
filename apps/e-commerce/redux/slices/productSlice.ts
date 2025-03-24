@@ -98,6 +98,7 @@ export const updateProduct = createAsyncThunk(
       // }
 
       toast.success("Product updated successfully");
+      window.location.href = "/admin/dashboard/products";
       return response.data;
     } catch (err) {
       const axiosError = err as AxiosError;
@@ -107,22 +108,6 @@ export const updateProduct = createAsyncThunk(
     }
   }
 );
-
-// export const deleteProduct = createAsyncThunk(
-//   "products/delete",
-//   async (id: number, { rejectWithValue }) => {
-//     try {
-//       await axios.delete(`${API_URL}/product/${id}`);
-//       toast.success("Product deleted successfully");
-//       return id;
-//     } catch (err: any) {
-//       console.error(err);
-//       throw new Error("Failed to delete product");
-//       toast.error("Failed to deleted product");
-//       return rejectWithValue(err?.response.data);
-//     }
-//   }
-// );
 
 export const deleteProduct = createAsyncThunk(
   "products/delete",

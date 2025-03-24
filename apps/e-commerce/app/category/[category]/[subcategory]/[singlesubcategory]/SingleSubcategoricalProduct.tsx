@@ -168,7 +168,15 @@ export default function SingleSuCategoricalProductPage() {
               onMouseMove={handleImageHover}
             >
               <Image
-                src={product.images[showImage]}
+                // src={product.images[showImage]}
+                src={
+                  product.productImages
+                    ? String(
+                        product.productImages.find((el) => el.isMain === true)
+                          ?.url
+                      )
+                    : ""
+                }
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -178,7 +186,9 @@ export default function SingleSuCategoricalProductPage() {
                 <div
                   className="absolute inset-0 bg-white"
                   style={{
-                    backgroundImage: `url(${product.images[selectedImage]})`,
+                    backgroundImage: `url(${
+                      product.productImages.map((el) => el.url)[selectedImage]
+                    })`,
                     backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
                     backgroundSize: "200%",
                   }}
@@ -186,7 +196,7 @@ export default function SingleSuCategoricalProductPage() {
               )}
             </div>
             <ImageScrol
-              images={product.images}
+              images={product.productImages.map((el) => el.url)}
               // selectedImage={selectedImage}
               // setSelectedImage={setSelectedImage}
               // images={selectedProduct?.images}
