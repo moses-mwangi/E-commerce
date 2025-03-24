@@ -1,17 +1,20 @@
 import app from "./app";
 import dotenv from "dotenv";
 import sequelize from "./shared/config/pg_database";
-import setupAssociations from "./modules/order/models/associations";
+import orderAssociations from "./modules/order/models/orderAssociations";
 import Order from "./modules/order/models/ordersModel";
 import OrderItem from "./modules/order/models/itemOrder";
 import User from "./modules/users/models/userMode";
-import categoryAssociations from "./modules/product/models/associations";
+import categoryAssociations from "./modules/product/models/category/categoryAssociations";
 import { Sequelize } from "sequelize";
 import { cpus } from "os";
 import cluster, { Worker } from "cluster";
+import ProductImage from "./modules/product/models/product/productImageModel";
+import productAssociation from "./modules/product/models/product/productAssociation";
 
-setupAssociations();
+orderAssociations();
 categoryAssociations();
+productAssociation();
 
 dotenv.config();
 dotenv.config({ path: "./.env" });
@@ -48,6 +51,7 @@ const pg_connect = async () => {
     console.log("The PostgreSQL database has successfully connected");
     // await sequelize.sync({ force: true });
     // await sequelize.sync({ alter: true }); /////does not delete data
+    // await ProductImage.sync({ alter: true });
   } catch (err) {
     console.log("Unable to connect to database", err);
   }

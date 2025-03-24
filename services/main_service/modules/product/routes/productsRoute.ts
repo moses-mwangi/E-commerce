@@ -21,13 +21,13 @@ router
 router
   .route("/:id")
   .delete(deleteProduct)
-  .patch(updateProduct)
+  .patch(upload.array("images"), updateProduct)
   .get(getOneProduct);
 
-router.patch(
-  "/:id",
-  upload.array("images")
-  // productController.updateProduct
-);
+// router.patch(
+//   "/:id",
+//   upload.array("images")
+//   // productController.updateProduct
+// );
 
 export default router;

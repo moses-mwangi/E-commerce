@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
-const productModels_1 = __importDefault(require("../../product/models/productModels"));
+const productModels_1 = __importDefault(require("../../product/models/product/productModels"));
 const itemOrder_1 = __importDefault(require("./itemOrder"));
 class Order extends sequelize_1.Model {
 }

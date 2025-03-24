@@ -42,13 +42,7 @@ export default function ProductUploadPage() {
     { value: "beauty", name: "Beauty" },
     { value: "electronics", name: "Electronics" },
     { value: "kitchen", name: "Kitchen" },
-    // ,
-    // "Clothing",
-    // "Books",
-    // "Home & Garden",
-    // "Sports",
   ]);
-  ///"beauty" | "fashion" | "electronics" | "kitchen"
   const {
     register,
     handleSubmit,
@@ -122,15 +116,14 @@ export default function ProductUploadPage() {
       formData.append("ratings", product.ratings.toString());
       formData.append("brand", product.brand);
       formData.append("specifications", JSON.stringify(product.specifications));
-      // formData.append("specifications", product.specifications);
 
       product.images.forEach((image: File) => {
         formData.append("images", image);
       });
 
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
+      // for (const [key, value] of formData.entries()) {
+      //   console.log(key, value);
+      // }
 
       await axios.post("http://127.0.0.1:8000/api/product", formData, {
         headers: {

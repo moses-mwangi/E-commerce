@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { createCategories } from "../controllers/categoryController1";
 import { categoryController } from "../controllers/categoryController";
 
 const router: Router = Router();

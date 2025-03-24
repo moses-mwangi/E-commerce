@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = exports.deleteOrder = exports.updateOrderStatus = exports.getOrderById = exports.getAllOrders = void 0;
 const catchSync_1 = __importDefault(require("../../../shared/utils/catchSync"));
 const AppError_1 = __importDefault(require("../../../shared/utils/AppError"));
-const productModels_1 = __importDefault(require("../../product/models/productModels"));
+const productModels_1 = __importDefault(require("../../product/models/product/productModels"));
 const ordersModel_1 = __importDefault(require("../models/ordersModel"));
 const itemOrder_1 = __importDefault(require("../models/itemOrder"));
 const payment_1 = __importDefault(require("../../payments/models/payment"));

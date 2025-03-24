@@ -45,7 +45,7 @@ export default function categoryAssociations() {
     foreignKey: "filterId",
     onDelete: "CASCADE",
   });
-  console.log("✅ Sequelize Associations Set Up! for category");
+  console.log("✅ Sequelize Associations Set Up! For Category");
 }
 
 // export { Category, Subcategory, Filter, FilterOption };

@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const pg_database_1 = __importDefault(require("./shared/config/pg_database"));
-const associations_1 = __importDefault(require("./modules/order/models/associations"));
-const associations_2 = __importDefault(require("./modules/product/models/associations"));
+const orderAssociations_1 = __importDefault(require("./modules/order/models/orderAssociations"));
+const categoryAssociations_1 = __importDefault(require("./modules/product/models/category/categoryAssociations"));
 const os_1 = require("os");
 const cluster_1 = __importDefault(require("cluster"));
-(0, associations_1.default)();
-(0, associations_2.default)();
+const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
+(0, orderAssociations_1.default)();
+(0, categoryAssociations_1.default)();
+(0, productAssociation_1.default)();
 dotenv_1.default.config();
 dotenv_1.default.config({ path: "./.env" });
 process.on("uncaughtException", (err) => {
@@ -42,6 +44,7 @@ const pg_connect = async () => {
         console.log("The PostgreSQL database has successfully connected");
         // await sequelize.sync({ force: true });
         // await sequelize.sync({ alter: true }); /////does not delete data
+        // await ProductImage.sync({ alter: true });
     }
     catch (err) {
         console.log("Unable to connect to database", err);

@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../../shared/utils/catchSync";
 import sequelize from "../../../shared/config/pg_database";
 import { Op, Transaction } from "sequelize";
-import Category from "../models/categoryModel";
-import Subcategory from "../models/subcategoryModel";
-import Filter from "../models/categoryFilterModel";
+import Category from "../models/category/categoryModel";
+import Subcategory from "../models/category/subcategoryModel";
+import Filter from "../models/category/categoryFilterModel";
 import AppError from "../../../shared/utils/AppError";
-import FilterOption from "../models/filterOption";
+import FilterOption from "../models/category/filterOption";
 
 export const categoryController = {
   createCategory: catchAsync(async (req: Request, res: Response) => {

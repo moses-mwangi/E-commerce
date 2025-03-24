@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCategories = void 0;
-const categoryModel_1 = __importDefault(require("../models/categoryModel"));
-const categoryFilterModel_1 = __importDefault(require("../models/categoryFilterModel"));
-const filterOption_1 = __importDefault(require("../models/filterOption"));
-const subcategoryModel_1 = __importDefault(require("../models/subcategoryModel"));
+const categoryModel_1 = __importDefault(require("../models/category/categoryModel"));
+const categoryFilterModel_1 = __importDefault(require("../models/category/categoryFilterModel"));
+const filterOption_1 = __importDefault(require("../models/category/filterOption"));
+const subcategoryModel_1 = __importDefault(require("../models/category/subcategoryModel"));
 const createCategories = async (req, res) => {
     try {
         const { categories } = req.body;

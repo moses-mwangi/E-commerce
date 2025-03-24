@@ -8,12 +8,20 @@ export interface Product {
   stock: number;
   brand: string | null;
   images: string[];
+  productImages: Images[];
   specifications: Record<string, any> | null;
   discount: number;
   ratings: number;
   reviews: string[] | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Images {
+  id: number;
+  url: string;
+  isMain: boolean;
+  productId: number;
 }
 
 export interface ProductState {

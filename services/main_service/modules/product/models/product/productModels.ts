@@ -1,5 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import sequelize from "../../../shared/config/pg_database";
+import sequelize from "../../../../shared/config/pg_database";
 
 class Product extends Model {
   public id!: number;

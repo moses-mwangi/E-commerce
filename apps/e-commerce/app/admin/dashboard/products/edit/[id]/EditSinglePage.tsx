@@ -34,9 +34,15 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById, fetchProducts } from "@/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  fetchProductById,
+  fetchProducts,
+  updateProduct,
+} from "@/redux/slices/productSlice";
+import { number } from "zod";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 interface ProductImage {
   id: number;
@@ -53,19 +59,24 @@ interface FormData {
   name: string;
   category: string;
   brand: string;
-  price: string;
-  stock: string;
-  discount: string;
-  ratings: string;
+  price: string | number;
+  stock: string | number;
+  discount: string | number;
+  ratings: string | number;
   description: string;
   specifications: Specification[];
   status: "In Stock" | "Out of Stock";
   images: ProductImage[];
   newImages: File[];
+  deletedImages: number[];
 }
 
 export default function EditProductPage() {
   const router = useRouter();
+  const dispatch: AppDispatch = useDispatch();
+  const { selectedProduct, products } = useSelector(
+    (state: RootState) => state.product
+  );
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -88,80 +99,54 @@ export default function EditProductPage() {
     status: "In Stock",
     images: [],
     newImages: [],
+    deletedImages: [],
   });
 
-  // const dispatch: AppDispatch = useDispatch();
-  // const { products, selectedProduct: formData } = useSelector(
-  //   (state: RootState) => state.product
-  // );
-
-  // useEffect(() => {
-  //   dispatch(fetchProducts());
-  //   dispatch(fetchProductById(Number(id)));
-  // }, [dispatch, id]);
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchProductById(Number(id)));
+      dispatch(fetchProducts());
+    }
+  }, [id, dispatch]);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setFormData({
-          name: "Smartphone X200",
-          category: "Electronics",
-          brand: "TechNova",
-          price: "599.99",
-          stock: "120",
-          discount: "10",
-          ratings: "4.7",
-          description: "A powerful smartphone with an advanced AI camera...",
-          specifications: [
-            { key: "Color", value: "Midnight Black" },
-            { key: "Screen Size", value: "6.7 inches" },
-            { key: "Battery", value: "5000mAh" },
-            { key: "Camera", value: "108MP AI Quad Camera" },
-            { key: "Processor", value: "Snapdragon 8 Gen 2" },
-            { key: "Storage", value: "256GB" },
-          ],
-          status: "In Stock",
-          images: [
-            {
-              id: 1,
-              url: "https://res.cloudinary.com/dijocmuzg/image/upload/v1741860856/ecommerce-product/image_1741860854311.png",
-              isMain: true,
-            },
-            {
-              id: 2,
-              url: "https://res.cloudinary.com/dijocmuzg/image/upload/v1741860856/ecommerce-product/image_1741860854313.webp",
-              isMain: false,
-            },
-          ],
-          newImages: [],
-        });
-      } catch (error) {
-        toast.error("Failed to fetch product details");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
+    if (selectedProduct) {
+      setFormData({
+        name: selectedProduct.name || "",
+        category: selectedProduct.category || "",
+        brand: selectedProduct.brand || "",
+        price: selectedProduct.price || "",
+        stock: selectedProduct.stock || "",
+        discount: selectedProduct.discount || "",
+        ratings: selectedProduct.ratings || "",
+        description: selectedProduct.description || "",
+        specifications:
+          (selectedProduct.specifications as Specification[]) || [],
+        status: "In Stock",
+        images: selectedProduct.productImages || [],
+        newImages: [],
+        deletedImages: [],
+      });
+      setIsLoading(false);
+    }
+  }, [selectedProduct]);
 
   const validateForm = () => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
 
-    if (!formData?.name.trim()) {
+    if (!formData.name.trim()) {
       newErrors.name = "Product name is required";
     }
 
-    if (!formData?.price || isNaN(Number(formData?.price))) {
+    if (!formData.price || isNaN(Number(formData.price))) {
       newErrors.price = "Valid price is required";
     }
 
-    if (!formData?.stock || isNaN(Number(formData?.stock))) {
+    if (!formData.stock || isNaN(Number(formData.stock))) {
       newErrors.stock = "Valid stock quantity is required";
     }
 
-    if (!formData?.category) {
+    if (!formData.category) {
       newErrors.category = "Category is required";
     }
 
@@ -175,10 +160,18 @@ export default function EditProductPage() {
 
     setIsSaving(true);
     try {
-      // Simulated API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success("Product updated successfully");
-      router.push("/admin/dashboard/products");
+      setIsSaving(true);
+      const updatingData = {
+        id: Number(id),
+        formData: {
+          ...formData,
+        },
+        images: formData.newImages,
+        deletedImages: formData.deletedImages,
+      };
+
+      dispatch(updateProduct(updatingData)).unwrap();
+      // router.push("/admin/dashboard/products");
     } catch (error) {
       toast.error("Failed to update product");
     } finally {
@@ -198,7 +191,10 @@ export default function EditProductPage() {
     setFormData((prev) => ({
       ...prev,
       ...(type === "existing"
-        ? { images: prev.images.filter((_, i) => i !== index) }
+        ? {
+            images: prev.images.filter((_, i) => i !== index),
+            deletedImages: [...prev.deletedImages, prev.images[index].id],
+          }
         : { newImages: prev.newImages.filter((_, i) => i !== index) }),
     }));
   };
@@ -253,6 +249,14 @@ export default function EditProductPage() {
 
   return (
     <div className="p-6 space-y-6">
+      <Button
+        onClick={() => {
+          console.log(selectedProduct);
+          console.log(products);
+        }}
+      >
+        CLICK
+      </Button>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
@@ -279,24 +283,25 @@ export default function EditProductPage() {
               <Label htmlFor="name">Product Name</Label>
               <Input
                 id="name"
-                value={formData?.name}
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  setFormData({ ...formData, name: e.target.value })
                 }
-                // error={errors.name}
                 required
               />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="brand">Brand</Label>
               <Input
                 id="brand"
-                value={String(formData?.brand)}
+                value={formData.brand}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, brand: e.target.value }))
+                  setFormData({ ...formData, brand: e.target.value })
                 }
-                // error={errors.brand}
                 required
               />
             </div>
@@ -304,9 +309,9 @@ export default function EditProductPage() {
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
               <Select
-                value={formData?.category}
+                value={formData.category}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, category: value }))
+                  setFormData({ ...formData, category: value })
                 }
               >
                 <SelectTrigger>
@@ -318,6 +323,9 @@ export default function EditProductPage() {
                   <SelectItem value="books">Books</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.category && (
+                <p className="text-sm text-red-500">{errors.category}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -326,12 +334,15 @@ export default function EditProductPage() {
                 id="price"
                 type="number"
                 step="0.01"
-                value={formData?.price}
+                value={formData.price}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, price: e.target.value }))
+                  setFormData({ ...formData, price: e.target.value })
                 }
                 required
               />
+              {errors.price && (
+                <p className="text-sm text-red-500">{errors.price}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -339,13 +350,15 @@ export default function EditProductPage() {
               <Input
                 id="stock"
                 type="number"
-                value={formData?.stock}
+                value={formData.stock}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, stock: e.target.value }))
+                  setFormData({ ...formData, stock: e.target.value })
                 }
-                // error={errors.stock}
                 required
               />
+              {errors.stock && (
+                <p className="text-sm text-red-500">{errors.stock}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -355,9 +368,9 @@ export default function EditProductPage() {
                 type="number"
                 min="0"
                 max="100"
-                value={formData?.discount}
+                value={formData.discount}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, discount: e.target.value }))
+                  setFormData({ ...formData, discount: e.target.value })
                 }
               />
             </div>
@@ -370,9 +383,9 @@ export default function EditProductPage() {
                 step="0.1"
                 min="0"
                 max="5"
-                value={formData?.ratings}
+                value={formData.ratings}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, ratings: e.target.value }))
+                  setFormData({ ...formData, ratings: e.target.value })
                 }
               />
             </div>
@@ -380,23 +393,11 @@ export default function EditProductPage() {
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            {/* <Textarea
-              id="description"
-              value={formData?.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              rows={4}
-              required
-            /> */}
             <Textarea
               id="description"
-              value={formData?.description}
+              value={formData.description}
               onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
+                setFormData({ ...formData, description: e.target.value })
               }
               rows={4}
               required
@@ -416,7 +417,7 @@ export default function EditProductPage() {
               </Button>
             </div>
             <div className="space-y-4">
-              {formData?.specifications?.map((spec: any, index: any) => (
+              {formData.specifications.map((spec, index) => (
                 <div key={index} className="flex gap-4 items-start">
                   <div className="flex-1">
                     <Input
@@ -453,15 +454,16 @@ export default function EditProductPage() {
             <Label>Product Images</Label>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {formData?.images.map((image, index) => (
+              {formData.images.map((image, index) => (
                 <div
-                  key={index}
+                  key={image.id}
                   className="relative group aspect-square rounded-lg overflow-hidden border"
                 >
                   <Image
                     src={image.url}
                     alt={`Product ${index + 1}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                     onClick={() => {
                       setSelectedImage(image.url);
@@ -474,11 +476,9 @@ export default function EditProductPage() {
                       variant="secondary"
                       size="sm"
                       onClick={() => setMainImage(index)}
-                      // className={image.isMain ? "bg-green-500 text-white" : ""}
-                      className={`bg-green-500 text-white`}
+                      className={image.isMain ? "bg-green-500 text-white" : ""}
                     >
-                      {/* {image.isMain ? "Main Image" : "Set as Main"} */}
-                      Set as Main
+                      {image.isMain ? "Main Image" : "Set as Main"}
                     </Button>
                     <Button
                       type="button"
@@ -492,7 +492,7 @@ export default function EditProductPage() {
                 </div>
               ))}
 
-              {/* {formData?.newImages.map((file, index) => (
+              {formData.newImages.map((file, index) => (
                 <div
                   key={index}
                   className="relative group aspect-square rounded-lg overflow-hidden border"
@@ -514,7 +514,7 @@ export default function EditProductPage() {
                     </Button>
                   </div>
                 </div>
-              ))} */}
+              ))}
 
               <label className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
                 <Upload className="w-8 h-8 text-gray-400 mb-2" />
@@ -538,11 +538,15 @@ export default function EditProductPage() {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSaving}>
-              {isSaving ? (
+            <Button
+              className="w-32 bg-orange-500/95 hover:bg-orange-600/85"
+              type="submit"
+              disabled={isSaving}
+              // onClick={() => setIsSaving(true)}
+            >
+              {isSaving === true ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving Changes...
+                  <ButtonLoader />
                 </>
               ) : (
                 "Save Changes"

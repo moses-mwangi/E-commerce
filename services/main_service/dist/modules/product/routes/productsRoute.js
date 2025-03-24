@@ -16,9 +16,11 @@ router
 router
     .route("/:id")
     .delete(productController_1.deleteProduct)
-    .patch(productController_1.updateProduct)
+    .patch(upload.array("images"), productController_1.updateProduct)
     .get(productController_1.getOneProduct);
-router.patch("/:id", upload.array("images")
-// productController.updateProduct
-);
+// router.patch(
+//   "/:id",
+//   upload.array("images")
+//   // productController.updateProduct
+// );
 exports.default = router;

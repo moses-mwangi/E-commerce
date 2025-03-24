@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../../shared/config/pg_database";
 import Order from "./ordersModel"; // Import Order model
-import Product from "../../product/models/productModels"; // Import Product model
+import Product from "../../product/models/product/productModels"; // Import Product model
 
 class OrderItem extends Model {
   public id!: number;

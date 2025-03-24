@@ -267,19 +267,20 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
     catch (error) {
         return next(new AppError_1.default("Invalid specifications format", 400));
     }
-    let parsedDeletedImages = [];
-    let parsedExistingImages = [];
-    try {
-        parsedDeletedImages = JSON.parse(deletedImages);
-        parsedExistingImages = JSON.parse(existingImages);
-        if (!Array.isArray(parsedDeletedImages) ||
-            !Array.isArray(parsedExistingImages)) {
-            return next(new AppError_1.default("Invalid images data format", 400));
-        }
-    }
-    catch (error) {
-        return next(new AppError_1.default("Failed to parse images data", 400));
-    }
+    // let parsedDeletedImages: number[] = [];
+    // let parsedExistingImages: any[] = [];
+    // try {
+    //   // parsedDeletedImages = JSON.parse(deletedImages);
+    //   // parsedExistingImages = JSON.parse(existingImages);
+    //   if (
+    //     !Array.isArray(parsedDeletedImages) ||
+    //     !Array.isArray(parsedExistingImages)
+    //   ) {
+    //     return next(new AppError("Invalid images data format", 400));
+    //   }
+    // } catch (error) {
+    //   return next(new AppError("Failed to parse images data", 400));
+    // }
     const product = await productModels_1.default.findOne({
         include: {
             model: productImageModel_1.default,
@@ -294,59 +295,6 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
         return next(new AppError_1.default("Product not found", 404));
     }
     // Handle new image uploads
-    // const files = req.files as Express.Multer.File[];
-    // let newImageUrls: string[] = [];
-    // if (files && files.length > 0) {
-    //   try {
-    //     const uploadPromises = files.map((file) => {
-    //       return new Promise<string>(async (resolve, reject) => {
-    //         if (!file.buffer) {
-    //           return reject(new Error("File buffer is missing"));
-    //         }
-    //         const allowedFormats = [
-    //           "image/jpeg",
-    //           "image/jpg",
-    //           "image/png",
-    //           "image/webp",
-    //         ];
-    //         if (!allowedFormats.includes(file.mimetype)) {
-    //           return reject(new Error("Unsupported file format"));
-    //         }
-    //         const uniqueId = `image_${Date.now()}_${Math.random()
-    //           .toString(36)
-    //           .substring(7)}`;
-    //         cloudinary.uploader
-    //           .upload_stream(
-    //             {
-    //               folder: "ecommerce-product",
-    //               public_id: uniqueId,
-    //               resource_type: "image",
-    //               timeout: 60000,
-    //             },
-    //             (error, result) => {
-    //               if (error) {
-    //                 console.error("Cloudinary upload error:", error);
-    //                 reject(error);
-    //               } else {
-    //                 resolve(result?.secure_url || "");
-    //               }
-    //             }
-    //           )
-    //           .end(file.buffer);
-    //       });
-    //     });
-    //     newImageUrls = (await Promise.allSettled(uploadPromises))
-    //       .filter((result) => result.status === "fulfilled" && result.value)
-    //       .map((result) => (result as PromiseFulfilledResult<string>).value);
-    //     if (newImageUrls.length !== files.length) {
-    //       console.error("Some images failed to upload");
-    //     }
-    //   } catch (uploadError) {
-    //     console.error("Image upload failed:", uploadError);
-    //     return next(new AppError("Failed to upload images", 500));
-    //   }
-    //   // }
-    // }
     const files = req.files;
     let newImageUrls = [];
     if (files && files.length > 0) {
@@ -416,11 +364,11 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
             description,
             specifications: specificationsArray,
         }, { transaction });
-        // const parseImageToDelete = JSON.parse(deletedImages);
-        // const existImage = JSON.parse(existingImages);
-        const filterdImage = parsedExistingImages.filter((obj) => !parsedDeletedImages.includes(obj.id));
+        const parseImageToDelete = JSON.parse(deletedImages);
+        const existImage = JSON.parse(existingImages);
+        const filterdImage = existImage.filter((obj) => !parseImageToDelete.includes(obj.id));
         if (filterdImage &&
-            // Array.isArray(filterdImage) &&
+            Array.isArray(filterdImage) &&
             filterdImage.length > 0) {
             const hasMainImage = filterdImage.some((image) => image.isMain === true);
             await Promise.all(filterdImage.map((image, idx) => productImageModel_1.default.update({
@@ -429,23 +377,19 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
                 productId: image.productId,
             }, { where: { id: image.id }, transaction })));
         }
-        if (parsedDeletedImages &&
-            // Array.isArray(parsedDeletedImages) &&
-            parsedDeletedImages.length > 0) {
+        if (parseImageToDelete &&
+            Array.isArray(parseImageToDelete) &&
+            parseImageToDelete.length > 0) {
             await productImageModel_1.default.destroy({
-                where: { id: parsedDeletedImages, productId: Number(id) },
+                where: { id: parseImageToDelete, productId: Number(id) },
                 transaction,
             });
         }
         // Add new images
         if (newImageUrls.length > 0) {
-            const currentImages = await productImageModel_1.default.count({
-                where: { productId: id },
-                transaction,
-            });
             await Promise.all(newImageUrls.map((image, idx) => productImageModel_1.default.create({
                 url: image,
-                isMain: currentImages === 0 && idx === 0,
+                isMain: idx === 0 && product.images.length === 0,
                 productId: product.id,
             }, { transaction })));
         }
@@ -472,55 +416,214 @@ exports.updateProduct = (0, catchSync_1.default)(async (req, res, next) => {
         return next(new AppError_1.default("Failed to update product", 500));
     }
 });
-//   try {
-//     const uploadPromises = files.map((file) => {
-//       return new Promise<string>(async (resolve, reject) => {
-//         if (!file.buffer) {
-//           return reject(new Error("File buffer is missing"));
+// export const updateProduct = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { id } = req.params;
+//     const {
+//       name,
+//       category,
+//       price,
+//       stock,
+//       description,
+//       discount,
+//       ratings,
+//       brand,
+//       specifications,
+//       deletedImages,
+//       existingImages,
+//     } = req.body;
+//     // Validate required fields
+//     if (!name || !category || !price || !stock || !description) {
+//       return next(new AppError("All fields are required", 400));
+//     }
+//     // Validate specifications
+//     let specificationsArray: { key: string; value: string }[] = [];
+//     try {
+//       specificationsArray = JSON.parse(specifications);
+//       if (!Array.isArray(specificationsArray)) {
+//         return next(new AppError("Specifications must be an array", 400));
+//       }
+//     } catch (error) {
+//       return next(new AppError("Invalid specifications format", 400));
+//     }
+//     // Validate images data
+// let parsedDeletedImages: number[] = [];
+// let parsedExistingImages: any[] = [];
+// try {
+//   parsedDeletedImages = JSON.parse(deletedImages);
+//   parsedExistingImages = JSON.parse(existingImages);
+//   if (
+//     !Array.isArray(parsedDeletedImages) ||
+//     !Array.isArray(parsedExistingImages)
+//   ) {
+//     return next(new AppError("Invalid images data format", 400));
+//   }
+// } catch (error) {
+//   return next(new AppError("Failed to parse images data", 400));
+// }
+//     // Find product with images
+//     const product = await Product.findByPk(id, {
+//       include: [
+//         {
+//           model: ProductImage,
+//           as: "productImages",
+//         },
+//       ],
+//     });
+//     if (!product) {
+//       return next(new AppError("Product not found", 404));
+//     }
+//     // Handle new image uploads
+//     const files = req.files as Express.Multer.File[];
+//     let newImageUrls: string[] = [];
+//     if (files?.length > 0) {
+//       try {
+//         const uploadPromises = files.map((file) => {
+//           // for (let i = 0; i < 6; i++) {
+//           return new Promise<string>(async (resolve, reject) => {
+//             if (!file.buffer) {
+//               return reject(new Error("File buffer is missing"));
+//             }
+//             const allowedFormats = [
+//               "image/jpeg",
+//               "image/jpg",
+//               "image/png",
+//               "image/webp",
+//             ];
+//             if (!allowedFormats.includes(file.mimetype)) {
+//               return reject(new Error("Unsupported file format"));
+//             }
+//             const uniqueId = `image_${Date.now()}_${Math.random()
+//               .toString(36)
+//               .substring(7)}`;
+//             cloudinary.uploader
+//               .upload_stream(
+//                 {
+//                   folder: "ecommerce-product",
+//                   public_id: uniqueId,
+//                   resource_type: "image",
+//                   timeout: 60000,
+//                 },
+//                 (error, result) => {
+//                   if (error) {
+//                     console.error("Cloudinary upload error:", error);
+//                     reject(error);
+//                   } else {
+//                     resolve(result?.secure_url || "");
+//                   }
+//                 }
+//               )
+//               .end(file.buffer);
+//           });
+//           // }
+//         });
+//         newImageUrls = (await Promise.allSettled(uploadPromises))
+//           .filter((result) => result.status === "fulfilled" && result.value)
+//           .map((result) => (result as PromiseFulfilledResult<string>).value);
+//         if (newImageUrls.length !== files.length) {
+//           console.error("Some images failed to upload");
 //         }
-//         const allowedFormats = [
-//           "image/jpeg",
-//           "image/jpg",
-//           "image/png",
-//           "image/webp",
-//         ];
-//         if (!allowedFormats.includes(file.mimetype)) {
-//           return reject(new Error("Unsupported file format"));
-//         }
-//         const uniqueId = `image_${Date.now()}_${Math.random()
-//           .toString(36)
-//           .substring(7)}`;
-//         cloudinary.uploader
-//           .upload_stream(
+//       } catch (uploadError) {
+//         console.error("Image upload failed:", uploadError);
+//         return next(new AppError("Failed to upload images", 500));
+//       }
+//     }
+//     // Start transaction
+//     let committed = false;
+//     const transaction = await sequelize.transaction();
+//     try {
+//       // Update product details
+//       await product.update(
+//         {
+//           name,
+//           category,
+//           brand,
+//           price,
+//           stock,
+//           discount,
+//           ratings,
+//           description,
+//           specifications: specificationsArray,
+//         },
+//         { transaction }
+//       );
+//       // Handle existing images
+//       const filteredImages = parsedExistingImages.filter(
+//         (img: any) => !parsedDeletedImages.includes(img.id)
+//       );
+//       // Ensure at least one main image exists
+//       const hasMainImage = filteredImages.some((img: any) => img.isMain);
+//       await Promise.all(
+//         filteredImages.map((image: any, idx: number) =>
+//           ProductImage.update(
 //             {
-//               folder: "ecommerce-product",
-//               public_id: uniqueId,
-//               resource_type: "image",
-//               timeout: 60000,
+//               url: image.url,
+//               isMain: !hasMainImage && idx === 0 ? true : image.isMain,
 //             },
-//             (error, result) => {
-//               if (error) {
-//                 console.error("Cloudinary upload error:", error);
-//                 reject(error);
-//               } else {
-//                 resolve(result?.secure_url || "");
-//               }
+//             {
+//               where: { id: image.id },
+//               transaction,
 //             }
 //           )
-//           .end(file.buffer);
+//         )
+//       );
+//       // Delete removed images
+//       if (parsedDeletedImages.length > 0) {
+//         await ProductImage.destroy({
+//           where: {
+//             id: parsedDeletedImages,
+//             productId: id,
+//           },
+//           transaction,
+//         });
+//       }
+//       // Add new images
+//       if (newImageUrls.length > 0) {
+//         const currentImages = await ProductImage.count({
+//           where: { productId: id },
+//           transaction,
+//         });
+//         await Promise.all(
+//           newImageUrls.map((url, idx) =>
+//             ProductImage.create(
+//               {
+//                 url,
+//                 isMain: currentImages === 0 && idx === 0,
+//                 productId: id,
+//               },
+//               { transaction }
+//             )
+//           )
+//         );
+//       }
+//       // Commit transaction
+//       await transaction.commit();
+//       committed = true;
+//       // Fetch updated product
+//       const updatedProduct = await Product.findByPk(id, {
+//         include: [
+//           {
+//             model: ProductImage,
+//             as: "productImages",
+//           },
+//         ],
+//         transaction,
 //       });
-//     });
-//     newImageUrls = (await Promise.allSettled(uploadPromises))
-//       .filter((result) => result.status === "fulfilled" && result.value)
-//       .map((result) => (result as PromiseFulfilledResult<string>).value);
-//     if (newImageUrls.length !== files.length) {
-//       console.error("Some images failed to upload");
+//       res.status(200).json({
+//         msg: "Product updated successfully!",
+//         product: updatedProduct,
+//       });
+//     } catch (error) {
+//       // Rollback transaction on error
+//       // await transaction.rollback();
+//       if (!committed) {
+//         await transaction.rollback();
+//       }
+//       console.error("Transaction error:", error);
+//       return next(new AppError("Failed to update product", 500));
 //     }
-//   } catch (uploadError) {
-//     console.error("Image upload failed:", uploadError);
-//     return next(new AppError("Failed to upload images", 500));
 //   }
-// }
+// );
 exports.getOneProduct = (0, catchSync_1.default)(async (req, res, next) => {
     const { id } = req.params;
     const product = await productModels_1.default.findOne({

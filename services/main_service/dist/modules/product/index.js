@@ -24,5 +24,3 @@ var categoryRoute_1 = require("../product/routes/categoryRoute");
 Object.defineProperty(exports, "categoryRouter", { enumerable: true, get: function () { return __importDefault(categoryRoute_1).default; } });
 __exportStar(require("../product/controllers/productController"), exports);
 __exportStar(require("../product/controllers/categoryController"), exports);
-__exportStar(require("../product/controllers/categoryController1"), exports);
-// export * from './controllers/userController';

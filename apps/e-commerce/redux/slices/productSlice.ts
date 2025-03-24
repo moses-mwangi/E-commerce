@@ -1,15 +1,13 @@
 import { Product, ProductState } from "@/app/types/products";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
 import toast from "react-hot-toast";
-import { number } from "zod";
+// import { number } from "zod";
 
 dotenv.config();
-
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
-// Fetch all products
 export const fetchProducts = createAsyncThunk("products/fetchAll", async () => {
   try {
     const res = await axios.get(`${API_URL}/product`);
@@ -54,50 +52,58 @@ export const updateProduct = createAsyncThunk(
       id,
       formData,
       images,
-    }: {
-      id: number;
-      formData: FormData;
-      images: File[];
-    },
+      deletedImages,
+    }: { id: number; formData: any; images: File[]; deletedImages: number[] },
     { rejectWithValue }
   ) => {
+    const form = new FormData();
+
+    if (formData.images) {
+      form.append("existingImages", JSON.stringify(formData.images));
+    }
+
+    Object.keys(formData).forEach((key) => {
+      if (key === "specifications") {
+        form.append(key, JSON.stringify(formData[key]));
+      } else if (
+        key !== "images" &&
+        key !== "newImages" &&
+        key !== "deletedImages"
+      ) {
+        form.append(key, formData[key]);
+      }
+    });
+    form.append("deletedImages", JSON.stringify(deletedImages));
+
+    images.forEach((file) => {
+      form.append("images", file);
+    });
+
+    // for (const [key, value] of form.entries()) {
+    //   console.log(key, value);
+    // }
+
+    console.log(formData, images);
+
     try {
-      // Create form data for API
-      const form = new FormData();
-
-      // Append all product data
-      // Object.keys(formData).forEach((key) => {
-      //   if (key === "specifications") {
-      //     form.append(key, JSON.stringify(formData[key]));
-      //   } else if (key !== "images" && key !== "newImages") {
-      //     form.append(key, formData[key]);
-      //   }
-      // });
-
-      // Append existing images
-      // if (formData.images) {
-      //   form.append("existingImages", JSON.stringify(formData.images));
-      // }
-
-      // Append new images
-      images.forEach((file) => {
-        form.append("images", file);
-      });
-
-      const response = await axios.patch(`${API_URL}/products/${id}`, form, {
+      const response = await axios.patch(`${API_URL}/product/${id}`, form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      return response.data;
-    } catch (error) {
-      // if (error instanceof AxiosError) {
-      //   return rejectWithValue(
-      //     error.response?.data?.message || "Failed to update product"
-      //   );
+      // if (response.data.msg) {
+      //   toast.error(response.data.msg);
+      //   return;
       // }
-      return rejectWithValue("Failed to update product");
+
+      toast.success("Product updated successfully");
+      return response.data;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const error = (axiosError.response?.data as any).message;
+      toast.error("An error occurred while updating product");
+      return rejectWithValue(error || "Failed to update product");
     }
   }
 );

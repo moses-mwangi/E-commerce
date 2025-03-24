@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../../../shared/config/pg_database";
+import sequelize from "../../../../shared/config/pg_database";
 
 class Category extends Model {
   public id!: number;
