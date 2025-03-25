@@ -6,6 +6,7 @@ export interface FavState {
   error: string | null;
 }
 export interface Product {
+  productImages: Images[];
   id: number;
   name: string;
   category: string;
@@ -20,4 +21,11 @@ export interface Product {
   reviews: string[] | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Images {
+  id: number;
+  url: string;
+  isMain: boolean;
+  productId: number;
 }

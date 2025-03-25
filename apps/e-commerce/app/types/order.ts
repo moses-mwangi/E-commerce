@@ -19,15 +19,6 @@ export type Order = {
   OrderItems: OrderItem[];
 };
 
-type User = {
-  createdAt: string;
-  id: number;
-  name: string;
-  email: string;
-  telephone: string;
-  country: string;
-};
-
 type OrderItem = {
   id: number;
   orderId: number;
@@ -49,11 +40,28 @@ type Product = {
   brand: string;
   images: string[];
   specifications: Specification[];
+  productImages: Images[];
   discount: number;
   ratings: number;
   reviews: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export interface Images {
+  id: number;
+  url: string;
+  isMain: boolean;
+  productId: number;
+}
+
+type User = {
+  createdAt: string;
+  id: number;
+  name: string;
+  email: string;
+  telephone: string;
+  country: string;
 };
 
 type Specification = {

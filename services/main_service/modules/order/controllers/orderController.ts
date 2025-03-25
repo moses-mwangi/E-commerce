@@ -11,6 +11,7 @@ import { Identifier } from "sequelize";
 import axios from "axios";
 import { model } from "mongoose";
 import User from "../../users/models/userMode";
+import ProductImage from "../../product/models/product/productImageModel";
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -188,7 +189,16 @@ export const getAllOrders = catchAsync(
             "createdAt",
           ],
         },
-        { model: OrderItem, include: [Product] },
+        {
+          model: OrderItem,
+          include: [
+            {
+              model: Product,
+              as: "Product",
+              include: [{ model: ProductImage, as: "productImages" }],
+            },
+          ],
+        },
       ],
     });
 

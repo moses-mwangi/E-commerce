@@ -2,19 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  clearCart,
-  removeFromCart,
-  setCart,
-} from "@/redux/slices/cartSlice";
+import { addToCart, setCart } from "@/redux/slices/cartSlice";
 import { clearFav, removeFromFav, setFav } from "@/redux/slices/favoriteSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, DeleteIcon, HeartIcon, ShoppingBag } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { MdOutlineDelete } from "react-icons/md";
 
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
@@ -69,7 +64,7 @@ export default function FavouritesProductPage() {
           <h1 className="text-2xl font-bold text-gray-900">Your Favourites</h1>
 
           <Link
-            href="/pages/fashion"
+            href="/category"
             className="flex items-center text-blue-600 hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -79,9 +74,6 @@ export default function FavouritesProductPage() {
         <Card className=" containerCart rounded-xl mb-10 mx-auto px-4 py-8">
           {favItems.length === 0 && (
             <div className="text-center py-16 min-h-[40svh]">
-              {/* <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" /> */}
-              {/* <HeartIcon /> */}
-
               <h1 className="text-2xl font-bold text-center mb-3">
                 Your Favourites is Empty
               </h1>
@@ -121,7 +113,15 @@ export default function FavouritesProductPage() {
                     className="flex items-center gap-4 p-4 border rounded-lg bg-white"
                   >
                     <Image
-                      src={item.product.images[0]}
+                      src={
+                        item.product.productImages
+                          ? String(
+                              item.product.productImages.find(
+                                (el: any) => el.isMain === true
+                              )?.url
+                            )
+                          : ""
+                      }
                       alt={item.product.name}
                       width={80}
                       height={80}

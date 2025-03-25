@@ -10,16 +10,18 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { date } from "zod";
+import { useRouter } from "next/navigation";
 
 function OrdersPage() {
   const dispatch: AppDispatch = useDispatch();
   const { orders } = useSelector((state: RootState) => state.order);
+  const { push } = useRouter();
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -38,8 +40,24 @@ function OrdersPage() {
   return (
     <div className="max-w-5xl min-h-screen mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Your Orders</h1>
-
       <Card className=" container p-4">
+        {orders.length === 0 && (
+          <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
+            <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+              Your order is empty
+            </h2>
+            <p className="text-gray-500 mb-8">
+              Looks like you haven&apos;t ordered anything yet.
+            </p>
+            <Button
+              className="bg-orange-500/90 hover:bg-orange-600"
+              onClick={() => push("/pages/cart")}
+            >
+              Start Ordering now
+            </Button>
+          </div>
+        )}
         <Accordion type="multiple" className="space-y-4">
           {orders.map((order) => (
             <AccordionItem key={order.id} value={`order-${order.id}`}>
@@ -62,7 +80,7 @@ function OrdersPage() {
                         : ("success" as "outline")
                     }
                   >
-                    {order.status.toUpperCase()}
+                    {order?.status?.toUpperCase()}
                   </Badge>
                   <Badge
                     variant={
@@ -109,7 +127,15 @@ function OrdersPage() {
                         className="flex items-center gap-4 p-4 border rounded-lg bg-white"
                       >
                         <Image
-                          src={item.Product.images[0]}
+                          src={
+                            item.Product.productImages
+                              ? String(
+                                  item.Product.productImages.find(
+                                    (el: any) => el.isMain === true
+                                  )?.url
+                                )
+                              : ""
+                          }
                           alt={item.Product.name}
                           width={80}
                           height={80}

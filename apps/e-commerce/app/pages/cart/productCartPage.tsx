@@ -21,8 +21,9 @@ import PaymentModal from "./PaymentModal";
 import { useRouter } from "next/navigation";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import Link from "next/link";
-import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
+import { ArrowLeft, DeleteIcon, ShoppingBag, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { MdOutlineDelete } from "react-icons/md";
 
 export default function ProductCartPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,7 @@ export default function ProductCartPage() {
             Shopping Cart
           </h1>
           <Link
-            href="/pages/fashion"
+            href="/category"
             className="flex items-center text-blue-600 hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -89,7 +90,7 @@ export default function ProductCartPage() {
               </p>
               <Button
                 className="bg-orange-500/90 hover:bg-orange-600"
-                onClick={() => router.push("/fashion")}
+                onClick={() => router.push("/category")}
               >
                 Start Shopping
               </Button>
@@ -109,7 +110,15 @@ export default function ProductCartPage() {
                         <div className="grid grid-cols-[1fr_4fr] items-center space-x-4">
                           <div>
                             <img
-                              src={product?.images ? product?.images[0] : ""}
+                              src={
+                                product.productImages
+                                  ? String(
+                                      product.productImages.find(
+                                        (el: any) => el.isMain === true
+                                      )?.url
+                                    )
+                                  : ""
+                              }
                               alt={product.name}
                               className="w-full h-28 object-cover rounded-md"
                             />
@@ -122,21 +131,28 @@ export default function ProductCartPage() {
                               {product.description.slice(0, 92)}...
                             </p>
 
-                            <div className="price text-gray-700 text-base font-semibold">
+                            <div className="price  text-gray-700 text-base font-semibold">
                               ${product.price * item.quantity}
                             </div>
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between w-full">
                               <div className="flex items-center space-x-3">
                                 <Button
                                   className="text-lg w-9 h-9 text-black hover:bg-gray-100 font-semibold px-3 py-1 bg-gray-200 rounded-full"
-                                  onClick={() =>
+                                  onClick={() => {
                                     handleUpdateQuantity(
                                       item.productId,
                                       item.quantity - 1
-                                    )
-                                  }
+                                    );
+                                    if (item.quantity <= 1) {
+                                      handleRemove(item.productId);
+                                    }
+                                  }}
                                 >
-                                  -
+                                  {item.quantity <= 1 ? (
+                                    <MdOutlineDelete className=" text-red-500" />
+                                  ) : (
+                                    "-"
+                                  )}
                                 </Button>
                                 <span className="text-lg font-medium">
                                   {item.quantity}
@@ -157,8 +173,11 @@ export default function ProductCartPage() {
                                 className="remove bg-red-500 h-8 text-sm text-white px-4 py-2 rounded-lg hover:bg-red-400"
                                 onClick={() => handleRemove(item.productId)}
                               >
-                                {/* <RiDeleteBin5Fill /> */}
                                 Remove
+                                {/* <MdOutlineDelete
+                                size={22}
+                                className=" text-red-500"
+                              /> */}
                               </Button>
                             </div>
                           </div>

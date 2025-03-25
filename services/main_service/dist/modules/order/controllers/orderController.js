@@ -13,6 +13,7 @@ const payment_1 = __importDefault(require("../../payments/models/payment"));
 const stripe_1 = __importDefault(require("stripe"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
+const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 dotenv_1.default.config();
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-01-27.acacia",
@@ -164,7 +165,16 @@ exports.getAllOrders = (0, catchSync_1.default)(async (req, res, next) => {
                     "createdAt",
                 ],
             },
-            { model: itemOrder_1.default, include: [productModels_1.default] },
+            {
+                model: itemOrder_1.default,
+                include: [
+                    {
+                        model: productModels_1.default,
+                        as: "Product",
+                        include: [{ model: productImageModel_1.default, as: "productImages" }],
+                    },
+                ],
+            },
         ],
     });
     if (!orders || orders.length === 0) {

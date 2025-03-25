@@ -172,6 +172,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import LoadingState from "../loaders/LoadingState";
+import { FaBell } from "react-icons/fa";
 
 export default function UserProfileImage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -228,12 +229,21 @@ export default function UserProfileImage() {
                 router.push("/pages/order");
               }}
             />
+
             <MenuItem
               label="Messages"
               icon={<MessageSquare className="w-5 h-5" />}
               onClick={() => {
                 setIsLoading(true);
                 router.push("/pages/messages");
+              }}
+            />
+            <MenuItem
+              label="Notification"
+              icon={<FaBell className="w-5 h-5 text-gray-700/80" />}
+              onClick={() => {
+                setIsLoading(true);
+                router.push("/pages/notifications");
               }}
             />
             <MenuItem
