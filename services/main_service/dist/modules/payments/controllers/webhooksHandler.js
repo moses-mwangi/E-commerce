@@ -9,7 +9,8 @@ const express_1 = __importDefault(require("express"));
 const payment_1 = __importDefault(require("../models/payment"));
 const ordersModel_1 = __importDefault(require("../../order/models/ordersModel"));
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-01-27.acacia",
+    // apiVersion: "2025-01-27.acacia",
+    apiVersion: "2025-02-24.acacia"
 });
 exports.webHook = [
     express_1.default.raw({ type: "application/json" }),

@@ -16,7 +16,8 @@ const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 dotenv_1.default.config();
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-01-27.acacia",
+    // apiVersion: "2025-01-27.acacia",
+    apiVersion: "2025-02-24.acacia",
     timeout: 20000,
 });
 // export const createOrder = catchAsync(

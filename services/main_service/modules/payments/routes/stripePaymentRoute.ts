@@ -5,7 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-01-27.acacia",
+  // apiVersion: "2025-01-27.acacia",
+  apiVersion: "2025-02-24.acacia" as any,
 });
 
 router.post("/stripe-payment", async (req: Request, res: Response) => {

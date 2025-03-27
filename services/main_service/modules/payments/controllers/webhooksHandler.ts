@@ -9,7 +9,8 @@ import Payment from "../models/payment";
 import Order from "../../order/models/ordersModel";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-01-27.acacia",
+  // apiVersion: "2025-01-27.acacia",
+  apiVersion: "2025-02-24.acacia" as any
 });
 
 export const webHook: RequestHandler[] = [

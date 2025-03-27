@@ -8,7 +8,8 @@ const catchSync_1 = __importDefault(require("../../../shared/utils/catchSync"));
 const stripe_1 = __importDefault(require("stripe"));
 const axios_1 = __importDefault(require("axios"));
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-01-27.acacia",
+    // apiVersion: "2025-01-27.acacia",
+    apiVersion: "2025-02-24.acacia",
 });
 exports.checkout = (0, catchSync_1.default)(async (req, res, next) => {
     const { userId, products, shippingAddress, paymentMethod } = req.body;
