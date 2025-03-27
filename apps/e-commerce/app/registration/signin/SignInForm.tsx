@@ -1,137 +1,164 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { loginUserAsync } from "@/redux/slices/userSlice";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { useRouter } from "next/navigation";
+
+import { FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
+import { SiWeb3Dotjs } from "react-icons/si";
+import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { fetchUsers, loginUserAsync } from "@/redux/slices/userSlice";
+import LoadingState from "@/app/components/loaders/LoadingState";
+import { ArrowLeft, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+
+const schema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
 export default function SignInForm() {
-  const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
+
+  const { push, refresh } = useRouter();
+  const dispatch = useAppDispatch();
+  const { status, users } = useSelector((state: RootState) => state.user);
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
   });
 
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors = { email: "", password: "" };
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("userEmail");
+    const savedRememberMe = localStorage.getItem("rememberMe") === "true";
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-      isValid = false;
+    if (savedEmail && savedRememberMe) {
+      setRememberMe(true);
     }
 
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    }
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (errors[name as keyof typeof errors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsLoading(true);
+  const handleFormSubmit = async (data: any) => {
     try {
-      await dispatch(loginUserAsync(formData)).unwrap();
-      toast.success("Successfully signed in!");
-      router.push("/dashboard");
-    } catch (error) {
-      toast.error(error as string);
-    } finally {
-      setIsLoading(false);
+      const foundUser = users.find((el) => el?.email === data.email);
+
+      if (!foundUser) {
+        toast.error("Wrong credentials: Try to sign up.");
+        reset();
+        return;
+      }
+
+      if ((foundUser as any)?.passwordHash === null) {
+        const param = new URLSearchParams();
+        param.set("userId", foundUser.id);
+        push(`/pages/account/add_password?${param.toString()}`);
+        toast.error("You signed in with Google. Enable email/password login.");
+        return;
+      }
+
+      const formData = {
+        email: data.email,
+        password: data.password,
+      };
+
+      if (rememberMe) {
+        localStorage.setItem("userEmail", formData.email);
+        localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("userEmail");
+      }
+
+      dispatch(loginUserAsync(formData));
+      refresh();
+      reset();
+    } catch (err) {
+      // console.error(err);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+
+  const handleLogInWithGoogle = async () => {
+    try {
+      window.location.href = "http://localhost:8000/api/auth/google";
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen flex items-center justify-center p-4 bg-gray-50"
-    >
-      <Card className="p-8 w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to access your account</p>
-        </div>
+    <div>
+      {/* {isLoading && <LoadingState />} */}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-                className={`pl-10 ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
-            </div>
-            {errors.email && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
-              >
-                <AlertCircle className="w-4 h-4" />
-                {errors.email}
-              </motion.p>
-            )}
+      <div className="fixed top-4 left-4">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          onClick={() => push("/")}
+        >
+          <ArrowLeft size={18} /> Back to Home
+        </Button>
+      </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
+        <Card className="w-[415px] max-w-md p-6 bg-white rounded-lg shadow-md">
+          <div className="text-center pt-2 py-6">
+            <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+            <p className="text-gray-600 mt-2">Sign in to access your account</p>
           </div>
+          <form className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
+            <div>
+              <div className="relative">
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  {...register("email")}
+                  className={`pl-10 border-gray-300 focus-visible:ring-orange-400 ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+              </div>
 
-          <div className="space-y-2">
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
+            </div>
+
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Lock
+                size={18}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              />
               <Input
                 type={showPassword ? "text" : "password"}
-                name="password"
                 placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`pl-10 pr-10 ${
+                {...register("password")}
+                className={`pl-10 pr-10 focus-visible:ring-orange-400 ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 }`}
                 disabled={isLoading}
@@ -147,63 +174,79 @@ export default function SignInForm() {
                   <Eye className="w-5 h-5" />
                 )}
               </button>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password?.message?.toString()}
+                </p>
+              )}
             </div>
-            {errors.password && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2">
+                <Checkbox
+                  checked={rememberMe}
+                  onCheckedChange={(checked) =>
+                    setRememberMe(checked as boolean)
+                  }
+                />
+                <span className="text-sm text-gray-600">Remember me</span>
+              </label>
+              <Link
+                href="/registration/forgot-password"
+                className="text-sm text-blue-600 hover:underline"
               >
-                <AlertCircle className="w-4 h-4" />
-                {errors.password}
-              </motion.p>
-            )}
-          </div>
+                Forgot password?
+              </Link>
+            </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2">
-              <Checkbox
-                checked={rememberMe}
-                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-              />
-              <span className="text-sm text-gray-600">Remember me</span>
-            </label>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
+            <Button
+              className="w-full bg-orange-500 my-7 disabled:cursor-not-allowed hover:bg-orange-600 text-white"
+              disabled={status === "loading"}
             >
-              Forgot password?
-            </Link>
+              {status === "loading" ? <ButtonLoader /> : "Sign In"}
+            </Button>
+          </form>
+
+          <div className="text-center pt-7">
+            <p className="text-sm text-gray-600">
+              Dont have an account ?
+              <Link
+                href="/registration/signup"
+                className=" text-blue-600 pl-1 hover:underline font-medium"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Signing in...
-              </>
-            ) : (
-              "Sign In"
-            )}
-          </Button>
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Dont have an account?{" "}
-            <Link
-              href="/registration/signup"
-              className="text-primary hover:underline font-medium"
+          <div className="mt-6 flex items-center gap-2 text-center text-sm text-gray-600">
+            <div className="h-[2px] w-full bg-gray-200" />
+            <p>or</p>
+            <div className="h-[2px] w-full bg-gray-200" />
+          </div>
+          <div className="flex justify-center gap-4 py-3">
+            <button
+              onClick={() => {
+                handleLogInWithGoogle();
+              }}
+              className="p-3 bg-gray-200 rounded-full hover:bg-gray-300"
             >
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </Card>
-    </motion.div>
+              <FcGoogle size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaApple size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFacebook size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <SiWeb3Dotjs size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFingerprint size={20} />
+            </button>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }

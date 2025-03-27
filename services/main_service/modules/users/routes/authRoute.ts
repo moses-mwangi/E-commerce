@@ -13,18 +13,21 @@ import {
   resetPassword,
   verifyEmail,
   resendVerificationEmail,
+  setPassword,
 } from "../controllers/authController";
-// import passport from "../../../shared/config/passport";
+// import passport from "passport";
 import { generateToken } from "../utils/jwt";
+import passport from "../../../shared/config/passport";
 
 const router: Router = Router();
 
 router.route("/signup").post(validUserSignInput, signInUser);
 router.route("/login").post(loginUser);
 router.route("/deleteUser/:id").delete(deleteCurrentUser);
-
+//set-password
 router.route("/updatePassword").patch(protect, updatePassword);
-//resendVerificationEmail
+router.route("/set-password").post(setPassword);
+
 router.route("/request-reset").post(requestPasswordReset);
 router.route("/validate-reset-token").post(validateResetToken);
 router.route("/reset-password").post(resetPassword);
@@ -35,8 +38,6 @@ router.get("/mej", protectJwtUser, getMe);
 router.get("/me", protect, getMe);
 ///requestPasswordReset, validate-reset-token, resetPassword
 
-{
-  /*
 router.route("/google").get(
   passport.authenticate("google", {
     scope: ["email", "profile"],
@@ -57,13 +58,17 @@ router
       req.user = req.user;
       const cookieOption = {
         expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        secure: process.env.NODE_ENV === "production",
         httpOnly: true,
+        // sameSite: "Lax",
       };
 
       res.cookie("token", token, cookieOption);
 
       if (req.user && token) {
-        res.redirect("http://localhost:3000");
+        res.redirect(
+          `http://localhost:3000/token_verification/?token=${token}`
+        );
       } else {
         res.status(400).json({
           message: "Authentication failed",
@@ -71,8 +76,6 @@ router
       }
     }
   );
-*/
-}
 
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {

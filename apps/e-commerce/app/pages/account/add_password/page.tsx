@@ -1,10 +1,10 @@
 import React from "react";
-import SignInForm from "./SignInForm";
+import AddingNewPassword from "./AddingNewPassword";
 
 export default function page() {
   return (
     <div>
-      <SignInForm />
+      <AddingNewPassword />
     </div>
   );
 }

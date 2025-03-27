@@ -28,7 +28,7 @@ export const signInUser = catchAsync(
 
     const existingUser = await User.findOne({
       where: {
-        [Op.or]: [{ email: email.toLowerCase() }, { telephone }],
+        [Op.or]: [{ email: email.toLowerCase() }],
         // emailVerified: true,
       },
     });
@@ -59,13 +59,12 @@ export const signInUser = catchAsync(
       email: email.toLowerCase(),
       name: name.trim(),
       passwordHash: password,
-      tradeRole: tradeRole?.trim(),
-      telephone: telephone?.trim(),
-      country: country?.trim(),
+      tradeRole: tradeRole?.trim() || null,
+      telephone: telephone?.trim() || null,
+      country: country?.trim() || null,
       emailVerified: false,
       lastLogin: new Date(),
     });
-    // console.log(req.body.name);
 
     const accessToken = generateToken({
       id: newUser.id,
@@ -311,7 +310,7 @@ export const protect = catchAsync(async function (
 
     (req as any).user = currentUser;
 
-    next();
+    return next();
   } catch (err) {
     if (err instanceof TokenExpiredError) {
       return res
@@ -586,5 +585,58 @@ export const resendVerificationEmail = catchAsync(
         .status(500)
         .json({ message: "Failed to send verification email." });
     }
+  }
+);
+
+export const setPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, newPassword } = req.body;
+    if (!userId || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "User ID and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return next(new AppError("Password must be at least 8 characters", 400));
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    if (user.passwordHash) {
+      return next(
+        new AppError("Password already exists for this account", 400)
+      );
+    }
+
+    // user.passwordHash = newPassword;
+    // await user.save();
+    await user.update({ passwordHash: newPassword });
+
+    const cookieOption = {
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+      maxAge: 8 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "strict" as const,
+    };
+
+    const token = generateToken({ id: user.id, email: user.email });
+    res.cookie("jwt", token, cookieOption);
+    (req.session as any).userId = user.id;
+
+    res.status(200).json({
+      message: "Password set successfully",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isVerified: user.emailVerified,
+      },
+    });
   }
 );

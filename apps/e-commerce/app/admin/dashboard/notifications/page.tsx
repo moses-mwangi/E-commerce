@@ -12,6 +12,7 @@ import {
   Clock,
   Settings,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Notification {
   id: number;
@@ -23,6 +24,7 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
+  const { push, back } = useRouter();
   const [notifications] = useState<Notification[]>([
     {
       id: 1,
@@ -83,11 +85,20 @@ export default function NotificationsPage() {
           <p className="text-gray-600 mt-1">Manage your notifications</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline" className="flex items-center">
-            <CheckCircle2 className="w-4 h-4 mr-2" />
+          <Button
+            variant="outline"
+            className="flex items-center text-gray-50 hover:text-white bg-orange-500/85 hover:bg-orange-600/85"
+          >
+            <CheckCircle2 className="w-4 h-4 mr-2 text-green-100" />
             Mark all as read
           </Button>
-          <Button variant="outline" className="flex items-center">
+          <Button
+            onClick={() => {
+              push("/admin/dashboard/notifications/composer");
+            }}
+            variant="outline"
+            className="flex items-center text-gray-50 hover:text-white bg-orange-500/85 hover:bg-orange-600/85"
+          >
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </Button>

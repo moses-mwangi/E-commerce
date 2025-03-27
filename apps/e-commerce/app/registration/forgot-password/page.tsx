@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,16 +10,23 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Logo from "@/app/home-page/navbar/logo/logo1";
-import { requestPasswordReset } from "@/redux/slices/userSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { fetchUsers, requestPasswordReset } from "@/redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
+  const { push } = useRouter();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState("");
   const dispatch: AppDispatch = useDispatch();
+  const { users } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +41,23 @@ export default function ForgotPasswordPage() {
       setError("Please enter a valid email");
       return;
     }
-
     setIsLoading(true);
 
     try {
-      console.log("Email", email);
+      const foundUser = users.find((el) => el?.email === email.toLowerCase());
+      if (!foundUser) {
+        toast.error("Wrong credentials: Try to sign up.");
+        // reset();
+        return;
+      }
+
+      if ((foundUser as any)?.passwordHash === null) {
+        const param = new URLSearchParams();
+        param.set("userId", foundUser.id);
+        push(`/pages/account/add_password?${param.toString()}`);
+        toast.error("You signed in with Google. Enable email/password login.");
+        return;
+      }
 
       await dispatch(requestPasswordReset(email)).unwrap();
       toast.success("Reset instructions sent to your email");
@@ -97,7 +116,9 @@ export default function ForgotPasswordPage() {
                 <Input
                   type="email"
                   placeholder="Enter your email"
-                  className={`pl-10 ${error ? "border-red-500" : ""}`}
+                  className={`pl-10 ${
+                    error ? "border-red-500" : ""
+                  } focus-visible:ring-orange-500`}
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);

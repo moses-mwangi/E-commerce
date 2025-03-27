@@ -101,16 +101,25 @@ export default function SettingsSection() {
   } = useForm();
 
   const handlePasswordChange = async (data: any) => {
-    const formData = {
-      currentPassword: data.currentPassword,
-      newPassword: data.newPassword,
-    };
-
     try {
       if (data.newPassword !== data.confirmPassword) {
         toast.error("New passwords don't match!");
         return;
       }
+
+      if ((currentUser as any)?.passwordHash === null) {
+        router.push("/pages/account/add_password");
+        toast.error(
+          "You signed in with Google. Set a password to enable email login."
+        );
+        return;
+      }
+
+      const formData = {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      };
+
       dispatch(updatePassword(formData));
       router.push("/");
       reset();

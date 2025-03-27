@@ -1,345 +1,259 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-// import { signUpUser } from "@/redux/slices/userSlice";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import {
-  Mail,
-  User,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
-  AlertCircle,
-  Phone,
-  Globe,
-  Briefcase,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { registerUserAsync } from "@/redux/slices/userSlice";
+import { Input } from "@/components/ui/input";
+import { FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
-export default function SignUpForm() {
+import { SiWeb3Dotjs } from "react-icons/si";
+import { FcGoogle } from "react-icons/fc";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUserAsync } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { userSchema } from "@/utils/userSchema";
+import LoadingState from "@/app/components/loaders/LoadingState";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import Link from "next/link";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+
+export default function SignupForm() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { status, users } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    telephone: "",
-    country: "",
-    tradeRole: "",
+  const {
+    register,
+    reset,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(userSchema),
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    telephone: "",
-    country: "",
-    tradeRole: "",
-  });
-
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors = { ...errors };
-
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-      isValid = false;
-    } else if (formData.name.length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-      isValid = false;
-    }
-
-    // Email validation
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-      isValid = false;
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-      isValid = false;
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-      isValid = false;
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-      isValid = false;
-    }
-
-    // Phone validation (optional)
-    if (formData.telephone && !/^\+?[\d\s-]{8,}$/.test(formData.telephone)) {
-      newErrors.telephone = "Please enter a valid phone number";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (errors[name as keyof typeof errors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsLoading(true);
+  const handleFormSubmit = async (data: any) => {
     try {
-      await dispatch(registerUserAsync(formData)).unwrap();
-      toast.success(
-        "Account created successfully! Please check your email to verify your account."
-      );
-      router.push("/signin");
-    } catch (error) {
-      toast.error(error as string);
-    } finally {
+      const formData = {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+      };
+      const uniqueUser = users.find((el) => el?.email === formData.email);
+
+      if (!uniqueUser) {
+        dispatch(registerUserAsync(formData));
+      } else {
+        toast.error("Failed to create:Try again");
+        setIsLoading(false);
+      }
+    } catch (err) {
       setIsLoading(false);
+      toast.error("Failed to create:Try again");
+      throw err;
+    }
+  };
+
+  const handleLogInWithGoogle = async () => {
+    try {
+      window.location.href = "http://localhost:8000/api/auth/google";
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen flex items-center justify-center p-4 bg-gray-50"
-    >
-      <Card className="p-8 w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-600 mt-2">Sign up to get started</p>
-        </div>
+    <div>
+      <div className="fixed top-4 left-4">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          onClick={() => router.push("/")}
+        >
+          <ArrowLeft size={18} /> Back to Home
+        </Button>
+      </div>
+      {isLoading && <LoadingState />}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name Input */}
-          <div className="space-y-2">
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`pl-10 ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
-            </div>
-            {errors.name && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
-              >
-                <AlertCircle className="w-4 h-4" />
-                {errors.name}
-              </motion.p>
-            )}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
+        <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+          <div className="text-center pb-3 pt-1">
+            <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-gray-600 mt-2">Sign up to get started</p>
           </div>
-
-          {/* Email Input */}
-          <div className="space-y-2">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-                className={`pl-10 ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
+          <form className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
+            <div>
+              <div className="relative">
+                <User
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  {...register("name")}
+                  className={`focus-visible:ring-orange-400 pl-10 ${
+                    errors.name ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-red-500 text-sm">
+                  {errors.name.message?.toString()}
+                </p>
+              )}
             </div>
-            {errors.email && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
-              >
-                <AlertCircle className="w-4 h-4" />
-                {errors.email}
-              </motion.p>
-            )}
-          </div>
+            <div>
+              <div className="relative">
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  {...register("email")}
+                  className={`pl-10 border-gray-300 focus-visible:ring-orange-400 ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+              </div>
 
-          {/* Password Input */}
-          <div className="space-y-2">
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`pl-10 pr-10 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
             </div>
-            {errors.password && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
-              >
-                <AlertCircle className="w-4 h-4" />
-                {errors.password}
-              </motion.p>
-            )}
-          </div>
 
-          {/* Confirm Password Input */}
-          <div className="space-y-2">
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className={`pl-10 pr-10 ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
+            <div>
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  {...register("password")}
+                  className={`pl-10 pr-10 focus-visible:ring-orange-400 ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password?.message?.toString()}
+                </p>
+              )}
             </div>
-            {errors.confirmPassword && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="text-sm text-red-500 flex items-center gap-1"
-              >
-                <AlertCircle className="w-4 h-4" />
-                {errors.confirmPassword}
-              </motion.p>
-            )}
-          </div>
 
-          {/* Optional Fields */}
-          <div className="space-y-4">
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="tel"
-                name="telephone"
-                placeholder="Phone Number (optional)"
-                value={formData.telephone}
-                onChange={handleChange}
-                className={`pl-10 ${
-                  errors.telephone ? "border-red-500" : "border-gray-300"
-                }`}
-                disabled={isLoading}
-              />
+            <div>
+              <div className=" relative">
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  className="pl-10 pr-10 focus-visible:ring-orange-400"
+                  placeholder="Confirm Password"
+                  type={showPassword ? "text" : "password"}
+                  {...register("passwordConfirm", {
+                    validate: (val: string) => {
+                      if (watch("password") != val) {
+                        return "Your passwords do no match";
+                      }
+                    },
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {errors.passwordConfirm && (
+                <p className="text-red-500 text-sm">
+                  {errors.passwordConfirm.message?.toString()}
+                </p>
+              )}
             </div>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="text"
-                name="country"
-                placeholder="Country (optional)"
-                value={formData.country}
-                onChange={handleChange}
-                className="pl-10 border-gray-300"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="text"
-                name="tradeRole"
-                placeholder="Trade Role (optional)"
-                value={formData.tradeRole}
-                onChange={handleChange}
-                className="pl-10 border-gray-300"
-                disabled={isLoading}
-              />
-            </div>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Creating Account...
-              </>
-            ) : (
-              "Sign Up"
-            )}
-          </Button>
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href="/registration/signin"
-              className="text-primary hover:underline font-medium"
+            <Button
+              className="w-full bg-orange-500 disabled:cursor-not-allowed my-7 hover:bg-orange-600 text-white"
+              disabled={status === "loading"}
             >
-              Sign in
-            </Link>
-          </p>
-        </div>
-      </Card>
-    </motion.div>
+              {status === "loading" ? <ButtonLoader /> : "Sign Up"}
+            </Button>
+          </form>
+
+          <div className="text-center mt-4 text-sm">
+            <p className=" text-gray-600">
+              Already have an account ?
+              <Link
+                href="/registration/signin"
+                className="text-blue-600 pl-1 hover:underline font-medium"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+          <div className="mt-4 flex items-center gap-2 text-center text-sm text-gray-600">
+            <div className="h-[2px] w-full bg-gray-200" />
+            <p>or</p>
+            <div className="h-[2px] w-full bg-gray-200" />
+          </div>
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={() => {
+                handleLogInWithGoogle();
+              }}
+              className="p-3 bg-gray-200 rounded-full hover:bg-gray-300"
+            >
+              <FcGoogle size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaApple size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFacebook size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <SiWeb3Dotjs size={20} />
+            </button>
+            <button className="p-3 bg-gray-200 rounded-full hover:bg-gray-300">
+              <FaFingerprint size={20} />
+            </button>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }

@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resendVerificationEmail = exports.resetPassword = exports.validateResetToken = exports.requestPasswordReset = exports.updatePassword = exports.getMe = exports.protect = exports.protectJwtUser = exports.deleteCurrentUser = exports.loginUser = exports.verifyEmail = exports.signInUser = void 0;
+exports.setPassword = exports.resendVerificationEmail = exports.resetPassword = exports.validateResetToken = exports.requestPasswordReset = exports.updatePassword = exports.getMe = exports.protect = exports.protectJwtUser = exports.deleteCurrentUser = exports.loginUser = exports.verifyEmail = exports.signInUser = void 0;
 const jsonwebtoken_1 = __importStar(require("jsonwebtoken"));
 const express_validator_1 = require("express-validator");
 const crypto_1 = __importDefault(require("crypto"));
@@ -60,7 +60,7 @@ exports.signInUser = (0, catchSync_1.default)(async (req, res, next) => {
     const { email, name, password, tradeRole, telephone, country } = req.body;
     const existingUser = await userMode_1.default.findOne({
         where: {
-            [sequelize_1.Op.or]: [{ email: email.toLowerCase() }, { telephone }],
+            [sequelize_1.Op.or]: [{ email: email.toLowerCase() }],
             // emailVerified: true,
         },
     });
@@ -80,13 +80,12 @@ exports.signInUser = (0, catchSync_1.default)(async (req, res, next) => {
         email: email.toLowerCase(),
         name: name.trim(),
         passwordHash: password,
-        tradeRole: tradeRole?.trim(),
-        telephone: telephone?.trim(),
-        country: country?.trim(),
+        tradeRole: tradeRole?.trim() || null,
+        telephone: telephone?.trim() || null,
+        country: country?.trim() || null,
         emailVerified: false,
         lastLogin: new Date(),
     });
-    // console.log(req.body.name);
     const accessToken = (0, jwt_1.generateToken)({
         id: newUser.id,
         email: newUser.email,
@@ -261,7 +260,7 @@ exports.protect = (0, catchSync_1.default)(async function (req, res, next) {
                 .json({ msg: "The user belonging to this token no longer exists." });
         }
         req.user = currentUser;
-        next();
+        return next();
     }
     catch (err) {
         if (err instanceof jsonwebtoken_1.TokenExpiredError) {
@@ -488,4 +487,45 @@ exports.resendVerificationEmail = (0, catchSync_1.default)(async (req, res) => {
             .status(500)
             .json({ message: "Failed to send verification email." });
     }
+});
+exports.setPassword = (0, catchSync_1.default)(async (req, res, next) => {
+    const { userId, newPassword } = req.body;
+    if (!userId || !newPassword) {
+        return res
+            .status(400)
+            .json({ message: "User ID and new password are required" });
+    }
+    if (newPassword.length < 6) {
+        return next(new AppError_1.default("Password must be at least 8 characters", 400));
+    }
+    const user = await userMode_1.default.findByPk(userId);
+    if (!user) {
+        return next(new AppError_1.default("User not found", 404));
+    }
+    if (user.passwordHash) {
+        return next(new AppError_1.default("Password already exists for this account", 400));
+    }
+    // user.passwordHash = newPassword;
+    // await user.save();
+    await user.update({ passwordHash: newPassword });
+    const cookieOption = {
+        expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+        maxAge: 8 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: "strict",
+    };
+    const token = (0, jwt_1.generateToken)({ id: user.id, email: user.email });
+    res.cookie("jwt", token, cookieOption);
+    req.session.userId = user.id;
+    res.status(200).json({
+        message: "Password set successfully",
+        token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            isVerified: user.emailVerified,
+        },
+    });
 });

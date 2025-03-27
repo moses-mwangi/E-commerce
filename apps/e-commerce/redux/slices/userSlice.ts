@@ -25,7 +25,6 @@ export const registerUserAsync = createAsyncThunk(
   "user/register",
   async (data: { email: string; name: string; password: string }) => {
     try {
-      console.log(data);
       const response = await axios.post(`${API_URL}/auth/signup`, data);
 
       const token = response.data.token;
@@ -53,6 +52,7 @@ export const verifyEmail = createAsyncThunk(
 
       // const token = response.data.token;
       document.cookie = `token=${token}; path=/`;
+      document.cookie = `tokens=${token}; path=/`;
       toast.success("Account created succefully");
 
       // return response;
@@ -83,6 +83,7 @@ export const loginUserAsync = createAsyncThunk(
       const token = response.data.token;
 
       document.cookie = `token=${token}; path=/`;
+      document.cookie = `tokens=${token}; path=/`;
       toast.success("Login succefully");
       window.location.href = "/";
 
@@ -151,6 +152,8 @@ export const getCurrentUser = createAsyncThunk(
         alert(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // window.location.href = "/registration/signin";
       } else {
         // Handle other errors
@@ -194,17 +197,18 @@ export const updatePassword = createAsyncThunk(
 
       const newToken = response.data.token;
       document.cookie = `token=${newToken}; path=/`;
+      document.cookie = `tokens=${newToken}; path=/`;
 
       return newToken;
     } catch (err) {
       const axiosError = err as AxiosError;
       if (axiosError.response?.status === 401) {
         const errorMessage = "Your session has expired. Please log in again.";
-        console.error(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       } else {
-        console.error("Error:", axiosError);
         toast.error(axiosError.message);
       }
       return rejectWithValue(
@@ -255,16 +259,19 @@ export const updateCurrentUser = createAsyncThunk(
       const newToken = response.data.token;
       document.cookie = `token=${newToken}; path=/`;
 
+      //not necessary
+      document.cookie = `tokens=${newToken}; path=/`;
+
       return newToken;
     } catch (err) {
       const axiosError = err as AxiosError;
       if (axiosError.response?.status === 401) {
         const errorMessage = "Your session has expired. Please log in again.";
-        console.error(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       } else {
-        console.error("Error:", axiosError);
         toast.error(axiosError.message);
       }
       return rejectWithValue(
@@ -331,6 +338,38 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const setPassword = createAsyncThunk(
+  "user/setPassword",
+  async (
+    data: { userId: number; newPassword: string; token: string | null },
+    thunkAPI
+  ) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/set-password`, data);
+      toast.success("Password sets successfully");
+      const newToken = response.data.token;
+      window.location.href = "/";
+      document.cookie = `tokens=${newToken}; path=/`;
+      return response.data;
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      if (axiosError.response?.status === 401) {
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      } else {
+        toast.error("Error occurred while setting password.");
+      }
+      console.log(err);
+      return thunkAPI.rejectWithValue(
+        axiosError.response?.data ||
+          "An error occurred while updating the password."
+      );
+    }
+  }
+);
+
 const initialState: UserState = {
   users: [],
   currentUser: null,
@@ -352,6 +391,8 @@ const userSlice = createSlice({
     logoutUser: (state) => {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       state.currentUser = null;
       state.isAuthenticated = false;
     },
@@ -431,7 +472,9 @@ const userSlice = createSlice({
         state.currentUser = action.payload;
         state.isAuthenticated = true;
       })
-
+      .addCase(getCurrentUser.pending, (state, action) => {
+        state.status = "loading";
+      })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch user";
