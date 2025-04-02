@@ -5,6 +5,17 @@ import Product from "../../product/models/product/productModels";
 import OrderItem from "./itemOrder";
 
 class Order extends Model {
+  static findOneAndUpdate(
+    arg0: { paymentIntentId: any },
+    arg1: {
+      status: string;
+      paymentStatus: string;
+      paymentDetails: { id: any };
+    },
+    arg2: { new: boolean }
+  ) {
+    throw new Error("Method not implemented.");
+  }
   public id!: number;
   public userId!: number;
   public orderId!: number;
@@ -13,6 +24,7 @@ class Order extends Model {
   public paymentStatus!: "paid" | "unpaid" | "failed";
   public shippingAddress!: string;
   public trackingNumber?: string;
+  paymentDetails: any;
 }
 
 Order.init(
@@ -46,6 +58,7 @@ Order.init(
     trackingNumber: {
       type: DataTypes.STRING,
       allowNull: true,
+      defaultValue: DataTypes.UUIDV4,
     },
   },
   {

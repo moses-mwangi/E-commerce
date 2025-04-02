@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import {
   Star,
@@ -61,15 +61,14 @@ export default function SingleSuCategoricalProductPage() {
   const [quantity, setQuantity] = useState(1);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const { push } = useRouter();
 
   const { category, subcategory, singleProduct } = useParams();
   const dispatch: AppDispatch = useDispatch();
-  const [showImage, setShowImage] = useState(1);
 
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
-  const [selectedImage, setSelectedImage] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -89,6 +88,12 @@ export default function SingleSuCategoricalProductPage() {
 
   const { products } = useSelector((state: RootState) => state.product);
   const product = products.find((el) => el.id === Number(id));
+  const mainImageIndex =
+    Number(product?.productImages.findIndex((el) => el.isMain === true)) || 0;
+
+  const [selectedImage, setSelectedImage] = useState(
+    mainImageIndex !== -1 ? mainImageIndex : 0
+  );
 
   const handleImageHover = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!showZoom) return;
@@ -101,10 +106,10 @@ export default function SingleSuCategoricalProductPage() {
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
-      toast.error("Please select size and color");
-      return;
-    }
+    // if (!selectedSize || !selectedColor) {
+    //   toast.error("Please select size and color");
+    //   return;
+    // }
 
     const productToAdd = {
       ...product,
@@ -120,9 +125,8 @@ export default function SingleSuCategoricalProductPage() {
   };
 
   const handleBuyNow = () => {
-    // handleAddToCart();
-    // Navigate to checkout
-    // router.push("/checkout");
+    handleAddToCart();
+    push("/pages/cart/checkout");
   };
 
   if (!product)
@@ -167,21 +171,19 @@ export default function SingleSuCategoricalProductPage() {
               onMouseLeave={() => setShowZoom(false)}
               onMouseMove={handleImageHover}
             >
-              <Image
-                // src={product.images[showImage]}
-                src={
-                  product.productImages
-                    ? String(
-                        product.productImages.find((el) => el.isMain === true)
-                          ?.url
-                      )
-                    : ""
-                }
-                alt={product.name}
-                fill
-                className="object-cover"
-                priority
-              />
+              {product.productImages && (
+                <Image
+                  src={
+                    product.productImages
+                      ? product.productImages[selectedImage]?.url
+                      : ""
+                  }
+                  alt={product?.name || "Product Image"}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              )}
               {showZoom && (
                 <div
                   className="absolute inset-0 bg-white"
@@ -197,11 +199,8 @@ export default function SingleSuCategoricalProductPage() {
             </div>
             <ImageScrol
               images={product.productImages.map((el) => el.url)}
-              // selectedImage={selectedImage}
-              // setSelectedImage={setSelectedImage}
-              // images={selectedProduct?.images}
-              setShowImage={setShowImage}
-              showImage={showImage}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
             />
           </div>
 

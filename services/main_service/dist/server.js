@@ -45,6 +45,7 @@ const pg_connect = async () => {
         // await sequelize.sync({ force: true });
         // await sequelize.sync({ alter: true }); /////does not delete data
         // await Product.sync({ alter: true });
+        // await Order.sync({ alter: true });
     }
     catch (err) {
         console.log("Unable to connect to database", err);

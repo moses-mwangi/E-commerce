@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import dotenv from "dotenv";
 import { UserState } from "../../app/types/user";
 import Error, { ErrorProps } from "next/error";
-import { useRouter } from "next/navigation";
 
 dotenv.config();
 

@@ -29,7 +29,7 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
+// import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -593,12 +593,12 @@ export default function NotificationManager() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar
+                  {/* <Calendar
                     mode="single"
                     selected={date}
                     onSelect={setDate}
                     initialFocus
-                  />
+                  /> */}
                   <div className="p-3 border-t">
                     <Input
                       type="time"

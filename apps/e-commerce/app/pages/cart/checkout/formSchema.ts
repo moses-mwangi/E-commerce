@@ -14,6 +14,7 @@ import z from "zod";
 
 export const formSchema = z.object({
   country: z.string().min(2, "Country is required"),
+  email: z.string().email(),
   fullName: z.string().min(3, "Full Name is required"),
   phoneNumber: z.string().min(10, "Phone Number is required"),
   streetAddress: z.string().min(5, "Street Address is required"),
@@ -35,12 +36,14 @@ export function useCheckOutForm() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       country: "",
       fullName: "",
+      email: "",
       phoneNumber: "",
       streetAddress: "",
       apartment: "",
@@ -63,11 +66,13 @@ export function useCheckOutForm() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        const bbox = "-1.1802414,-1.1796487,36.9948801,36.9952691";
         const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
 
         try {
           const response = await fetch(url);
           const data = await response.json();
+          console.log(data);
 
           if (data?.address) {
             setValue(
@@ -100,6 +105,29 @@ export function useCheckOutForm() {
     );
   }
 
+  async function getFeaturesInBoundingBox() {
+    const bbox = "-1.1802414,-1.1796487,36.9948801,36.9952691";
+    // const url = `https://nominatim.openstreetmap.org/search?format=json&bounded=1&viewbox=${bbox}`;
+
+    const min_lat = -1.1802414;
+    const max_lat = -1.1796487;
+    const min_lon = 36.9948801;
+    const max_lon = 36.9952691;
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&bounded=1&viewbox=${min_lon},${min_lat},${max_lon},${max_lat}`;
+
+    try {
+      const response = await fetch(url);
+      const features = await response.json();
+      console.log("Features in bounding box:", features);
+      return features;
+    } catch (error) {
+      console.error("Error fetching features:", error);
+    }
+  }
+
+  // getFeaturesInBoundingBox();
+
   function onSubmit(data: any) {
     try {
       const orderItem = items.map((el) => {
@@ -117,13 +145,13 @@ export function useCheckOutForm() {
         status: "pending",
         paymentStatus: "unpaid",
         shippingAddress: data.streetAddress,
-        trackingNumber: "WDACK52UGH76DF",
+        // trackingNumber: "WDACK52UGH76DF",
         orderItems: orderItem,
       };
 
       console.log(orderItems);
       dispatch(createOrder(orderItems));
-      dispatch(clearCart());
+      // dispatch(clearCart());
 
       toast.success("Order sent succefully");
     } catch (err) {
@@ -135,9 +163,11 @@ export function useCheckOutForm() {
     onSubmit,
     handleSubmit,
     setValue,
+    watch,
     errors,
     register,
     handleUseCurrentLocation,
     loadingLocation,
+    currentUser,
   };
 }

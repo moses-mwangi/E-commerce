@@ -14,11 +14,15 @@ import {
 
 interface Image {
   images: string[] | undefined;
-  setShowImage: React.Dispatch<React.SetStateAction<number>>;
-  showImage: number;
+  selectedImage: number;
+  setSelectedImage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function ImageScrol({ images, setShowImage, showImage }: Image) {
+export default function ImageScrol({
+  images,
+  selectedImage,
+  setSelectedImage,
+}: Image) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesPerPage, setImagesPerPage] = useState(5);
 
@@ -53,17 +57,11 @@ export default function ImageScrol({ images, setShowImage, showImage }: Image) {
         <div className=" flex gap-3">
           {images?.slice(currentIndex, imagesPerPage).map((image, idx) => (
             <Image
-              // onMouseEnter={() => {
-              //   setShowImage(idx);
-              // }}
-              // onMouseLeave={() => {
-              //   setShowImage(1);
-              // }}
               onClick={() => {
-                setShowImage(idx);
+                setSelectedImage(idx);
               }}
               className={`${
-                showImage === idx ? "ring-2 ring-orange-500" : ""
+                selectedImage === idx ? "ring-2 ring-orange-500" : ""
               } rounded-lg cursor-pointer w-24 h-20`}
               key={idx}
               src={image}

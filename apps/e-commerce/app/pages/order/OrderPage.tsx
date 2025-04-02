@@ -58,14 +58,16 @@ function OrdersPage() {
             </Button>
           </div>
         )}
+
         <Accordion type="multiple" className="space-y-4">
           {orders.map((order) => (
             <AccordionItem key={order.id} value={`order-${order.id}`}>
               <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
                 <div>
-                  <h2 className="font-semibold">Order #{order.id}</h2>
+                  <h2 className="font-semibold">Order Number #{order.id}</h2>
                   <p className="text-gray-600 text-sm">
-                    Tracking : {order.trackingNumber}
+                    Tracking Number : TRK-
+                    {order?.trackingNumber?.toUpperCase()}
                   </p>
 
                   <p className="text-gray-600 text-sm">
@@ -89,7 +91,7 @@ function OrdersPage() {
                         : ("success" as "outline")
                     }
                   >
-                    {order.paymentStatus.toUpperCase()}
+                    {order?.paymentStatus?.toUpperCase()}
                   </Badge>
                 </div>
               </AccordionTrigger>

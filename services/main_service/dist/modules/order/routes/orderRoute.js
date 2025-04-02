@@ -7,8 +7,6 @@ const express_1 = __importDefault(require("express"));
 const orderController_1 = require("../controllers/orderController");
 const checkout_1 = require("../controllers/checkout");
 const orderController_copy_1 = require("../controllers/orderController copy");
-// import { protect } from "../../users/controllers/authController copy";
-// import { protect } from "../../users/controllers/authController";
 const router = express_1.default.Router();
 router.post("/", orderController_copy_1.createOrder); // Create Order
 router.get("/", orderController_1.getAllOrders); // Get All Orders

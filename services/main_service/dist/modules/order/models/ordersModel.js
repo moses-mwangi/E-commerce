@@ -9,6 +9,9 @@ const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productModels_1 = __importDefault(require("../../product/models/product/productModels"));
 const itemOrder_1 = __importDefault(require("./itemOrder"));
 class Order extends sequelize_1.Model {
+    static findOneAndUpdate(arg0, arg1, arg2) {
+        throw new Error("Method not implemented.");
+    }
 }
 Order.init({
     id: {
@@ -40,6 +43,7 @@ Order.init({
     trackingNumber: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
+        defaultValue: sequelize_1.DataTypes.UUIDV4,
     },
 }, {
     sequelize: pg_database_1.default,

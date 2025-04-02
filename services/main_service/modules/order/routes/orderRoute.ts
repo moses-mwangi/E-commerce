@@ -8,11 +8,8 @@ import {
 } from "../controllers/orderController";
 import { checkout } from "../controllers/checkout";
 import { createOrder } from "../controllers/orderController copy";
-// import { protect } from "../../users/controllers/authController copy";
-// import { protect } from "../../users/controllers/authController";
 
 const router = express.Router();
-
 router.post("/", createOrder); // Create Order
 router.get("/", getAllOrders); // Get All Orders
 router.get("/:id", getOrderById); // Get Order by ID

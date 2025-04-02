@@ -12,7 +12,7 @@ export type Order = {
   status: string;
   paymentStatus: string;
   shippingAddress: string;
-  trackingNumber: string;
+  trackingNumber?: string;
   createdAt: string;
   updatedAt: string;
   User: User;

@@ -12,6 +12,11 @@ import axios from "axios";
 import { model } from "mongoose";
 import User from "../../users/models/userMode";
 import ProductImage from "../../product/models/product/productImageModel";
+import sequelize from "../../../shared/config/pg_database";
+import {
+  createPayPalOrder,
+  initiateMpesaPayment,
+} from "../../payments/services/paymentService";
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -20,161 +25,204 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   timeout: 20000,
 });
 
-// export const createOrder = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const { userId, products, shippingAddress, paymentMethodId } = req.body;
+export const createOrder = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {
+      userId,
+      orderItems: products,
+      shippingAddress,
+      paymentMethod, // 'mpesa', 'card', 'paypal', 'bank'
+      paymentDetails, // Method-specific details
+      trackingNumber,
+    } = req.body;
 
-//     if (!userId || !products || products.length === 0 || !shippingAddress) {
-//       return next(new AppError("Missing required fields", 400));
-//     }
+    if (
+      !userId ||
+      !products ||
+      products.length === 0 ||
+      !shippingAddress ||
+      !paymentMethod
+    ) {
+      return next(new AppError("Missing required fields", 400));
+    }
 
-//     let totalPrice = 0;
+    const transaction = await sequelize.transaction();
 
-//     for (const item of products) {
-//       const product = await Product.findByPk(item.productId);
-//       if (!product)
-//         return next(
-//           new AppError(`Product with ID ${item.productId} not found`, 404)
-//         );
+    try {
+      // Calculate total price (same as before)
+      const productIds = products.map(
+        (item: { productId: any }) => item.productId
+      );
+      const productList = await Product.findAll({ where: { id: productIds } });
+      const productMap = new Map(
+        productList.map((product) => [product.id, product])
+      );
 
-//       totalPrice += product.price * item.quantity;
-//     }
+      let totalPrice = 0;
+      for (const item of products) {
+        const product = productMap.get(item.productId);
+        if (!product)
+          throw new AppError(
+            `Product with ID ${item.productId} not found`,
+            404
+          );
+        totalPrice += product.price * item.quantity;
+      }
 
-//     let paymentStatus: "paid" | "unpaid" | "failed" = "unpaid";
-//     let stripePaymentId: string | null = null;
+      // Handle different payment methods
+      let paymentStatus: "paid" | "pending" | "failed" = "pending";
+      let paymentReference: string | null = null;
+      let paymentResponse: any = null;
 
-//     if (paymentMethodId) {
-//       try {
-//         const paymentIntent = await stripe.paymentIntents.create({
-//           amount: Math.round(totalPrice * 100),
-//           currency: "usd",
-//           payment_method: paymentMethodId,
-//           confirm: true,
-//         });
+      switch (paymentMethod) {
+        case "card":
+          try {
+            const paymentIntent = await stripe.paymentIntents.create({
+              amount: Math.round(totalPrice * 100),
+              currency: "usd",
+              payment_method: paymentDetails.paymentMethodId,
+              confirm: true,
+              metadata: {
+                userId,
+                orderDescription: `Order for user ${userId}`,
+              },
+            });
 
-//         stripePaymentId = paymentIntent.id;
-//         paymentStatus = "paid";
-//       } catch (error: any) {
-//         console.error("🔥 Stripe Payment Error:", error.message);
-//         return next(new AppError("Payment failed, please try again.", 400));
-//       }
-//     }
+            paymentReference = paymentIntent.id;
+            paymentStatus =
+              paymentIntent.status === "succeeded" ? "paid" : "pending";
+            paymentResponse = paymentIntent;
+          } catch (error: any) {
+            throw new AppError(`Card payment failed: ${error.message}`, 400);
+          }
+          break;
 
-//     const order = await Order.create({
-//       userId,
-//       totalPrice,
-//       shippingAddress,
-//       status: "pending",
-//       paymentStatus,
-//     });
+        case "mpesa":
+          try {
+            // This would call your M-Pesa API integration
+            const mpesaResponse = await initiateMpesaPayment({
+              phone: paymentDetails.phone,
+              amount: totalPrice,
+              reference: `ORDER_${Date.now()}`,
+              description: `Payment for order`,
+            });
 
-//     for (const item of products) {
-//       await OrderItem.create({
-//         orderId: order.id,
-//         productId: item.productId,
-//         quantity: item.quantity,
-//         price: (await Product.findByPk(item.productId))?.price || 0,
-//       });
-//     }
+            paymentReference = mpesaResponse.transactionId;
+            paymentStatus = "pending"; // M-Pesa payments are usually pending until confirmed
+            paymentResponse = mpesaResponse;
+          } catch (error: any) {
+            throw new AppError(`M-Pesa payment failed: ${error.message}`, 400);
+          }
+          break;
 
-//     if (stripePaymentId) {
-//       await Payment.create({
-//         userId,
-//         orderId: order.id,
-//         stripePaymentId,
-//         amount: totalPrice,
-//         currency: "usd",
-//         status: paymentStatus,
-//       });
-//     }
+        case "paypal":
+          try {
+            const paypalOrder = await createPayPalOrder(totalPrice, "USD", {
+              userId,
+              items: products.map(
+                (item: { productId: number; quantity: any }) => ({
+                  name: productMap.get(item.productId)?.name || "Product",
+                  quantity: item.quantity,
+                  price: productMap.get(item.productId)?.price || 0,
+                })
+              ),
+            });
 
-//     res
-//       .status(201)
-//       .json({ success: true, message: "Order placed successfully!", order });
-//   }
-// );
+            paymentReference = paypalOrder.id;
+            paymentStatus =
+              paypalOrder.status === "COMPLETED" ? "paid" : "pending";
+            paymentResponse = paypalOrder;
+          } catch (error: any) {
+            throw new AppError(`PayPal payment failed: ${error.message}`, 400);
+          }
+          break;
 
-// export const createOrder = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const { userId, products, shippingAddress } = req.body;
+        case "bank":
+          try {
+            // Generate bank transfer reference
+            paymentReference = `BANK_${Date.now()}`;
+            paymentStatus = "pending"; // Bank transfers are usually pending until confirmed
+            paymentResponse = {
+              accountNumber: "YOUR_BANK_ACCOUNT",
+              accountName: "YOUR_BUSINESS_NAME",
+              reference: paymentReference,
+              amount: totalPrice,
+              currency: "USD",
+            };
+          } catch (error: any) {
+            throw new AppError(
+              `Bank transfer setup failed: ${error.message}`,
+              400
+            );
+          }
+          break;
 
-//     if (!userId || !products || products.length === 0 || !shippingAddress) {
-//       return next(new AppError("Missing required fields", 400));
-//     }
+        default:
+          throw new AppError("Invalid payment method", 400);
+      }
 
-//     let totalPrice = 0;
-//     const lineItems: any[] = [];
+      // Create order
+      const order = await Order.create(
+        {
+          userId,
+          totalPrice,
+          shippingAddress,
+          status: "pending",
+          paymentStatus,
+          paymentMethod,
+          paymentReference,
+          trackingNumber,
+        },
+        { transaction }
+      );
 
-//     for (const item of products) {
-//       const product = await Product.findByPk(item.productId);
+      // Create order items
+      const orderItems = products.map(
+        (item: { productId: number; quantity: any }) => ({
+          orderId: order.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          price: productMap.get(item.productId)?.price || 0,
+        })
+      );
 
-//       if (!product) {
-//         return next(
-//           new AppError(`Product with ID ${item.productId} not found`, 404)
-//         );
-//       }
+      await OrderItem.bulkCreate(orderItems, { transaction });
 
-//       totalPrice += product.price * item.quantity;
+      // Save payment details
+      await Payment.create(
+        {
+          userId,
+          orderId: order.id,
+          paymentMethod,
+          reference: paymentReference,
+          amount: totalPrice,
+          currency: "usd",
+          status: paymentStatus,
+          details: paymentResponse,
+        },
+        { transaction }
+      );
 
-//       lineItems.push({
-//         price_data: {
-//           currency: "usd",
-//           product_data: {
-//             name: product.name,
-//             images: product.images ? [product.images[0]] : [],
-//           },
-//           unit_amount: Math.round(product.price * 100), // Convert to cents
-//         },
-//         quantity: item.quantity,
-//       });
-//     }
+      await transaction.commit();
 
-//     // Create Order
-//     const order = await Order.create({
-//       userId,
-//       totalPrice,
-//       shippingAddress,
-//       status: "pending",
-//       paymentStatus: "unpaid",
-//     });
-
-//     // Store order items
-//     for (const item of products) {
-//       const product = await Product.findByPk(item.productId);
-//       if (product) {
-//         await OrderItem.create({
-//           orderId: order.id,
-//           productId: product.id,
-//           quantity: item.quantity,
-//           price: product.price,
-//         });
-//       }
-//     }
-
-//     // ✅ Stripe Checkout (Redirect to Payment Page)
-//     try {
-//       const session = await stripe.checkout.sessions.create({
-//         payment_method_types: ["card", "paypal"], // Enable both Stripe & PayPal
-//         mode: "payment",
-//         success_url: `http://localhost:3000/order-success?orderId=${order.id}`,
-//         cancel_url: `http://localhost:3000/order-cancelled?orderId=${order.id}`,
-//         customer_email: "guest@example.com", // Send to user email (if available)
-//         line_items: lineItems,
-//         metadata: { orderId: order.id, userId },
-//       });
-
-//       res.status(201).json({
-//         success: true,
-//         message: "Order created successfully! Redirecting to payment...",
-//         checkoutUrl: session.url, // 🔥 Redirect user to Stripe payment page
-//       });
-//     } catch (error) {
-//       console.error("🔥 Stripe Checkout Error:", error);
-//       return next(new AppError("Failed to create payment session.", 500));
-//     }
-//   }
-// );
-
+      res.status(201).json({
+        success: true,
+        message: "Order created successfully",
+        order,
+        payment: {
+          method: paymentMethod,
+          status: paymentStatus,
+          reference: paymentReference,
+          nextAction: paymentMethod === "mpesa" ? "confirm_payment" : null,
+          details: paymentResponse,
+        },
+      });
+    } catch (error) {
+      await transaction.rollback();
+      next(error);
+    }
+  }
+);
 export const getAllOrders = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const orders = await Order.findAll({
@@ -250,102 +298,102 @@ export const deleteOrder = catchAsync(
   }
 );
 
-export const createOrder = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, products, shippingAddress, paymentMethod } = req.body;
+// export const createOrder = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { userId, products, shippingAddress, paymentMethod } = req.body;
 
-    if (!userId || !products || products.length === 0 || !shippingAddress) {
-      return next(new AppError("Missing required fields", 400));
-    }
+//     if (!userId || !products || products.length === 0 || !shippingAddress) {
+//       return next(new AppError("Missing required fields", 400));
+//     }
 
-    let totalPrice = 0;
+//     let totalPrice = 0;
 
-    for (const item of products) {
-      const product = await Product.findByPk(item.productId);
-      if (!product) {
-        return next(
-          new AppError(`Product with ID ${item.productId} not found`, 404)
-        );
-      }
-      totalPrice += product.price * item.quantity;
-    }
+//     for (const item of products) {
+//       const product = await Product.findByPk(item.productId);
+//       if (!product) {
+//         return next(
+//           new AppError(`Product with ID ${item.productId} not found`, 404)
+//         );
+//       }
+//       totalPrice += product.price * item.quantity;
+//     }
 
-    let paymentStatus: "paid" | "unpaid" | "failed" | "pending" = "unpaid";
-    let stripePaymentId: string | null = null;
-    let paymentUrl: string | null = null;
+//     let paymentStatus: "paid" | "unpaid" | "failed" | "pending" = "unpaid";
+//     let stripePaymentId: string | null = null;
+//     let paymentUrl: string | null = null;
 
-    if (paymentMethod === "stripe") {
-      try {
-        const session = await stripe.checkout.sessions.create({
-          payment_method_types: ["card"],
-          line_items: products.map((item: any) => ({
-            price_data: {
-              currency: "usd",
-              product_data: {
-                name: `Product ${item.productId}`,
-              },
-              unit_amount: Math.round(products.price * 100),
-            },
-            quantity: item.quantity,
-          })),
-          mode: "payment",
-          success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
-          metadata: {
-            userId,
-            shippingAddress: JSON.stringify(shippingAddress),
-          },
-        });
+//     if (paymentMethod === "stripe") {
+//       try {
+//         const session = await stripe.checkout.sessions.create({
+//           payment_method_types: ["card"],
+//           line_items: products.map((item: any) => ({
+//             price_data: {
+//               currency: "usd",
+//               product_data: {
+//                 name: `Product ${item.productId}`,
+//               },
+//               unit_amount: Math.round(products.price * 100),
+//             },
+//             quantity: item.quantity,
+//           })),
+//           mode: "payment",
+//           success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+//           cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+//           metadata: {
+//             userId,
+//             shippingAddress: JSON.stringify(shippingAddress),
+//           },
+//         });
 
-        stripePaymentId = session.id;
-        paymentStatus = "pending";
-        paymentUrl = session.url!;
-      } catch (error: any) {
-        console.error("🔥 Stripe Checkout Error:", error.message);
-        return next(
-          new AppError("Stripe checkout failed, please try again.", 400)
-        );
-      }
-    } else if (paymentMethod === "paypal") {
-      // TODO: Implement PayPal Checkout Logic
-      return next(
-        new AppError("PayPal integration is not yet implemented.", 400)
-      );
-    }
+//         stripePaymentId = session.id;
+//         paymentStatus = "pending";
+//         paymentUrl = session.url!;
+//       } catch (error: any) {
+//         console.error("🔥 Stripe Checkout Error:", error.message);
+//         return next(
+//           new AppError("Stripe checkout failed, please try again.", 400)
+//         );
+//       }
+//     } else if (paymentMethod === "paypal") {
+//       // TODO: Implement PayPal Checkout Logic
+//       return next(
+//         new AppError("PayPal integration is not yet implemented.", 400)
+//       );
+//     }
 
-    const order = await Order.create({
-      userId,
-      totalPrice,
-      shippingAddress,
-      status: "pending",
-      paymentStatus,
-    });
+//     const order = await Order.create({
+//       userId,
+//       totalPrice,
+//       shippingAddress,
+//       status: "pending",
+//       paymentStatus,
+//     });
 
-    for (const item of products) {
-      await OrderItem.create({
-        orderId: order.id,
-        productId: item.productId,
-        quantity: item.quantity,
-        price: (await Product.findByPk(item.productId))?.price || 0,
-      });
-    }
+//     for (const item of products) {
+//       await OrderItem.create({
+//         orderId: order.id,
+//         productId: item.productId,
+//         quantity: item.quantity,
+//         price: (await Product.findByPk(item.productId))?.price || 0,
+//       });
+//     }
 
-    if (stripePaymentId) {
-      await Payment.create({
-        userId,
-        orderId: order.id,
-        stripePaymentId,
-        amount: totalPrice,
-        currency: "usd",
-        status: paymentStatus,
-      });
-    }
+//     if (stripePaymentId) {
+//       await Payment.create({
+//         userId,
+//         orderId: order.id,
+//         stripePaymentId,
+//         amount: totalPrice,
+//         currency: "usd",
+//         status: paymentStatus,
+//       });
+//     }
 
-    res.status(201).json({
-      success: true,
-      message: "Order created successfully! Redirect to complete payment.",
-      order,
-      paymentUrl,
-    });
-  }
-);
+//     res.status(201).json({
+//       success: true,
+//       message: "Order created successfully! Redirect to complete payment.",
+//       order,
+//       paymentUrl,
+//     });
+//   }
+// );

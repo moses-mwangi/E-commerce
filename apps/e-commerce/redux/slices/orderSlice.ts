@@ -10,7 +10,7 @@ type OrdersItemType = {
   status: string;
   paymentStatus: string;
   shippingAddress: any;
-  trackingNumber: string;
+  trackingNumber?: string;
   orderItems: {
     productId: number;
     quantity: number;
