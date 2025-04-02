@@ -4,7 +4,13 @@ import type { NextRequest } from "next/server";
 let serverToken: string | undefined = undefined;
 
 export function middleware(req: NextRequest) {
-  const protectedRoutes = ["/admin", "/cart", "/pages", "/account", "/orders"];
+  const protectedRoutes = [
+    "/admins",
+    "/carts",
+    "/pagess",
+    "/account",
+    "/orderss",
+  ];
   const token = req.cookies.get("token")?.value;
 
   if (protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))) {
@@ -20,10 +26,10 @@ export function middleware(req: NextRequest) {
 export default serverToken;
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/cart/:path*",
-    "/pages/:path*",
-    "/account/:path*",
-    "/orders/:path*",
+    "/admins/:path*",
+    "/carts/:path*",
+    "/pagess/:path*",
+    "/accounts/:path*",
+    "/orderss/:path*",
   ], // Match protected routes
 };
