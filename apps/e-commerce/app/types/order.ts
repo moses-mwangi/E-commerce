@@ -17,6 +17,16 @@ export type Order = {
   updatedAt: string;
   User: User;
   OrderItems: OrderItem[];
+
+  country: string;
+  county: string;
+  streetAddress: string;
+  phoneNumber: string;
+  city: string;
+  email: string;
+  fullName: string;
+  postcode: string;
+  apartment: string;
 };
 
 type OrderItem = {

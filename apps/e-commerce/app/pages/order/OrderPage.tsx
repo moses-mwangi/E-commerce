@@ -17,14 +17,22 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { date } from "zod";
 import { useRouter } from "next/navigation";
+import { Order } from "@/app/types/order";
+import { getCurrentUser } from "@/redux/slices/userSlice";
 
 function OrdersPage() {
   const dispatch: AppDispatch = useDispatch();
   const { orders } = useSelector((state: RootState) => state.order);
   const { push } = useRouter();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const currentUserOrder = orders.filter(
+    (order) => order.User.email === currentUser?.email
+  );
 
   useEffect(() => {
     dispatch(fetchOrders());
+    // dispatch(getCurrentUser());
   }, [dispatch]);
 
   const getDate = (date: string) => {
@@ -41,7 +49,7 @@ function OrdersPage() {
     <div className="max-w-5xl min-h-screen mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Your Orders</h1>
       <Card className=" container p-4">
-        {orders.length === 0 && (
+        {currentUserOrder.length === 0 && (
           <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
             <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h2 className="text-2xl font-semibold text-gray-700 mb-2">
@@ -60,7 +68,7 @@ function OrdersPage() {
         )}
 
         <Accordion type="multiple" className="space-y-4">
-          {orders.map((order) => (
+          {currentUserOrder?.map((order: Order) => (
             <AccordionItem key={order.id} value={`order-${order.id}`}>
               <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
                 <div>

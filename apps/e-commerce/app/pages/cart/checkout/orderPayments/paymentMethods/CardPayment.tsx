@@ -13,13 +13,13 @@ import { FaCcVisa } from "react-icons/fa";
 import { GrVisa } from "react-icons/gr";
 import { SiVisa } from "react-icons/si";
 
-import visa from "../../../../../public/visa.png";
-import masterCard from "../../../../../public/masterCard.png";
-import jcbCard from "../../../../../public/jcbCard.png";
-import dinnerCard from "../../../../../public/dinnerCard.png";
-import amexCard from "../../../../../public/amex.png";
-import discoverCard from "../../../../../public/discoverCard.png";
-import card from "../../../../../public/card.png";
+import visa from "../../../../../../public/visa.png";
+import masterCard from "../../../../../../public/masterCard.png";
+import jcbCard from "../../../../../../public/jcbCard.png";
+import dinnerCard from "../../../../../../public/dinnerCard.png";
+import amexCard from "../../../../../../public/amex.png";
+import discoverCard from "../../../../../../public/discoverCard.png";
+import card from "../../../../../../public/card.png";
 import Image from "next/image";
 
 const CARD_EXPIRY_MONTHS = Array.from({ length: 12 }, (_, i) =>

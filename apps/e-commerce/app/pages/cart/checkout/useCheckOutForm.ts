@@ -25,7 +25,6 @@ export const formSchema = z.object({
 });
 
 export function useCheckOutForm() {
-  const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { totalPrice, items } = useSelector((state: RootState) => state.cart);

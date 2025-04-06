@@ -23,25 +23,42 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useCheckOut } from "./useCheckOut";
+// import { useCheckOut } from "./useCheckOut";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useCheckOut } from "../../cart/checkout/useCheckOut";
 
-export default function CheckoutPage() {
+export default function ChangeShippingAddress() {
   const [step, setStep] = useState(1);
   const { push } = useRouter();
+
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const { orders } = useSelector((state: RootState) => state.order);
+  const currentUserOrder = orders.filter(
+    (order) => order.User.email === currentUser?.email
+  );
+
   const {
     onSubmit,
     handleSubmit,
     setValue,
-    errors,
+    // errors,
     register,
-    watch,
+    // watch,
     loadingLocation,
     handleUseCurrentLocation,
-    currentUser,
+    // currentUser,
     status,
   } = useCheckOut();
-  const formProgress = (step / 3) * 100;
+
+  const {
+    // register,
+    // handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   const formValues = watch();
 
   const handleNext = async () => {
@@ -57,7 +74,7 @@ export default function CheckoutPage() {
       // return;
     }
     try {
-      await handleSubmit(onSubmit)();
+      // await handleSubmit(onSubmit)();
     } catch (err) {
       toast.error("Error occcured while creating order");
       console.error(err);
@@ -70,15 +87,6 @@ export default function CheckoutPage() {
       animate={{ opacity: 1 }}
       className="max-w-4xl mx-auto p-4"
     >
-      <div className="mb-8">
-        <Progress value={formProgress} className="h-2 " />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span className={step >= 1 ? "text-primary" : ""}>Shipping</span>
-          <span className={step >= 2 ? "text-primary" : ""}>Delivery</span>
-          <span className={step >= 3 ? "text-primary" : ""}>Payment</span>
-        </div>
-      </div>
-
       <Card className="p-6 bg-white shadow-lg rounded-lg">
         <AnimatePresence mode="wait">
           <motion.div
@@ -115,11 +123,6 @@ export default function CheckoutPage() {
                     <SelectItem value="Somalia">Somalia</SelectItem>
                   </SelectContent>
                 </Select>
-                {errors.country && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.country.message}
-                  </p>
-                )}
               </div>
 
               <div className=" col-span-2">
@@ -129,11 +132,6 @@ export default function CheckoutPage() {
                   placeholder="Email Address"
                   defaultValue={currentUser?.email}
                 />
-                {errors.county && (
-                  <p className="text-red-500 text-xs">
-                    {errors.county.message}
-                  </p>
-                )}
               </div>
 
               <div className="col-span-2 md:col-span-1">
@@ -141,13 +139,8 @@ export default function CheckoutPage() {
                   {...register("fullName")}
                   placeholder="Full Name"
                   className="w-full focus-visible:ring-orange-500/60"
-                  defaultValue={String(currentUser?.name)}
+                  defaultValue={String(currentUserOrder)}
                 />
-                {errors.fullName && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.fullName.message}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -160,11 +153,6 @@ export default function CheckoutPage() {
                 <p className="text-xs text-gray-500 mt-1">
                   For delivery updates only
                 </p>
-                {errors.phoneNumber && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.phoneNumber.message}
-                  </p>
-                )}
               </div>
 
               <div className="col-span-2">
@@ -190,11 +178,6 @@ export default function CheckoutPage() {
                     Use My Location
                   </Button>
                 </div>
-                {errors.streetAddress && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.streetAddress.message}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -212,11 +195,6 @@ export default function CheckoutPage() {
                   className="focus-visible:ring-orange-500/60"
                   defaultValue={String(currentUser?.zipcode)}
                 />
-                {errors.postcode && (
-                  <p className="text-red-500 text-xs">
-                    {errors.postcode.message}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -226,11 +204,6 @@ export default function CheckoutPage() {
                   className="focus-visible:ring-orange-500/60"
                   // defaultValue={String(currentUser?.)}
                 />
-                {errors.county && (
-                  <p className="text-red-500 text-xs">
-                    {errors.county.message}
-                  </p>
-                )}
               </div>
 
               <div>
@@ -240,9 +213,6 @@ export default function CheckoutPage() {
                   className="focus-visible:ring-orange-500/60"
                   defaultValue={String(currentUser?.city)}
                 />
-                {errors.city && (
-                  <p className="text-red-500 text-xs">{errors.city.message}</p>
-                )}
               </div>
             </form>
           </motion.div>

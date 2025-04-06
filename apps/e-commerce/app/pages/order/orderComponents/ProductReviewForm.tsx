@@ -74,7 +74,7 @@ export default function ProductReviewForm({
           value={review}
           onChange={(e) => setReview(e.target.value)}
           placeholder="Share your thoughts about this product..."
-          className="min-h-[120px]"
+          className="min-h-[120px] focus-visible:ring-orange-500/85"
           required
         />
       </div>
@@ -83,7 +83,11 @@ export default function ProductReviewForm({
         <Button type="button" variant="outline" onClick={onSuccess}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting || rating === 0}>
+        <Button
+          className="bg-orange-500/85 hover:bg-orange-500"
+          type="submit"
+          disabled={isSubmitting || rating === 0}
+        >
           {isSubmitting ? "Submitting..." : "Submit Review"}
         </Button>
       </div>

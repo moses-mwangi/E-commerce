@@ -1,6 +1,7 @@
 import { Order, OrderState } from "@/app/types/order";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
@@ -23,9 +24,11 @@ export const createOrder = createAsyncThunk(
   async (orderData: OrdersItemType) => {
     try {
       const res = await axios.post(`${API_URL}/order`, orderData);
+      toast.success("Order sent succefully");
+      window.location.href = "/pages/cart/checkout/order_delivery_method";
       return res.data;
     } catch (err) {
-      console.error(err);
+      toast.error("Failed to  create your order");
       throw new Error("Failed to create order");
     }
   }

@@ -72,6 +72,11 @@ function OrdersPage() {
     {}
   );
 
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const currentUserOrder = orders.filter(
+    (order) => order.User.email === currentUser?.email
+  );
+
   useEffect(() => {
     dispatch(fetchOrders());
   }, [dispatch]);
@@ -104,7 +109,9 @@ function OrdersPage() {
     }));
 
     if (!addressEditMode[orderId]) {
-      const order = orders.find((o) => o.id.toString() === orderId.toString());
+      const order = currentUserOrder?.find(
+        (o) => o.id.toString() === orderId.toString()
+      );
       if (order) {
         setEditedAddress((prev) => ({
           ...prev,
@@ -220,7 +227,7 @@ function OrdersPage() {
     <div className="max-w-6xl min-h-screen mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Your Orders</h1>
 
-      {orders.length === 0 ? (
+      {currentUserOrder?.length === 0 ? (
         <Card className="p-4">
           <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
             <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -250,7 +257,7 @@ function OrdersPage() {
           </TabsList>
 
           <div className="space-y-4">
-            {orders.map((order) => (
+            {currentUserOrder.map((order) => (
               <Card
                 key={order.id}
                 className="border rounded-lg overflow-hidden"

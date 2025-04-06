@@ -19,7 +19,7 @@ Payment.init({
     },
     orderId: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true, // Optional if not linked to an order
+        allowNull: true,
     },
     stripePaymentId: {
         type: sequelize_1.DataTypes.STRING,

@@ -36,15 +36,24 @@ Order.init({
         type: sequelize_1.DataTypes.ENUM("paid", "unpaid", "failed"),
         defaultValue: "unpaid",
     },
-    shippingAddress: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
     trackingNumber: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
         defaultValue: sequelize_1.DataTypes.UUIDV4,
     },
+    shippingAddress: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    streetAddress: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    country: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    county: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    phoneNumber: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    email: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    fullName: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    postcode: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    city: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    apartment: { type: sequelize_1.DataTypes.STRING, allowNull: true },
 }, {
     sequelize: pg_database_1.default,
     tableName: "orders",

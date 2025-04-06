@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 
-// import OrderPage from "./OrderPage";
+import OrderPages from "./OrderPage";
 import OrderPage from "./Alibaba copy";
 import OrdersPage from "./Alibaba";
 
@@ -22,10 +22,9 @@ export default function Orders() {
   return (
     <div>
       <Navbar />
-
-      <OrderPage />
+      {/* <OrderPages /> */}
+      {/* <OrderPage /> */}
       <OrdersPage />
-
       <Footer />
     </div>
   );

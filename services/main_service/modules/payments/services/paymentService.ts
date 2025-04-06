@@ -2,8 +2,6 @@ import axios from "axios";
 // import { stripe } from "../config/stripe";
 import paypal from "@paypal/checkout-server-sdk";
 
-import crypto from "crypto";
-
 const generateMpesaPassword = () => {
   const shortcode = process.env.MPESA_SHORTCODE; // Your M-Pesa Business Shortcode
   const passkey = process.env.MPESA_PASSKEY; // Your M-Pesa Passkey

@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Phone } from "lucide-react";
 import React, { useState } from "react";
-import amexCard from "../../../../../public/amex.png";
-import M_Pesa from "../../../../../public/mpesa.png";
+import amexCard from "../../../../../../public/amex.png";
+import M_Pesa from "../../../../../../public/mpesa.png";
 import Image from "next/image";
 
 export default function MpesaPayment() {

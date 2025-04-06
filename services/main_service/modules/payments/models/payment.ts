@@ -3,8 +3,8 @@ import sequelize from "../../../shared/config/pg_database";
 
 class Payment extends Model {
   public id!: number;
-  public userId!: number; // Reference to the user who made the payment
-  public orderId!: number; // Reference to the order (optional)
+  public userId!: number;
+  public orderId!: number;
   public stripePaymentId!: string;
   public amount!: number;
   public currency!: string;
@@ -26,7 +26,7 @@ Payment.init(
     },
     orderId: {
       type: DataTypes.INTEGER,
-      allowNull: true, // Optional if not linked to an order
+      allowNull: true,
     },
     stripePaymentId: {
       type: DataTypes.STRING,

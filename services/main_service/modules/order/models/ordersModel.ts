@@ -25,6 +25,16 @@ class Order extends Model {
   public shippingAddress!: string;
   public trackingNumber?: string;
   paymentDetails: any;
+
+  public apartment!: string;
+  public city!: string;
+  public country!: string;
+  public county!: string;
+  public email!: string;
+  public fullName!: string;
+  public phoneNumber!: string;
+  public postcode!: string;
+  public streetAddress!: string;
 }
 
 Order.init(
@@ -51,15 +61,25 @@ Order.init(
       type: DataTypes.ENUM("paid", "unpaid", "failed"),
       defaultValue: "unpaid",
     },
-    shippingAddress: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     trackingNumber: {
       type: DataTypes.STRING,
       allowNull: true,
       defaultValue: DataTypes.UUIDV4,
     },
+    shippingAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    streetAddress: { type: DataTypes.STRING, allowNull: true },
+    country: { type: DataTypes.STRING, allowNull: true },
+    county: { type: DataTypes.STRING, allowNull: true },
+    phoneNumber: { type: DataTypes.STRING, allowNull: true },
+    email: { type: DataTypes.STRING, allowNull: true },
+    fullName: { type: DataTypes.STRING, allowNull: true },
+    postcode: { type: DataTypes.STRING, allowNull: true },
+    city: { type: DataTypes.STRING, allowNull: true },
+    apartment: { type: DataTypes.STRING, allowNull: true },
   },
   {
     sequelize,

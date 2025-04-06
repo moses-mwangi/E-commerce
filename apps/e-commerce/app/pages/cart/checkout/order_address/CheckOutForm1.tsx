@@ -24,8 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCheckOutForm } from "./formSchema";
-import PaymentModal from "../PaymentModal";
+import { useCheckOutForm } from "../useCheckOutForm";
+import PaymentModal from "../../PaymentModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
