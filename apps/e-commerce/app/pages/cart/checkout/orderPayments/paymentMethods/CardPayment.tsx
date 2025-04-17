@@ -1,273 +1,646 @@
-import { Input } from "@/components/ui/input";
+"use client";
+// /* eslint-disable @next/next/no-img-element */
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { CreditCard, Eye, EyeOff } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useFormContext, useForm, FieldError } from "react-hook-form";
-import { FaCcVisa } from "react-icons/fa";
-import { GrVisa } from "react-icons/gr";
-import { SiVisa } from "react-icons/si";
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cardPayment } from "@/redux/slices/PaymentSlice";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { usePayments } from "@/hooks/usePayment";
+import { useCardContex } from "@/hooks/paymentContext";
+import M_Pesa from "../../../../../../public/mpesa.png";
+import anex from "../../../../../../public/amex.png";
+import discover from "../../../../../../public/discoverCard.png";
+import master from "../../../../../../public/masterCard.png";
+import dinner from "../../../../../../public/dinnerCard.png";
+import jcb from "../../../../../../public/jcbCard.png";
+import unionPay from "../../../../../../public/unionPay.png";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardBrand } from "@stripe/stripe-js";
+import Image, { StaticImageData } from "next/image";
+import AvailableCard from "@/app/components/AvailableCards";
 
-import visa from "../../../../../../public/visa.png";
-import masterCard from "../../../../../../public/masterCard.png";
-import jcbCard from "../../../../../../public/jcbCard.png";
-import dinnerCard from "../../../../../../public/dinnerCard.png";
-import amexCard from "../../../../../../public/amex.png";
-import discoverCard from "../../../../../../public/discoverCard.png";
-import card from "../../../../../../public/card.png";
-import Image from "next/image";
+interface FormValues {
+  firstName: string;
+  surName: string;
+}
 
-const CARD_EXPIRY_MONTHS = Array.from({ length: 12 }, (_, i) =>
-  String(i + 1).padStart(2, "0")
-);
-
-const CURRENT_YEAR = new Date().getFullYear();
-const CARD_EXPIRY_YEARS = Array.from({ length: 10 }, (_, i) =>
-  String(CURRENT_YEAR + i)
-);
-
-// Card type detection patterns
-const CARD_PATTERNS = {
-  visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
-  mastercard: /^5[1-5][0-9]{14}$/,
-  amex: /^3[47][0-9]{13}$/,
-  diners: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
-  discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
-  jcb: /^(?:2131|1800|35\d{3})\d{11}$/,
+const elementOptions = {
+  style: {
+    base: {
+      fontSize: "15px",
+      color: "#424770",
+      "::placeholder": {
+        color: "#aab7c4",
+      },
+    },
+    invalid: {
+      color: "#9e2146",
+    },
+  },
 };
 
-const CARD_ICONS = {
-  visa: visa,
-  mastercard: masterCard,
-  amex: amexCard,
-  diners: dinnerCard,
-  discover: discoverCard,
-  jcb: jcbCard,
-};
+const cardBrands = [
+  {
+    name: "Visa",
+    icon: M_Pesa,
+  },
+  {
+    name: "Mastercard",
+    icon: master,
+  },
+  {
+    name: "American Express",
+    icon: anex,
+  },
+  {
+    name: "Discover",
+    icon: discover,
+  },
+  {
+    name: "JCB",
+    icon: jcb,
+  },
+  {
+    name: "Diners Club",
+    icon: dinner,
+  },
+  {
+    name: "UnionPay",
+    icon: unionPay,
+  },
+  {
+    name: "Card",
+    icon: M_Pesa,
+  },
+  {
+    name: "",
+    icon: "",
+  },
+];
 
-export default function CardPayment() {
-  const [showCvv, setShowCvv] = useState(false);
-  const [cardType, setCardType] = useState<string | null>(null);
+function CardPayment() {
+  const stripe = useStripe();
+  const dispatch: AppDispatch = useDispatch();
+  const { subtotal, currentUser, selectedOrder } = usePayments();
+  const { formRef } = useCardContex();
+  const elements = useElements();
+  const [cardComplete, setCardComplete] = useState({
+    cardNumber: false,
+    cardExpiry: false,
+    cardCvc: false,
+  });
 
   const {
-    register,
-    setValue,
-    watch,
+    control,
+    handleSubmit,
     formState: { errors },
-  } = useForm();
+    watch,
+  } = useForm<FormValues>({
+    defaultValues: {
+      firstName: "",
+      surName: "",
+    },
+  });
 
-  let cardNumber = watch("cardNumber");
+  const handleCardChange =
+    (field: keyof typeof cardComplete) => (event: any) => {
+      setCardComplete((prev) => ({ ...prev, [field]: event.complete }));
+    };
 
-  useEffect(() => {
-    if (cardNumber) {
-      setCardType(detectCardType(cardNumber));
-    }
-  }, [cardNumber]);
-
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    const cardType = detectCardType(v);
-
-    if (cardType === "amex") {
-      const parts = [];
-      if (v.length > 4) parts.push(v.substring(0, 4));
-      if (v.length > 10) parts.push(v.substring(4, 10));
-      if (v.length > 15) parts.push(v.substring(10, 15));
-      else if (v.length > 4) parts.push(v.substring(4));
-      return parts.join(" ");
-    } else {
-      const matches = v.match(/\d{4,16}/g);
-      const match = (matches && matches[0]) || "";
-      const parts = [];
-      for (let i = 0, len = match.length; i < len; i += 4) {
-        parts.push(match.substring(i, i + 4));
-      }
-      if (parts.length) {
-        return parts.join(" ");
-      }
-      return v;
-    }
-  };
-
-  const validateCardNumber = (value: string) => {
-    const num = value.replace(/\s/g, "");
-    if (!/^\d+$/.test(num)) return "Invalid card number";
-
-    // Luhn algorithm
-    let sum = 0;
-    for (let i = 0; i < num.length; i++) {
-      let digit = parseInt(num[i]);
-      if ((num.length - i) % 2 === 0) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
-      }
-      sum += digit;
+  const onSubmit = async (data: FormValues) => {
+    if (!stripe || !elements) {
+      return;
     }
 
-    return sum % 10 === 0 ? true : "Invalid card number";
-  };
+    try {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardNumberElement)!,
+        billing_details: {
+          name: `${data.firstName} ${data.surName}`,
+          email: "moses@gmail.com",
+        },
+      });
 
-  // Detect card type based on number
-  const detectCardType = (number: string) => {
-    const num = number.replace(/\s/g, "");
-    for (const [type, pattern] of Object.entries(CARD_PATTERNS)) {
-      if (pattern.test(num)) {
-        return type;
+      if (error) {
+        throw error;
       }
+
+      if (paymentMethod) {
+        const details = {
+          firstName: data.firstName,
+          surName: data.surName,
+          paymentMethodId: paymentMethod.id,
+        };
+        const cardDetails = {
+          name: `${details.firstName} ${details.surName}`,
+          method: "card",
+          amount: Math.round(subtotal * 100 * 25),
+          customerId: 1,
+          currency: "usd",
+          paymentMethodId: paymentMethod.id,
+          metadata: {
+            userId: currentUser?.id || 1,
+            orderId: selectedOrder?.id || 2,
+            name: `${details.firstName} ${details.surName}`,
+          },
+        };
+        const res = await dispatch(cardPayment(cardDetails));
+        const clientSecret = res.payload.clientSecret;
+
+        const { paymentIntent, error: confirmError } =
+          await stripe.confirmCardPayment(clientSecret, {
+            payment_method: paymentMethod.id,
+          });
+
+        if (confirmError) {
+          toast.error("Payment confirmation error:");
+        } else if (paymentIntent?.status === "succeeded") {
+          console.log("Payment successful!", paymentIntent);
+          toast.success("Payment successful!");
+        }
+      }
+    } catch (err: any) {
+      console.error("Error creating payment method:", err);
     }
-    return null;
   };
-
-  // Handle card number changes
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = formatCardNumber(e.target.value);
-    e.target.value = formattedValue;
-    setValue("cardNumber", formattedValue, { shouldValidate: true });
-    setCardType(detectCardType(formattedValue));
-  };
-
-  cardNumber = watch("cardNumber");
 
   return (
-    <div className="space-y-4">
-      <div className="relative">
-        <Input
-          placeholder="Card number"
-          className="bg-gray-50 focus-visible:ring-orange-500/30 pl-[50px]"
-          onChange={handleCardNumberChange}
-          defaultValue={watch("cardNumber")}
-          maxLength={19} // 16 digits + 3 spaces
-        />
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-          {cardType ? (
-            <span className="text-xl font-medium">
-              <Image
-                src={CARD_ICONS[cardType as keyof typeof CARD_ICONS]}
-                alt="ff"
-                width={100}
-                height={100}
-                className="w-8 h-auto"
-              />
-            </span>
-          ) : (
-            // <CreditCard className="w-4 h-4 text-gray-400" />
-            <Image
-              src={card}
-              alt="ff"
-              width={100}
-              height={100}
-              className="w-8 h-auto"
-            />
-          )}
-        </div>
-        {errors.cardNumber && (
-          <p className="text-red-500 text-xs mt-1">
-            {(errors.cardNumber as FieldError)?.message}
-          </p>
-        )}
-      </div>
-
-      {/* Cardholder Name */}
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <Input
-            placeholder="First Name"
-            className="bg-gray-50 focus-visible:ring-orange-500/30"
-            {...register("cardFirstName", {
-              required: "First name is required",
-            })}
-          />
-          {errors.cardFirstName && (
-            <p className="text-red-500 text-xs mt-1">
-              {(errors?.cardNumber as FieldError)?.message}
-            </p>
-          )}
-        </div>
-        <div className="flex-1">
-          <Input
-            placeholder="Surname"
-            className="bg-gray-50 focus-visible:ring-orange-500/30"
-            {...register("cardLastName", {
-              required: "Last name is required",
-            })}
-          />
-          {errors.cardLastName && (
-            <p className="text-red-500 text-xs mt-1">
-              {(errors?.cardNumber as FieldError)?.message}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Expiry and CVV */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Expiry Date */}
+    <div className="mx-auto bg-white rounded-b-lg shadow-md p-6">
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <div className="flex gap-3">
           <div className="flex-1">
-            <Select {...register("cardExpMonth", { required: true })}>
-              <SelectTrigger className="bg-gray-50 focus:ring-orange-500/30">
-                <SelectValue placeholder="Month" />
-              </SelectTrigger>
-              <SelectContent>
-                {CARD_EXPIRY_MONTHS.map((month) => (
-                  <SelectItem key={month} value={month}>
-                    {month}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              First Name
+            </label>
+            <Controller
+              name="firstName"
+              control={control}
+              rules={{ required: "First name is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="Jane"
+                  className="bg-gray-50 placeholder:text-gray-400 focus-visible:ring-orange-300 focus-visible:ring-1 border border-gray-300 rounded-md p-2 w-full"
+                />
+              )}
+            />
+            {errors.firstName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
           <div className="flex-1">
-            <Select {...register("cardExpYear", { required: true })}>
-              <SelectTrigger className="bg-gray-50 focus:ring-orange-500/30">
-                <SelectValue placeholder="Year" />
-              </SelectTrigger>
-              <SelectContent>
-                {CARD_EXPIRY_YEARS.map((year) => (
-                  <SelectItem key={year} value={year}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Last Name
+            </label>
+            <Controller
+              name="surName"
+              control={control}
+              rules={{ required: "Last name is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="Doe's"
+                  className="bg-gray-50 border placeholder:text-gray-400 focus-visible:ring-orange-300 focus-visible:ring-1 border-gray-300 rounded-md p-2 w-full"
+                />
+              )}
+            />
+            {errors.surName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.surName.message}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* CVV */}
-        <div className="relative">
-          <Input
-            placeholder="CVV/CVC"
-            type={showCvv ? "text" : "password"}
-            maxLength={cardType === "amex" ? 4 : 3}
-            className="bg-gray-50 focus-visible:ring-orange-500/30 pr-8"
-            {...register("cardCvv", {
-              required: "CVV is required",
-              pattern: {
-                value: /^[0-9]{3,4}$/,
-                message: "Invalid CVV code",
-              },
-            })}
-          />
-          <button
-            type="button"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
-            onClick={() => setShowCvv(!showCvv)}
-            aria-label={showCvv ? "Hide CVV" : "Show CVV"}
-          >
-            {showCvv ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-          {errors.cardCvv && (
-            <p className="text-red-500 text-xs mt-1">
-              {(errors?.cardNumber as FieldError)?.message}
-            </p>
-          )}
+        <div>
+          <Label className="block text-sm font-medium text-gray-700 mb-1">
+            Card Number
+          </Label>
+          <div className="border border-gray-300 rounded-md p-2  bg-gray-50">
+            <CardNumberElement
+              options={elementOptions}
+              onChange={handleCardChange("cardNumber")}
+            />
+          </div>
         </div>
-      </div>
+
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Expiry Date
+            </label>
+            <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+              <CardExpiryElement
+                options={elementOptions}
+                onChange={handleCardChange("cardExpiry")}
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              CVC
+            </label>
+            <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+              <CardCvcElement
+                options={elementOptions}
+                onChange={handleCardChange("cardCvc")}
+              />
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
+
+export default CardPayment;
+
+// "use client";
+
+// import {
+//   useStripe,
+//   useElements,
+//   CardNumberElement,
+//   CardExpiryElement,
+//   CardCvcElement,
+// } from "@stripe/react-stripe-js";
+// import { useState } from "react";
+// import { useForm, Controller } from "react-hook-form";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { cardPayment } from "@/redux/slices/PaymentSlice";
+// import { AppDispatch } from "@/redux/store";
+// import { useDispatch } from "react-redux";
+// import toast from "react-hot-toast";
+// import { usePayments } from "@/hooks/usePayment";
+// import { useCardContex } from "@/hooks/paymentContext";
+// import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+// import Image from "next/image";
+// import visa from "../../../../../../public/visa.png";
+// import mastercard from "../../../../../../public/masterCard.png";
+// import amex from "../../../../../../public/amex.png";
+// import discover from "../../../../../../public/discoverCard.png";
+// import jcb from "../../../../../../public/jcbCard.png";
+// import diners from "../../../../../../public/dinnerCard.png";
+// import unionpay from "../../../../../../public/unionPay.png";
+
+// interface FormValues {
+//   firstName: string;
+//   surName: string;
+// }
+
+// const cardBrands = [
+//   { name: "Visa", icon: visa },
+//   { name: "Mastercard", icon: mastercard },
+//   { name: "American Express", icon: amex },
+//   { name: "Discover", icon: discover },
+//   { name: "JCB", icon: jcb },
+//   { name: "Diners Club", icon: diners },
+//   { name: "UnionPay", icon: unionpay },
+// ];
+
+// const elementOptions = {
+//   style: {
+//     base: {
+//       fontSize: "16px",
+//       color: "#2D3748",
+//       fontFamily: '"Inter", sans-serif',
+//       "::placeholder": {
+//         color: "#A0AEC0",
+//         opacity: 1,
+//       },
+//     },
+//     invalid: {
+//       color: "#E53E3E",
+//     },
+//   },
+// };
+
+// function CardPayment() {
+//   const stripe = useStripe();
+//   const dispatch: AppDispatch = useDispatch();
+//   const { subtotal, currentUser, selectedOrder } = usePayments();
+//   const { formRef } = useCardContex();
+//   const elements = useElements();
+//   const [cardComplete, setCardComplete] = useState({
+//     cardNumber: false,
+//     cardExpiry: false,
+//     cardCvc: false,
+//   });
+//   const [cardType, setCardType] = useState<string | null>(null);
+//   const [isFocused, setIsFocused] = useState({
+//     cardNumber: false,
+//     cardExpiry: false,
+//     cardCvc: false,
+//   });
+
+//   const {
+//     control,
+//     handleSubmit,
+//     formState: { errors, isValid },
+//   } = useForm<FormValues>({
+//     defaultValues: {
+//       firstName: "",
+//       surName: "",
+//     },
+//     mode: "onChange",
+//   });
+
+//   const handleCardChange =
+//     (field: keyof typeof cardComplete) => (event: any) => {
+//       setCardComplete((prev) => ({ ...prev, [field]: event.complete }));
+//       if (field === "cardNumber" && event.brand) {
+//         setCardType(event.brand);
+//       }
+//     };
+
+//   const handleFocus = (field: keyof typeof isFocused) => () => {
+//     setIsFocused((prev) => ({ ...prev, [field]: true }));
+//   };
+
+//   const handleBlur = (field: keyof typeof isFocused) => () => {
+//     setIsFocused((prev) => ({ ...prev, [field]: false }));
+//   };
+
+//   const onSubmit = async (data: FormValues) => {
+//     if (!stripe || !elements) {
+//       return;
+//     }
+
+//     try {
+//       const { error, paymentMethod } = await stripe.createPaymentMethod({
+//         type: "card",
+//         card: elements.getElement(CardNumberElement)!,
+//         billing_details: {
+//           name: `${data.firstName} ${data.surName}`,
+//           email: currentUser?.email || "user@example.com",
+//         },
+//       });
+
+//       if (error) {
+//         throw error;
+//       }
+
+//       if (paymentMethod) {
+//         const details = {
+//           firstName: data.firstName,
+//           surName: data.surName,
+//           paymentMethodId: paymentMethod.id,
+//         };
+//         const cardDetails = {
+//           name: `${details.firstName} ${details.surName}`,
+//           method: "card",
+//           amount: Math.round(subtotal * 100 * 25),
+//           customerId: currentUser?.id || 1,
+//           currency: "usd",
+//           paymentMethodId: paymentMethod.id,
+//           metadata: {
+//             userId: currentUser?.id || 1,
+//             orderId: selectedOrder?.id || 2,
+//             name: `${details.firstName} ${details.surName}`,
+//           },
+//         };
+//         const res = await dispatch(cardPayment(cardDetails));
+//         const clientSecret = res.payload.clientSecret;
+
+//         const { paymentIntent, error: confirmError } =
+//           await stripe.confirmCardPayment(clientSecret, {
+//             payment_method: paymentMethod.id,
+//           });
+
+//         if (confirmError) {
+//           toast.error(confirmError.message || "Payment confirmation error");
+//         } else if (paymentIntent?.status === "succeeded") {
+//           toast.success("Payment successful!");
+//         }
+//       }
+//     } catch (err: any) {
+//       console.error("Payment error:", err);
+//       toast.error(err.message || "Payment failed. Please try again.");
+//     }
+//   };
+
+//   const allFieldsComplete =
+//     cardComplete.cardNumber && cardComplete.cardExpiry && cardComplete.cardCvc;
+
+//   return (
+//     <div className="max-w-md mx-auto">
+//       <Card className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+//         <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-800 p-6">
+//           <div className="flex items-center justify-between">
+//             <CardTitle className="text-white text-xl font-semibold">
+//               Secure Payment
+//             </CardTitle>
+//             <div className="flex space-x-1">
+//               {cardBrands.map((brand, idx) => (
+//                 <div
+//                   key={idx}
+//                   className={`transition-opacity duration-200 ${
+//                     cardType === brand.name.toLowerCase()
+//                       ? "opacity-100"
+//                       : "opacity-40"
+//                   }`}
+//                 >
+//                   <Image
+//                     src={brand.icon}
+//                     alt={brand.name}
+//                     width={32}
+//                     height={24}
+//                     className="h-6 w-auto object-contain"
+//                   />
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </CardHeader>
+
+//         <CardContent className="p-6">
+//           <div className="mb-6 text-sm text-gray-600">
+//             <p>
+//               We use bank-level security to protect your payment information.
+//             </p>
+//           </div>
+
+//           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+//             <div className="flex gap-4">
+//               <div className="flex-1">
+//                 <Controller
+//                   name="firstName"
+//                   control={control}
+//                   rules={{ required: "First name is required" }}
+//                   render={({ field }) => (
+//                     <div>
+//                       <Label
+//                         htmlFor="firstName"
+//                         className="block mb-2 text-sm font-medium text-gray-700"
+//                       >
+//                         First Name
+//                       </Label>
+//                       <Input
+//                         {...field}
+//                         id="firstName"
+//                         placeholder="John"
+//                         className={`bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+//                           errors.firstName
+//                             ? "border-red-500"
+//                             : "border-gray-300"
+//                         } rounded-lg p-3 w-full`}
+//                       />
+//                       {errors.firstName && (
+//                         <p className="mt-1 text-sm text-red-600">
+//                           {errors.firstName.message}
+//                         </p>
+//                       )}
+//                     </div>
+//                   )}
+//                 />
+//               </div>
+//               <div className="flex-1">
+//                 <Controller
+//                   name="surName"
+//                   control={control}
+//                   rules={{ required: "Last name is required" }}
+//                   render={({ field }) => (
+//                     <div>
+//                       <Label
+//                         htmlFor="surName"
+//                         className="block mb-2 text-sm font-medium text-gray-700"
+//                       >
+//                         Last Name
+//                       </Label>
+//                       <Input
+//                         {...field}
+//                         id="surName"
+//                         placeholder="Doe"
+//                         className={`bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+//                           errors.surName ? "border-red-500" : "border-gray-300"
+//                         } rounded-lg p-3 w-full`}
+//                       />
+//                       {errors.surName && (
+//                         <p className="mt-1 text-sm text-red-600">
+//                           {errors.surName.message}
+//                         </p>
+//                       )}
+//                     </div>
+//                   )}
+//                 />
+//               </div>
+//             </div>
+
+//             <div>
+//               <Label className="block mb-2 text-sm font-medium text-gray-700">
+//                 Card Number
+//               </Label>
+//               <div
+//                 className={`relative border ${
+//                   isFocused.cardNumber
+//                     ? "border-blue-500 ring-2 ring-blue-200"
+//                     : "border-gray-300"
+//                 } rounded-lg p-3 bg-gray-50 transition-all`}
+//               >
+//                 <CardNumberElement
+//                   options={elementOptions}
+//                   onChange={handleCardChange("cardNumber")}
+//                   onFocus={handleFocus("cardNumber")}
+//                   onBlur={handleBlur("cardNumber")}
+//                   className="w-full"
+//                 />
+//                 {cardType && (
+//                   <div className="absolute right-3 top-3">
+//                     <Badge
+//                       variant="outline"
+//                       className="flex items-center gap-1 px-2 py-1"
+//                     >
+//                       {cardBrands.find((b) => b.name.toLowerCase() === cardType)
+//                         ?.name || "Card"}
+//                     </Badge>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+
+//             <div className="flex gap-4">
+//               <div className="flex-1">
+//                 <Label className="block mb-2 text-sm font-medium text-gray-700">
+//                   Expiry Date
+//                 </Label>
+//                 <div
+//                   className={`border ${
+//                     isFocused.cardExpiry
+//                       ? "border-blue-500 ring-2 ring-blue-200"
+//                       : "border-gray-300"
+//                   } rounded-lg p-3 bg-gray-50 transition-all`}
+//                 >
+//                   <CardExpiryElement
+//                     options={elementOptions}
+//                     onChange={handleCardChange("cardExpiry")}
+//                     onFocus={handleFocus("cardExpiry")}
+//                     onBlur={handleBlur("cardExpiry")}
+//                   />
+//                 </div>
+//               </div>
+//               <div className="flex-1">
+//                 <Label className="block mb-2 text-sm font-medium text-gray-700">
+//                   CVC
+//                 </Label>
+//                 <div
+//                   className={`border ${
+//                     isFocused.cardCvc
+//                       ? "border-blue-500 ring-2 ring-blue-200"
+//                       : "border-gray-300"
+//                   } rounded-lg p-3 bg-gray-50 transition-all`}
+//                 >
+//                   <CardCvcElement
+//                     options={elementOptions}
+//                     onChange={handleCardChange("cardCvc")}
+//                     onFocus={handleFocus("cardCvc")}
+//                     onBlur={handleBlur("cardCvc")}
+//                   />
+//                 </div>
+//               </div>
+//             </div>
+
+//             <div className="pt-2">
+//               <button
+//                 type="submit"
+//                 disabled={!stripe || !allFieldsComplete || !isValid}
+//                 className={`w-full py-3 px-4 rounded-lg font-medium text-white ${
+//                   !stripe || !allFieldsComplete || !isValid
+//                     ? "bg-gray-400 cursor-not-allowed"
+//                     : "bg-blue-600 hover:bg-blue-700"
+//                 } transition-colors shadow-md`}
+//               >
+//                 Pay ${subtotal.toFixed(2)}
+//               </button>
+//             </div>
+//           </form>
+
+//           <div className="mt-6 text-xs text-gray-500">
+//             <p>Your payment is secured with 256-bit SSL encryption</p>
+//           </div>
+//         </CardContent>
+//       </Card>
+//     </div>
+//   );
+// }
+
+// export default CardPayment;

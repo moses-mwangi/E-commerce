@@ -5,6 +5,7 @@ class Payment extends Model {
   public id!: number;
   public userId!: number;
   public orderId!: number;
+  public paymentMethod!: string;
   public stripePaymentId!: string;
   public amount!: number;
   public currency!: string;
@@ -30,7 +31,11 @@ Payment.init(
     },
     stripePaymentId: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    paymentMethod: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     amount: {
       type: DataTypes.FLOAT,

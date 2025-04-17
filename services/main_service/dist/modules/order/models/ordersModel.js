@@ -29,13 +29,15 @@ Order.init({
         allowNull: false,
     },
     status: {
-        type: sequelize_1.DataTypes.ENUM("pending", "shipped", "delivered", "cancelled"),
+        type: sequelize_1.DataTypes.ENUM("cancelled", "pending", "confirmed", "shipped", "delivered"),
         defaultValue: "pending",
     },
     paymentStatus: {
         type: sequelize_1.DataTypes.ENUM("paid", "unpaid", "failed"),
         defaultValue: "unpaid",
     },
+    paymentMethod: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    mpesaReceiptNumber: { type: sequelize_1.DataTypes.STRING, allowNull: true },
     trackingNumber: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,

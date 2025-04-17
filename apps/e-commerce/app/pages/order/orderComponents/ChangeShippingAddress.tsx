@@ -28,7 +28,8 @@ import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useCheckOut } from "../../cart/checkout/useCheckOut";
+import { useCheckOut } from "@/hooks/useCheckOut";
+// import { useCheckOut } from "../../cart/checkout/useCheckOut";
 
 export default function ChangeShippingAddress() {
   const [step, setStep] = useState(1);

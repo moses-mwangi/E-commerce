@@ -1,41 +1,106 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Phone } from "lucide-react";
-import React, { useState } from "react";
+import { Banknote } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 
-export default function BankTransferPayment() {
-  const [showCvv, setShowCvv] = useState(false);
+interface BankTransferPaymentProps {
+  onDetailsChange: (details: {
+    accountNumber: string;
+    accountName: string;
+    bankName: string;
+    swiftCode?: string;
+    iban?: string;
+  }) => void;
+}
+
+export default function BankTransferPayment({
+  onDetailsChange,
+}: BankTransferPaymentProps) {
+  const [bankDetails, setBankDetails] = useState({
+    accountNumber: "",
+    accountName: "",
+    bankName: "",
+    swiftCode: "",
+    iban: "",
+  });
+
+  const prevDetailsRef = useRef(bankDetails);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setBankDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    if (
+      JSON.stringify(prevDetailsRef.current) !== JSON.stringify(bankDetails)
+    ) {
+      onDetailsChange({
+        accountNumber: bankDetails.accountNumber,
+        accountName: bankDetails.accountName,
+        bankName: bankDetails.bankName,
+        ...(bankDetails.swiftCode && { swiftCode: bankDetails.swiftCode }),
+        ...(bankDetails.iban && { iban: bankDetails.iban }),
+      });
+      prevDetailsRef.current = bankDetails;
+    }
+  }, [bankDetails, onDetailsChange]);
+
   return (
-    <div className="py-3">
-      <div className=" flex flex-col space-y-4">
-        <div className="bg-yellow-200 relative">
+    <div className="p-6 bg-white rounded-b-lg">
+      <div className="flex flex-col space-y-4">
+        <div className=" relative rounded-md">
           <Input
-            placeholder={`M-Pesa`}
-            className=" bg-gray-50 focus-visible:ring-orange-500/30 pl-9"
+            name="bankName"
+            value={bankDetails.bankName}
+            onChange={handleInputChange}
+            placeholder="Bank Name"
+            className="bg-gray-50 focus-visible:ring-blue-500/30 pl-9"
+            required
           />
-          <Phone
+          <Banknote
             size={16}
-            className=" absolute top-1/2 left-3 transform -translate-y-1/2"
+            className="absolute top-1/2 left-3 transform -translate-y-1/2 text-blue-600"
           />
         </div>
+
         <div className="flex gap-3 items-center">
           <Input
-            className="bg-gray-50 focus-visible:ring-orange-500/30"
-            placeholder="First Name"
+            name="accountName"
+            value={bankDetails.accountName}
+            onChange={handleInputChange}
+            className="bg-gray-50 focus-visible:ring-blue-500/30"
+            placeholder="Account Holder Name"
+            required
           />
           <Input
-            className="bg-gray-50 focus-visible:ring-orange-500/30"
-            placeholder="Surname"
+            name="accountNumber"
+            value={bankDetails.accountNumber}
+            onChange={handleInputChange}
+            className="bg-gray-50 focus-visible:ring-blue-500/30"
+            placeholder="Account Number"
+            required
           />
         </div>
-        <div className="flex bg-gray-50 items-center relative gap-2 rounded-md border border-input  pl-3 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
-          {/* <div className="text-gray-700 text-sm text-nowrap flex gap-1">{`${flag} +${countryCode}`}</div> */}
-          <div className="text-gray-700 text-sm text-nowrap flex gap-1">{`+254`}</div>
+
+        <div className="grid grid-cols-2 gap-3">
           <Input
-            type="text"
-            placeholder="Phone Number"
-            className="focus-visible:ring-0  focus-visible:ring-ring border-0 shadow-none"
+            name="swiftCode"
+            value={bankDetails.swiftCode}
+            onChange={handleInputChange}
+            placeholder="SWIFT/BIC Code"
+            className="bg-gray-50 focus-visible:ring-blue-500/30"
+          />
+          <Input
+            name="iban"
+            value={bankDetails.iban}
+            onChange={handleInputChange}
+            placeholder="IBAN (if international)"
+            className="bg-gray-50 focus-visible:ring-blue-500/30"
           />
         </div>
       </div>

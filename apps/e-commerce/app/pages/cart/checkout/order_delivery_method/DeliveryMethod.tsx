@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight, Truck } from "lucide-react";
@@ -11,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchOrderById } from "@/redux/slices/orderSlice";
 
 const deliveryOptions = [
   {
@@ -39,13 +42,22 @@ export default function DeliveryMethod() {
   const [step, setStep] = useState(2);
   const formProgress = (step / 3) * 100;
 
+  const dispatch: AppDispatch = useDispatch();
+  const { orders, selectedOrder } = useSelector(
+    (state: RootState) => state.order
+  );
+
+  useEffect(() => {
+    dispatch(fetchOrderById(3));
+  }, [dispatch]);
+
   const handleNext = async () => {
-    console.log("Delivery methods");
-    push("/pages/cart/checkout/orderPayments");
+    const params = new URLSearchParams();
+    params.set("PaymentsOrderNo", String(selectedOrder?.id || 2));
+    push(`/pages/cart/checkout/orderPayments?${params.toString()}`);
   };
 
   const handleBack = () => {
-    console.log("ddddd");
     back();
   };
 
@@ -53,17 +65,8 @@ export default function DeliveryMethod() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-4xl mx-auto p-4"
+      className="max-w-4xl mx-auto"
     >
-      <div className="mb-8">
-        <Progress value={formProgress} className="h-2 " />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span className={step >= 1 ? "text-primary" : ""}>Shipping</span>
-          <span className={step >= 2 ? "text-primary" : ""}>Delivery</span>
-          <span className={step >= 3 ? "text-primary" : ""}>Payment</span>
-        </div>
-      </div>
-
       <Card className="p-6 bg-white shadow-lg rounded-lg">
         <AnimatePresence mode="wait">
           <motion.div

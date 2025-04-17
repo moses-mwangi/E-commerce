@@ -17,11 +17,10 @@ import { IoFileTrayFullOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import PaymentModal from "./PaymentModal";
 import { useRouter } from "next/navigation";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import Link from "next/link";
-import { ArrowLeft, DeleteIcon, ShoppingBag, Trash2 } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { MdOutlineDelete } from "react-icons/md";
 

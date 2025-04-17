@@ -8,7 +8,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_session_1 = __importDefault(require("express-session"));
 const cors_1 = __importDefault(require("cors"));
-// import passport from "../main_service/shared/config/passport";
 const users_1 = require("./modules/users");
 const order_1 = require("./modules/order");
 const payments_1 = require("./modules/payments");
@@ -16,9 +15,16 @@ const product_1 = require("./modules/product");
 const product_2 = require("./modules/product");
 const GlobalErrorHandler_1 = __importDefault(require("./shared/middleware/GlobalErrorHandler"));
 const app = (0, express_1.default)();
+app.post("/api/payment/card/webhook", body_parser_1.default.raw({ type: "application/json" }), (req, res, next) => {
+    req.rawBody = req.body.toString("utf8");
+    next();
+}, (req, res, next) => {
+    req.skipBodyParsing = true;
+    next();
+});
 app.use(express_1.default.json());
-app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)());
+app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 const allowedOrigins = [
     "http://localhost:3000",
@@ -43,11 +49,8 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions));
 app.use((req, res, next) => {
     console.log("Testing middleware");
-    // console.log("Middleware cookie:", req.cookies.jwt);
-    // console.log("current users:", req.user);
     next();
 });
-// // Session setup
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "secret",
     resave: false,
@@ -66,17 +69,16 @@ app.use("/api/user", users_1.userRouter);
 app.use("/api/product", product_1.productRouter);
 app.use("/api/category", product_2.categoryRouter);
 app.use("/api/order", order_1.orderRouter);
-app.use("/api/payment", payments_1.paypalRouter);
-app.use("/api/payment", payments_1.stripeRouter);
-app.use("/api/webhooks", payments_1.webhookRouter);
-//globalError
+app.use("/api/payment", payments_1.payments);
 app.use(GlobalErrorHandler_1.default);
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 //   console.error(err.stack);
 //   res.status(500).json({ error: err.message });
 // });
 app.use((req, res, next) => {
-    res.json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
+    res
+        .status(400)
+        .json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
     next();
 });
 // app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {

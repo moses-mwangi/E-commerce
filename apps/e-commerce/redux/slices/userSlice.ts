@@ -148,7 +148,7 @@ export const getCurrentUser = createAsyncThunk(
       if (axiosError.response?.status === 401) {
         const errorMessage = "Your session has expired. Please log in again.";
 
-        alert(errorMessage);
+        // alert(errorMessage);
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.cookie =

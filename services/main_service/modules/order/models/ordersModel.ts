@@ -22,6 +22,9 @@ class Order extends Model {
   public totalPrice!: number;
   public status!: "pending" | "shipped" | "delivered" | "cancelled";
   public paymentStatus!: "paid" | "unpaid" | "failed";
+  public paymentMethod!: string;
+  public mpesaReceiptNumber!: string;
+
   public shippingAddress!: string;
   public trackingNumber?: string;
   paymentDetails: any;
@@ -54,13 +57,21 @@ Order.init(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM("pending", "shipped", "delivered", "cancelled"),
+      type: DataTypes.ENUM(
+        "cancelled",
+        "pending",
+        "confirmed",
+        "shipped",
+        "delivered"
+      ),
       defaultValue: "pending",
     },
     paymentStatus: {
       type: DataTypes.ENUM("paid", "unpaid", "failed"),
       defaultValue: "unpaid",
     },
+    paymentMethod: { type: DataTypes.STRING, allowNull: true },
+    mpesaReceiptNumber: { type: DataTypes.STRING, allowNull: true },
     trackingNumber: {
       type: DataTypes.STRING,
       allowNull: true,

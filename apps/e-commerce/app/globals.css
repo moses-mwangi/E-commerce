@@ -136,6 +136,8 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+  /* font-size: 3;
+  padding: 2; */
 }
 
 .hide-scrollbar {

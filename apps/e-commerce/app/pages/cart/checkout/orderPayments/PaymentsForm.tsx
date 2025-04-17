@@ -1,28 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useRef } from "react";
 import { Separator } from "@/components/ui/separator";
-import { ChevronRight, Shield, AlertCircle, Banknote } from "lucide-react";
+import { Shield, AlertCircle, Banknote } from "lucide-react";
 import { Card } from "@/components/ui/card";
-
-import { useCheckOutForm } from "../useCheckOutForm";
-import PaymentModal from "../../PaymentModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import toast from "react-hot-toast";
 import CardPayment from "../orderPayments/paymentMethods/CardPayment";
 import MpesaPayment from "../orderPayments/paymentMethods/M_pesaPayment";
 import PaypalPayment from "../orderPayments/paymentMethods/PaypalPayment";
 import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
-
 import PayPal from "../../../../../public/amex.png";
 import M_Pesa from "../../../../../public/mpesa.png";
+import bank from "../../../../../public/bank.png";
 import Card_Payment from "../../../../../public/card.png";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { usePayments } from "@/hooks/usePayment";
+import AvailableCard from "@/app/components/AvailableCards";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 type PaymentMethod = {
   id: string;
@@ -53,33 +55,26 @@ const paymentMethods: PaymentMethod[] = [
   {
     id: "bank",
     title: "Bank Transfer",
-    icon: <Banknote className="w-5 h-5" />,
+    icon: bank as unknown as string,
     description: "Direct bank transfer",
   },
 ];
 
-export default function PaymentsForm() {
-  const { back, push } = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deliveryMethod, setDeliveryMethod] = useState("standard");
-  const [step, setStep] = useState(3);
-  const { onSubmit, handleSubmit, watch } = useCheckOutForm();
-  const formProgress = (step / 3) * 100;
-  const formValues = watch();
+export default function PaymentsForm({ setDetails }: any) {
+  const {
+    selectedPayment,
+    paymentDetails,
+    setPaymentDetails,
+    setSelectedPayment,
+    handleMpesaDetailsChange,
+    handleBankDetailsChange,
+    handleCardDetailsChange,
+    handlePaypalDetailsChange,
+  } = usePayments();
 
-  const [selectedPayment, setSelectedPayment] = useState("card");
-  const [cardNumber, setCardNumber] = useState("");
-  const [mpesaNumber, setMpesaNumber] = useState("");
-  const totalPrice = 6000;
-
-  const handleNext = async () => {
-    console.log("moses");
-    toast.success("Succefully paid");
-  };
-
-  const handleBack = () => {
-    back();
-  };
+  useEffect(() => {
+    setDetails(paymentDetails);
+  }, [setDetails, paymentDetails]);
 
   const renderPaymentStep = () => (
     <motion.div
@@ -103,7 +98,10 @@ export default function PaymentsForm() {
 
       <RadioGroup
         value={selectedPayment}
-        onValueChange={setSelectedPayment}
+        onValueChange={(value) => {
+          setSelectedPayment(value);
+          setPaymentDetails({ method: value });
+        }}
         className="space-y-4 bg-white "
       >
         {paymentMethods.map((method) => (
@@ -112,67 +110,90 @@ export default function PaymentsForm() {
             initial={false}
             animate={{
               backgroundColor:
-                selectedPayment === method.id ? "rgb(243 244 246)" : "white",
+                selectedPayment === method.id
+                  ? "rgb(243 244 246)"
+                  : "rgb(245,245,245)",
+              //   "#f97316" // <- orange-500 in hex
+              // : "#fff7ed", // <- orange-50 in hex
             }}
-            className={` flex items-center rounded-lg border bg-white py-8 px-8 transition-all ${
+            className={` flex flex-col rounded-lg border bg-white  transition-all ${
               selectedPayment === method.id
-                ? " border-orange-400/70 shadow-sm"
+                ? " border-orange-400 shadow-lg"
                 : "border-gray-200"
             }`}
           >
-            <RadioGroupItem value={method.id} id={method.id} className="" />
-            <div className=" w-full">
+            <div
+              className={`${
+                selectedPayment === method.id
+                  ? " bg-orange-50 rounded-b-none"
+                  : "bg-gray-50"
+              } flex items-center rounded-lg gap-6 p-6`}
+            >
+              <RadioGroupItem
+                value={method.id}
+                id={method.id}
+                className={`${
+                  selectedPayment === method.id ? " border-none" : ""
+                }`}
+              />
               <Label
                 htmlFor={method.id}
-                className="flex items-center gap-4 pl-8  cursor-pointer"
+                className="flex items-center gap-4  cursor-pointer"
               >
-                <div
-                  className={`${
-                    method.title !== "M-Pesa" &&
-                    method.title !== "PayPal" &&
-                    method.title !== "Credit/Debit Card"
-                      ? "p-4"
-                      : ""
-                  } rounded-full ${
-                    selectedPayment === method.id
-                      ? "bg-primary/70 text-white"
-                      : // "bg-orange-100 text-gray-600"
-                        "bg-gray-100 "
-                  }`}
-                >
-                  {method.title !== "M-Pesa" &&
-                  method.title !== "PayPal" &&
-                  method.title !== "Credit/Debit Card" ? (
-                    method.icon
-                  ) : (
-                    <Image
-                      src={method.icon as string}
-                      alt="method_payment_logo"
-                      width={60}
-                      height={60}
-                      className="h-11 rounded-full w-11 overflow-hidden"
-                    />
-                  )}
-                </div>
                 <div>
-                  <p className="font-medium">{method.title}</p>
-                  <p className="text-sm text-gray-600">{method.description}</p>
+                  <Image
+                    src={method.icon as string}
+                    alt="method_payment_logo"
+                    width={60}
+                    height={60}
+                    className="h-11 rounded-full w-11 overflow-hidden"
+                  />
                 </div>
+                {method.title === "Credit/Debit sCard" ? (
+                  <div>
+                    <AvailableCard />
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-medium">{method.title}</p>
+                    <p className="text-sm text-gray-600">
+                      {method.description}
+                    </p>
+                  </div>
+                )}
               </Label>
+            </div>
+            <div className=" w-full">
               <div className="">
                 {selectedPayment === method.id && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="mt-4 pl-9 space-y-4"
+                    className="space-y-4"
                   >
                     <div>
-                      {method.title === "Credit/Debit Card" && <CardPayment />}
-                      {method.title === "M-Pesa" && <MpesaPayment />}
-                      {method.title === "PayPal" && <PaypalPayment />}
+                      {method.title === "Credit/Debit Card" && (
+                        <>
+                          <Elements stripe={stripePromise}>
+                            <CardPayment />
+                          </Elements>
+                        </>
+                      )}
+                      {method.title === "M-Pesa" && (
+                        <MpesaPayment
+                          onDetailsChange={handleMpesaDetailsChange}
+                        />
+                      )}
+                      {method.title === "PayPal" && (
+                        <PaypalPayment
+                          onDetailsChange={handlePaypalDetailsChange}
+                        />
+                      )}
                       {method.title === "Bank Transfer" && (
-                        <BankTransferPayment />
+                        <BankTransferPayment
+                          onDetailsChange={handleBankDetailsChange}
+                        />
                       )}
                     </div>
                   </motion.div>
@@ -182,36 +203,6 @@ export default function PaymentsForm() {
           </motion.div>
         ))}
       </RadioGroup>
-
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium">${totalPrice}</span>
-        </div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-600">Shipping</span>
-          <span className="font-medium">
-            {deliveryMethod === "standard"
-              ? "Free"
-              : deliveryMethod === "express"
-              ? "$9.99"
-              : "$14.99"}
-          </span>
-        </div>
-        <Separator className="my-2" />
-        <div className="flex items-center justify-between">
-          <span className="font-semibold">Total</span>
-          <span className="font-bold text-lg">
-            $
-            {totalPrice +
-              (deliveryMethod === "standard"
-                ? 0
-                : deliveryMethod === "express"
-                ? 9.99
-                : 14.99)}
-          </span>
-        </div>
-      </div>
     </motion.div>
   );
 
@@ -219,42 +210,12 @@ export default function PaymentsForm() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-4xl mx-auto p-4"
+      className=" max-w-5xl w-full p-4"
     >
-      <div className="mb-8">
-        <Progress value={formProgress} className="h-2 " />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span className={step >= 1 ? "text-primary" : ""}>Shipping</span>
-          <span className={step >= 2 ? "text-primary" : ""}>Delivery</span>
-          <span className={step >= 3 ? "text-primary" : ""}>Payment</span>
-        </div>
-      </div>
-
       <Card className="p-6 bg-white shadow-lg rounded-lg">
-        <AnimatePresence mode="wait">
-          {step === 3 && renderPaymentStep()}
-        </AnimatePresence>
-
+        <AnimatePresence mode="wait">{renderPaymentStep()}</AnimatePresence>
         <Separator className="my-8" />
-
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={handleBack}>
-            Back
-          </Button>
-
-          <Button
-            className={`bg-orange-500/85 hover:bg-orange-600/80 ${
-              step === 1 ? "5rrrw-full" : ""
-            }`}
-            onClick={handleNext}
-          >
-            Complete Payments
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
       </Card>
-
-      {isModalOpen && <PaymentModal onClose={() => setIsModalOpen(false)} />}
     </motion.div>
   );
 }

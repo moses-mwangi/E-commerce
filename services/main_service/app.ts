@@ -1,22 +1,35 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import cors from "cors";
 
-// import passport from "../main_service/shared/config/passport";
 import { authRouter, userRouter } from "./modules/users";
 import { orderRouter } from "./modules/order";
-import { stripeRouter, paypalRouter, webhookRouter } from "./modules/payments";
+import { payments } from "./modules/payments";
 import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
 import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
-import AppError from "./shared/utils/AppError";
 
 const app = express();
+
+app.post(
+  "/api/payment/card/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res, next) => {
+    (req as any).rawBody = req.body.toString("utf8");
+    next();
+  },
+  (req, res, next) => {
+    (req as any).skipBodyParsing = true;
+    next();
+  }
+);
+
 app.use(express.json());
-app.use(bodyParser.json());
 app.use(cookieParser());
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const allowedOrigins = [
@@ -47,13 +60,9 @@ app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log("Testing middleware");
-  // console.log("Middleware cookie:", req.cookies.jwt);
-  // console.log("current users:", req.user);
-
   next();
 });
 
-// // Session setup
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "secret",
@@ -79,11 +88,8 @@ app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRouter);
 
-app.use("/api/payment", paypalRouter);
-app.use("/api/payment", stripeRouter);
-app.use("/api/webhooks", webhookRouter);
+app.use("/api/payment", payments);
 
-//globalError
 app.use(globalErrorHandler);
 
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -92,7 +98,9 @@ app.use(globalErrorHandler);
 // });
 
 app.use((req, res, next) => {
-  res.json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
+  res
+    .status(400)
+    .json({ msg: `Cannot find that route ${req.originalUrl} on this server` });
 
   next();
 });

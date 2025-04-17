@@ -9,137 +9,50 @@ const AppError_1 = __importDefault(require("../../../shared/utils/AppError"));
 const productModels_1 = __importDefault(require("../../product/models/product/productModels"));
 const ordersModel_1 = __importDefault(require("../models/ordersModel"));
 const itemOrder_1 = __importDefault(require("../models/itemOrder"));
-const payment_1 = __importDefault(require("../../payments/models/payment"));
-const stripe_1 = __importDefault(require("stripe"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
-const paymentService_1 = require("../../payments/services/paymentService");
-dotenv_1.default.config();
-const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    // apiVersion: "2025-01-27.acacia",
-    apiVersion: "2025-02-24.acacia",
-    timeout: 20000,
-});
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
-    const { userId, orderItems: products, shippingAddress, paymentMethod, // 'mpesa', 'card', 'paypal', 'bank'
-    paymentDetails, // Method-specific details
-    trackingNumber, } = req.body;
-    if (!userId ||
-        !products ||
-        products.length === 0 ||
-        !shippingAddress ||
-        !paymentMethod) {
+    const { userId, orderItems: products, shippingAddress, 
+    // paymentMethodId,
+    country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment, trackingNumber, totalPrice, } = req.body;
+    console.log("BODY", req.body);
+    if (!userId || !products || products.length === 0 || !shippingAddress) {
         return next(new AppError_1.default("Missing required fields", 400));
     }
-    const transaction = await pg_database_1.default.transaction();
+    const transaction = await pg_database_1.default.transaction(); // Start transaction
     try {
-        // Calculate total price (same as before)
         const productIds = products.map((item) => item.productId);
-        const productList = await productModels_1.default.findAll({ where: { id: productIds } });
+        const productList = await productModels_1.default.findAll({
+            where: { id: productIds },
+        });
         const productMap = new Map(productList.map((product) => [product.id, product]));
         let totalPrice = 0;
         for (const item of products) {
             const product = productMap.get(item.productId);
-            if (!product)
+            if (!product) {
                 throw new AppError_1.default(`Product with ID ${item.productId} not found`, 404);
+            }
             totalPrice += product.price * item.quantity;
         }
-        // Handle different payment methods
-        let paymentStatus = "pending";
-        let paymentReference = null;
-        let paymentResponse = null;
-        switch (paymentMethod) {
-            case "card":
-                try {
-                    const paymentIntent = await stripe.paymentIntents.create({
-                        amount: Math.round(totalPrice * 100),
-                        currency: "usd",
-                        payment_method: paymentDetails.paymentMethodId,
-                        confirm: true,
-                        metadata: {
-                            userId,
-                            orderDescription: `Order for user ${userId}`,
-                        },
-                    });
-                    paymentReference = paymentIntent.id;
-                    paymentStatus =
-                        paymentIntent.status === "succeeded" ? "paid" : "pending";
-                    paymentResponse = paymentIntent;
-                }
-                catch (error) {
-                    throw new AppError_1.default(`Card payment failed: ${error.message}`, 400);
-                }
-                break;
-            case "mpesa":
-                try {
-                    // This would call your M-Pesa API integration
-                    const mpesaResponse = await (0, paymentService_1.initiateMpesaPayment)({
-                        phone: paymentDetails.phone,
-                        amount: totalPrice,
-                        reference: `ORDER_${Date.now()}`,
-                        description: `Payment for order`,
-                    });
-                    paymentReference = mpesaResponse.transactionId;
-                    paymentStatus = "pending"; // M-Pesa payments are usually pending until confirmed
-                    paymentResponse = mpesaResponse;
-                }
-                catch (error) {
-                    throw new AppError_1.default(`M-Pesa payment failed: ${error.message}`, 400);
-                }
-                break;
-            case "paypal":
-                try {
-                    const paypalOrder = await (0, paymentService_1.createPayPalOrder)(totalPrice, "USD", {
-                        userId,
-                        items: products.map((item) => ({
-                            name: productMap.get(item.productId)?.name || "Product",
-                            quantity: item.quantity,
-                            price: productMap.get(item.productId)?.price || 0,
-                        })),
-                    });
-                    paymentReference = paypalOrder.id;
-                    paymentStatus =
-                        paypalOrder.status === "COMPLETED" ? "paid" : "pending";
-                    paymentResponse = paypalOrder;
-                }
-                catch (error) {
-                    throw new AppError_1.default(`PayPal payment failed: ${error.message}`, 400);
-                }
-                break;
-            case "bank":
-                try {
-                    // Generate bank transfer reference
-                    paymentReference = `BANK_${Date.now()}`;
-                    paymentStatus = "pending"; // Bank transfers are usually pending until confirmed
-                    paymentResponse = {
-                        accountNumber: "YOUR_BANK_ACCOUNT",
-                        accountName: "YOUR_BUSINESS_NAME",
-                        reference: paymentReference,
-                        amount: totalPrice,
-                        currency: "USD",
-                    };
-                }
-                catch (error) {
-                    throw new AppError_1.default(`Bank transfer setup failed: ${error.message}`, 400);
-                }
-                break;
-            default:
-                throw new AppError_1.default("Invalid payment method", 400);
-        }
-        // Create order
         const order = await ordersModel_1.default.create({
             userId,
             totalPrice,
             shippingAddress,
             status: "pending",
-            paymentStatus,
-            paymentMethod,
-            paymentReference,
+            paymentStatus: "unpaid",
             trackingNumber,
+            country,
+            county,
+            streetAddress,
+            phoneNumber,
+            city,
+            email,
+            fullName,
+            postcode,
+            apartment,
+            // totalPrice,
         }, { transaction });
-        // Create order items
         const orderItems = products.map((item) => ({
             orderId: order.id,
             productId: item.productId,
@@ -147,29 +60,11 @@ exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
             price: productMap.get(item.productId)?.price || 0,
         }));
         await itemOrder_1.default.bulkCreate(orderItems, { transaction });
-        // Save payment details
-        await payment_1.default.create({
-            userId,
-            orderId: order.id,
-            paymentMethod,
-            reference: paymentReference,
-            amount: totalPrice,
-            currency: "usd",
-            status: paymentStatus,
-            details: paymentResponse,
-        }, { transaction });
         await transaction.commit();
         res.status(201).json({
             success: true,
-            message: "Order created successfully",
+            message: "Order placed successfully!",
             order,
-            payment: {
-                method: paymentMethod,
-                status: paymentStatus,
-                reference: paymentReference,
-                nextAction: paymentMethod === "mpesa" ? "confirm_payment" : null,
-                details: paymentResponse,
-            },
         });
     }
     catch (error) {
@@ -209,8 +104,22 @@ exports.getAllOrders = (0, catchSync_1.default)(async (req, res, next) => {
     res.status(200).json({ success: true, orders });
 });
 exports.getOrderById = (0, catchSync_1.default)(async (req, res, next) => {
+    // const order = await Order.findByPk(req.params.id, {
+    //   include: [{ model: OrderItem, include: [Product] }],
+    // });
     const order = await ordersModel_1.default.findByPk(req.params.id, {
-        include: [{ model: itemOrder_1.default, include: [productModels_1.default] }],
+        include: [
+            {
+                model: itemOrder_1.default,
+                include: [
+                    {
+                        model: productModels_1.default,
+                        as: "Product",
+                        include: [{ model: productImageModel_1.default, as: "productImages" }],
+                    },
+                ],
+            },
+        ],
     });
     if (!order)
         return next(new AppError_1.default("Order not found", 404));

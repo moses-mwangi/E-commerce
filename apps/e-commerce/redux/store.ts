@@ -6,6 +6,7 @@ import userReducer from "./slices/userSlice";
 import orderReducer from "./slices/orderSlice";
 import analyticReducer from "./slices/AnalyticsSlice";
 import categoryReducer from "./slices/categorySlice";
+import payment from "./slices/PaymentSlice";
 import { useDispatch } from "react-redux";
 
 export const store = configureStore({
@@ -17,6 +18,7 @@ export const store = configureStore({
     order: orderReducer,
     analytic: analyticReducer,
     category: categoryReducer,
+    payment: payment,
   },
 });
 

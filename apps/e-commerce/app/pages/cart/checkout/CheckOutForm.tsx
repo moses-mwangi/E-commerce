@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -20,15 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { useCheckOut } from "./useCheckOut";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import PaymentProgress from "./orderPayments/PaymentProgress";
+import { useCheckOut } from "@/hooks/useCheckOut";
 
 export default function CheckoutPage() {
-  const [step, setStep] = useState(1);
-  const { push } = useRouter();
   const {
     onSubmit,
     handleSubmit,
@@ -41,11 +38,9 @@ export default function CheckoutPage() {
     currentUser,
     status,
   } = useCheckOut();
-  const formProgress = (step / 3) * 100;
   const formValues = watch();
 
   const handleNext = async () => {
-    // console.log(formValues);
     if (
       !formValues.email ||
       !formValues.phoneNumber ||
@@ -54,7 +49,7 @@ export default function CheckoutPage() {
       !formValues.postcode
     ) {
       toast.success("Fill requred filled to procceds");
-      // return;
+      return;
     }
     try {
       await handleSubmit(onSubmit)();
@@ -70,13 +65,8 @@ export default function CheckoutPage() {
       animate={{ opacity: 1 }}
       className="max-w-4xl mx-auto p-4"
     >
-      <div className="mb-8">
-        <Progress value={formProgress} className="h-2 " />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span className={step >= 1 ? "text-primary" : ""}>Shipping</span>
-          <span className={step >= 2 ? "text-primary" : ""}>Delivery</span>
-          <span className={step >= 3 ? "text-primary" : ""}>Payment</span>
-        </div>
+      <div className="pt-4">
+        <PaymentProgress val={1} />
       </div>
 
       <Card className="p-6 bg-white shadow-lg rounded-lg">

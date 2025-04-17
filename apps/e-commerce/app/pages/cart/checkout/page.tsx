@@ -34,9 +34,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="py-14">
-        <CheckOutForm />
-      </div>
+      <CheckOutForm />
       <Footer />
     </div>
   );

@@ -9,6 +9,8 @@ import Link from "next/link";
 import { FaBell } from "react-icons/fa";
 import CartPage from "@/app/home-page/navbar/cart/Cart";
 import DeliveryMethod from "./DeliveryMethod";
+import { Button } from "@/components/ui/button";
+import PaymentProgress from "../orderPayments/PaymentProgress";
 
 export default function Page() {
   return (
@@ -35,7 +37,10 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="py-14">
+      <div className="max-w-4xl mx-auto pt-12">
+        <PaymentProgress val={2} />
+      </div>
+      <div className=" pb-14">
         <DeliveryMethod />
       </div>
       <Footer />
