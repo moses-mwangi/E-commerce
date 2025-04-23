@@ -12,10 +12,15 @@ import cluster, { Worker } from "cluster";
 import ProductImage from "./modules/product/models/product/productImageModel";
 import productAssociation from "./modules/product/models/product/productAssociation";
 import Product from "./modules/product/models/product/productModels";
+import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
+import paymentAssociation from "./modules/payments/models/paymentAssociation";
+import Review from "./modules/reviews/models/reviewModel/reviewModels";
 
 orderAssociations();
 categoryAssociations();
 productAssociation();
+reviewAssociation();
+// paymentAssociation();
 
 dotenv.config();
 dotenv.config({ path: "./.env" });
@@ -26,34 +31,15 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-//////////////////////////////// updating Order and Order_item /////////////////
-
-// Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
-// Promise.all([User.sync({ alter: true })])
-// Promise.all([User.sync({ force: true })])
-// Promise.all([
-//   Order.destroy({ where: {},, truncate: true }),
-//   OrderItem.destroy({ where: {} }),
-//   User.destroy({ where: {} }),
-// ])
-// .then(() => {
-//   console.log("✅ Order & OrderItem tables updated!");
-//   console.log("✅ User tables updated!");
-// })
-// .catch((error) => {
-//   console.error("❌ Error syncing Order & OrderItem tables:", error);
-// });
-
-//////////////////////////////////////////////////////////////////////////////////
-
 const pg_connect = async () => {
   try {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
     // await sequelize.sync({ force: true });
     // await sequelize.sync({ alter: true }); /////does not delete data
-    // await Product.sync({ alter: true });
-    // await Order.sync({ alter: true });
+    await Product.sync({ alter: true });
+    // Review.destroy({ where: {}, truncate: true }),
+    // Review.destroy({ where: {} });
   } catch (err) {
     console.log("Unable to connect to database", err);
   }

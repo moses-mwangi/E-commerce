@@ -29,10 +29,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useSubCategoryContex from "@/hooks/useSubCategoryContex";
+import toast from "react-hot-toast";
 
 export default function SubCategory() {
   const {
     isLoading,
+    setIsLoading,
     gridView,
     setGridView,
     showFilters,
@@ -52,6 +54,8 @@ export default function SubCategory() {
     filteredProducts,
     handleRoute,
     decodedSub,
+    handleBuyNow,
+    items: favItems,
   } = useSubCategoryContex();
 
   return (
@@ -62,6 +66,9 @@ export default function SubCategory() {
           <div className="flex items-center px-2 py-4 text-[13px]">
             <Link
               href="/category"
+              onClick={() => {
+                setIsLoading(true);
+              }}
               className="text-gray-500  hover:underline hover:text-blue-500"
             >
               Categories
@@ -69,6 +76,9 @@ export default function SubCategory() {
             <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
             <Link
               href={`/category/${category}`}
+              onClick={() => {
+                setIsLoading(true);
+              }}
               className="text-gray-500 hover:underline hover:text-blue-500 capitalize"
             >
               {decodedCategory}
@@ -82,9 +92,9 @@ export default function SubCategory() {
             <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
               {capitalizeWords(decodedSub)}
             </h1>
-            <p className="text-gray-600">
+            {/* <p className="text-gray-600">
               {subFilter?.description?.substring(0, 195)}....
-            </p>
+            </p> */}
           </div>
           <div className="sticky top-0 z-10 bg-white rounded-lg my-4 dark:bg-gray-800 shadow-md p-4">
             <div className="max-w-7xl mx-auto">
@@ -263,7 +273,15 @@ export default function SubCategory() {
                       onClick={() => handleAddToFavourite(product.id)}
                       className="bg-gray-100/65 hover:bg-gray-100 absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
-                      <Heart className="w-6 h-6 text-red-500" />
+                      <Heart
+                        fill={`${
+                          favItems.map((el) => el.product.id === product.id)
+                            .length > 0
+                            ? "oklch(70.4% 0.191 22.216)"
+                            : "white"
+                        }`}
+                        className="w-6 h-6 text-red-400"
+                      />
                     </Button>
                   </div>
 
@@ -333,7 +351,36 @@ export default function SubCategory() {
                       )}
                     </div>
 
-                    <div className="flex gap-2 mt-3">
+                    <div
+                      className={`grid gap-2 ${
+                        !gridView ? " grid-cols-3" : " grid-cols-2"
+                      } mt-3`}
+                    >
+                      <Button
+                        className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
+                        onClick={() => handleAddToCart(product.id)}
+                      >
+                        {/* <ShoppingCart /> */}
+                        Add to Cart
+                      </Button>
+                      <Button
+                        className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
+                        onClick={() => handleBuyNow(product.id)}
+                      >
+                        Buy Now
+                      </Button>
+                      <Button
+                        className={`${
+                          !gridView ? "" : " col-span-2"
+                        } w-full flex items-center gap-2 border-gray-300 dark:border-gray-600 shadow-md`}
+                        variant="outline"
+                        onClick={() => handleRoute(product.name, product.id)}
+                      >
+                        <Eye /> Quick View
+                      </Button>
+                    </div>
+
+                    {/* <div className="flex gap-2 mt-3">
                       <Button
                         className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
                         onClick={() => handleAddToCart(product.id)}
@@ -347,7 +394,7 @@ export default function SubCategory() {
                       >
                         <Eye /> Quick View
                       </Button>
-                    </div>
+                    </div> */}
                   </CardContent>
                 </Card>
               ))}

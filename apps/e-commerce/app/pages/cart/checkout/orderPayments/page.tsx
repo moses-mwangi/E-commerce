@@ -44,7 +44,7 @@ export default function Page() {
         </div>
         <div className="py-12 gap-3  w-full  px-24 ">
           <div>
-            <PaymentProgress val={3} />
+            <PaymentProgress val={2} />
           </div>
           <PaymentProvider>
             <div className="gap-3  w-full justify-between flex">

@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ChevronDown,
   ShoppingBag,
   Copy,
   Download,
@@ -20,7 +19,6 @@ import {
   Clock,
   Shield,
   Star,
-  Check,
   MapPin,
 } from "lucide-react";
 import Image from "next/image";
@@ -28,25 +26,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
 
 import ProductReviewForm from "./orderComponents/ProductReviewForm";
 import { Order } from "@/app/types/order";
 import OrderTracking from "./orderComponents/OrderTracking";
-import ChangeShippingAddress from "./orderComponents/ChangeShippingAddress";
 import Modal from "./orderComponents/ModalChangeShippingAddress";
+import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
+import EditReviewForm from "./orderComponents/EditReview";
+import PaymentProgress from "../cart/checkout/orderPayments/PaymentProgress";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 function OrdersPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch: AppDispatch = useDispatch();
   const { orders } = useSelector((state: RootState) => state.order);
   const { push } = useRouter();
@@ -55,24 +54,31 @@ function OrdersPage() {
   const [toggleAddressEdit, setToggleAddressEdit] = useState(false);
 
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const { reviews } = useSelector((state: RootState) => state.review);
   const currentUserOrder = orders.filter(
     (order) => order.User.email === currentUser?.email
   );
+  const deliveredOrder = currentUserOrder.some(
+    (el) => el.paymentStatus === "paid"
+  );
+
+  const hasUserReviewedProduct = (
+    productId: number,
+    orderId: number,
+    userId: any
+  ) => {
+    return reviews?.some(
+      (review) =>
+        review?.userId.toString() === userId.toString() &&
+        review?.orderId.toString() === orderId.toString() &&
+        review?.productId.toString() === productId.toString()
+    );
+  };
 
   useEffect(() => {
     dispatch(fetchOrders());
+    dispatch(fetchReviews());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (toggleAddressEdit) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "";
-  //   }
-  //   return () => {
-  //     document.body.style.overflow = "";
-  //   };
-  // }, [toggleAddressEdit]);
 
   const getDate = (date: string) => {
     const dates = new Date(date).toLocaleDateString("en-US", {
@@ -94,16 +100,17 @@ function OrdersPage() {
     console.log("Cancellation reason:", cancelReason);
   };
 
+  const handleCompletePayment = (id: any) => {
+    console.log("Moses Mwangi", id);
+    setIsLoading(true);
+    const params = new URLSearchParams();
+    params.set("PaymentsOrderNo", String(id));
+    push(`/pages/cart/checkout/orderPayments?${params.toString()}`);
+  };
+
   return (
     <div>
-      {/* {toggleAddressEdit === true && (
-        <div className="fixed overflow-y-scroll inset-0 w-screen h-screen z-50 bg-black/60 backdrop-blur-[3px] flex items-center justify-center">
-          <div className="p-4 max-h-dvh w-full max-w-3xl">
-            <ChangeShippingAddress />
-          </div>
-        </div>
-      )} */}
-
+      {isLoading === true && <LoadingState />}
       <Modal
         toggleAddressEdit={toggleAddressEdit}
         setToggleAddressEdit={setToggleAddressEdit}
@@ -179,12 +186,17 @@ function OrdersPage() {
                           variant={
                             order.status === "pending"
                               ? ("warning" as "destructive")
-                              : ("success" as "outline")
+                              : ("success" as "secondary")
                           }
                         >
                           {order?.status?.toUpperCase()}
                         </Badge>
                         <Badge
+                          className={`${
+                            order.paymentStatus === "unpaid"
+                              ? "bg-red-500/90"
+                              : " text-green-500 bg-gray-50"
+                          }`}
                           variant={
                             order.paymentStatus === "unpaid"
                               ? "destructive"
@@ -220,34 +232,8 @@ function OrdersPage() {
                               {order.status.toUpperCase()}
                             </Badge>
                           </div>
-                          <Progress
-                            value={order.status === "pending" ? 20 : 100}
-                            className="h-2"
-                          />
-                          <div className="flex justify-between mt-2 text-xs text-gray-500">
-                            <div className="text-center">
-                              <div className="font-medium">Order</div>
-                              <div className="text-xs">Order placed</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-medium">Payment</div>
-                              <div className="text-xs">Payment completed</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-medium">Dispatch</div>
-                              <div className="text-xs">
-                                Preparing for shipment
-                              </div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-medium">Delivery</div>
-                              <div className="text-xs">On the way</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-medium">Review</div>
-                              <div className="text-xs">Order completed</div>
-                            </div>
-                          </div>
+
+                          <PaymentProgress val={4} />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -297,9 +283,6 @@ function OrdersPage() {
                                     </Button>
                                   )}
                               </div>
-                              {/* <p className="text-sm text-gray-500">
-                              Phone: {order.phoneNumber || "N/A"}
-                            </p> */}
                             </CardContent>
                           </Card>
 
@@ -410,82 +393,138 @@ function OrdersPage() {
                               <div className="col-span-1 text-right">Qty</div>
                               <div className="col-span-2 text-right">Total</div>
                             </div>
-                            {order.OrderItems.map((item) => (
-                              <div key={item.id} className="group">
-                                <div className="p-3 border-t grid grid-cols-12 items-center text-sm hover:bg-gray-50">
-                                  <div className="col-span-5 flex items-center">
-                                    <Image
-                                      src={
-                                        item.Product.productImages
-                                          ? String(
-                                              item.Product.productImages.find(
-                                                (el: any) => el.isMain === true
-                                              )?.url
-                                            )
-                                          : ""
-                                      }
-                                      alt={item.Product.name}
-                                      width={60}
-                                      height={60}
-                                      className="rounded-md object-cover h-12 w-12 mr-3"
-                                    />
-                                    <div>
-                                      <p className="font-medium">
-                                        {item.Product.name}
-                                      </p>
-                                      <p className="text-xs text-gray-500">
-                                        SKU: N/A
-                                      </p>
+
+                            {order.OrderItems.map((item) => {
+                              const hasReviewed = hasUserReviewedProduct(
+                                item.productId,
+                                order.id,
+                                currentUserOrder[0].userId
+                              );
+
+                              return (
+                                <div key={item.id} className="group">
+                                  <div className="p-3 border-t grid grid-cols-12 items-center text-sm hover:bg-gray-50">
+                                    <div className="col-span-5 flex items-center">
+                                      <Image
+                                        src={
+                                          item.Product.productImages
+                                            ? String(
+                                                item.Product.productImages.find(
+                                                  (el: any) =>
+                                                    el.isMain === true
+                                                )?.url
+                                              )
+                                            : ""
+                                        }
+                                        alt={item.Product.name}
+                                        width={60}
+                                        height={60}
+                                        className="rounded-md object-cover h-12 w-12 mr-3"
+                                      />
+                                      <div>
+                                        <p className="font-medium">
+                                          {item.Product.name}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          SKU: N/A
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="col-span-2 text-sm text-gray-500">
+                                      Standard
+                                    </div>
+                                    <div className="col-span-2 text-right">
+                                      ${item.price.toFixed(2)}
+                                    </div>
+                                    <div className="col-span-1 text-right">
+                                      {item.quantity}
+                                    </div>
+                                    <div className="col-span-2 text-right font-medium">
+                                      ${(item.price * item.quantity).toFixed(2)}
                                     </div>
                                   </div>
-                                  <div className="col-span-2 text-sm text-gray-500">
-                                    Standard
-                                  </div>
-                                  <div className="col-span-2 text-right">
-                                    ${item.price.toFixed(2)}
-                                  </div>
-                                  <div className="col-span-1 text-right">
-                                    {item.quantity}
-                                  </div>
-                                  <div className="col-span-2 text-right font-medium">
-                                    ${(item.price * item.quantity).toFixed(2)}
-                                  </div>
-                                </div>
 
-                                <div className="p-3 bg-gray-50 border-t">
-                                  <Dialog key={item.id}>
-                                    <DialogTrigger asChild>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="gap-1"
-                                      >
-                                        <Star className="h-4 text-orange-500 w-4" />
-                                        Write a Review
-                                      </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-3xl">
-                                      <DialogTitle>Write a Review</DialogTitle>
-                                      <DialogDescription>
-                                        Share your feedback about this product.
-                                      </DialogDescription>
-                                      <ProductReviewForm
-                                        productId={item.productId.toString()}
+                                  <div className="p-3 bg-gray-50 border-t ">
+                                    {!hasReviewed ? (
+                                      <Dialog key={item.id}>
+                                        <DialogTrigger
+                                          asChild
+                                          className=" disabled:cursor-not-allowed"
+                                          disabled={
+                                            order.paymentStatus !== "paid" &&
+                                            order.status !== "delivered"
+                                          }
+                                        >
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="gap-1"
+                                          >
+                                            <Star className="h-4 text-orange-500 w-4" />
+                                            Write a Review
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-3xl overflow-y-scroll">
+                                          <DialogTitle>
+                                            Write a Review
+                                          </DialogTitle>
+                                          <DialogDescription>
+                                            Share your feedback about this
+                                            product.
+                                          </DialogDescription>
+
+                                          <ProductReviewForm
+                                            productId={Number(item.productId)}
+                                            userId={Number(
+                                              currentUserOrder[0].userId
+                                            )}
+                                            // paymentStatus={Number(order.)}
+                                            orderId={Number(order.id)}
+                                            productName={item.Product.name}
+                                            productCategory={
+                                              currentUserOrder[0].OrderItems?.find(
+                                                (el) =>
+                                                  el.productId ===
+                                                  item.productId
+                                              )?.Product?.category
+                                            }
+                                            productImage={
+                                              item.Product.productImages.find(
+                                                (image) => image.isMain === true
+                                              )?.url as string
+                                            }
+                                            defaultRating={4}
+                                            defaultReview="Good sound quality"
+                                          />
+                                        </DialogContent>
+                                      </Dialog>
+                                    ) : (
+                                      <EditReviewForm
+                                        productId={Number(item.productId)}
+                                        userId={Number(
+                                          currentUserOrder[0].userId
+                                        )}
+                                        orderId={Number(order.id)}
                                         productName={item.Product.name}
+                                        productCategory={
+                                          currentUserOrder[0].OrderItems?.find(
+                                            (el) =>
+                                              el.productId === item.productId
+                                          )?.Product?.category
+                                        }
                                         productImage={
                                           item.Product.productImages.find(
                                             (image) => image.isMain === true
                                           )?.url as string
                                         }
-                                        onSuccess={() => {
-                                          console.log("Moses ");
-                                        }}
+                                        // defaultRating={4}
+                                        // defaultReview="Good sound quality"
                                       />
-                                    </DialogContent>
-                                  </Dialog>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
 
@@ -572,7 +611,12 @@ function OrdersPage() {
                                 </div>
                                 <div className="pt-2">
                                   {order.paymentStatus === "unpaid" ? (
-                                    <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                                    <Button
+                                      onClick={() =>
+                                        handleCompletePayment(order.id)
+                                      }
+                                      className="w-full bg-orange-600 hover:bg-orange-700"
+                                    >
                                       Complete Payment
                                     </Button>
                                   ) : (

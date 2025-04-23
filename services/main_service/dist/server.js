@@ -11,9 +11,13 @@ const categoryAssociations_1 = __importDefault(require("./modules/product/models
 const os_1 = require("os");
 const cluster_1 = __importDefault(require("cluster"));
 const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
+const productModels_1 = __importDefault(require("./modules/product/models/product/productModels"));
+const reviewAssociation_1 = __importDefault(require("./modules/reviews/models/reviewModel/reviewAssociation"));
 (0, orderAssociations_1.default)();
 (0, categoryAssociations_1.default)();
 (0, productAssociation_1.default)();
+(0, reviewAssociation_1.default)();
+// paymentAssociation();
 dotenv_1.default.config();
 dotenv_1.default.config({ path: "./.env" });
 process.on("uncaughtException", (err) => {
@@ -21,31 +25,15 @@ process.on("uncaughtException", (err) => {
     console.error(err.name, err.message);
     process.exit(1);
 });
-//////////////////////////////// updating Order and Order_item /////////////////
-// Promise.all([Order.sync({ alter: true }), OrderItem.sync({ alter: true })])
-// Promise.all([User.sync({ alter: true })])
-// Promise.all([User.sync({ force: true })])
-// Promise.all([
-//   Order.destroy({ where: {},, truncate: true }),
-//   OrderItem.destroy({ where: {} }),
-//   User.destroy({ where: {} }),
-// ])
-// .then(() => {
-//   console.log("✅ Order & OrderItem tables updated!");
-//   console.log("✅ User tables updated!");
-// })
-// .catch((error) => {
-//   console.error("❌ Error syncing Order & OrderItem tables:", error);
-// });
-//////////////////////////////////////////////////////////////////////////////////
 const pg_connect = async () => {
     try {
         pg_database_1.default.authenticate();
         console.log("The PostgreSQL database has successfully connected");
         // await sequelize.sync({ force: true });
         // await sequelize.sync({ alter: true }); /////does not delete data
-        // await Product.sync({ alter: true });
-        // await Order.sync({ alter: true });
+        await productModels_1.default.sync({ alter: true });
+        // Review.destroy({ where: {}, truncate: true }),
+        // Review.destroy({ where: {} });
     }
     catch (err) {
         console.log("Unable to connect to database", err);

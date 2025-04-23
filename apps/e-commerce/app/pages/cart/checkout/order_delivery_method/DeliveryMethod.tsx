@@ -8,12 +8,12 @@ import { ChevronRight, Truck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrderById } from "@/redux/slices/orderSlice";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 const deliveryOptions = [
   {
@@ -39,21 +39,20 @@ const deliveryOptions = [
 export default function DeliveryMethod() {
   const { back, push } = useRouter();
   const [deliveryMethod, setDeliveryMethod] = useState("standard");
-  const [step, setStep] = useState(2);
-  const formProgress = (step / 3) * 100;
+  const [isLoading, setIsLoading] = useState(false);
+  const orderId = localStorage.getItem("orderId");
 
   const dispatch: AppDispatch = useDispatch();
-  const { orders, selectedOrder } = useSelector(
-    (state: RootState) => state.order
-  );
+  const { selectedOrder } = useSelector((state: RootState) => state.order);
 
   useEffect(() => {
-    dispatch(fetchOrderById(3));
-  }, [dispatch]);
+    dispatch(fetchOrderById(Number(orderId)));
+  }, [dispatch, orderId]);
 
   const handleNext = async () => {
+    setIsLoading(true);
     const params = new URLSearchParams();
-    params.set("PaymentsOrderNo", String(selectedOrder?.id || 2));
+    params.set("PaymentsOrderNo", String(selectedOrder?.id));
     push(`/pages/cart/checkout/orderPayments?${params.toString()}`);
   };
 
@@ -99,7 +98,9 @@ export default function DeliveryMethod() {
                 >
                   <div className="flex items-center gap-3">
                     <RadioGroupItem
-                      className=""
+                      className={`${
+                        deliveryMethod === option.id ? "border-none" : ""
+                      }`}
                       value={option.id}
                       id={option.id}
                     />
@@ -127,13 +128,12 @@ export default function DeliveryMethod() {
           </Button>
 
           <Button
-            className={`bg-orange-500/85 hover:bg-orange-600/80 ${
-              step === 1 ? "ggw-full" : ""
-            }`}
+            className={`bg-orange-500/85 hover:bg-orange-600/80 w-44`}
             onClick={handleNext}
+            disabled={isLoading === true}
           >
-            Continue to payments
-            <ChevronRight className="w-4 h-4 ml-2" />
+            {isLoading === true ? <ButtonLoader /> : "Continue to payments"}
+            {isLoading === true && <ChevronRight className="w-4 h-4 ml-2" />}
           </Button>
         </div>
       </Card>

@@ -4,17 +4,18 @@ import sequelize from "../../../../shared/config/pg_database";
 class Product extends Model {
   public id!: number;
   public name!: string;
-  public category!: "beauty" | "fashion" | "electronics" | "kitchen";
+  public category!: string;
+  public subCategory!: string;
   public price!: number;
   public costPrice!: number;
   public description!: string;
   public stock!: number;
-  // public status!: "in stock" | "out of stock";
   public brand?: string;
   public images!: string[];
   public specifications?: object[];
   public discount?: number;
   public ratings?: number;
+  public averageRating?: number;
   public reviews?: object[];
 }
 
@@ -32,15 +33,12 @@ Product.init(
     category: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isIn: [["beauty", "fashion", "electronics", "kitchen"]],
-      },
     },
+    subCategory: { type: DataTypes.STRING, allowNull: true },
     status: {
       type: DataTypes.ENUM("in stock", "out of stock"),
       allowNull: false,
       defaultValue: "in stock",
-      // validate: { isIn: [["in stock", "out of stock"]] },
     },
     price: {
       type: DataTypes.FLOAT,
@@ -77,6 +75,7 @@ Product.init(
       allowNull: true,
       defaultValue: 0,
     },
+    averageRating: { type: DataTypes.FLOAT, allowNull: true },
     ratings: {
       type: DataTypes.FLOAT,
       allowNull: true,
@@ -87,7 +86,7 @@ Product.init(
       },
     },
     reviews: {
-      type: DataTypes.ARRAY(DataTypes.JSONB), // Stores user reviews
+      type: DataTypes.ARRAY(DataTypes.JSONB),
       allowNull: true,
     },
   },

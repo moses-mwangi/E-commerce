@@ -7,6 +7,11 @@ import Error, { ErrorProps } from "next/error";
 
 dotenv.config();
 
+function getCookie(name: string): string | null {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? match[2] : null;
+}
+
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 
 export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
@@ -44,22 +49,15 @@ export const verifyEmail = createAsyncThunk(
   "user/verify-email",
   async (token: string) => {
     try {
-      // console.log(token);
-      const response = await axios.post(
-        `${API_URL}/auth/verify-email/${token}`
-      );
+      await axios.post(`${API_URL}/auth/verify-email/${token}`);
 
       // const token = response.data.token;
       document.cookie = `token=${token}; path=/`;
       document.cookie = `tokens=${token}; path=/`;
       toast.success("Account created succefully");
 
-      // return response;
-      // window.location.href = "/registration/email-verified-msg";
-
       return "";
     } catch (err) {
-      // console.error("Error:", err);
       toast.error("Email Verification failed");
 
       // window.location.href = "/registration/email-verified-msg";
@@ -107,7 +105,8 @@ export const deleteUser = createAsyncThunk(
         return rejectWithValue(response.data.error);
       }
 
-      // document.cookie = `token=; path=/`;
+      document.cookie = `token=; path=/`;
+      document.cookie = `tokens=; path=/`;
       // toast.success("Account deleted successfully");
 
       return response.data;
@@ -128,16 +127,16 @@ export const deleteUser = createAsyncThunk(
 export const getCurrentUser = createAsyncThunk(
   "user/getCurrentUser",
   async (_, { rejectWithValue }) => {
-    const token = document.cookie.split("=")[1];
+    const tokens = getCookie("tokens");
 
     try {
-      if (!token || token.length <= 20) {
+      if (!tokens || tokens.length <= 20) {
         throw new Error("No valid token found." as unknown as ErrorProps);
       }
 
       const response = await axios.get(`${API_URL}/auth/me`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${tokens}`,
         },
         withCredentials: true,
       });
@@ -145,6 +144,7 @@ export const getCurrentUser = createAsyncThunk(
       return response.data.user;
     } catch (err) {
       const axiosError = err as AxiosError;
+      console.log(axiosError);
       if (axiosError.response?.status === 401) {
         const errorMessage = "Your session has expired. Please log in again.";
 
@@ -153,7 +153,6 @@ export const getCurrentUser = createAsyncThunk(
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         document.cookie =
           "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // window.location.href = "/registration/signin";
       } else {
         // Handle other errors
         // toast.error("Error getting current user");
@@ -173,7 +172,7 @@ export const updatePassword = createAsyncThunk(
     data: { currentPassword: string; newPassword: string },
     { rejectWithValue }
   ) => {
-    const token = document.cookie.split("=")[1];
+    const token = getCookie("tokens");
 
     try {
       if (!token || token.length <= 20) {
@@ -234,7 +233,8 @@ export const updateCurrentUser = createAsyncThunk(
 
     { rejectWithValue }
   ) => {
-    const token = document.cookie.split("=")[1];
+    // const token = document.cookie.split("=")[1];
+    const token = getCookie("tokens");
 
     try {
       if (!token || token.length <= 20) {

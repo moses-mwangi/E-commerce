@@ -17,16 +17,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { fetchProducts } from "@/redux/slices/productSlice";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 export default function FavouritesProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const { products } = useSelector((state: RootState) => state.product);
+  const { categories } = useSelector((state: RootState) => state.category);
 
   const { items: favItems } = useSelector(
     (state: RootState) => state.favourite
   );
+
+  const proSubCategory = categories
+    .find((category) =>
+      favItems.some(
+        (item) =>
+          item.product.category?.toLowerCase() === category.name.toLowerCase()
+      )
+    )
+    ?.subcategories.find(
+      (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
+    );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -59,13 +72,17 @@ export default function FavouritesProductPage() {
 
   return (
     <>
+      {isLoading === true && <LoadingState />}
       <div className="px-44 mt-8 min-h-screen">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Your Favourites</h1>
 
           <Link
             href="/category"
-            className="flex items-center text-blue-600 hover:underline"
+            onClick={() => {
+              setIsLoading(true);
+            }}
+            className="flex items-center text-gray-700 transition-all duration-200 hover:text-blue-400 font-semibold text-sm hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Continue Shopping
@@ -128,7 +145,12 @@ export default function FavouritesProductPage() {
                       className="rounded-md object-cover h-20 w-24"
                     />
                     <div className="flex-1">
-                      <h3 className="font-medium">{item.product.name}</h3>
+                      <Link
+                        href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                        className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer"
+                      >
+                        {item.product.name}
+                      </Link>
                       <p className="text-sm text-gray-500">
                         Price: ${item.product.price}
                       </p>

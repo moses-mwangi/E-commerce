@@ -12,6 +12,7 @@ export const createProduct = catchAsync(
     const {
       name,
       category,
+      subCategory,
       price,
       costPrice,
       stock,
@@ -120,6 +121,7 @@ export const createProduct = catchAsync(
         {
           name,
           category,
+          subCategory,
           brand,
           price,
           costPrice,

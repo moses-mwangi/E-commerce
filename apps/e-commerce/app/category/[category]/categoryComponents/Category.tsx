@@ -31,8 +31,10 @@ import {
 } from "@/components/ui/select";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { Subcategory } from "@/app/types/category";
+import { useRouter } from "next/navigation";
 
 export default function Category() {
+  const { push } = useRouter();
   const {
     isLoading,
     gridView,
@@ -53,7 +55,9 @@ export default function Category() {
     filteredProducts,
     handleRoute,
     categoryData,
-    router,
+    subCategoryRoute,
+    handleBuyNow,
+    items: favItems,
   } = useCategoryContex();
 
   return (
@@ -80,11 +84,7 @@ export default function Category() {
               .map((sub: Subcategory) => (
                 <div
                   onClick={() => {
-                    const param = new URLSearchParams();
-                    param.set("id", String(sub.id));
-                    router.push(
-                      `/category/${category}/${sub.name.toLowerCase()}?${param.toString()}`
-                    );
+                    subCategoryRoute(sub.name, sub.id);
                   }}
                   key={sub.name}
                   className="group"
@@ -128,7 +128,6 @@ export default function Category() {
                 <div className="flex items-center gap-4 pr-4">
                   <Button
                     onClick={() => {
-                      console.log("Moses");
                       setShowFilters((el) => !el);
                     }}
                     variant="outline"
@@ -197,47 +196,45 @@ export default function Category() {
               <div className="col-span-1 p-4 bg-white dark:bg-gray-800 rounded shadow-md">
                 <h2 className="text-lg font-semibold mb-4">Filters</h2>
                 <div className="flex flex-col gap-3">
-                  {subFilter?.filters
-                    // .filter((fil) => fil.subcategoryId === null)
-                    .map((el) => (
-                      <details key={el.id} className="border-b pb-2">
-                        <summary className="flex items-center justify-between cursor-pointer">
-                          {el.name} <ChevronDown />
-                        </summary>
-                        {el.options.map((opt) => (
-                          <div
+                  {subFilter?.filters.map((el) => (
+                    <details key={el.id} className="border-b pb-2">
+                      <summary className="flex items-center justify-between cursor-pointer">
+                        {el.name} <ChevronDown />
+                      </summary>
+                      {el.options.map((opt) => (
+                        <div
+                          key={opt.id}
+                          className="flex justify-between mt-2 text-sm text-gray-600"
+                        >
+                          <label
                             key={opt.id}
-                            className="flex justify-between mt-2 text-sm text-gray-600"
+                            className="flex items-center gap-2 cursor-pointer"
                           >
-                            <label
-                              key={opt.id}
-                              className="flex items-center gap-2 cursor-pointer"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selectedBrands.includes(opt.option)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedBrands([
-                                      ...selectedBrands,
-                                      opt.option,
-                                    ]);
-                                  } else {
-                                    setSelectedBrands(
-                                      selectedBrands.filter(
-                                        (b) => b !== opt.option
-                                      )
-                                    );
-                                  }
-                                }}
-                                className="rounded border-gray-300"
-                              />
-                              <span>{opt.option}</span>
-                            </label>
-                          </div>
-                        ))}
-                      </details>
-                    ))}
+                            <input
+                              type="checkbox"
+                              checked={selectedBrands.includes(opt.option)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedBrands([
+                                    ...selectedBrands,
+                                    opt.option,
+                                  ]);
+                                } else {
+                                  setSelectedBrands(
+                                    selectedBrands.filter(
+                                      (b) => b !== opt.option
+                                    )
+                                  );
+                                }
+                              }}
+                              className="rounded border-gray-300"
+                            />
+                            <span>{opt.option}</span>
+                          </label>
+                        </div>
+                      ))}
+                    </details>
+                  ))}
                 </div>
               </div>
             )}
@@ -284,10 +281,20 @@ export default function Category() {
                   />
 
                   <Button
-                    onClick={() => handleAddToFavourite(product.id)}
+                    onClick={() => {
+                      handleAddToFavourite(product.id);
+                    }}
                     className="bg-gray-100/65 hover:bg-gray-100 absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   >
-                    <Heart className="w-6 h-6 text-red-500" />
+                    <Heart
+                      fill={`${
+                        favItems.map((el) => el.product.id === product.id)
+                          .length > 0
+                          ? "oklch(70.4% 0.191 22.216)"
+                          : "white"
+                      }`}
+                      className={`w-6 h-6 text-red-400`}
+                    />
                   </Button>
                 </div>
 
@@ -357,15 +364,28 @@ export default function Category() {
                     )}
                   </div>
 
-                  <div className="flex gap-2 mt-3">
+                  <div
+                    className={`grid gap-2 ${
+                      !gridView ? " grid-cols-3" : " grid-cols-2"
+                    } mt-3`}
+                  >
                     <Button
                       className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
                       onClick={() => handleAddToCart(product.id)}
                     >
-                      <ShoppingCart /> Add to Cart
+                      {/* <ShoppingCart /> */}
+                      Add to Cart
                     </Button>
                     <Button
-                      className="w-full flex items-center gap-2 border-gray-300 dark:border-gray-600 shadow-md"
+                      className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
+                      onClick={() => handleBuyNow(product.id)}
+                    >
+                      Buy Now
+                    </Button>
+                    <Button
+                      className={`${
+                        !gridView ? "" : " col-span-2"
+                      } w-full flex items-center gap-2 border-gray-300 dark:border-gray-600 shadow-md`}
                       variant="outline"
                       onClick={() => handleRoute(product.name, product.id)}
                     >

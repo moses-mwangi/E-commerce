@@ -15,7 +15,6 @@ import {
   resendVerificationEmail,
   setPassword,
 } from "../controllers/authController";
-// import passport from "passport";
 import { generateToken } from "../utils/jwt";
 import passport from "../../../shared/config/passport";
 
@@ -24,7 +23,6 @@ const router: Router = Router();
 router.route("/signup").post(validUserSignInput, signInUser);
 router.route("/login").post(loginUser);
 router.route("/deleteUser/:id").delete(deleteCurrentUser);
-//set-password
 router.route("/updatePassword").patch(protect, updatePassword);
 router.route("/set-password").post(setPassword);
 
@@ -36,7 +34,6 @@ router.route("/resend-verification").post(resendVerificationEmail);
 
 router.get("/mej", protectJwtUser, getMe);
 router.get("/me", protect, getMe);
-///requestPasswordReset, validate-reset-token, resetPassword
 
 router.route("/google").get(
   passport.authenticate("google", {

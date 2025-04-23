@@ -121,6 +121,25 @@ function useCategoryContex() {
     );
   };
 
+  const subCategoryRoute = (name: string, id: any) => {
+    setIsLoading(true);
+    const param = new URLSearchParams();
+    param.set("id", String(id));
+    router.push(
+      `/category/${category}/${name.toLowerCase()}?${param.toString()}`
+    );
+  };
+
+  const handleBuyNow = (id: any) => {
+    const quantity = 3;
+    setIsLoading(true);
+
+    localStorage.setItem("buyProductQuantity", quantity.toString());
+    const param = new URLSearchParams();
+    param.set("Buy", id);
+    router.push(`/pages/cart/checkout?${param.toString()}`);
+  };
+
   return {
     isLoading,
     gridView,
@@ -138,10 +157,13 @@ function useCategoryContex() {
     capitalizeWords,
     handleAddToCart,
     handleAddToFavourite,
+    handleBuyNow,
     filteredProducts,
     handleRoute,
     categoryData,
     router,
+    items,
+    subCategoryRoute,
   };
 }
 

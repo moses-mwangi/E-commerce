@@ -21,7 +21,6 @@ function useSubCategoryContex() {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("featured");
 
   const { category, subcategory } = useParams();
@@ -82,6 +81,16 @@ function useSubCategoryContex() {
     }
   };
 
+  const handleBuyNow = (id: any) => {
+    const quantity = 3;
+    setIsLoading(true);
+
+    localStorage.setItem("buyProductQuantity", quantity.toString());
+    const param = new URLSearchParams();
+    param.set("Buy", id);
+    router.push(`/pages/cart/checkout?${param.toString()}`);
+  };
+
   const subCategoryProduct = products.filter(
     (el) => el.category.toLowerCase() === decodedCategory.toLowerCase()
     //  &&
@@ -119,7 +128,7 @@ function useSubCategoryContex() {
   const handleRoute = (name: string, id: any) => {
     setIsLoading(true);
     const param = new URLSearchParams();
-    const productId = param.set("id", id);
+    param.set("id", id);
     router.push(
       `/category/${category}/${subcategory}/${name}?${param.toString()}`
     );
@@ -127,6 +136,7 @@ function useSubCategoryContex() {
 
   return {
     isLoading,
+    setIsLoading,
     gridView,
     setGridView,
     showFilters,
@@ -146,8 +156,9 @@ function useSubCategoryContex() {
     filteredProducts,
     handleRoute,
     decodedSub,
-
+    handleBuyNow,
     categories,
+    items,
   };
 }
 

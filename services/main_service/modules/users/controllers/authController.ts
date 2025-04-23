@@ -185,8 +185,8 @@ export const loginUser = catchAsync(
     const token = generateToken({ id: user.id, email: user.email });
 
     const cookieOption = {
-      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-      maxAge: 8 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      maxAge: 90 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: "strict" as const,
@@ -365,7 +365,10 @@ export const updatePassword = catchAsync(
 
     // const cookieOption = {
     //   expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    //   // httpOnly: true,
+    //   maxAge: 90 * 24 * 60 * 60 * 1000,
+    //   secure: process.env.NODE_ENV === "production",
+    //   httpOnly: true,
+    //   sameSite: "strict" as const,
     // };
 
     const cookieOption = {

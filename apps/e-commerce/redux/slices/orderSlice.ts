@@ -26,6 +26,9 @@ export const createOrder = createAsyncThunk(
       const res = await axios.post(`${API_URL}/order`, orderData);
       toast.success("Order sent succefully");
       window.location.href = "/pages/cart/checkout/order_delivery_method";
+
+      localStorage.setItem("orderId", res.data.order.id.toString());
+
       return res.data;
     } catch (err) {
       toast.error("Failed to  create your order");
@@ -95,6 +98,7 @@ const initialState: OrderState = {
   selectedOrder: null,
   status: "idle",
   error: null,
+  orderId: null,
 };
 
 const orderSlice = createSlice({
@@ -109,6 +113,7 @@ const orderSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.orders.push(action.payload);
+        state.orderId = action.payload.order.id;
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.status = "failed";

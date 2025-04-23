@@ -11,7 +11,7 @@ const cloudinary_1 = __importDefault(require("../../../shared/config/cloudinary"
 const productImageModel_1 = __importDefault(require("../models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
 exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
-    const { name, category, price, costPrice, stock, description, discount, ratings, brand, specifications, } = req.body;
+    const { name, category, subCategory, price, costPrice, stock, description, discount, ratings, brand, specifications, } = req.body;
     //// Added cost price later
     //// Validate required fields
     if (!name || !category || !price || !stock || !description || !costPrice) {
@@ -94,6 +94,7 @@ exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
         const product = await productModels_1.default.create({
             name,
             category,
+            subCategory,
             brand,
             price,
             costPrice,

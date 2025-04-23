@@ -20,15 +20,12 @@ Product.init({
     category: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        validate: {
-            isIn: [["beauty", "fashion", "electronics", "kitchen"]],
-        },
     },
+    subCategory: { type: sequelize_1.DataTypes.STRING, allowNull: true },
     status: {
         type: sequelize_1.DataTypes.ENUM("in stock", "out of stock"),
         allowNull: false,
         defaultValue: "in stock",
-        // validate: { isIn: [["in stock", "out of stock"]] },
     },
     price: {
         type: sequelize_1.DataTypes.FLOAT,
@@ -65,6 +62,7 @@ Product.init({
         allowNull: true,
         defaultValue: 0,
     },
+    averageRating: { type: sequelize_1.DataTypes.FLOAT, allowNull: true },
     ratings: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: true,
@@ -75,7 +73,7 @@ Product.init({
         },
     },
     reviews: {
-        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB), // Stores user reviews
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
         allowNull: true,
     },
 }, {

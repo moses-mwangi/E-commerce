@@ -9,6 +9,7 @@ import { orderRouter } from "./modules/order";
 import { payments } from "./modules/payments";
 import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
+import { reviewRouter } from "./modules/reviews";
 import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
 
 const app = express();
@@ -67,12 +68,13 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "secret",
     resave: false,
-
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
       secure: true,
-      maxAge: 30 * 60 * 1000,
+      // maxAge: 30 * 60 * 1000,
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+      maxAge: 8 * 60 * 60 * 1000,
     },
   })
 );
@@ -87,6 +89,7 @@ app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/review", reviewRouter);
 
 app.use("/api/payment", payments);
 

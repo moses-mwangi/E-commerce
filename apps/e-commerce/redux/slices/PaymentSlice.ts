@@ -1,158 +1,3 @@
-// import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import axios, { AxiosError } from "axios";
-// import dotenv from "dotenv";
-// import toast from "react-hot-toast";
-
-// dotenv.config();
-// const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
-
-// export const mpesaPayment = createAsyncThunk(
-//   "m_pesa/payments",
-//   async (credential: any, { rejectWithValue }) => {
-//     try {
-//       const res = await axios.post(`${API_URL}/payment/mpesa`, credential);
-//       return res.data;
-//     } catch (err) {
-//       const axiosError = err as AxiosError;
-//       const error = (axiosError.response?.data as any)?.message;
-//       toast.error("Failed to make mobile payments: " + error);
-//       return rejectWithValue(error || "Failed to make payments");
-//     }
-//   }
-// );
-
-// // Async thunk for card payment
-// export const cardPayment = createAsyncThunk(
-//   "card/payments",
-//   async (credential: any, { rejectWithValue }) => {
-//     try {
-//       const res = await axios.post(`${API_URL}/payment/card`, credential);
-//       return res.data;
-//     } catch (err) {
-//       const axiosError = err as AxiosError;
-//       const error = (axiosError.response?.data as any)?.message;
-//       toast.error("Failed to make card payments: " + error);
-//       return rejectWithValue(error || "Failed to make payments");
-//     }
-//   }
-// );
-
-// // Async thunk for PayPal payment
-// export const paypalPayment = createAsyncThunk(
-//   "paypal/payments",
-//   async (credential: any, { rejectWithValue }) => {
-//     try {
-//       const res = await axios.post(`${API_URL}/payment/paypal`, credential);
-//       return res.data;
-//     } catch (err) {
-//       const axiosError = err as AxiosError;
-//       const error = (axiosError.response?.data as any)?.message;
-//       toast.error("Failed to make PayPal payments: " + error);
-//       return rejectWithValue(error || "Failed to make payments");
-//     }
-//   }
-// );
-
-// // Async thunk for bank payment
-// export const bankPayment = createAsyncThunk(
-//   "bank/payments",
-//   async (credential: any, { rejectWithValue }) => {
-//     try {
-//       const res = await axios.post(`${API_URL}/payment/bank`, credential);
-//       return res.data;
-//     } catch (err) {
-//       const axiosError = err as AxiosError;
-//       const error = (axiosError.response?.data as any)?.message;
-//       toast.error("Failed to make bank payments: " + error);
-//       return rejectWithValue(error || "Failed to make payments");
-//     }
-//   }
-// );
-
-// // Initial state for the payment slice
-// interface PaymentState {
-//   status: "idle" | "loading" | "succeeded" | "failed";
-//   error: string | null;
-// }
-
-// const initialState: PaymentState = {
-//   status: "idle",
-//   error: null,
-// };
-
-// // Create the payment slice
-// const paymentSlice = createSlice({
-//   name: "payment",
-//   initialState,
-//   reducers: {
-//     clearError: (state) => {
-//       state.error = null;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(mpesaPayment.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(mpesaPayment.fulfilled, (state, action: PayloadAction<any>) => {
-//         state.status = "succeeded";
-//         // Handle successful payment response
-//       })
-//       .addCase(
-//         mpesaPayment.rejected,
-//         (state, action: PayloadAction<string | null>) => {
-//           state.status = "failed";
-//           state.error = action.payload || "Failed to make M-Pesa payment";
-//         }
-//       )
-//       .addCase(cardPayment.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(cardPayment.fulfilled, (state, action: PayloadAction<any>) => {
-//         state.status = "succeeded";
-//         // Handle successful payment response
-//       })
-//       .addCase(
-//         cardPayment.rejected,
-//         (state, action: PayloadAction<string | null>) => {
-//           state.status = "failed";
-//           state.error = action.payload || "Failed to make card payment";
-//         }
-//       )
-//       .addCase(paypalPayment.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(paypalPayment.fulfilled, (state, action: PayloadAction<any>) => {
-//         state.status = "succeeded";
-//         // Handle successful payment response
-//       })
-//       .addCase(
-//         paypalPayment.rejected,
-//         (state, action: PayloadAction<string | null>) => {
-//           state.status = "failed";
-//           state.error = action.payload || "Failed to make PayPal payment";
-//         }
-//       )
-//       .addCase(bankPayment.pending, (state) => {
-//         state.status = "loading";
-//       })
-//       .addCase(bankPayment.fulfilled, (state, action: PayloadAction<any>) => {
-//         state.status = "succeeded";
-//         // Handle successful payment response
-//       })
-//       .addCase(
-//         bankPayment.rejected,
-//         (state, action: PayloadAction<string | null>) => {
-//           state.status = "failed";
-//           state.error = action.payload || "Failed to make bank payment";
-//         }
-//       );
-//   },
-// });
-
-// // Export actions and reducer
-// export const { clearError } = paymentSlice.actions;
-// export default paymentSlice.reducer;
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
@@ -226,7 +71,6 @@ export const mpesaPayment = createAsyncThunk(
       toast.success("M-Pesa payment initiated successfully");
       return res.data.data;
     } catch (err) {
-      toast.error("Failed to make mibile paymnets");
       return handlePaymentError(err, "M-Pesa");
     }
   }
@@ -241,7 +85,7 @@ export const cardPayment = createAsyncThunk(
       // toast.success("Card payment processed successfully");
       return res.data;
     } catch (err) {
-      toast.error("Card payment Failed: Try again");
+      // toast.error("Card payment Failed: Try again");
       return handlePaymentError(err, "card");
     }
   }

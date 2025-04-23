@@ -13,6 +13,7 @@ const order_1 = require("./modules/order");
 const payments_1 = require("./modules/payments");
 const product_1 = require("./modules/product");
 const product_2 = require("./modules/product");
+const reviews_1 = require("./modules/reviews");
 const GlobalErrorHandler_1 = __importDefault(require("./shared/middleware/GlobalErrorHandler"));
 const app = (0, express_1.default)();
 app.post("/api/payment/card/webhook", body_parser_1.default.raw({ type: "application/json" }), (req, res, next) => {
@@ -58,7 +59,9 @@ app.use((0, express_session_1.default)({
     cookie: {
         httpOnly: true,
         secure: true,
-        maxAge: 30 * 60 * 1000,
+        // maxAge: 30 * 60 * 1000,
+        expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+        maxAge: 8 * 60 * 60 * 1000,
     },
 }));
 // Initialize Passport
@@ -69,6 +72,7 @@ app.use("/api/user", users_1.userRouter);
 app.use("/api/product", product_1.productRouter);
 app.use("/api/category", product_2.categoryRouter);
 app.use("/api/order", order_1.orderRouter);
+app.use("/api/review", reviews_1.reviewRouter);
 app.use("/api/payment", payments_1.payments);
 app.use(GlobalErrorHandler_1.default);
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -5,7 +5,7 @@ import { createOrder } from "@/redux/slices/orderSlice";
 import { getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -28,8 +28,11 @@ export function useCheckOut() {
   const dispatch: AppDispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { totalPrice, items } = useSelector((state: RootState) => state.cart);
-  const { orders, status } = useSelector((state: RootState) => state.order);
+  const { status } = useSelector((state: RootState) => state.order);
+  const { products } = useSelector((state: RootState) => state.product);
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("Buy");
 
   const {
     register,
@@ -128,31 +131,60 @@ export function useCheckOut() {
   // getFeaturesInBoundingBox();
 
   function onSubmit(data: any) {
+    console.log(data);
     try {
-      const orderItem = items.map((el) => {
-        const order = {
-          productId: el.productId,
-          quantity: el.quantity,
-          price: el.product.price,
+      if (!id) {
+        const orderItem = items.map((el) => {
+          const order = {
+            productId: el.productId,
+            quantity: el.quantity,
+            price: el.product.price,
+          };
+          return order;
+        });
+
+        const orderItems = {
+          userId: currentUser?.id,
+          totalPrice: totalPrice,
+          status: "pending",
+          paymentStatus: "unpaid",
+          shippingAddress: data.streetAddress,
+          orderItems: orderItem,
+          ...data,
         };
-        return order;
-      });
 
-      const orderItems = {
-        userId: currentUser?.id,
-        totalPrice: totalPrice,
-        status: "pending",
-        paymentStatus: "unpaid",
-        shippingAddress: data.streetAddress,
-        orderItems: orderItem,
-        ...data,
-      };
+        console.log("orders", orderItems);
+        console.log(data);
+        dispatch(createOrder(orderItems));
+        dispatch(clearCart());
+      } else {
+        const buyProduct = products.find(
+          (el) => el.id.toString() === id.toString()
+        );
 
-      console.log("orders", orderItems);
-      console.log(data);
-      dispatch(createOrder(orderItems));
-      dispatch(clearCart());
+        const productQuantity = localStorage.getItem("buyProductQuantity");
+
+        const order = {
+          productId: Number(buyProduct?.id),
+          quantity: Number(productQuantity),
+          price: Number(buyProduct?.price),
+        };
+        console.log(buyProduct, productQuantity, order);
+
+        const orderItems = {
+          userId: currentUser?.id,
+          totalPrice: totalPrice,
+          status: "pending",
+          paymentStatus: "unpaid",
+          shippingAddress: data.streetAddress,
+          orderItems: [order],
+          ...data,
+        };
+
+        dispatch(createOrder(orderItems));
+      }
     } catch (err) {
+      console.error(err);
       toast.error("Failed to create the order");
     }
   }

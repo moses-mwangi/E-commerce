@@ -175,8 +175,8 @@ exports.loginUser = (0, catchSync_1.default)(async (req, res, next) => {
     }
     const token = (0, jwt_1.generateToken)({ id: user.id, email: user.email });
     const cookieOption = {
-        expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-        maxAge: 8 * 60 * 60 * 1000,
+        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        maxAge: 90 * 24 * 60 * 60 * 1000,
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
         sameSite: "strict",
@@ -307,7 +307,10 @@ exports.updatePassword = (0, catchSync_1.default)(async (req, res, next) => {
     }
     // const cookieOption = {
     //   expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    //   // httpOnly: true,
+    //   maxAge: 90 * 24 * 60 * 60 * 1000,
+    //   secure: process.env.NODE_ENV === "production",
+    //   httpOnly: true,
+    //   sameSite: "strict" as const,
     // };
     const cookieOption = {
         expires: new Date(Date.now() + 8 * 60 * 60 * 1000),

@@ -6,14 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const authController_1 = require("../controllers/authController");
-// import passport from "passport";
 const jwt_1 = require("../utils/jwt");
 const passport_1 = __importDefault(require("../../../shared/config/passport"));
 const router = (0, express_1.Router)();
 router.route("/signup").post(authMiddleware_1.validUserSignInput, authController_1.signInUser);
 router.route("/login").post(authController_1.loginUser);
 router.route("/deleteUser/:id").delete(authController_1.deleteCurrentUser);
-//set-password
 router.route("/updatePassword").patch(authController_1.protect, authController_1.updatePassword);
 router.route("/set-password").post(authController_1.setPassword);
 router.route("/request-reset").post(authController_1.requestPasswordReset);
@@ -23,7 +21,6 @@ router.route("/verify-email/:token").post(authController_1.verifyEmail);
 router.route("/resend-verification").post(authController_1.resendVerificationEmail);
 router.get("/mej", authController_1.protectJwtUser, authController_1.getMe);
 router.get("/me", authController_1.protect, authController_1.getMe);
-///requestPasswordReset, validate-reset-token, resetPassword
 router.route("/google").get(passport_1.default.authenticate("google", {
     scope: ["email", "profile"],
 }));

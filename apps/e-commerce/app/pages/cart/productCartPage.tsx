@@ -28,11 +28,23 @@ export default function ProductCartPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-
   const dispatch = useDispatch();
+
+  const { categories } = useSelector((state: RootState) => state.category);
   const { items: cartItems, totalPrice } = useSelector(
     (state: RootState) => state.cart
   );
+
+  const proSubCategory = categories
+    .find((category) =>
+      cartItems.some(
+        (item) =>
+          item.product.category?.toLowerCase() === category.name.toLowerCase()
+      )
+    )
+    ?.subcategories.find(
+      (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
+    );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -71,7 +83,10 @@ export default function ProductCartPage() {
           </h1>
           <Link
             href="/category"
-            className="flex items-center text-blue-600 hover:underline"
+            onClick={() => {
+              setIsLoading(true);
+            }}
+            className="flex items-center font-semibold text-gray-700 transition-all duration-200 text-sm hover:text-blue-400 hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Continue Shopping
@@ -123,9 +138,12 @@ export default function ProductCartPage() {
                             />
                           </div>
                           <div className=" space-y-1">
-                            <h3 className="font-semibold text-lg">
+                            <Link
+                              href={`/category/${product.category}/${proSubCategory?.name}/${product.name}?id=${product.id}`}
+                              className="font-semibold text-lg hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer"
+                            >
                               {product.name}
-                            </h3>
+                            </Link>
                             <p className="text-sm text-gray-500 text-nowrap">
                               {product.description.slice(0, 92)}...
                             </p>

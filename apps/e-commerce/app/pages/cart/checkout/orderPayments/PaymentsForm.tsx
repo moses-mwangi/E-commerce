@@ -11,7 +11,7 @@ import CardPayment from "../orderPayments/paymentMethods/CardPayment";
 import MpesaPayment from "../orderPayments/paymentMethods/M_pesaPayment";
 import PaypalPayment from "../orderPayments/paymentMethods/PaypalPayment";
 import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
-import PayPal from "../../../../../public/amex.png";
+import PayPal from "../../../../../public/paypay.png";
 import M_Pesa from "../../../../../public/mpesa.png";
 import bank from "../../../../../public/bank.png";
 import Card_Payment from "../../../../../public/card.png";

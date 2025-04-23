@@ -3,6 +3,7 @@ export interface OrderState {
   selectedOrder: Order | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  orderId: string | number | null;
 }
 
 export type Order = {

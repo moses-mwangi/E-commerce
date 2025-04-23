@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -10,29 +10,57 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ShoppingBag } from "lucide-react";
+import {
+  ChevronDown,
+  ShoppingBag,
+  Copy,
+  Download,
+  MessageSquare,
+  Truck,
+  Clock,
+  Shield,
+  Star,
+  Check,
+  MapPin,
+} from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchOrders } from "@/redux/slices/orderSlice";
-import { date } from "zod";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
+import ProductReviewForm from "./orderComponents/ProductReviewForm";
 import { Order } from "@/app/types/order";
-import { getCurrentUser } from "@/redux/slices/userSlice";
+import OrderTracking from "./orderComponents/OrderTracking";
+import ChangeShippingAddress from "./orderComponents/ChangeShippingAddress";
+import Modal from "./orderComponents/ModalChangeShippingAddress";
 
 function OrdersPage() {
   const dispatch: AppDispatch = useDispatch();
   const { orders } = useSelector((state: RootState) => state.order);
   const { push } = useRouter();
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [toggleAddressEdit, setToggleAddressEdit] = useState(false);
 
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const currentUserOrder = orders.filter(
     (order) => order.User.email === currentUser?.email
   );
 
   useEffect(() => {
     dispatch(fetchOrders());
-    // dispatch(getCurrentUser());
   }, [dispatch]);
 
   const getDate = (date: string) => {
@@ -45,204 +73,510 @@ function OrdersPage() {
     return `${dates}, ${time}`;
   };
 
+  const copyToClipboard = (text: string, orderId: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedOrderId(orderId);
+    setTimeout(() => setCopiedOrderId(null), 2000);
+  };
+
+  const handleCancelOrder = () => {
+    console.log("Cancellation reason:", cancelReason);
+  };
+
   return (
-    <div className="max-w-5xl min-h-screen mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Your Orders</h1>
-      <Card className=" container p-4">
-        {currentUserOrder.length === 0 && (
-          <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
-            <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-              Your order is empty
-            </h2>
-            <p className="text-gray-500 mb-8">
-              Looks like you haven&apos;t ordered anything yet.
-            </p>
-            <Button
-              className="bg-orange-500/90 hover:bg-orange-600"
-              onClick={() => push("/pages/cart")}
-            >
-              Start Ordering now
-            </Button>
-          </div>
-        )}
+    <div>
+      <Modal
+        toggleAddressEdit={toggleAddressEdit}
+        setToggleAddressEdit={setToggleAddressEdit}
+      />
 
-        <Accordion type="multiple" className="space-y-4">
-          {currentUserOrder?.map((order: Order) => (
-            <AccordionItem key={order.id} value={`order-${order.id}`}>
-              <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
-                <div>
-                  <h2 className="font-semibold">Order Number #{order.id}</h2>
-                  <p className="text-gray-600 text-sm">
-                    Tracking Number : TRK-
-                    {order?.trackingNumber?.toUpperCase()}
-                  </p>
-
-                  <p className="text-gray-600 text-sm">
-                    Date : {getDate(order.createdAt)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      order.status === "pending"
-                        ? ("warning" as "destructive")
-                        : ("success" as "outline")
-                    }
-                  >
-                    {order?.status?.toUpperCase()}
-                  </Badge>
-                  <Badge
-                    variant={
-                      order.paymentStatus === "unpaid"
-                        ? "destructive"
-                        : ("success" as "outline")
-                    }
-                  >
-                    {order?.paymentStatus?.toUpperCase()}
-                  </Badge>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-4 border rounded-b-lg rounded-t-lg bg-gray-50">
-                <Card className="mb-4">
-                  <CardHeader>
-                    <CardTitle>Shipping Address</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{order.shippingAddress}</p>
-                    <p className="text-gray-500">
-                      {order?.User?.name} ({order?.User?.email})
-                    </p>
-                    <p className="text-gray-500">
-                      streat adress/P.O Box : off thika Road
-                    </p>
-                    <p className="text-gray-500">
-                      Apartmen,unit,suite,building,floor : Karuguro Plaza
-                    </p>
-                    {/* <p className="text-gray-500">city : Ruiru</p>
-                    <p className="text-gray-500">
-                      state/province : Kiambu county
-                    </p> */}
-                  </CardContent>
-                </Card>
-
-                <Card className="mb-4">
-                  <CardHeader>
-                    <CardTitle>Order Items</CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {order.OrderItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-4 p-4 border rounded-lg bg-white"
-                      >
-                        <Image
-                          src={
-                            item.Product.productImages
-                              ? String(
-                                  item.Product.productImages.find(
-                                    (el: any) => el.isMain === true
-                                  )?.url
-                                )
-                              : ""
-                          }
-                          alt={item.Product.name}
-                          width={80}
-                          height={80}
-                          className="rounded-md object-cover h-20 w-24"
-                        />
-                        <div className="flex-1">
-                          <h3 className="font-medium">{item.Product.name}</h3>
-                          <p className="text-sm text-gray-500">
-                            Qty: {item.quantity}
-                          </p>
+      <div className="max-w-6xl min-h-screen mx-auto p-6 space-y-6">
+        {currentUserOrder?.length === 0 ? (
+          <Card className="p-4">
+            <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
+              <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+                Your order is empty
+              </h2>
+              <p className="text-gray-500 mb-8">
+                Looks like you haven&apos;t ordered anything yet.
+              </p>
+              <Button
+                className="bg-orange-500/90 hover:bg-orange-600"
+                onClick={() => push("/pages/cart")}
+              >
+                Start Ordering now
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          <Tabs defaultValue="all" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="all">All Orders</TabsTrigger>
+              <TabsTrigger value="unpaid">Unpaid</TabsTrigger>
+              <TabsTrigger value="processing">Processing</TabsTrigger>
+              <TabsTrigger value="shipped">Shipped</TabsTrigger>
+              <TabsTrigger value="completed">Completed</TabsTrigger>
+              <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
+            </TabsList>
+            <Card className="bg-gray-100 p-2">
+              <Accordion type="multiple" className="space-y-4">
+                {currentUserOrder.map((order: Order) => (
+                  <AccordionItem key={order.id} value={`order-${order.id}`}>
+                    <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
+                      <div className="">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-semibold">
+                            Order Number #{order.id}
+                          </span>
+                          <div
+                            className="h-6 w-6 flex text-gray-500 items-center justify-center"
+                            onClick={() =>
+                              copyToClipboard(
+                                String(order.id),
+                                String(order.id)
+                              )
+                            }
+                          >
+                            <Copy className="h-4 w-4" />
+                          </div>
+                          {copiedOrderId === String(order.id) && (
+                            <span className="text-xs text-green-600">
+                              Copied!
+                            </span>
+                          )}
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-lg">
-                            ${item.price.toFixed(2)}
-                          </p>
+                        <p className="text-gray-600 text-sm">
+                          Tracking Number : TRK-
+                          {order?.trackingNumber?.toUpperCase()}
+                        </p>
+
+                        <p className="text-gray-600 text-sm">
+                          Ordered on : {getDate(order.createdAt)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            order.status === "pending"
+                              ? ("warning" as "destructive")
+                              : ("success" as "outline")
+                          }
+                        >
+                          {order?.status?.toUpperCase()}
+                        </Badge>
+                        <Badge
+                          variant={
+                            order.paymentStatus === "unpaid"
+                              ? "destructive"
+                              : ("success" as "outline")
+                          }
+                        >
+                          {order?.paymentStatus?.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="gap-1 bg-gray-50 flex items-center justify-center rounded-md px-3 py-[6px] border border-gray-200 text-xs">
+                          <Download size={15} className="" />
+                          <span>Download</span>
+                        </div>
+                        <div className="gap-1 bg-gray-50 flex items-center justify-center rounded-md px-3 py-[6px] border border-gray-200 text-xs">
+                          <MessageSquare size={15} className="" />
+                          <span>Contact Supplier</span>
                         </div>
                       </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Order Summary</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {order ? (
-                      <>
-                        <div className="space-y-2 text-sm font-semibold">
-                          <div className="flex justify-between">
-                            <span className=" text-gray-700">Subtotal:</span>
-                            {/* <span>${order.subtotal.toFixed(2)}</span> */}
-                            <span>${order.totalPrice}</span>
+                    </AccordionTrigger>
+                    <Card className="">
+                      <AccordionContent className="px-4 py-7">
+                        <div className="mb-6">
+                          <div className="flex justify-between mb-4">
+                            <h3 className="font-medium">Order Status</h3>
+                            <Badge
+                              variant={
+                                order.status === "pending"
+                                  ? ("warning" as "destructive")
+                                  : ("success" as "outline")
+                              }
+                            >
+                              {order.status.toUpperCase()}
+                            </Badge>
                           </div>
-                          {/* {order.discount > 0 && (
-                          <div className="flex justify-between text-green-600">
-                            <span>Discount:</span>
-                            <span>- ${order.discount.toFixed(2)}</span>
-                          </div>
-                        )} */}
-
-                          <div className="flex justify-between text-green-600">
-                            <span>Discount:</span>
-                            <span>- $34</span>
-                          </div>
-
-                          <div className="flex justify-between">
-                            <span className=" text-gray-700">Shipping:</span>
-                            <span>
-                              {/* {order.shippingFee > 0
-                              ? `$${order.shippingFee.toFixed(2)}`
-                              : "Free"} */}
-                              Free
-                            </span>
-                          </div>
-                          <div className="border-t pt-2 flex justify-between text-[16px]">
-                            <span>Total Price:</span>
-                            <span>${order.totalPrice.toFixed(2)}</span>
+                          <Progress
+                            value={order.status === "pending" ? 20 : 100}
+                            className="h-2"
+                          />
+                          <div className="flex justify-between mt-2 text-xs text-gray-500">
+                            <div className="text-center">
+                              <div className="font-medium">Order</div>
+                              <div className="text-xs">Order placed</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium">Payment</div>
+                              <div className="text-xs">Payment completed</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium">Dispatch</div>
+                              <div className="text-xs">
+                                Preparing for shipment
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium">Delivery</div>
+                              <div className="text-xs">On the way</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium">Review</div>
+                              <div className="text-xs">Order completed</div>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="mt-4 text-gray-700 text-sm">
-                          <p>
-                            <strong className="">Payment Method : </strong>
-                            Paypal
-                            {/* {order.paymentMethod} */}
-                          </p>
-                          <p>
-                            <strong>Estimated Delivery : </strong>
-                            {/* {order.estimatedDeliveryDate} */}
-                            {/* {getDate(new Date())} */}
-                            Mar 10, 2025, 12:05:44 AM
-                          </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                          <Card className="">
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-base font-semibold text-black/90 flex items-center">
+                                <Truck className="h-5 w-5 mr-2" />
+                                Shipping Information
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm flex pb-1 gap-1 text-gray-500">
+                                <span className="text-gray-800">Address</span> :
+                                {order.shippingAddress}
+                              </p>
+                              <p className="text-sm flex items-center gap-1 text-gray-500">
+                                <span className="text-gray-800">Name</span> :
+                                {order.User?.name}
+                              </p>
+                              <p className="text-sm flex items-center gap-1 text-gray-500">
+                                <span className="text-gray-800">Email</span>:{" "}
+                                {order.User?.email}
+                              </p>
+                              <p className="text-sm flex items-center gap-1 text-gray-500">
+                                <span className="text-gray-800">Country</span>:{" "}
+                                {order.country || "N/A"}
+                              </p>
+                              <p className="text-sm flex items-center gap-1 text-gray-500">
+                                <span className="text-gray-800">
+                                  County/State
+                                </span>
+                                : {order.county || "N/A"}
+                              </p>
+                              <div className="pt-5">
+                                {order.status !== "completed" &&
+                                  order.status !== "cancelled" && (
+                                    <Button
+                                      variant="link"
+                                      className="text-orange-600  p-0 h-auto"
+                                      onClick={() =>
+                                        // toggleAddressEdit(order.id.toString())
+                                        setToggleAddressEdit(true)
+                                      }
+                                    >
+                                      <MapPin className="h-4 w-4 mr-1 inline" />
+                                      Modify shipping address
+                                    </Button>
+                                  )}
+                              </div>
+                              {/* <p className="text-sm text-gray-500">
+                              Phone: {order.phoneNumber || "N/A"}
+                            </p> */}
+                            </CardContent>
+                          </Card>
+
+                          <Card>
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-base font-semibold text-black/90 flex items-center">
+                                <Shield className="h-5 w-5 mr-2" />
+                                Order Protections
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <div className="flex items-start">
+                                <div className="flex-shrink-0 text-green-600">
+                                  <Shield className="h-4 w-4 mt-0.5" />
+                                </div>
+                                <div className="ml-2">
+                                  <p className="text-sm font-medium">
+                                    Delivery Guarantee
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Receive 10% compensation if delivery is
+                                    delayed
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <div className="flex-shrink-0 text-green-600">
+                                  <Shield className="h-4 w-4 mt-0.5" />
+                                </div>
+                                <div className="ml-2">
+                                  <p className="text-sm font-medium">
+                                    Quality Assurance
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Full refund if products don&apos;t meet
+                                    specifications
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <div className="flex-shrink-0 text-green-600">
+                                  <Shield className="h-4 w-4 mt-0.5" />
+                                </div>
+                                <div className="ml-2">
+                                  <p className="text-sm font-medium">
+                                    Secure Payment
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    SSL encrypted transactions
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          <Card>
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-base font-semibold text-black/90 flex items-center">
+                                <Clock className="h-5 w-5 mr-2" />
+                                Estimated Timeline
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-500">
+                                    Processing:
+                                  </span>
+                                  <span>1-3 business days</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-500">
+                                    Shipping:
+                                  </span>
+                                  <span>5-10 business days</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-500">
+                                    Payment Status:
+                                  </span>
+                                  <span>Unpaid</span>
+                                </div>
+                                <div className="flex justify-between text-sm font-medium pb-4">
+                                  <span className="text-gray-500">
+                                    Estimated Delivery:
+                                  </span>
+                                  <span>Mar 10, 2025</span>
+                                </div>
+                                <OrderTracking
+                                  orderId={order.id.toString()}
+                                  trackingNumber={String(order.trackingNumber)}
+                                  carrier="KBC 920E"
+                                />
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
 
-                        {order.paymentStatus === "unpaid" ? (
-                          <Button className="mt-4 w-full bg-orange-600 hover:bg-orange-700">
-                            Complete Payment
-                          </Button>
-                        ) : (
-                          <Button className="mt-4 w-full bg-red-600 hover:bg-red-700">
-                            Request Refund
-                          </Button>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-gray-500 text-center">
-                        No order data available.
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </Card>
+                        <div className="mb-6 bg-white">
+                          <h3 className="font-medium mb-2">Product Details</h3>
+                          <div className="border rounded-lg overflow-hidden">
+                            <div className="bg-gray-50 p-3 grid grid-cols-12 font-medium text-sm">
+                              <div className="col-span-5">Product</div>
+                              <div className="col-span-2">Specifications</div>
+                              <div className="col-span-2 text-right">
+                                Unit Price
+                              </div>
+                              <div className="col-span-1 text-right">Qty</div>
+                              <div className="col-span-2 text-right">Total</div>
+                            </div>
+                            {order.OrderItems.map((item) => (
+                              <div key={item.id} className="group">
+                                <div className="p-3 border-t grid grid-cols-12 items-center text-sm hover:bg-gray-50">
+                                  <div className="col-span-5 flex items-center">
+                                    <Image
+                                      src={
+                                        item.Product.productImages
+                                          ? String(
+                                              item.Product.productImages.find(
+                                                (el: any) => el.isMain === true
+                                              )?.url
+                                            )
+                                          : ""
+                                      }
+                                      alt={item.Product.name}
+                                      width={60}
+                                      height={60}
+                                      className="rounded-md object-cover h-12 w-12 mr-3"
+                                    />
+                                    <div>
+                                      <p className="font-medium">
+                                        {item.Product.name}
+                                      </p>
+                                      <p className="text-xs text-gray-500">
+                                        SKU: N/A
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="col-span-2 text-sm text-gray-500">
+                                    Standard
+                                  </div>
+                                  <div className="col-span-2 text-right">
+                                    ${item.price.toFixed(2)}
+                                  </div>
+                                  <div className="col-span-1 text-right">
+                                    {item.quantity}
+                                  </div>
+                                  <div className="col-span-2 text-right font-medium">
+                                    ${(item.price * item.quantity).toFixed(2)}
+                                  </div>
+                                </div>
+
+                                <div className="p-3 bg-gray-50 border-t">
+                                  <Dialog key={item.id}>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-1"
+                                      >
+                                        <Star className="h-4 text-orange-500 w-4" />
+                                        Write a Review
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-3xl">
+                                      <DialogTitle>Write a Review</DialogTitle>
+                                      <DialogDescription>
+                                        Share your feedback about this product.
+                                      </DialogDescription>
+                                      <ProductReviewForm
+                                        productId={item.productId}
+                                        userId={currentUserOrder[0].userId}
+                                        orderId={currentUserOrder[0].id}
+                                        productName={item.Product.name}
+                                        productImage={
+                                          item.Product.productImages.find(
+                                            (image) => image.isMain === true
+                                          )?.url as string
+                                        }
+                                      />
+                                    </DialogContent>
+                                  </Dialog>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-lg">
+                                Supplier Information
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                              <div>
+                                <p className="font-medium">Supplier Name</p>
+                                <p className="text-sm text-gray-500">
+                                  Member Since: 2020
+                                </p>
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button variant="outline" size="sm">
+                                  Visit Store
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  Chat Now
+                                </Button>
+                              </div>
+                              <div className="pt-2 border-t">
+                                <p className="text-sm font-medium">
+                                  Contact Info
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Contact: John Doe
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Phone: +86-123456789
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Email: supplier@example.com
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-lg">
+                                Order Summary
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-3">
+                                <div className="flex justify-between">
+                                  <span>Item Subtotal:</span>
+                                  <span>${order.totalPrice.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-green-600">
+                                  <span>Discount:</span>
+                                  <span>- $34.00</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Shipping Fee:</span>
+                                  <span>Free</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Tax:</span>
+                                  <span>$0.00</span>
+                                </div>
+                                <div className="border-t pt-2 flex justify-between font-bold">
+                                  <span>Total:</span>
+                                  <span>${order.totalPrice.toFixed(2)}</span>
+                                </div>
+                                <div className="pt-2">
+                                  <p className="text-sm font-medium">
+                                    Payment Method
+                                  </p>
+                                  <p className="text-sm text-gray-500">
+                                    PayPal (john.doe@example.com)
+                                  </p>
+                                  <p className="text-sm text-gray-500">
+                                    Status:{" "}
+                                    {order.paymentStatus === "unpaid"
+                                      ? "Pending"
+                                      : "Completed"}
+                                  </p>
+                                </div>
+                                <div className="pt-2">
+                                  {order.paymentStatus === "unpaid" ? (
+                                    <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                                      Complete Payment
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      variant="outline"
+                                      className="w-full"
+                                    >
+                                      Request Refund
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </AccordionContent>
+                    </Card>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </Card>
+          </Tabs>
+        )}
+      </div>
     </div>
   );
 }
