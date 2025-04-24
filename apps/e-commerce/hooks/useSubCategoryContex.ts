@@ -92,9 +92,9 @@ function useSubCategoryContex() {
   };
 
   const subCategoryProduct = products.filter(
-    (el) => el.category.toLowerCase() === decodedCategory.toLowerCase()
-    //  &&
-    //   el.name.toLowerCase() === decodedSub.toLowerCase()
+    (el) =>
+      el.category.toLowerCase() === decodedCategory.toLowerCase() &&
+      el.subCategory.toLowerCase() === decodedSub.toLowerCase()
   );
 
   const filteredProducts = subCategoryProduct
@@ -127,6 +127,7 @@ function useSubCategoryContex() {
 
   const handleRoute = (name: string, id: any) => {
     setIsLoading(true);
+
     const param = new URLSearchParams();
     param.set("id", id);
     router.push(

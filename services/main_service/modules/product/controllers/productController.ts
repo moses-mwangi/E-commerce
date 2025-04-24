@@ -195,15 +195,15 @@ export const deleteProduct = catchAsync(
   }
 );
 
-///////////////////////////////////////////////////////////////////////
 export const updateProduct = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const {
       name,
       category,
+      subCategory,
       price,
-      // costPrice,
+      costPrice,
       stock,
       description,
       discount,
@@ -216,8 +216,7 @@ export const updateProduct = catchAsync(
     if (!name || !category || !price || !stock || !description) {
       return next(new AppError("All fields are required", 400));
     }
-    //// Added cost price later
-    //// Validate specifications
+
     let specificationsArray: { key: string; value: string }[] = [];
 
     try {
@@ -260,67 +259,6 @@ export const updateProduct = catchAsync(
     if (!product) {
       return next(new AppError("Product not found", 404));
     }
-
-    // Handle new image uploads
-    // const files = req.files as Express.Multer.File[];
-    // let newImageUrls: string[] = [];
-
-    // if (files && files.length > 0) {
-    //   try {
-    //     const uploadPromises = files.map((file) => {
-    //       return new Promise<string>(async (resolve, reject) => {
-    //         if (!file.buffer) {
-    //           return reject(new Error("File buffer is missing"));
-    //         }
-
-    //         const allowedFormats = [
-    //           "image/jpeg",
-    //           "image/jpg",
-    //           "image/png",
-    //           "image/webp",
-    //         ];
-    //         if (!allowedFormats.includes(file.mimetype)) {
-    //           return reject(new Error("Unsupported file format"));
-    //         }
-
-    //         const uniqueId = `image_${Date.now()}_${Math.random()
-    //           .toString(36)
-    //           .substring(7)}`;
-
-    //         cloudinary.uploader
-    //           .upload_stream(
-    //             {
-    //               folder: "ecommerce-product",
-    //               public_id: uniqueId,
-    //               resource_type: "image",
-    //               timeout: 60000,
-    //             },
-    //             (error, result) => {
-    //               if (error) {
-    //                 console.error("Cloudinary upload error:", error);
-    //                 reject(error);
-    //               } else {
-    //                 resolve(result?.secure_url || "");
-    //               }
-    //             }
-    //           )
-    //           .end(file.buffer);
-    //       });
-    //     });
-
-    //     newImageUrls = (await Promise.allSettled(uploadPromises))
-    //       .filter((result) => result.status === "fulfilled" && result.value)
-    //       .map((result) => (result as PromiseFulfilledResult<string>).value);
-
-    //     if (newImageUrls.length !== files.length) {
-    //       console.error("Some images failed to upload");
-    //     }
-    //   } catch (uploadError) {
-    //     console.error("Image upload failed:", uploadError);
-    //     return next(new AppError("Failed to upload images", 500));
-    //   }
-    //   // }
-    // }
 
     const files = req.files as Express.Multer.File[];
     let newImageUrls: string[] = [];
@@ -396,9 +334,10 @@ export const updateProduct = catchAsync(
         {
           name,
           category,
+          subCategory,
           brand,
           price,
-          // costPrice,
+          costPrice,
           stock,
           discount: discount === "" ? null : discount,
           ratings,
@@ -408,17 +347,11 @@ export const updateProduct = catchAsync(
         { transaction }
       );
 
-      // const parseImageToDelete = JSON.parse(deletedImages);
-      // const existImage = JSON.parse(existingImages);
       const filterdImage = parsedExistingImages.filter(
         (obj: any) => !parsedDeletedImages.includes(obj.id)
       );
 
-      if (
-        filterdImage &&
-        // Array.isArray(filterdImage) &&
-        filterdImage.length > 0
-      ) {
+      if (filterdImage && filterdImage.length > 0) {
         const hasMainImage = filterdImage.some(
           (image) => image.isMain === true
         );
@@ -437,18 +370,13 @@ export const updateProduct = catchAsync(
         );
       }
 
-      if (
-        parsedDeletedImages &&
-        // Array.isArray(parsedDeletedImages) &&
-        parsedDeletedImages.length > 0
-      ) {
+      if (parsedDeletedImages && parsedDeletedImages.length > 0) {
         await ProductImage.destroy({
           where: { id: parsedDeletedImages, productId: Number(id) },
           transaction,
         });
       }
 
-      // Add new images
       if (newImageUrls.length > 0) {
         const currentImages = await ProductImage.count({
           where: { productId: id },
@@ -479,7 +407,7 @@ export const updateProduct = catchAsync(
             as: "productImages",
             attributes: ["id", "url", "isMain", "productId"],
           },
-        ], // Match the alias in model association
+        ],
       });
 
       res
@@ -494,61 +422,6 @@ export const updateProduct = catchAsync(
     }
   }
 );
-
-//   try {
-//     const uploadPromises = files.map((file) => {
-//       return new Promise<string>(async (resolve, reject) => {
-//         if (!file.buffer) {
-//           return reject(new Error("File buffer is missing"));
-//         }
-
-//         const allowedFormats = [
-//           "image/jpeg",
-//           "image/jpg",
-//           "image/png",
-//           "image/webp",
-//         ];
-//         if (!allowedFormats.includes(file.mimetype)) {
-//           return reject(new Error("Unsupported file format"));
-//         }
-
-//         const uniqueId = `image_${Date.now()}_${Math.random()
-//           .toString(36)
-//           .substring(7)}`;
-
-//         cloudinary.uploader
-//           .upload_stream(
-//             {
-//               folder: "ecommerce-product",
-//               public_id: uniqueId,
-//               resource_type: "image",
-//               timeout: 60000,
-//             },
-//             (error, result) => {
-//               if (error) {
-//                 console.error("Cloudinary upload error:", error);
-//                 reject(error);
-//               } else {
-//                 resolve(result?.secure_url || "");
-//               }
-//             }
-//           )
-//           .end(file.buffer);
-//       });
-//     });
-
-//     newImageUrls = (await Promise.allSettled(uploadPromises))
-//       .filter((result) => result.status === "fulfilled" && result.value)
-//       .map((result) => (result as PromiseFulfilledResult<string>).value);
-
-//     if (newImageUrls.length !== files.length) {
-//       console.error("Some images failed to upload");
-//     }
-//   } catch (uploadError) {
-//     console.error("Image upload failed:", uploadError);
-//     return next(new AppError("Failed to upload images", 500));
-//   }
-// }
 
 export const getOneProduct = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

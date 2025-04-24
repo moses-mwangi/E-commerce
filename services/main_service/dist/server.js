@@ -11,7 +11,6 @@ const categoryAssociations_1 = __importDefault(require("./modules/product/models
 const os_1 = require("os");
 const cluster_1 = __importDefault(require("cluster"));
 const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
-const productModels_1 = __importDefault(require("./modules/product/models/product/productModels"));
 const reviewAssociation_1 = __importDefault(require("./modules/reviews/models/reviewModel/reviewAssociation"));
 (0, orderAssociations_1.default)();
 (0, categoryAssociations_1.default)();
@@ -31,7 +30,7 @@ const pg_connect = async () => {
         console.log("The PostgreSQL database has successfully connected");
         // await sequelize.sync({ force: true });
         // await sequelize.sync({ alter: true }); /////does not delete data
-        await productModels_1.default.sync({ alter: true });
+        // await Product.sync({ alter: true });
         // Review.destroy({ where: {}, truncate: true }),
         // Review.destroy({ where: {} });
     }

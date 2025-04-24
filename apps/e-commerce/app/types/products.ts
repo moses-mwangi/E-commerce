@@ -3,7 +3,9 @@ export interface Product {
   name: string;
   status: string;
   category: string;
+  subCategory: string;
   price: number;
+  costPrice: number;
   description: string;
   stock: number;
   brand: string | null;

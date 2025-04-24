@@ -3,10 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table } from "@/components/ui/table";
 import {
   LineChart,
-  Pie,
   Line,
   XAxis,
   YAxis,
@@ -16,21 +14,13 @@ import {
   Bar,
   CartesianGrid,
 } from "recharts";
-import {
-  Users,
-  ShoppingBag,
-  DollarSign,
-  TrendingUp,
-  Package,
-  AlertCircle,
-} from "lucide-react";
+import { Users, ShoppingBag, DollarSign, Package } from "lucide-react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
-import { format, subMonths } from "date-fns";
 import useOrder_Sales_Comparison from "@/hooks/useOrder_Sales_Comparison";
 import {
   Select,
@@ -58,157 +48,6 @@ const revenueData = [
   { category: "Care Products", revenue: 5000 },
 ];
 
-const recentOrders = [
-  { id: 1, customer: "John Doe", amount: 150, status: "Completed" },
-  { id: 2, customer: "Jane Smith", amount: 290, status: "Processing" },
-  { id: 3, customer: "John Doe", amount: 150, status: "Completed" },
-  { id: 4, customer: "Jane Smith", amount: 290, status: "Processing" },
-  // Add more orders...
-];
-
-const order = [
-  {
-    id: 1,
-    customer: "John Doe",
-    amount: 150,
-    status: "Completed",
-    createdAt: "2025-01-12T11:49:13.995Z",
-    totalPrice: 65000,
-  },
-  {
-    id: 2,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-01-12T11:49:13.995Z",
-    totalPrice: 55000,
-  },
-  {
-    id: 3,
-    customer: "John Doe",
-    amount: 150,
-    status: "Completed",
-    createdAt: "2025-01-12T11:49:13.995Z",
-    totalPrice: 45000,
-  },
-  ////
-  {
-    id: 4,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-02-12T11:49:13.995Z",
-    totalPrice: 35000,
-  },
-  {
-    id: 5,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-02-12T11:49:13.995Z",
-    totalPrice: 48000,
-  },
-  {
-    id: 6,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-02-12T11:49:13.995Z",
-    totalPrice: 75000,
-  },
-  //////
-  {
-    id: 7,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-12T11:49:13.995Z",
-    totalPrice: 57000,
-  },
-  {
-    id: 8,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-12T11:49:13.995Z",
-    totalPrice: 66000,
-  },
-  {
-    id: 9,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-13T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 10,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-15T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 11,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 12,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 13,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-17T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-
-  {
-    id: 12,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 13,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 12,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  {
-    id: 13,
-    customer: "Jane Smith",
-    amount: 290,
-    status: "Processing",
-    createdAt: "2025-03-16T11:49:13.995Z",
-    totalPrice: 46000,
-  },
-  // Add more orders...
-];
-
 export default function AdminDashboard() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -231,7 +70,7 @@ export default function AdminDashboard() {
     previousMonthCustomers,
     formattedCustomerChange,
     customerChange,
-  } = useOrder_Sales_Comparison(order, users);
+  } = useOrder_Sales_Comparison(orders, users);
 
   useEffect(() => {
     dispatch(getCurrentUser());
@@ -244,16 +83,6 @@ export default function AdminDashboard() {
   return (
     <div className="flex h-screen bg-gray-50">
       <div className="flex-1 overflow-auto">
-        {/* Top Header */}
-        {/* <Button
-          onClick={() => {
-            console.log(products);
-            // console.log(currentMonthCustomers);
-            // console.log(previousMonthCustomers);
-          }}
-        >
-          CLICK
-        </Button> */}
         <div className="bg-white shadow-sm">
           <div className="px-6 py-4">
             <h1 className="text-2xl font-semibold text-gray-800">
@@ -442,6 +271,9 @@ export default function AdminDashboard() {
                       Amount
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Payment
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -450,36 +282,54 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {recentOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        #{order.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {order.customer}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${order.amount}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  {/* {recentOrders.map((order) => ( */}
+                  {orders
+                    .toReversed()
+                    .slice(0, 6)
+                    .map((order) => (
+                      <tr key={order.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          ORD-#{order.id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {order.User.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          ${order.totalPrice}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                           ${
-                            order.status === "Completed"
+                            order.paymentStatus === "paid"
                               ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              : "bg-red-400 text-white"
                           }`}
-                        >
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Button variant="ghost" size="sm">
-                          View Details
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                          >
+                            {order.paymentStatus}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                          ${
+                            order.status === "delivered"
+                              ? "bg-green-100 text-green-800"
+                              : order.status === "confirmed"
+                              ? "bg-blue-400 text-white"
+                              : "bg-yellow-100 text-gray-800"
+                          }`}
+                          >
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <Button variant="ghost" size="sm">
+                            View Details
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

@@ -80,10 +80,6 @@ function useCategoryContex() {
     (el) => el.name.toLowerCase() === decodedCategory.toLowerCase()
   );
 
-  const subcategory = categories
-    .find((el) => el.name.toLowerCase() === decodedCategory)
-    ?.subcategories.find((sub) => sub.name === "Women's Fashion");
-
   const filteredProducts = subCategoryProduct
     .filter((product) => {
       const matchesSearch = product.name
@@ -113,11 +109,16 @@ function useCategoryContex() {
     });
 
   const handleRoute = (name: string, id: any) => {
+    const proCategory = filteredProducts.find(
+      (el) => el.id.toString() === String(id)
+    );
     setIsLoading(true);
     const param = new URLSearchParams();
     param.set("id", id);
     router.push(
-      `/category/${category}/${subcategory?.name}/${name}?${param.toString()}`
+      `/category/${category}/${
+        proCategory?.subCategory
+      }/${name}?${param.toString()}`
     );
   };
 

@@ -8,33 +8,27 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  ArrowLeft,
-  Upload,
-  Loader2,
-  X,
-  Image as ImageIcon,
-  AlertCircle,
-} from "lucide-react";
+import { ArrowLeft, Upload, X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchProductById, updateProduct } from "@/redux/slices/productSlice";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProductById, updateProduct } from "@/redux/slices/productSlice";
-import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 
 interface ProductImage {
   id: number;
@@ -50,8 +44,10 @@ interface Specification {
 interface FormData {
   name: string;
   category: string;
+  subCategory: string;
   brand: string;
   price: string | number;
+  costPrice: string | number;
   stock: string | number;
   discount: string | number;
   ratings: string | number;
@@ -79,8 +75,10 @@ export default function EditProductPage() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     category: "",
+    subCategory: "",
     brand: "",
     price: "",
+    costPrice: "",
     stock: "",
     discount: "",
     ratings: "",
@@ -92,10 +90,21 @@ export default function EditProductPage() {
     deletedImages: [],
   });
 
+  const { categories } = useSelector((state: RootState) => state.category);
+  const category = categories.map((el) => el.name);
+
+  const subCategory = categories
+    .find(
+      // (el) => el.name.toLowerCase() === selectedProduct?.category.toLowerCase()
+      (el) => el.name.toLowerCase() === formData.category.toLowerCase()
+    )
+    ?.subcategories.map((el) => el.name);
+
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(Number(id)));
     }
+    dispatch(fetchCategories());
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -103,8 +112,10 @@ export default function EditProductPage() {
       setFormData({
         name: selectedProduct.name || "",
         category: selectedProduct.category || "",
+        subCategory: selectedProduct.subCategory || "",
         brand: selectedProduct.brand || "",
         price: selectedProduct.price || "",
+        costPrice: selectedProduct.costPrice || "",
         stock: selectedProduct.stock || "",
         discount: selectedProduct.discount || "",
         ratings: selectedProduct.ratings || "",
@@ -139,6 +150,10 @@ export default function EditProductPage() {
       newErrors.category = "Category is required";
     }
 
+    if (!formData.subCategory) {
+      newErrors.category = "SubCategory is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -147,7 +162,7 @@ export default function EditProductPage() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsSaving(true);
+    // setIsSaving(true);
     try {
       setIsSaving(true);
       const updatingData = {
@@ -160,6 +175,7 @@ export default function EditProductPage() {
       };
 
       dispatch(updateProduct(updatingData)).unwrap();
+      setIsSaving(false);
     } catch (error) {
       toast.error("Failed to update product");
     } finally {
@@ -241,7 +257,7 @@ export default function EditProductPage() {
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin/dashboard/products")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" /> Back
@@ -268,6 +284,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
+                className=" focus-visible:ring-orange-400"
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name}</p>
@@ -283,6 +300,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, brand: e.target.value })
                 }
                 required
+                className=" focus-visible:ring-orange-400"
               />
             </div>
 
@@ -294,13 +312,17 @@ export default function EditProductPage() {
                   setFormData({ ...formData, category: value })
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className=" focus:ring-orange-400">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="electronics">Electronics</SelectItem>
-                  <SelectItem value="clothing">Clothing</SelectItem>
-                  <SelectItem value="books">Books</SelectItem>
+                  <SelectGroup>
+                    {category?.map((cat, idx) => (
+                      <SelectItem key={idx} value={cat.toLowerCase()}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
               {errors.category && (
@@ -309,7 +331,33 @@ export default function EditProductPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="subCategory">SubCategory</Label>
+              <Select
+                value={formData.subCategory}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, subCategory: value })
+                }
+              >
+                <SelectTrigger className=" focus:ring-orange-400">
+                  <SelectValue placeholder="Select subCategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {subCategory?.map((cat, idx) => (
+                      <SelectItem key={idx} value={cat.toLowerCase()}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.subCategory && (
+                <p className="text-sm text-red-500">{errors.subCategory}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price">Sell Price ($)</Label>
               <Input
                 id="price"
                 type="number"
@@ -319,9 +367,28 @@ export default function EditProductPage() {
                   setFormData({ ...formData, price: e.target.value })
                 }
                 required
+                className=" focus-visible:ring-orange-400"
               />
               {errors.price && (
                 <p className="text-sm text-red-500">{errors.price}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="costPrice">Cost Price ($)</Label>
+              <Input
+                id="costPrice"
+                type="number"
+                step="0.01"
+                value={formData.costPrice}
+                onChange={(e) =>
+                  setFormData({ ...formData, costPrice: e.target.value })
+                }
+                required
+                className=" focus-visible:ring-orange-400"
+              />
+              {errors.costPrice && (
+                <p className="text-sm text-red-500">{errors.costPrice}</p>
               )}
             </div>
 
@@ -335,6 +402,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, stock: e.target.value })
                 }
                 required
+                className=" focus-visible:ring-orange-400"
               />
               {errors.stock && (
                 <p className="text-sm text-red-500">{errors.stock}</p>
@@ -352,6 +420,7 @@ export default function EditProductPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, discount: e.target.value })
                 }
+                className=" focus-visible:ring-orange-400"
               />
             </div>
 
@@ -367,6 +436,7 @@ export default function EditProductPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, ratings: e.target.value })
                 }
+                className=" focus-visible:ring-orange-400"
               />
             </div>
           </div>
@@ -381,6 +451,7 @@ export default function EditProductPage() {
               }
               rows={4}
               required
+              className=" focus-visible:ring-orange-400"
             />
           </div>
 
@@ -406,6 +477,7 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         updateSpecification(index, "key", e.target.value)
                       }
+                      className=" focus-visible:ring-orange-400"
                     />
                   </div>
                   <div className="flex-1">
@@ -415,6 +487,7 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         updateSpecification(index, "value", e.target.value)
                       }
+                      className=" focus-visible:ring-orange-400"
                     />
                   </div>
                   <Button
@@ -450,6 +523,7 @@ export default function EditProductPage() {
                       setShowImagePreview(true);
                     }}
                   />
+
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button
                       type="button"
@@ -521,8 +595,7 @@ export default function EditProductPage() {
             <Button
               className="w-32 bg-orange-500/95 hover:bg-orange-600/85"
               type="submit"
-              disabled={isSaving}
-              // onClick={() => setIsSaving(true)}
+              disabled={isSaving === true}
             >
               {isSaving === true ? (
                 <>
@@ -535,24 +608,6 @@ export default function EditProductPage() {
           </div>
         </form>
       </Card>
-
-      <Dialog open={showImagePreview} onOpenChange={setShowImagePreview}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Image Preview</DialogTitle>
-          </DialogHeader>
-          {selectedImage && (
-            <div className="relative aspect-video">
-              <Image
-                src={selectedImage}
-                alt="Preview"
-                fill
-                className="object-contain"
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

@@ -20,7 +20,12 @@ class Order extends Model {
   public userId!: number;
   public orderId!: number;
   public totalPrice!: number;
-  public status!: "pending" | "shipped" | "delivered" | "cancelled";
+  public status!:
+    | "pending"
+    | "shipped"
+    | "confirmed"
+    | "delivered"
+    | "cancelled";
   public paymentStatus!: "paid" | "unpaid" | "failed";
   public paymentMethod!: string;
   public mpesaReceiptNumber!: string;

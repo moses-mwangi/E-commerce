@@ -18,7 +18,6 @@ import { fetchUsers } from "@/redux/slices/userSlice";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 
 export default function CustomersPage() {
-  const { users } = useSelector((state: RootState) => state.user);
   const { orders } = useSelector((state: RootState) => state.order);
   const dispatch: AppDispatch = useDispatch();
 

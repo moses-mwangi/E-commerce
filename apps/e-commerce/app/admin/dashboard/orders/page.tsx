@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,26 +12,47 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search, Filter, Eye } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchOrders } from "@/redux/slices/orderSlice";
+
+const [orderss] = [
+  {
+    id: "#ORD-001",
+    customer: "John Doe",
+    date: "2024-03-15",
+    total: 299.99,
+    status: "Completed",
+    payment: "Paid",
+  },
+  {
+    id: "#ORD-002",
+    customer: "Jane Smith",
+    date: "2024-03-14",
+    total: 159.99,
+    status: "Processing",
+    payment: "Pending",
+  },
+];
 
 export default function OrdersPage() {
-  const [orders] = useState([
-    {
-      id: "#ORD-001",
-      customer: "John Doe",
-      date: "2024-03-15",
-      total: 299.99,
-      status: "Completed",
-      payment: "Paid",
-    },
-    {
-      id: "#ORD-002",
-      customer: "Jane Smith",
-      date: "2024-03-14",
-      total: 159.99,
-      status: "Processing",
-      payment: "Pending",
-    },
-  ]);
+  const { orders } = useSelector((state: RootState) => state.order);
+  const { categories } = useSelector((state: RootState) => state.category);
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  const getDate = (date: string) => {
+    const dates = new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    const time = new Date(date).toLocaleTimeString();
+    return `${dates}`;
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -76,14 +97,15 @@ export default function OrdersPage() {
             <TableBody>
               {orders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.customer}</TableCell>
-                  <TableCell>{order.date}</TableCell>
-                  <TableCell>${order.total}</TableCell>
+                  <TableCell className="font-medium">ORD-#{order.id}</TableCell>
+                  <TableCell>{order.User.name}</TableCell>
+                  <TableCell>{getDate(order.createdAt)}</TableCell>
+                  <TableCell>${order.totalPrice}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        order.status === "Completed"
+                        order.status === "confirmed" ||
+                        order.status === "delivered"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
@@ -94,12 +116,12 @@ export default function OrdersPage() {
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        order.payment === "Paid"
+                        order.paymentStatus === "paid"
                           ? "bg-blue-100 text-blue-800"
                           : "bg-orange-100 text-orange-800"
                       }`}
                     >
-                      {order.payment}
+                      {order.paymentStatus}
                     </span>
                   </TableCell>
                   <TableCell>
