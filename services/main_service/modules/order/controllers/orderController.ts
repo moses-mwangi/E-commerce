@@ -11,6 +11,7 @@ import User from "../../users/models/userMode";
 import ProductImage from "../../product/models/product/productImageModel";
 import sequelize from "../../../shared/config/pg_database";
 import { where } from "sequelize";
+import Payment from "../../payments/models/paymentModel";
 
 export const createOrder = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -126,6 +127,7 @@ export const getAllOrders = catchAsync(
             "createdAt",
           ],
         },
+
         {
           model: OrderItem,
           include: [
@@ -136,6 +138,11 @@ export const getAllOrders = catchAsync(
             },
           ],
         },
+        // {
+        //   model: Payment,
+        //   as: "",
+        //   attributes: { exclude: ["status"] },
+        // },
       ],
     });
 
@@ -149,10 +156,6 @@ export const getAllOrders = catchAsync(
 
 export const getOrderById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    // const order = await Order.findByPk(req.params.id, {
-    //   include: [{ model: OrderItem, include: [Product] }],
-    // });
-
     const order = await Order.findByPk(req.params.id, {
       include: [
         {
@@ -188,11 +191,9 @@ export const updateOrder = catchAsync(
       county,
     } = req.body;
 
-    // Find the order
     const order = await Order.findByPk(req.params.id);
     if (!order) return next(new AppError("Order not found", 404));
 
-    // Update the order in a single operation
     const updatedOrder = await order.update({
       country,
       fullName,

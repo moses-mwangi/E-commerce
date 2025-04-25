@@ -10,7 +10,7 @@ const router = express_1.default.Router();
 router.post("/", orderController_1.createOrder);
 router.get("/", orderController_1.getAllOrders);
 router.get("/:id", orderController_1.getOrderById);
-router.patch("/:id", orderController_1.updateOrder);
+router.route("/:id").patch(orderController_1.updateOrder);
 // router.patch("/:id", updateOrderStatus);
 router.delete("/:id", orderController_1.deleteOrder);
 router.post("/checkout", checkout_1.checkout);

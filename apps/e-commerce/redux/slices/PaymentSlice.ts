@@ -40,7 +40,21 @@ interface CryptoCredentials extends PaymentCredentials {
   cryptoCurrency: "BTC" | "ETH" | "USDT" | "SOL";
 }
 
+export interface PaymentData {
+  id: number;
+  userId: number;
+  orderId: number;
+  paymentMethod: string;
+  stripePaymentId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface PaymentState {
+  payments: PaymentData[] | [];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   paymentMethod: PaymentMethod | null;
@@ -63,6 +77,16 @@ type PaymentMethod =
   | "google_pay"
   | "mobile_money";
 
+export const fetchPayments = createAsyncThunk("orders/fetchAll", async () => {
+  try {
+    const res = await axios.get(`${API_URL}/payment`);
+    // console.log(res.data.payment);
+    return res.data.payment;
+  } catch (err) {
+    return handlePaymentError(err, "fetching");
+  }
+});
+
 export const mpesaPayment = createAsyncThunk(
   "payment/mpesa",
   async (credentials: MpesaCredentials, { rejectWithValue }) => {
@@ -83,6 +107,7 @@ export const cardPayment = createAsyncThunk(
       const res = await axios.post(`${API_URL}/payment/card`, credentials);
       console.log("Card response", res);
       // toast.success("Card payment processed successfully");
+      window.location.href = "http://localhost:3000/pages/order";
       return res.data;
     } catch (err) {
       // toast.error("Card payment Failed: Try again");
@@ -173,6 +198,7 @@ const handlePaymentError = (err: unknown, method: string) => {
 const initialState: PaymentState = {
   status: "idle",
   error: null,
+  payments: [],
   paymentMethod: null,
   transactionId: null,
   lastPaymentAmount: null,
@@ -346,6 +372,20 @@ const paymentSlice = createSlice({
       .addCase(googlePayPayment.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Google Pay failed";
+      })
+
+      .addCase(fetchPayments.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPayments.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // console.log(initialState); // ✅ should be an array
+        // console.log("Action Payload:", action.payload); // ✅ should be an array
+        state.payments = action.payload;
+      })
+      .addCase(fetchPayments.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to fetch orders";
       });
   },
 });
@@ -356,16 +396,16 @@ export const { clearError, resetPaymentState, setAvailablePaymentMethods } =
 
 export default paymentSlice.reducer;
 
-// Selectors
-export const selectPaymentStatus = (state: { payment: PaymentState }) =>
-  state.payment.status;
-export const selectPaymentError = (state: { payment: PaymentState }) =>
-  state.payment.error;
-export const selectLastTransaction = (state: { payment: PaymentState }) => ({
-  id: state.payment.transactionId,
-  amount: state.payment.lastPaymentAmount,
-  method: state.payment.paymentMethod,
-});
-export const selectAvailablePaymentMethods = (state: {
-  payment: PaymentState;
-}) => state.payment.availablePaymentMethods;
+// // Selectors
+// export const selectPaymentStatus = (state: { payment: PaymentState }) =>
+//   state.payment.status;
+// export const selectPaymentError = (state: { payment: PaymentState }) =>
+//   state.payment.error;
+// export const selectLastTransaction = (state: { payment: PaymentState }) => ({
+//   id: state.payment.transactionId,
+//   amount: state.payment.lastPaymentAmount,
+//   method: state.payment.paymentMethod,
+// });
+// export const selectAvailablePaymentMethods = (state: {
+//   payment: PaymentState;
+// }) => state.payment.availablePaymentMethods;

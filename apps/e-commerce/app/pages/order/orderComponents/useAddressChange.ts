@@ -24,15 +24,14 @@ export const formSchema = z.object({
 
 export function useAddress() {
   const dispatch: AppDispatch = useDispatch();
-  const { status } = useSelector((state: RootState) => state.order);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [orderId, setOrderId] = useState<string | number | null>(null);
 
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const { orders } = useSelector((state: RootState) => state.order);
+  const { orders, status } = useSelector((state: RootState) => state.order);
 
   const currentUserOrder = useMemo(() => {
-    return orders.filter((order) => order.User.email === currentUser?.email);
+    return orders?.filter((order) => order?.User?.email === currentUser?.email);
   }, [orders, currentUser?.email]);
 
   const {

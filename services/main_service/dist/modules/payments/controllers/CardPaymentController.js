@@ -208,7 +208,6 @@ exports.handleWebhook = (0, catchSync_1.default)(async (req, res, next) => {
 async function handleSuccessfulPayment(event) {
     const paymentIntent = event.data.object;
     const metadata = paymentIntent.metadata;
-    // const paymentMethod=paymentIntent.
     if (!metadata.orderId || !metadata.userId) {
         throw new Error("Missing orderId or userId in metadata");
     }
@@ -222,6 +221,9 @@ async function handleSuccessfulPayment(event) {
             currency: paymentIntent.currency,
             status: "succeeded",
         }, { transaction: t });
+        await ordersModel_1.default.updateStatus(parseInt(metadata.orderId, 10), "confirmed", {
+            transaction: t,
+        });
         await ordersModel_1.default.update({ paymentStatus: "paid", status: "confirmed" }, {
             where: { id: payment.orderId },
             transaction: t,

@@ -12,6 +12,13 @@ export type Order = {
   totalPrice: number;
   status: string;
   paymentStatus: string;
+  statusHistory: {
+    pending: Date;
+    shipped: Date;
+    delivered: Date;
+    cancelled: Date;
+    confirmed: Date;
+  };
   shippingAddress: string;
   trackingNumber?: string;
   createdAt: string;

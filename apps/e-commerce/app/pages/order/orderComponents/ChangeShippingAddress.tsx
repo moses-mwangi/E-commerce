@@ -104,13 +104,6 @@ export default function ChangeShippingAddress({
             exit={{ opacity: 0, x: -20 }}
             className="space-y-6"
           >
-            <Button
-              onClick={() => {
-                console.log(orderId);
-              }}
-            >
-              CLICK
-            </Button>
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
                 Shipping Address
@@ -246,6 +239,7 @@ export default function ChangeShippingAddress({
           <Button
             className={`bg-orange-500/85 hover:bg-orange-600/80 w-full`}
             onClick={handleNext}
+            disabled={status === "loading"}
           >
             {status !== "loading" ? "Continue" : <ButtonLoader />}
             {status !== "loading" && <ChevronRight className="w-4 h-4 ml-2" />}

@@ -262,7 +262,6 @@ export const handleWebhook = catchAsync(
 async function handleSuccessfulPayment(event: Stripe.Event) {
   const paymentIntent = event.data.object as Stripe.PaymentIntent;
   const metadata = paymentIntent.metadata as PaymentMetadata;
-  // const paymentMethod=paymentIntent.
 
   if (!metadata.orderId || !metadata.userId) {
     throw new Error("Missing orderId or userId in metadata");
@@ -281,6 +280,10 @@ async function handleSuccessfulPayment(event: Stripe.Event) {
       },
       { transaction: t }
     );
+
+    await Order.updateStatus(parseInt(metadata.orderId, 10), "confirmed", {
+      transaction: t,
+    });
 
     await Order.update(
       { paymentStatus: "paid", status: "confirmed" },

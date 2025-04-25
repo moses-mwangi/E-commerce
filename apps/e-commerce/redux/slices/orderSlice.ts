@@ -45,7 +45,6 @@ export const fetchOrders = createAsyncThunk(
   "orders/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      // const token = document.cookie.split("=")[1];
       const token = getToken();
       const res = await axios.get(`${API_URL}/order`, {
         headers: {
@@ -76,14 +75,14 @@ export const updateOrder = createAsyncThunk(
   async (address: any) => {
     try {
       const { orderId, ...updateAddress } = address;
-      console.log(orderId, updateAddress);
-      const res = await axios.patch(`${API_URL}/order/${orderId}`, {
-        updateAddress,
-      });
-
-      console.log(res.data);
+      const res = await axios.patch(
+        `${API_URL}/order/${orderId}`,
+        updateAddress
+      );
 
       toast.success("The address updated succefully");
+      window.location.href = "http://localhost:3000/pages/order";
+      clearState();
       return res.data;
     } catch (err) {
       return handleOrderError(err, "Updating");
@@ -126,7 +125,11 @@ const initialState: OrderState = {
 const orderSlice = createSlice({
   name: "order",
   initialState,
-  reducers: {},
+  reducers: {
+    clearState: (state) => {
+      state.status = "idle";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrder.pending, (state) => {
@@ -177,5 +180,7 @@ const orderSlice = createSlice({
     // });
   },
 });
+
+export const { clearState } = orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -96,6 +96,11 @@ exports.getAllOrders = (0, catchSync_1.default)(async (req, res, next) => {
                     },
                 ],
             },
+            // {
+            //   model: Payment,
+            //   as: "",
+            //   attributes: { exclude: ["status"] },
+            // },
         ],
     });
     if (!orders || orders.length === 0) {
@@ -104,9 +109,6 @@ exports.getAllOrders = (0, catchSync_1.default)(async (req, res, next) => {
     res.status(200).json({ success: true, orders });
 });
 exports.getOrderById = (0, catchSync_1.default)(async (req, res, next) => {
-    // const order = await Order.findByPk(req.params.id, {
-    //   include: [{ model: OrderItem, include: [Product] }],
-    // });
     const order = await ordersModel_1.default.findByPk(req.params.id, {
         include: [
             {
@@ -127,11 +129,9 @@ exports.getOrderById = (0, catchSync_1.default)(async (req, res, next) => {
 });
 exports.updateOrder = (0, catchSync_1.default)(async (req, res, next) => {
     const { country, fullName, email, phoneNumber, streetAddress, apartment, postcode, city, county, } = req.body;
-    // Find the order
     const order = await ordersModel_1.default.findByPk(req.params.id);
     if (!order)
         return next(new AppError_1.default("Order not found", 404));
-    // Update the order in a single operation
     const updatedOrder = await order.update({
         country,
         fullName,

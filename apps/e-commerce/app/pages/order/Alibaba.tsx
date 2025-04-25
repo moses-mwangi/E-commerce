@@ -37,13 +37,13 @@ import {
 
 import ProductReviewForm from "./orderComponents/ProductReviewForm";
 import { Order } from "@/app/types/order";
-import OrderTracking from "./orderComponents/OrderTracking";
 import Modal from "./orderComponents/ModalChangeShippingAddress";
 import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
 import EditReviewForm from "./orderComponents/EditReview";
 import PaymentProgress from "../cart/checkout/orderPayments/PaymentProgress";
 import LoadingState from "@/app/components/loaders/LoadingState";
-import { useAddress } from "./orderComponents/useAddressChange";
+import EstimatingTheDeliveryTime from "./orderComponents/EstimatingTheDeliveryTime";
+import SupplierAndPaymentsSummary from "./orderComponents/SupplierAndPaymentsSummary";
 
 function OrdersPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -58,13 +58,7 @@ function OrdersPage() {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { reviews } = useSelector((state: RootState) => state.review);
   const currentUserOrder = orders.filter(
-    (order) => order.User.email === currentUser?.email
-  );
-
-  // const { setOrderId, orderId } = useAddress();
-
-  const deliveredOrder = currentUserOrder.some(
-    (el) => el.paymentStatus === "paid"
+    (order) => order?.User?.email === currentUser?.email
   );
 
   const hasUserReviewedProduct = (
@@ -103,14 +97,6 @@ function OrdersPage() {
 
   const handleCancelOrder = () => {
     console.log("Cancellation reason:", cancelReason);
-  };
-
-  const handleCompletePayment = (id: any) => {
-    console.log("Moses Mwangi", id);
-    setIsLoading(true);
-    const params = new URLSearchParams();
-    params.set("PaymentsOrderNo", String(id));
-    push(`/pages/cart/checkout/orderPayments?${params.toString()}`);
   };
 
   return (
@@ -153,7 +139,7 @@ function OrdersPage() {
             </TabsList>
             <Card className="bg-gray-100 p-2">
               <Accordion type="multiple" className="space-y-4">
-                {currentUserOrder.map((order: Order) => (
+                {currentUserOrder?.map((order: Order) => (
                   <AccordionItem key={order.id} value={`order-${order.id}`}>
                     <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
                       <div className="">
@@ -184,7 +170,7 @@ function OrdersPage() {
                         </p>
 
                         <p className="text-gray-600 text-sm">
-                          Ordered on : {getDate(order.createdAt)}
+                          Ordered on : {getDate(order?.createdAt)}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -282,7 +268,6 @@ function OrdersPage() {
                                       onClick={() => {
                                         setToggleAddressEdit(true);
                                         setOrderId(order.id);
-                                        // console.log(orderId);
                                       }}
                                     >
                                       <MapPin className="h-4 w-4 mr-1 inline" />
@@ -345,47 +330,7 @@ function OrdersPage() {
                             </CardContent>
                           </Card>
 
-                          <Card>
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-base font-semibold text-black/90 flex items-center">
-                                <Clock className="h-5 w-5 mr-2" />
-                                Estimated Timeline
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-gray-500">
-                                    Processing:
-                                  </span>
-                                  <span>1-3 business days</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-gray-500">
-                                    Shipping:
-                                  </span>
-                                  <span>5-10 business days</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-gray-500">
-                                    Payment Status:
-                                  </span>
-                                  <span>Unpaid</span>
-                                </div>
-                                <div className="flex justify-between text-sm font-medium pb-4">
-                                  <span className="text-gray-500">
-                                    Estimated Delivery:
-                                  </span>
-                                  <span>Mar 10, 2025</span>
-                                </div>
-                                <OrderTracking
-                                  orderId={order.id.toString()}
-                                  trackingNumber={String(order.trackingNumber)}
-                                  carrier="KBC 920E"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
+                          <EstimatingTheDeliveryTime order={order} />
                         </div>
 
                         <div className="mb-6 bg-white">
@@ -401,7 +346,7 @@ function OrdersPage() {
                               <div className="col-span-2 text-right">Total</div>
                             </div>
 
-                            {order.OrderItems.map((item) => {
+                            {order?.OrderItems?.map((item) => {
                               const hasReviewed = hasUserReviewedProduct(
                                 item.productId,
                                 order.id,
@@ -414,9 +359,9 @@ function OrdersPage() {
                                     <div className="col-span-5 flex items-center">
                                       <Image
                                         src={
-                                          item.Product.productImages
+                                          item?.Product?.productImages
                                             ? String(
-                                                item.Product.productImages.find(
+                                                item?.Product?.productImages?.find(
                                                   (el: any) =>
                                                     el.isMain === true
                                                 )?.url
@@ -447,7 +392,8 @@ function OrdersPage() {
                                       {item.quantity}
                                     </div>
                                     <div className="col-span-2 text-right font-medium">
-                                      ${(item.price * item.quantity).toFixed(2)}
+                                      $
+                                      {(item.price * item.quantity)?.toFixed(2)}
                                     </div>
                                   </div>
 
@@ -514,7 +460,7 @@ function OrdersPage() {
                                         orderId={Number(order.id)}
                                         productName={item.Product.name}
                                         productCategory={
-                                          currentUserOrder[0].OrderItems?.find(
+                                          currentUserOrder[0]?.OrderItems?.find(
                                             (el) =>
                                               el.productId === item.productId
                                           )?.Product?.category
@@ -535,110 +481,10 @@ function OrdersPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-lg">
-                                Supplier Information
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                              <div>
-                                <p className="font-medium">Supplier Name</p>
-                                <p className="text-sm text-gray-500">
-                                  Member Since: 2020
-                                </p>
-                              </div>
-                              <div className="flex space-x-2">
-                                <Button variant="outline" size="sm">
-                                  Visit Store
-                                </Button>
-                                <Button variant="outline" size="sm">
-                                  Chat Now
-                                </Button>
-                              </div>
-                              <div className="pt-2 border-t">
-                                <p className="text-sm font-medium">
-                                  Contact Info
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  Contact: John Doe
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  Phone: +86-123456789
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  Email: supplier@example.com
-                                </p>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-lg">
-                                Order Summary
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="space-y-3">
-                                <div className="flex justify-between">
-                                  <span>Item Subtotal:</span>
-                                  <span>${order.totalPrice.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-green-600">
-                                  <span>Discount:</span>
-                                  <span>- $34.00</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span>Shipping Fee:</span>
-                                  <span>Free</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span>Tax:</span>
-                                  <span>$0.00</span>
-                                </div>
-                                <div className="border-t pt-2 flex justify-between font-bold">
-                                  <span>Total:</span>
-                                  <span>${order.totalPrice.toFixed(2)}</span>
-                                </div>
-                                <div className="pt-2">
-                                  <p className="text-sm font-medium">
-                                    Payment Method
-                                  </p>
-                                  <p className="text-sm text-gray-500">
-                                    PayPal (john.doe@example.com)
-                                  </p>
-                                  <p className="text-sm text-gray-500">
-                                    Status:{" "}
-                                    {order.paymentStatus === "unpaid"
-                                      ? "Pending"
-                                      : "Completed"}
-                                  </p>
-                                </div>
-                                <div className="pt-2">
-                                  {order.paymentStatus === "unpaid" ? (
-                                    <Button
-                                      onClick={() =>
-                                        handleCompletePayment(order.id)
-                                      }
-                                      className="w-full bg-orange-600 hover:bg-orange-700"
-                                    >
-                                      Complete Payment
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      variant="outline"
-                                      className="w-full"
-                                    >
-                                      Request Refund
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
+                        <SupplierAndPaymentsSummary
+                          order={order}
+                          setIsLoading={setIsLoading}
+                        />
                       </AccordionContent>
                     </Card>
                   </AccordionItem>
