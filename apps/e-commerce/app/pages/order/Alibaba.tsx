@@ -43,6 +43,7 @@ import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
 import EditReviewForm from "./orderComponents/EditReview";
 import PaymentProgress from "../cart/checkout/orderPayments/PaymentProgress";
 import LoadingState from "@/app/components/loaders/LoadingState";
+import { useAddress } from "./orderComponents/useAddressChange";
 
 function OrdersPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,7 @@ function OrdersPage() {
   const { orders } = useSelector((state: RootState) => state.order);
   const { push } = useRouter();
   const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | number | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [toggleAddressEdit, setToggleAddressEdit] = useState(false);
 
@@ -58,6 +60,9 @@ function OrdersPage() {
   const currentUserOrder = orders.filter(
     (order) => order.User.email === currentUser?.email
   );
+
+  // const { setOrderId, orderId } = useAddress();
+
   const deliveredOrder = currentUserOrder.some(
     (el) => el.paymentStatus === "paid"
   );
@@ -114,6 +119,7 @@ function OrdersPage() {
       <Modal
         toggleAddressEdit={toggleAddressEdit}
         setToggleAddressEdit={setToggleAddressEdit}
+        orderId={orderId}
       />
 
       <div className="max-w-6xl min-h-screen mx-auto p-6 space-y-6">
@@ -273,10 +279,11 @@ function OrdersPage() {
                                     <Button
                                       variant="link"
                                       className="text-orange-600  p-0 h-auto"
-                                      onClick={() =>
-                                        // toggleAddressEdit(order.id.toString())
-                                        setToggleAddressEdit(true)
-                                      }
+                                      onClick={() => {
+                                        setToggleAddressEdit(true);
+                                        setOrderId(order.id);
+                                        // console.log(orderId);
+                                      }}
                                     >
                                       <MapPin className="h-4 w-4 mr-1 inline" />
                                       Modify shipping address

@@ -1,6 +1,6 @@
-import { Order, OrderState } from "@/app/types/order";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { OrderState } from "@/app/types/order";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
@@ -31,13 +31,11 @@ export const createOrder = createAsyncThunk(
 
       return res.data;
     } catch (err) {
-      toast.error("Failed to  create your order");
-      throw new Error("Failed to create order");
+      return handleOrderError(err, "creating");
     }
   }
 );
 
-// Fetch user orders
 const getToken = () => {
   const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
   return match ? match[1] : null;
@@ -56,16 +54,11 @@ export const fetchOrders = createAsyncThunk(
       });
       return res.data.orders;
     } catch (err) {
-      console.error("Error fetching orders:", err);
-      // console.log(getToken());
-      return rejectWithValue(
-        (err as any).response?.data?.message || "Failed to fetch orders"
-      );
+      return handleOrderError(err, "fetching");
     }
   }
 );
 
-// Fetch a single order by ID
 export const fetchOrderById = createAsyncThunk(
   "orders/fetchById",
   async (orderId: number) => {
@@ -73,13 +66,31 @@ export const fetchOrderById = createAsyncThunk(
       const res = await axios.get(`${API_URL}/order/${orderId}`);
       return res.data.order;
     } catch (err) {
-      console.error(err);
-      throw new Error("Failed to fetch order");
+      return handleOrderError(err, "fetch");
     }
   }
 );
 
-// Update order status (e.g., processing, completed)
+export const updateOrder = createAsyncThunk(
+  "orders/updateStatus",
+  async (address: any) => {
+    try {
+      const { orderId, ...updateAddress } = address;
+      console.log(orderId, updateAddress);
+      const res = await axios.patch(`${API_URL}/order/${orderId}`, {
+        updateAddress,
+      });
+
+      console.log(res.data);
+
+      toast.success("The address updated succefully");
+      return res.data;
+    } catch (err) {
+      return handleOrderError(err, "Updating");
+    }
+  }
+);
+
 export const updateOrderStatus = createAsyncThunk(
   "orders/updateStatus",
   async ({ orderId, status }: { orderId: number; status: string }) => {
@@ -92,6 +103,17 @@ export const updateOrderStatus = createAsyncThunk(
     }
   }
 );
+
+const handleOrderError = (err: unknown, method: string) => {
+  const axiosError = err as AxiosError;
+  const error =
+    (axiosError.response?.data as any)?.message ||
+    (axiosError.response?.data as any)?.error ||
+    axiosError.message;
+
+  toast.error(`Failed to ${method} order address: ${error}`);
+  return Promise.reject(error);
+};
 
 const initialState: OrderState = {
   orders: [],
@@ -119,6 +141,20 @@ const orderSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || "Failed to create order";
       })
+
+      .addCase(updateOrder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateOrder.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // state.orders.push(action.payload);
+        // state.orderId = action.payload.order.id;
+      })
+      .addCase(updateOrder.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to create order";
+      })
+
       .addCase(fetchOrders.pending, (state) => {
         state.status = "loading";
       })
@@ -132,13 +168,13 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderById.fulfilled, (state, action) => {
         state.selectedOrder = action.payload;
-      })
-      .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        const updatedOrder = action.payload;
-        state.orders = state.orders.map((order) =>
-          order.id === updatedOrder.id ? updatedOrder : order
-        );
       });
+    // .addCase(updateOrderStatus.fulfilled, (state, action) => {
+    //   const updatedOrder = action.payload;
+    //   state.orders = state.orders.map((order) =>
+    //     order.id === updatedOrder.id ? updatedOrder : order
+    //   );
+    // });
   },
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -20,50 +20,57 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-// import { useCheckOut } from "./useCheckOut";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useCheckOut } from "@/hooks/useCheckOut";
-// import { useCheckOut } from "../../cart/checkout/useCheckOut";
+import { useAddress } from "./useAddressChange";
 
-export default function ChangeShippingAddress() {
-  const [step, setStep] = useState(1);
-  const { push } = useRouter();
-
-  const { currentUser } = useSelector((state: RootState) => state.user);
-  const { orders } = useSelector((state: RootState) => state.order);
-  const currentUserOrder = orders.filter(
-    (order) => order.User.email === currentUser?.email
-  );
-
+export default function ChangeShippingAddress({
+  orderId,
+  setToggleAddressEdit,
+}: any) {
   const {
     onSubmit,
-    handleSubmit,
-    setValue,
-    // errors,
-    register,
-    // watch,
     loadingLocation,
     handleUseCurrentLocation,
-    // currentUser,
     status,
-  } = useCheckOut();
-
-  const {
-    // register,
-    // handleSubmit,
+    register,
+    handleSubmit,
+    setValue,
     watch,
-    formState: { errors },
-  } = useForm();
+    reset,
+    currentUserOrder,
+    setOrderId,
+  } = useAddress();
+
   const formValues = watch();
 
+  const order = currentUserOrder.find(
+    (el) => el.id.toString() === String(orderId)
+  );
+
+  useEffect(() => {
+    if (currentUserOrder.length > 0) {
+      const order = currentUserOrder.find(
+        (el) => el.id.toString() === String(orderId)
+      );
+      if (orderId) {
+        setOrderId(orderId);
+      }
+      reset({
+        country: order?.country || "",
+        email: order?.email || "",
+        fullName: order?.fullName || "",
+        phoneNumber: order?.phoneNumber || "",
+        streetAddress: order?.streetAddress || "",
+        apartment: order?.apartment || "",
+        postcode: order?.postcode || "",
+        county: order?.county || "",
+        city: order?.city || "",
+      });
+    }
+  }, [currentUserOrder, orderId, setOrderId, reset]);
+
   const handleNext = async () => {
-    // console.log(formValues);
     if (
       !formValues.email ||
       !formValues.phoneNumber ||
@@ -71,13 +78,13 @@ export default function ChangeShippingAddress() {
       !formValues.fullName ||
       !formValues.postcode
     ) {
-      toast.success("Fill requred filled to procceds");
-      // return;
+      toast.error("Please fill all required fields");
+      return;
     }
     try {
-      // await handleSubmit(onSubmit)();
+      await handleSubmit(onSubmit)();
     } catch (err) {
-      toast.error("Error occcured while creating order");
+      toast.error("Error occurred while creating order");
       console.error(err);
     }
   };
@@ -97,6 +104,13 @@ export default function ChangeShippingAddress() {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-6"
           >
+            <Button
+              onClick={() => {
+                console.log(orderId);
+              }}
+            >
+              CLICK
+            </Button>
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
                 Shipping Address
@@ -111,110 +125,118 @@ export default function ChangeShippingAddress() {
                 delivery purposes.
               </p>
             </div>
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
-              <div className="col-span-2">
-                <Select onValueChange={(val) => setValue("country", val)}>
-                  <SelectTrigger className="w-full focus:ring-orange-500/60">
-                    <SelectValue placeholder="Select Country / Region" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Kenya">Kenya</SelectItem>
-                    <SelectItem value="Tanzania">Tanzania</SelectItem>
-                    <SelectItem value="Uganda">Uganda</SelectItem>
-                    <SelectItem value="Somalia">Somalia</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <form>
+              {currentUserOrder.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                  <div className="col-span-2">
+                    <Select
+                      defaultValue={order?.country}
+                      onValueChange={(val) => setValue("country", val)}
+                    >
+                      <SelectTrigger className="w-full focus:ring-orange-500/60">
+                        <SelectValue placeholder="Select Country / Region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Kenya">Kenya</SelectItem>
+                        <SelectItem value="Tanzania">Tanzania</SelectItem>
+                        <SelectItem value="Uganda">Uganda</SelectItem>
+                        <SelectItem value="Somalia">Somalia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className=" col-span-2">
-                <Input
-                  className=" focus-visible:ring-orange-500/60"
-                  {...register("email")}
-                  placeholder="Email Address"
-                  defaultValue={currentUser?.email}
-                />
-              </div>
+                  <div className="col-span-2">
+                    <Input
+                      className="focus-visible:ring-orange-500/60"
+                      {...register("email")}
+                      placeholder="Email Address"
+                      defaultValue={currentUserOrder[0].email}
+                    />
+                  </div>
 
-              <div className="col-span-2 md:col-span-1">
-                <Input
-                  {...register("fullName")}
-                  placeholder="Full Name"
-                  className="w-full focus-visible:ring-orange-500/60"
-                  defaultValue={String(currentUserOrder)}
-                />
-              </div>
+                  <div className="col-span-2 md:col-span-1">
+                    <Input
+                      {...register("fullName")}
+                      placeholder="Full Name"
+                      className="w-full focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].fullName}
+                    />
+                  </div>
 
-              <div>
-                <Input
-                  {...register("phoneNumber")}
-                  placeholder="Phone Number"
-                  className="w-full focus-visible:ring-orange-500/60"
-                  defaultValue={String(currentUser?.telephone)}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  For delivery updates only
-                </p>
-              </div>
+                  <div>
+                    <Input
+                      {...register("phoneNumber")}
+                      placeholder="Phone Number"
+                      className="w-full focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].phoneNumber}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      For delivery updates only
+                    </p>
+                  </div>
 
-              <div className="col-span-2">
-                <div className="flex gap-2">
-                  <Input
-                    {...register("streetAddress")}
-                    placeholder="Street Address"
-                    className="w-full focus-visible:ring-orange-500/60"
-                    // defaultValue={String(currentUser?.)}
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleUseCurrentLocation}
-                    disabled={loadingLocation}
-                    variant="outline"
-                    className="flex items-center gap-2 whitespace-nowrap"
-                  >
-                    {loadingLocation ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <MapPin className="w-4 h-4" />
-                    )}
-                    Use My Location
-                  </Button>
+                  <div className="col-span-2">
+                    <div className="flex gap-2">
+                      <Input
+                        {...register("streetAddress")}
+                        placeholder="Street Address"
+                        className="w-full focus-visible:ring-orange-500/60"
+                        defaultValue={currentUserOrder[0].streetAddress}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleUseCurrentLocation}
+                        disabled={loadingLocation}
+                        variant="outline"
+                        className="flex items-center gap-2 whitespace-nowrap"
+                      >
+                        {loadingLocation ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <MapPin className="w-4 h-4" />
+                        )}
+                        Use My Location
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Input
+                      {...register("apartment")}
+                      placeholder="Apartment, Suite, Unit, Building, Floor (Optional)"
+                      className="focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].apartment}
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      {...register("postcode")}
+                      placeholder="Postcode"
+                      className="focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].postcode}
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      {...register("county")}
+                      placeholder="State / Province / County"
+                      className="focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].county}
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      {...register("city")}
+                      placeholder="City / Town"
+                      className="focus-visible:ring-orange-500/60"
+                      defaultValue={currentUserOrder[0].city}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <Input
-                  {...register("apartment")}
-                  placeholder="Apartment, Suite, Unit, Building, Floor (Optional)"
-                  className="focus-visible:ring-orange-500/60"
-                />
-              </div>
-
-              <div>
-                <Input
-                  {...register("postcode")}
-                  placeholder="Postcode"
-                  className="focus-visible:ring-orange-500/60"
-                  defaultValue={String(currentUser?.zipcode)}
-                />
-              </div>
-
-              <div>
-                <Input
-                  {...register("county")}
-                  placeholder="State / Province / County"
-                  className="focus-visible:ring-orange-500/60"
-                  // defaultValue={String(currentUser?.)}
-                />
-              </div>
-
-              <div>
-                <Input
-                  {...register("city")}
-                  placeholder="City / Town"
-                  className="focus-visible:ring-orange-500/60"
-                  defaultValue={String(currentUser?.city)}
-                />
-              </div>
+              )}
             </form>
           </motion.div>
         </AnimatePresence>

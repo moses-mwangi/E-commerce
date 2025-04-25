@@ -4,10 +4,9 @@ import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChangeShippingAddress from "./ChangeShippingAddress";
 
-const Modal = ({ toggleAddressEdit, setToggleAddressEdit }: any) => {
+const Modal = ({ toggleAddressEdit, setToggleAddressEdit, orderId }: any) => {
   const modalRef = useRef(null);
 
-  // Escape key handler
   useEffect(() => {
     const handleEsc = (e: { key: string }) => {
       if (e.key === "Escape") setToggleAddressEdit(false);
@@ -54,7 +53,10 @@ const Modal = ({ toggleAddressEdit, setToggleAddressEdit }: any) => {
             transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()} // Prevent click from bubbling
           >
-            <ChangeShippingAddress />
+            <ChangeShippingAddress
+              orderId={orderId}
+              setToggleAddressEdit={setToggleAddressEdit}
+            />
           </motion.div>
         </motion.div>
       )}
