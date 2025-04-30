@@ -9,21 +9,22 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Lock,
   Mail,
-  Loader2,
   Eye,
   EyeOff,
   AlertCircle,
   ShieldCheck,
   ArrowLeft,
 } from "lucide-react";
-import Image from "next/image";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
-import { loginUser } from "@/redux/slices/userSlice copy";
+import {
+  fetchUsers,
+  getCurrentUser,
+  loginUserAsync,
+} from "@/redux/slices/userSlice";
 import ButtonLoader from "../components/loaders/ButtonLoader";
 
 export default function AdminEntryPage() {
@@ -100,7 +101,7 @@ export default function AdminEntryPage() {
           localStorage.removeItem("rememberMe");
         }
 
-        dispatch(loginUser(formData));
+        dispatch(loginUserAsync(formData));
         toast.success("Welcome back, Admin!", {
           icon: "👋",
           duration: 4000,
@@ -184,7 +185,9 @@ export default function AdminEntryPage() {
                   type="email"
                   name="email"
                   placeholder="Email address"
-                  className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                  className={` focus-visible:ring-orange-500 pl-10 ${
+                    errors.email ? "border-red-500" : ""
+                  }`}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -211,7 +214,7 @@ export default function AdminEntryPage() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Password"
-                  className={`pl-10 pr-10 ${
+                  className={`  focus-visible:ring-orange-500 pl-10 pr-10 ${
                     errors.password ? "border-red-500" : ""
                   }`}
                   value={formData.password}

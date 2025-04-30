@@ -196,9 +196,9 @@ export default function PaymentProgress({ val }: { val: number }) {
 //           <p className="text-sm font-medium">
 //             {currentStep < steps.length ? (
 //               <>
-//                 Current status:{" "}
+//                 Current status:
 //                 <span className="text-blue-600">
-//                   {steps[currentStep - 1].label}
+//                   {steps[currentStep - 1]?.label}
 //                 </span>
 //               </>
 //             ) : (

@@ -33,23 +33,6 @@ interface Images {
   productId: number | string;
 }
 
-// {"id": 4,
-//         "comment": "Good features but the battery life could be better.",
-//         "rating": 5,
-//         "productId": 3,
-//         "orderId": "4",
-//         "userId": 6,
-//         "createdAt": "2025-04-21T17:49:39.751Z",
-//         "user": {
-//           "id": 6,
-//           "name": "Moses mwangi",
-//           "email": "moses.me7662@gmail.com"
-//         },
-//         "product": {
-//           "id": 3,
-//           "name": "moses mwangi"
-//         }}
-
 interface ReviewState {
   reviews: Review[];
   status: "idle" | "loading" | "succeeded" | "failed";

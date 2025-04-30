@@ -132,7 +132,7 @@ function useCategoryContex() {
   };
 
   const handleBuyNow = (id: any) => {
-    const quantity = 3;
+    const quantity = 1;
     setIsLoading(true);
 
     localStorage.setItem("buyProductQuantity", quantity.toString());

@@ -25,12 +25,19 @@ const useOrder_Sales_Comparison = (orders: any[], users: any[]) => {
       .filter((order) => {
         const matchedDate =
           format(new Date(order.createdAt), "yyyy-MM") ===
-          format(month, "yyyy-MM");
+            format(month, "yyyy-MM") &&
+          order.paymentStatus.toLowerCase() === "paid";
 
         return matchedDate;
       })
       .reduce((total, order) => total + order.totalPrice, 0);
   };
+
+  const revenue =
+    orders
+      ?.filter((el) => el.paymentStatus.toLowerCase() === "paid")
+      ?.map((el) => el.totalPrice)
+      ?.reduce((val, arr) => val + arr, 0) || 0;
 
   const previousMonth = subMonths(currentMonth, 1);
 
@@ -91,7 +98,7 @@ const useOrder_Sales_Comparison = (orders: any[], users: any[]) => {
       : currentWeekOrders >= previousWeekOrders * 2
       ? `${(currentWeekOrders / previousWeekOrders).toFixed(1)}x`
       : previousWeekOrders >= currentWeekOrders * 2
-      ? `-${(previousWeekOrders / currentWeekOrders).toFixed(1)}x`
+      ? `${(previousWeekOrders / currentWeekOrders).toFixed(1)}x`
       : `${orderChange > 0 ? `+${orderChange}` : orderChange}%`
     : "N/A";
 
@@ -151,6 +158,7 @@ const useOrder_Sales_Comparison = (orders: any[], users: any[]) => {
     previousMonthSales,
     formattedSalesChange,
     salesChange,
+    revenue: revenue.toFixed(1),
 
     currentMonthCustomers,
     previousMonthCustomers,

@@ -34,6 +34,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { capitalizeWords } from "@/app/types/products";
 import DeleteProduct from "./DeleteProduct";
+import { Pagination } from "@/app/components/pagination/pagination";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -43,6 +46,13 @@ export default function ProductsPage() {
 
   const [selectedProductId, setSelectedProductId] = useState<number>();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
+  const [paymentFilters, setPaymentFilters] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const ordersPerPage = 10;
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -67,6 +77,45 @@ export default function ProductsPage() {
       // console.error("Failed to delete product:", error);
       toast.error("Failed to delete product");
     }
+  };
+
+  // Filter orders based on search term and filters
+  const filteredProduct = products.filter((product) => {
+    // Search term matching
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch =
+      product.id.toString().includes(searchLower) ||
+      product.name.toLowerCase().includes(searchLower) ||
+      product.status.toLowerCase().includes(searchLower) ||
+      product.category.toLowerCase().includes(searchLower) ||
+      product.price.toString().includes(searchLower);
+    product.description.toString().includes(searchLower);
+    product?.brand?.toString().includes(searchLower);
+
+    // Status filter matching
+    const matchesStatus =
+      statusFilters.length === 0 || statusFilters.includes(product.status);
+
+    // Payment filter matching
+    // const matchesPayment =
+    //   paymentFilters.length === 0 ||
+    //   paymentFilters.includes(product.paymentStatus);
+
+    // return matchesSearch && matchesStatus && matchesPayment;
+    return matchesSearch && matchesStatus;
+  });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProduct?.length / ordersPerPage);
+  const indexOfLastorder = currentPage * ordersPerPage;
+  const indexOfFirstorder = indexOfLastorder - ordersPerPage;
+  const currentProduct = filteredProduct?.slice(
+    indexOfFirstorder,
+    indexOfLastorder
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -97,10 +146,12 @@ export default function ProductsPage() {
             <div className="flex items-center space-x-4 flex-1 max-w-md">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
+                <Input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search products..."
-                  className="pl-10 pr-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className=" focus-visible:ring-orange-500 pl-10 pr-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
                 />
               </div>
               <Button variant="outline" className="flex items-center">
@@ -122,57 +173,89 @@ export default function ProductsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">
-                      {product.name}
-                    </TableCell>
-                    <TableCell>{capitalizeWords(product.category)}</TableCell>
-                    <TableCell>${product.price}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold bg-green-100 ${
-                          product.stock > 0 ? "text-green-800" : "text-red-700"
-                        }`}
-                      >
-                        {product.stock > 0 ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {/* <Button variant="ghost" size="sm">
+                {currentProduct.length > 0 ? (
+                  <>
+                    {currentProduct?.map((product) => (
+                      <TableRow key={product.id}>
+                        <TableCell className="font-medium">
+                          {product.name}
+                        </TableCell>
+                        <TableCell>
+                          {capitalizeWords(product.category)}
+                        </TableCell>
+                        <TableCell>${product.price}</TableCell>
+                        <TableCell>{product.stock}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-semibold bg-green-100 ${
+                              product.stock > 0
+                                ? "text-green-800"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {/* <Button variant="ghost" size="sm">
                         <MoreVertical className="w-4 h-4" />
                       </Button> */}
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleView(product)}>
-                            <Eye className="w-4 h-4 mr-2" /> View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEdit(product)}>
-                            <Edit className="w-4 h-4 mr-2" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-red-600"
-                            onClick={() => {
-                              setSelectedProductId(product.id);
-                              setShowDeleteDialog(true);
-                            }}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleView(product)}
+                              >
+                                <Eye className="w-4 h-4 mr-2" /> View
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEdit(product)}
+                              >
+                                <Edit className="w-4 h-4 mr-2" /> Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => {
+                                  setSelectedProductId(product.id);
+                                  setShowDeleteDialog(true);
+                                }}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-4">
+                      {searchTerm ||
+                      statusFilters.length > 0 ||
+                      paymentFilters.length > 0
+                        ? "No orders match your criteria"
+                        : "No orders found"}
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
+          </div>
+          <div className="pt-1">
+            <Separator />
+            <div className="pt-5">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </div>
         </Card>
       </div>
