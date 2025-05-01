@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import Navbar from "./home-page/navbar/Navbar";
 import Hero_Section from "./home-page/hero_section/Hero_Section";
-import Hero_Section1 from "./home-page/hero_section/Hero_Section1";
 import ProductCategories from "./home-page/category/ProductCategorySection";
 import TrendingProducts from "./home-page/TredingProduct";
 import RecommendedForYou from "./home-page/RecommedationProduct";
@@ -15,7 +14,6 @@ import { setCart } from "@/redux/slices/cartSlice";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import NewsletterSection from "./home-page/newsletter/NewsletterSection";
-// import DiagonalDivider from "./home-page/hero_section/try";
 
 export default function HomePage() {
   const dispatch: AppDispatch = useDispatch();

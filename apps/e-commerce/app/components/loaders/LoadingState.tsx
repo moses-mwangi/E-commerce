@@ -1,6 +1,16 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 
 export default function LoadingState() {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "visible";
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className=" bg-transparent p-4 rounded-lg flex items-center space-x-3">
