@@ -1,13 +1,7 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  FiSearch,
-  FiX,
-  FiChevronDown,
-  FiMic,
-  FiCamera,
-  FiClock,
-} from "react-icons/fi";
+
+import React from "react";
+import { FiSearch, FiX, FiChevronDown, FiMic, FiClock } from "react-icons/fi";
 import { AiOutlineFire, AiOutlineStar } from "react-icons/ai";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -22,326 +16,56 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
-import { debounce } from "lodash-es";
 import { Skeleton } from "@/components/ui/skeleton";
-import ImageSearch from "../home-page/navbar/search/ImageSearch";
 import ImageSearchPopup from "./ImageSearchPopUp";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-
-// Types
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-  rating?: number;
-  brand?: string;
-};
+import { capitalizeWords, Product } from "../types/products";
+import { Category, Subcategory } from "../types/category";
+import useSearch from "./useSearch";
+import e from "express";
+import { useRouter } from "next/navigation";
 
 type SearchSuggestion = {
   type: "product" | "category" | "brand" | "recent" | "popular" | string;
-  data: Product | string;
+  data: Product | Category | object | string;
 };
-
-type SearchResult = {
-  products: Product[];
-  categories: string[];
-  brands: string[];
-};
-
-// Mock data - replace with real API calls
-const categories = [
-  "All Categories",
-  "Electronics",
-  "Fashion",
-  "Home & Garden",
-  "Beauty",
-  "Sports",
-  "Toys",
-  "Books",
-];
-
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: "Wireless Headphones Pro X",
-    price: 199.99,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
-    category: "Electronics",
-    rating: 4.5,
-    brand: "SoundMaster",
-  },
-  {
-    id: 2,
-    name: "Smart Watch Series 5",
-    price: 299.99,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-    category: "Electronics",
-    rating: 4.7,
-    brand: "TechWear",
-  },
-  {
-    id: 3,
-    name: "Running Shoes AirMax",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-    category: "Fashion",
-    rating: 4.3,
-    brand: "SportRun",
-  },
-  {
-    id: 4,
-    name: "Running Shoes AirMax",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-    category: "Beauty",
-    rating: 4.3,
-    brand: "SportRun",
-  },
-  {
-    id: 5,
-    name: "Running Shoes AirMax  jjjjjjj",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-    category: "Beautys",
-    rating: 4.3,
-    brand: "SportRun",
-  },
-  {
-    id: 6,
-    name: "Running Shoes AirMax   whats",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-
-    category: "Beautye",
-    rating: 4.3,
-    brand: "SportRun",
-  },
-];
 
 const ModernEcommerceSearch = () => {
-  // Search state
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [isLoading, setIsLoading] = useState(false);
+  const { push } = useRouter();
+  const {
+    query,
+    setQuery,
+    suggestions,
+    showSuggestions,
+    setShowSuggestions,
+    selectedCategory,
+    setSelectedCategory,
+    isLoading,
+    categories,
+    status,
 
-  // Enhanced features state
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [popularSearches, setPopularSearches] = useState<string[]>([]);
-  const [trendingCategories, setTrendingCategories] = useState<string[]>([]);
-  const [popularBrands, setPopularBrands] = useState<string[]>([]);
-  const [isListening, setIsListening] = useState(false);
+    recentSearches,
+    setRecentSearches,
+    popularSearches,
+    trendingCategories,
 
-  const searchRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
+    isListening,
 
-  const { categories:as } = useSelector((state: RootState) => state.category);
-  const { products } = useSelector((state: RootState) => state.product);
+    searchRef,
+    inputRef,
+    recognitionRef,
 
-  // Load recent and popular searches from localStorage/API
-  useEffect(() => {
-    const storedRecent = JSON.parse(
-      localStorage.getItem("recentSearches") || "[]"
-    );
-    setRecentSearches(storedRecent);
+    handleSearch,
+    debouncedSearch,
+    startVoiceSearch,
+    setSuggestionsCount,
 
-    // Simulate fetching popular data
-    setPopularSearches([
-      "iPhone 15 Pro",
-      "Air Fryer XXL",
-      "Yoga Mat Premium",
-      "Blender Pro 2000",
-      'Smart TV 4K 65"',
-    ]);
+    products,
+  } = useSearch();
 
-    setTrendingCategories([
-      "Gaming Laptops",
-      "Wireless Earbuds",
-      "Smart Home",
-      "Fitness Trackers",
-      "Organic Skincare",
-    ]);
-
-    setPopularBrands(["Apple", "Samsung", "Nike", "Nikey", "Sony", "Dyson"]);
-  }, []);
-
-  // Initialize voice recognition
-  useEffect(() => {
-    if (typeof window !== "undefined" && "webkitSpeechRecognition" in window) {
-      recognitionRef.current = new (window as any).webkitSpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = "en-US";
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setQuery(transcript);
-        setIsListening(false);
-        trackSearchAnalytics(transcript, "voice");
-        handleSearch({ preventDefault: () => {} });
-      };
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error("Voice recognition error", event.error);
-        setIsListening(false);
-      };
-    }
-
-    // Close suggestions when clicking outside
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Mock API call with debouncing
-  const fetchSearchResults = useCallback(
-    debounce(async (query: string, category: string): Promise<SearchResult> => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Filter products
-          const filteredProducts = mockProducts.filter(
-            (product) =>
-              product.name.toLowerCase().includes(query.toLowerCase()) &&
-              (category === "All Categories" || product.category === category)
-          );
-
-          // Find matching categories
-          const matchedCategories = categories.filter(
-            (cat) =>
-              cat.toLowerCase().includes(query.toLowerCase()) &&
-              cat !== "All Categories"
-          );
-
-          // Find matching brands
-          const matchedBrands = popularBrands.filter((brand) =>
-            brand.toLowerCase().includes(query.toLowerCase())
-          );
-
-          resolve({
-            products: filteredProducts,
-            categories: matchedCategories,
-            brands: matchedBrands,
-          });
-        }, 300);
-      });
-    }, 500),
-    []
-  );
-
-  const handleSearchChange = useCallback(
-    async (searchQuery: string) => {
-      if (searchQuery.length < 3) {
-        setSuggestions([]);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const results = await fetchSearchResults(searchQuery, selectedCategory);
-        console.log(results);
-
-        if (!results) {
-          setSuggestions([]);
-          return;
-        }
-
-        const newSuggestions: SearchSuggestion[] = [
-          ...(results.categories ?? []).map((cat: any) => ({
-            type: "category",
-            data: cat,
-          })),
-          ...(results.brands ?? []).map((brand: any) => ({
-            type: "brand",
-            data: brand,
-          })),
-          ...(results.products ?? []).map((product: any) => ({
-            type: "product",
-            data: product,
-          })),
-        ];
-
-        setSuggestions(newSuggestions.slice(0, 8));
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [fetchSearchResults, selectedCategory]
-  );
-
-  useEffect(() => {
-    if (query.trim()) {
-      handleSearchChange(query);
-    } else {
-      setSuggestions([]);
-    }
-  }, [query, handleSearchChange]);
-
-  const handleSearch = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
-    // Save to recent searches
-    const updatedRecent = [
-      query,
-      ...recentSearches.filter(
-        (item) => item.toLowerCase() !== query.toLowerCase()
-      ),
-    ].slice(0, 5);
-    setRecentSearches(updatedRecent);
-    localStorage.setItem("recentSearches", JSON.stringify(updatedRecent));
-
-    // Implement actual search navigation here
-    console.log("Searching for:", query, "in category:", selectedCategory);
-    setShowSuggestions(false);
-    inputRef.current?.blur();
-  };
-
-  const startVoiceSearch = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-      return;
-    }
-
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-      setIsListening(true);
-    } else {
-      console.warn("Voice recognition not supported");
-    }
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Implement image search logic here
-      console.log("Searching with image:", file.name);
-      setQuery(`Similar to ${file.name.split(".")[0]}`);
-      handleSearch({ preventDefault: () => {} });
-    }
-  };
-
-  const trackSearchAnalytics = (term: string, method: string) => {
-    console.log(`Tracking search: ${term} (${method})`);
-    // Implement analytics tracking here
-  };
+  const manipulatedCategory = [
+    "All Categories",
+    ...categories.map((el) => el.name),
+  ];
 
   const renderSuggestionIcon = (type: string) => {
     switch (type) {
@@ -360,7 +84,42 @@ const ModernEcommerceSearch = () => {
     }
   };
 
-  const renderSuggestionContent = (suggestion: SearchSuggestion) => {
+  const renderSuggestionContent = (
+    suggestion: SearchSuggestion,
+    searchQuery: string
+  ) => {
+    const highlightMatch = (text: string, query: string) => {
+      if (!query) return text;
+
+      const lowerText = text?.toLowerCase();
+      const lowerQuery = query?.toLowerCase();
+      const matches: number[] = [];
+
+      let index = lowerText?.indexOf(lowerQuery);
+      while (index !== -1) {
+        for (let i = index; i < index + query.length; i++) {
+          matches.push(i);
+        }
+        index = lowerText?.indexOf(lowerQuery, index + 1);
+      }
+
+      return (
+        <span>
+          {text?.split("").map((char, i) => (
+            <span
+              key={i}
+              style={{
+                color: matches.includes(i) ? "inherit" : "rgba(0, 0, 0, 0.5)",
+                fontWeight: matches.includes(i) ? "normal" : "normal",
+              }}
+            >
+              {char}
+            </span>
+          ))}
+        </span>
+      );
+    };
+
     switch (suggestion.type) {
       case "product":
         const product = suggestion.data as Product;
@@ -368,7 +127,10 @@ const ModernEcommerceSearch = () => {
           <div className="flex items-center w-full">
             <div className="relative w-10 h-10 rounded-md overflow-hidden mr-3 flex-shrink-0">
               <Image
-                src={product.image}
+                src={String(
+                  product.productImages?.find((el) => el.isMain === true)
+                    ?.url || "/placeholder-product.jpg"
+                )}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -376,61 +138,151 @@ const ModernEcommerceSearch = () => {
               />
             </div>
             <div className="flex-grow min-w-0">
-              <div className="font-medium truncate">{product.name}</div>
+              <div className="font-medium truncate">
+                {highlightMatch(product.name.toLowerCase(), searchQuery)}
+              </div>
               <div className="flex items-center text-sm text-gray-600">
-                <span>${product.price.toFixed(2)}</span>
-                {product.rating && (
+                <span>${product.price?.toFixed(2)}</span>
+                {product.ratings && (
                   <span className="ml-2 flex items-center">
                     <AiOutlineStar className="text-yellow-400 mr-1" />
-                    {product.rating}
+                    {product.ratings}
                   </span>
                 )}
               </div>
             </div>
             {product.brand && (
-              <div className="text-xs text-gray-500 ml-2">{product.brand}</div>
+              <div className="text-xs text-gray-500 ml-2">
+                {highlightMatch(product.brand.toLowerCase(), searchQuery)}
+              </div>
             )}
           </div>
         );
-      case "category":
+      case "subProduct":
+        const subProduct = suggestion.data as Product;
         return (
           <div className="flex items-center w-full">
-            <span className="font-medium">{suggestion.data as string}</span>
-            <span className="ml-auto text-xs text-gray-500">Category</span>
+            <span className="font-medium">
+              {highlightMatch(
+                capitalizeWords(String(subProduct?.subCategory)),
+                searchQuery
+              )}
+            </span>
+            <span className="ml-auto text-xs text-gray-500">
+              {capitalizeWords(subProduct.category)}
+            </span>
+          </div>
+        );
+      case "category":
+        const category = suggestion.data as Category;
+        return (
+          <div className="flex items-center w-full">
+            <span className="font-medium">
+              {highlightMatch(capitalizeWords(category.name), searchQuery)}
+            </span>
+            <span className="ml-auto text-xs text-gray-500">
+              category
+              {/* {capitalizeWords(category.name)} */}
+            </span>
+          </div>
+        );
+      case "categorySlung":
+        const categorySlung = suggestion.data as Category;
+        return (
+          <div className="flex items-center w-full">
+            <span className="font-medium">
+              {highlightMatch(
+                capitalizeWords(String(categorySlung.slug)),
+                searchQuery
+              )}
+            </span>
+            <span className="ml-auto text-xs text-gray-500">
+              category
+              {/* {capitalizeWords(categorySlung.name)} */}
+            </span>
+          </div>
+        );
+      case "subCategoryName":
+        const subCategoryName = suggestion.data as Subcategory;
+        return (
+          <div className="flex items-center w-full">
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {highlightMatch(
+                  capitalizeWords(subCategoryName?.name),
+                  searchQuery
+                )}
+              </span>
+            </div>
+            <span className="ml-auto text-xs text-gray-500">
+              category
+              {/* {capitalizeWords(subCategoryName.name)} */}
+            </span>
+          </div>
+        );
+      case "subCategorySlung":
+        const subCategorySlung = suggestion.data as Subcategory;
+
+        return (
+          <div className="flex items-center w-full">
+            <span className="font-medium">
+              {highlightMatch(
+                capitalizeWords(String(subCategorySlung?.slug)),
+                searchQuery
+              )}
+            </span>
+            <span className="ml-auto text-xs text-gray-500">category</span>
           </div>
         );
       case "brand":
         return (
-          <div className="flex items-center w-full">
-            <span className="font-medium">{suggestion.data as string}</span>
+          <div className="flex bg-red-500 items-center w-full">
+            <span className="font-medium">
+              {highlightMatch(
+                capitalizeWords(suggestion.data as string),
+                searchQuery
+              )}
+            </span>
             <span className="ml-auto text-xs text-gray-500">Brand</span>
           </div>
         );
       case "recent":
       case "popular":
-        return <span className="font-medium">{suggestion.data as string}</span>;
+        return (
+          <span className="font-medium">
+            {highlightMatch(suggestion.data as string, searchQuery)}
+          </span>
+        );
       default:
-        return <span>{suggestion.data as string}</span>;
+        return (
+          <span>{highlightMatch(suggestion.data as string, searchQuery)}</span>
+        );
     }
   };
 
   return (
-    // <div className="relative w-full max-w-5xl mx-auto" ref={searchRef}>
     <div className="relative w-[600px]" ref={searchRef}>
       <form onSubmit={handleSearch} className="flex">
         <div className="relative flex-grow">
           <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-full shadow-sm ggpl-4 px-[8px] py-1 border border-gray-200 hover:border-gray-300 transition-colors">
             <Select
               value={selectedCategory}
-              onValueChange={setSelectedCategory}
+              onValueChange={(value) => {
+                setSelectedCategory(value);
+                if (query) {
+                  debouncedSearch(query, value);
+                }
+              }}
             >
               <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
                 <SelectValue placeholder={t("All Products")} />
               </SelectTrigger>
               <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
-                {categories.map((category, idx) => (
+                {manipulatedCategory?.map((category, idx) => (
                   <SelectGroup key={idx}>
-                    <SelectItem value={category}>{category}</SelectItem>
+                    <SelectItem value={category}>
+                      {capitalizeWords(category)}
+                    </SelectItem>
                   </SelectGroup>
                 ))}
               </SelectContent>
@@ -440,7 +292,7 @@ const ModernEcommerceSearch = () => {
               <Input
                 ref={inputRef}
                 className="w-full py-2 px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400 text-base"
-                placeholder={t("Search for products, brands, categories...")}
+                placeholder={t("Search for products, categories...")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
@@ -456,7 +308,10 @@ const ModernEcommerceSearch = () => {
                     variant="ghost"
                     size="icon"
                     className="rounded-full text-gray-500 hover:text-gray-700"
-                    onClick={() => setQuery("")}
+                    onClick={() => {
+                      setQuery("");
+                      inputRef.current?.focus();
+                    }}
                   >
                     <FiX size={18} />
                   </Button>
@@ -485,16 +340,21 @@ const ModernEcommerceSearch = () => {
               type="submit"
               className="h-[30px] flex items-center gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
               aria-label="Search"
+              disabled={status === "loading"}
+              onClick={() => {
+                console.log("Moses");
+                // inputRef.current?.focus();
+                handleSearch({ preventDefault: () => {} });
+              }}
             >
               <SearchIcon size={18} /> {t("search")}
             </Button>
           </div>
 
-          {/* Suggestions dropdown */}
           {showSuggestions && (
             <div
               id="search-suggestions"
-              className="absolute z-30 overflow-y-scroll custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
+              className="absolute z-30 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
             >
               {/* Recent searches */}
               {recentSearches.length > 0 && query.length < 1 && (
@@ -522,6 +382,7 @@ const ModernEcommerceSearch = () => {
                       onClick={() => {
                         setQuery(search);
                         inputRef.current?.focus();
+                        handleSearch({ preventDefault: () => {} });
                       }}
                     >
                       <FiClock className="mr-3 text-gray-400" />
@@ -545,6 +406,7 @@ const ModernEcommerceSearch = () => {
                       onClick={() => {
                         setQuery(search);
                         inputRef.current?.focus();
+                        handleSearch({ preventDefault: () => {} });
                       }}
                     >
                       <AiOutlineFire className="mr-3 text-gray-400" />
@@ -570,6 +432,7 @@ const ModernEcommerceSearch = () => {
                           setQuery(category);
                           setSelectedCategory("All Categories");
                           inputRef.current?.focus();
+                          handleSearch({ preventDefault: () => {} });
                         }}
                       >
                         {category}
@@ -604,30 +467,73 @@ const ModernEcommerceSearch = () => {
                         className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
                         onClick={() => {
                           if (suggestion.type === "product") {
-                            setQuery((suggestion.data as Product).name);
-                          } else {
+                            const product = suggestion.data as Product;
+                            setQuery(product.name);
+                            push(
+                              `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+                            );
+                          } else if (suggestion.type === "subProduct") {
+                            const product = suggestion.data as Product;
+                            setQuery(product?.subCategory);
+                            push(
+                              `/category/${product.category}/${product.subCategory}`
+                            );
+                          } else if (suggestion.type === "brand") {
                             setQuery(suggestion.data as string);
+                            console.log(suggestion.data);
+                          } else if (suggestion.type === "category") {
+                            const category = suggestion.data as Category;
+                            setQuery(category.name);
+                            push(`/category/${category.name}`);
+                          } else if (suggestion.type === "categorySlung") {
+                            const category = suggestion.data as Category;
+                            setQuery(String(category?.slug));
+                            push(`/category/${category.name}`);
+                          } else if (suggestion.type === "subCategoryName") {
+                            const subCategory = suggestion.data as Subcategory;
+                            const proCate = categories.find((el) =>
+                              el.subcategories.some(
+                                (sub) => sub.id === subCategory.id
+                              )
+                            );
+
+                            setQuery(subCategory?.name);
+                            push(
+                              `/category/${proCate?.name}/${subCategory.name}`
+                            );
+                          } else if (suggestion.type === "subCategorySlung") {
+                            const subCategory = suggestion.data as Subcategory;
+                            const proCate = categories.find((el) =>
+                              el.subcategories.some(
+                                (sub) => sub.id === subCategory.id
+                              )
+                            );
+                            setQuery(
+                              String((suggestion?.data as Subcategory)?.slug)
+                            );
+                            push(
+                              `/category/${proCate?.name}/${subCategory.name}`
+                            );
                           }
                           handleSearch({ preventDefault: () => {} });
                         }}
                       >
                         {renderSuggestionIcon(suggestion.type)}
-                        {renderSuggestionContent(suggestion)}
+                        {renderSuggestionContent(suggestion, query)}
                       </div>
                     ))
-                  ) : query.length >= 3 ? (
+                  ) : query.length >= 2 ? (
                     <div className="px-4 py-3 text-gray-500">
                       No results found for &quot;{query}&quot;
                     </div>
                   ) : (
                     <div className="px-4 py-3 text-gray-500">
-                      Keep typing to see suggestions...
+                      Type at least 2 characters to see suggestions
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Quick actions */}
               {query.length > 0 && (
                 <div className="p-2 border-t bg-gray-50 flex justify-between">
                   <button
@@ -645,7 +551,8 @@ const ModernEcommerceSearch = () => {
                     className="text-sm text-primary hover:text-primary/80 font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleSearch({ preventDefault: () => {} });
+                      // handleSearch({ preventDefault: () => {} });
+                      setSuggestionsCount(suggestions.length);
                     }}
                   >
                     View all results

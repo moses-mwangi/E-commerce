@@ -284,18 +284,6 @@ body {
   }
 }
 
-/* Add these to your global CSS */
-.dropdown-content {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.overflow-scroll {
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
 /* Page transition animations */
 /* .page-transition-enter {
   opacity: 0;

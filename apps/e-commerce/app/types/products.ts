@@ -48,7 +48,7 @@ export interface ProductState {
 
 export const capitalizeWords = (str: string) => {
   return str
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    ?.split(" ")
+    ?.map((word) => word?.charAt(0).toUpperCase() + word?.slice(1))
+    ?.join(" ");
 };
