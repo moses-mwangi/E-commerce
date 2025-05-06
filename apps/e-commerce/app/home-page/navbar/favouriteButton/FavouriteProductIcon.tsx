@@ -34,7 +34,7 @@ export default function FavouriteProduct() {
         <HeartIcon
           fill={favItems.length > 0 ? "#fca5a5" : "none"}
           color={favItems.length > 0 ? "#fca5a5" : "gray"}
-          className="w-[26px] h-[26px]"
+          className="sm:w-[26px] sm:h-[26px] w-5 h-5"
         />
       </div>
     </div>

@@ -22,10 +22,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import PaymentProgress from "./orderPayments/PaymentProgress";
 import { useCheckOut } from "@/hooks/useCheckOut";
 
-export default function CheckoutPage() {
+export default function CheckOutForm() {
   const {
     onSubmit,
     handleSubmit,
@@ -36,6 +35,7 @@ export default function CheckoutPage() {
     loadingLocation,
     handleUseCurrentLocation,
     currentUser,
+
     status,
   } = useCheckOut();
   const formValues = watch();
@@ -60,15 +60,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="max-w-4xl mx-auto p-4"
-    >
-      <div className="pt-4">
-        <PaymentProgress val={1} />
-      </div>
-
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <Card className="p-6 bg-white shadow-lg rounded-lg">
         <AnimatePresence mode="wait">
           <motion.div
@@ -140,7 +132,7 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              <div>
+              <div className="col-span-2 md:col-span-1">
                 <Input
                   {...register("phoneNumber")}
                   placeholder="Phone Number"
@@ -163,7 +155,6 @@ export default function CheckoutPage() {
                     {...register("streetAddress")}
                     placeholder="Street Address"
                     className="w-full focus-visible:ring-orange-500/60"
-                    // defaultValue={String(currentUser?.)}
                   />
                   <Button
                     type="button"

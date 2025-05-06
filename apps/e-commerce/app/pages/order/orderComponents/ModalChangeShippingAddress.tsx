@@ -27,7 +27,6 @@ const Modal = ({ toggleAddressEdit, setToggleAddressEdit, orderId }: any) => {
     };
   }, [toggleAddressEdit]);
 
-  // Click outside to close
   const handleClickOutside = (e: { target: any }) => {
     if (modalRef.current && !(modalRef.current as any)?.contains(e.target)) {
       setToggleAddressEdit(false);
@@ -38,7 +37,7 @@ const Modal = ({ toggleAddressEdit, setToggleAddressEdit, orderId }: any) => {
     <AnimatePresence>
       {toggleAddressEdit && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-[3px]"
+          className="fixed inset-0 z-50 flex items-center p-4 justify-center bg-black/60 backdrop-blur-[3px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -46,12 +45,12 @@ const Modal = ({ toggleAddressEdit, setToggleAddressEdit, orderId }: any) => {
         >
           <motion.div
             ref={modalRef}
-            className="max-h-dvh overflow-y-auto bg-white rounded-xl p-4 w-full max-w-3xl"
+            className="max-h-[95%] overflow-y-auto bg-white rounded-xl w-full max-w-3xl"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            onClick={(e) => e.stopPropagation()} // Prevent click from bubbling
+            onClick={(e) => e.stopPropagation()}
           >
             <ChangeShippingAddress
               orderId={orderId}

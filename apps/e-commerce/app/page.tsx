@@ -25,7 +25,7 @@ export default function HomePage() {
     }
   }, [dispatch]);
   return (
-    <div>
+    <div className=" overflow-x-hidden">
       <Navbar />
       <Hero_Section />
       <ProductCategories />

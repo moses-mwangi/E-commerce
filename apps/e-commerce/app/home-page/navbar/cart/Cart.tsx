@@ -64,11 +64,14 @@ export default function CartPage() {
           push("/pages/cart");
         }}
       >
-        <ShoppingCartIcon color="gray" className="w-[26px] h-[26px]" />
+        <ShoppingCartIcon
+          color="gray"
+          className="sm:w-[26px] sm:h-[26px] w-5 h-5"
+        />
         {items.length > 0 && (
           <Button
-            className="absolute top-0 right-0 transform translate-x-3 -translate-y-3 
-            bg-red-400 rounded-full w-[18px] h-[18px] p-0"
+            className="absolute top-1 right-1 sm:top-0 sm:right-0 transform translate-x-3 -translate-y-3 
+            bg-red-400 rounded-full sm:w-[18px] sm:h-[18px] w-[14px] h-[14px] text-sm sm:text-base p-0"
           >
             {items.length}
           </Button>

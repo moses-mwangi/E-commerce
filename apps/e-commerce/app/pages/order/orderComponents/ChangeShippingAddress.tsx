@@ -93,9 +93,10 @@ export default function ChangeShippingAddress({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-4xl mx-auto p-4"
+      // className="max-w-4xl py mx-auto sm:p-4"
+      className=" mx-auto ffffsm:p-4"
     >
-      <Card className="p-6 bg-white shadow-lg rounded-lg">
+      <Card className="sm:p-6 p-4 bg-white shadow-lg rounded-lg">
         <AnimatePresence mode="wait">
           <motion.div
             key="shipping"

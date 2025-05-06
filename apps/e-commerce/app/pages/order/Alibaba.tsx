@@ -178,10 +178,10 @@ function OrdersPage() {
         orderId={orderId}
       />
 
-      <div className="max-w-6xl min-h-screen mx-auto p-6 space-y-6">
+      <div className="max-w-6xl min-h-screen mx-auto sm:p-6 py-3 sm:space-y-6 ">
         {currentUserOrder?.length === 0 ? (
-          <Card className="p-4">
-            <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">
+          <Card className="sm:p-4 w-full mt-10 mx-1">
+            <div className="bg-gray-100 flex items-center flex-col justify-center sm:mx-40 rounded-xl text-center sm:py-10 min-h-[40svh]">
               <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h2 className="text-2xl font-semibold text-gray-700 mb-2">
                 Your order is empty
@@ -201,14 +201,14 @@ function OrdersPage() {
           <Tabs
             onValueChange={(value) => setCurrentTab(value)}
             defaultValue="all"
-            className="space-y-6"
+            className="sm:space-y-6 space-y-5"
           >
-            <TabsList>
+            <TabsList className="w-screen overflow-x-scroll">
               {tabsValues.map((el) => {
                 const count = getTabCount(el.value);
                 return (
-                  <div key={el.option}>
-                    <TabsTrigger value={el.value}>
+                  <div key={el.option} className="">
+                    <TabsTrigger value={el.value} className="">
                       <span>{el.option}</span>
                       {count > 0 && (
                         <Badge
@@ -223,12 +223,13 @@ function OrdersPage() {
                 );
               })}
             </TabsList>
+
             <Card className="bg-gray-100 p-2">
               {filteredOrders.length > 0 ? (
                 <Accordion type="multiple" className="space-y-4">
                   {filteredOrders?.map((order: Order) => (
                     <AccordionItem key={order.id} value={`order-${order.id}`}>
-                      <AccordionTrigger className="hover:no-underline flex justify-between items-center p-4 border rounded-lg shadow-md bg-white">
+                      <AccordionTrigger className="hover:no-underline flex items-center p-4 border rounded-lg shadow-md bg-white">
                         <div className="">
                           <div className="flex items-center space-x-2">
                             <span className="font-semibold">
@@ -260,7 +261,7 @@ function OrdersPage() {
                             Ordered on : {getDate(order?.createdAt)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="sm:flex hidden items-center gap-2">
                           <Badge
                             variant={
                               order.status === "pending"
@@ -285,7 +286,8 @@ function OrdersPage() {
                             {order?.paymentStatus?.toUpperCase()}
                           </Badge>
                         </div>
-                        <div className="flex items-center space-x-2">
+
+                        <div className="sm:flex hidden  items-center space-x-2">
                           <div className="gap-1 bg-gray-50 flex items-center justify-center rounded-md px-3 py-[6px] border border-gray-200 text-xs">
                             <Download size={15} className="" />
                             <span>Download</span>
@@ -301,15 +303,31 @@ function OrdersPage() {
                           <div className="mb-6">
                             <div className="flex justify-between mb-4">
                               <h3 className="font-medium">Order Status</h3>
-                              <Badge
-                                variant={
-                                  order.status === "pending"
-                                    ? ("warning" as "destructive")
-                                    : ("success" as "outline")
-                                }
-                              >
-                                {order.status.toUpperCase()}
-                              </Badge>
+                              <div className="flex gap-2">
+                                <Badge
+                                  className={`${
+                                    order.paymentStatus === "unpaid"
+                                      ? "bg-red-500/90"
+                                      : " text-green-500 bg-gray-50"
+                                  }`}
+                                  variant={
+                                    order.paymentStatus === "unpaid"
+                                      ? "destructive"
+                                      : ("success" as "outline")
+                                  }
+                                >
+                                  {order?.paymentStatus?.toUpperCase()}
+                                </Badge>
+                                <Badge
+                                  variant={
+                                    order.status === "pending"
+                                      ? ("warning" as "destructive")
+                                      : ("success" as "outline")
+                                  }
+                                >
+                                  {order.status.toUpperCase()}
+                                </Badge>
+                              </div>
                             </div>
 
                             <PaymentProgress val={4} />

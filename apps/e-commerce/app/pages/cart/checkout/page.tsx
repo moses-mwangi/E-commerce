@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import CheckOutForm from "./CheckOutForm";
 import Footer from "@/app/home-page/footer/Footer";
 import Logo from "@/app/home-page/navbar/logo/Logo";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
 import Link from "next/link";
 import { FaBell } from "react-icons/fa";
 import CartPage from "@/app/home-page/navbar/cart/Cart";
+import CheckOutPage from "./CheckOutPage";
 
 export default function Page() {
   return (
@@ -34,7 +34,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <CheckOutForm />
+      <CheckOutPage />
       <Footer />
     </div>
   );

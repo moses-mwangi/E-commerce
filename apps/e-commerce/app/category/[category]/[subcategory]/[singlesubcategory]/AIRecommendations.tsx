@@ -18,9 +18,11 @@ export default function AIRecommendations() {
   }, [dispatch]);
 
   return (
-    <div className="py-6">
-      <h2 className="text-2xl font-bold mb-6">AI-Powered Recommendations</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="py-3 sm:py-6">
+      <h2 className=" text-xl sm:text-2xl font-bold mb-6">
+        AI-Powered Recommendations
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {products?.map((product) => (
           <Card key={product.id} className=" bg-slate-50 p-4 h-auto">
             <div>
@@ -36,21 +38,27 @@ export default function AIRecommendations() {
                 alt={product.name}
                 width={150}
                 height={50}
-                className="rounded-lg  w-full h-[170px]"
+                className="rounded-lg  w-full h-28 sm:max-h-36"
               />
             </div>
-            <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
-            <p className="text-sm text-gray-500">${product.price}</p>
-            <div className="text-sm text-gray-500">
-              <p
-                className={`${
-                  product.status === "in stock"
-                    ? " text-green-600"
-                    : " text-red-600"
-                }`}
-              >
-                {product.status}
-              </p>
+
+            <h3 className="mt-2 text-base sm:text-lg sm:font-semibold">
+              {product.name}
+            </h3>
+
+            <div className="flex gap-2">
+              <p className="text-sm text-gray-500">${product.price}</p>
+              <div className="text-sm text-gray-500">
+                <p
+                  className={`${
+                    product.status === "in stock"
+                      ? " text-green-600"
+                      : " text-red-600"
+                  }`}
+                >
+                  {product.status}
+                </p>
+              </div>
             </div>
           </Card>
         ))}

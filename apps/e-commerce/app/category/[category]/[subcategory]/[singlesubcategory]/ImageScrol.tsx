@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowDown, FaUps } from "react-icons/fa";
 import {
   SlArrowDown,
@@ -26,6 +26,25 @@ export default function ImageScrol({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imagesPerPage, setImagesPerPage] = useState(5);
 
+  useEffect(() => {
+    function updateImagesPerPage() {
+      const width = window.innerWidth;
+      if (width < 440) {
+        setImagesPerPage(2);
+      } else if (width < 540) {
+        setImagesPerPage(3);
+      } else if (width < 650) {
+        setImagesPerPage(4);
+      } else {
+        setImagesPerPage(5); // Default for desktop
+      }
+    }
+
+    updateImagesPerPage();
+    window.addEventListener("resize", updateImagesPerPage);
+    return () => window.removeEventListener("resize", updateImagesPerPage);
+  }, []);
+
   function handlePrev() {
     if (images && images.length > 1 && currentIndex > 0) {
       setCurrentIndex((el) => el - 1);
@@ -43,7 +62,7 @@ export default function ImageScrol({
   if (!images) return null;
 
   return (
-    <div className=" flex items-center gap-2">
+    <div className=" flex items-center justify-center gap-2">
       <Button
         className="disabled:cursor-not-allowed w-9 h-9  rounded-full hover:text-black hover:bg-slate-50 bg-slate-100 font-semibold"
         onClick={() => {

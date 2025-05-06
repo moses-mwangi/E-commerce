@@ -178,7 +178,7 @@ function OrdersPage() {
         orderId={orderId}
       />
 
-      <div className="max-w-6xl min-h-screen mx-auto p-6 space-y-6">
+      <div className="max-w-6xl min-h-screen mx-auto sm:p-6 space-y-6">
         {currentUserOrder?.length === 0 ? (
           <Card className="p-4">
             <div className="bg-gray-100 mx-40 rounded-xl text-center py-10 min-h-[40svh]">

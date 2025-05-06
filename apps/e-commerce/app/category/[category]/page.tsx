@@ -42,7 +42,7 @@ export default function CategoryPage() {
           }}
         />
 
-        <div className="containehr rounded-lg mt-4 mx-auto px-4 py-3">
+        <div className="containehr rounded-lg mt-4 mx-auto md:px-4 py-3">
           <Category />
         </div>
       </div>

@@ -2,10 +2,11 @@
 
 import { clearCart, setCart } from "@/redux/slices/cartSlice";
 import { createOrder } from "@/redux/slices/orderSlice";
+import { fetchProducts } from "@/redux/slices/productSlice";
 import { getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -60,6 +61,7 @@ export function useCheckOut() {
       const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
       dispatch(setCart(savedCart));
       dispatch(getCurrentUser());
+      dispatch(fetchProducts());
     }
   }, [dispatch]);
 
@@ -200,5 +202,8 @@ export function useCheckOut() {
     loadingLocation,
     currentUser,
     status,
+    id,
+    products,
+    items,
   };
 }

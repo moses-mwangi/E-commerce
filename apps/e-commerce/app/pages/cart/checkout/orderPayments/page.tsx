@@ -42,14 +42,14 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="py-12 gap-3  w-full  px-24 ">
+        <div className="py-12 gap-3  w-full md:px-8  lg:px-20 ">
           <div>
             <PaymentProgress val={2} />
           </div>
           <PaymentProvider>
-            <div className="gap-3  w-full justify-between flex">
+            <div className="lg:flex lg:gap-3  w-full justify-between">
               <PaymentsForm setDetails={setDetails} />
-              <div className=" sticky top-7 self-start max-w-[376px] w-full">
+              <div className="px-2 md:px-0 md:sticky md:top-7 self-start max-w-[376px] w-full">
                 <OrderSummaryCard details={details} />
               </div>
             </div>

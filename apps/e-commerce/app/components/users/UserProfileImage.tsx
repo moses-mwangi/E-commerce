@@ -1,160 +1,10 @@
-// "use client";
-
-// import React from "react";
-// import { useRouter } from "next/navigation";
-// import { useDispatch, useSelector } from "react-redux";
-// import { AppDispatch, RootState } from "@/redux/store";
-// import { logoutUser } from "@/redux/slices/userSlice";
-// import { Separator } from "@/components/ui/separator";
-// import {
-//   HoverCard,
-//   HoverCardContent,
-//   HoverCardTrigger,
-// } from "@/components/ui/hover-card";
-// import {
-//   ShoppingBag,
-//   Heart,
-//   User,
-//   MessageSquare,
-//   LogOut,
-//   User2,
-//   Settings,
-// } from "lucide-react";
-// import { cn } from "@/lib/utils";
-
-// const menuItems = [
-//   {
-//     label: "Orders",
-//     icon: ShoppingBag,
-//     href: "/pages/order",
-//     color: "text-blue-600",
-//   },
-//   {
-//     label: "Messages",
-//     icon: MessageSquare,
-//     href: "/messages",
-//     color: "text-green-600",
-//   },
-//   {
-//     label: "Favorites",
-//     icon: Heart,
-//     href: "/favorites",
-//     color: "text-pink-600",
-//   },
-//   {
-//     label: "Account",
-//     icon: User,
-//     href: "/pages/account",
-//     color: "text-purple-600",
-//   },
-//   {
-//     label: "Admin",
-//     icon: User2,
-//     href: "/dashboard/admin",
-//     color: "text-orange-600",
-//     adminOnly: true,
-//   },
-//   {
-//     label: "Settings",
-//     icon: Settings,
-//     href: "/settings",
-//     color: "text-gray-600",
-//   },
-// ];
-
-// export default function UserProfileImage() {
-//   const router = useRouter();
-//   const dispatch = useDispatch<AppDispatch>();
-//   const { currentUser } = useSelector((state: RootState) => state.user);
-
-//   const handleLogOut = () => {
-//     dispatch(logoutUser());
-//     router.push("/");
-//   };
-
-//   const handleNavigation = (href: string) => {
-//     router.push(href);
-//   };
-
-//   const userInitial = currentUser?.name?.[0]?.toUpperCase() || "U";
-//   const isAdmin = currentUser?.tradeRole === "admin"; // Adjust based on your user roles
-
-//   return (
-//     <HoverCard openDelay={0} closeDelay={150}>
-//       <HoverCardTrigger asChild>
-//         <button
-//           className="outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 rounded-full"
-//           aria-label="User menu"
-//         >
-//           <div className="bg-gradient-to-br from-pink-500 to-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center w-10 h-10 transition-all duration-200 hover:shadow-lg hover:scale-110">
-//             {userInitial}
-//           </div>
-//         </button>
-//       </HoverCardTrigger>
-
-//       <HoverCardContent
-//         align="end"
-//         className="w-80 p-0 shadow-xl rounded-xl overflow-hidden border-none"
-//       >
-//         <div className="flex flex-col">
-//           {/* User Info Header */}
-//           <div className="px-4 py-3 bg-gradient-to-br from-pink-50 to-pink-100">
-//             <div className="flex items-center gap-3">
-//               <div className="h-12 w-12 flex items-center justify-center font-bold text-white rounded-full bg-gradient-to-br from-pink-500 to-pink-700 shadow-md">
-//                 {userInitial}
-//               </div>
-//               <div className="flex-1 min-w-0">
-//                 <h1 className="text-lg font-semibold truncate">
-//                   {currentUser?.name || "Guest User"}
-//                 </h1>
-//                 <p className="text-sm text-gray-600 truncate">
-//                   {currentUser?.email || "No email available"}
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Menu Items */}
-//           <nav className="p-2">
-//             {menuItems.map((item) => {
-//               if (item.adminOnly && !isAdmin) return null;
-
-//               return (
-//                 <button
-//                   key={item.label}
-//                   onClick={() => handleNavigation(item.href)}
-//                   className="w-full text-left flex items-center gap-3 py-2.5 px-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-//                 >
-//                   <item.icon className={cn("w-5 h-5", item.color)} />
-//                   <span className="font-medium">{item.label}</span>
-//                 </button>
-//               );
-//             })}
-//           </nav>
-
-//           <Separator className="my-1" />
-
-//           {/* Logout Button */}
-//           <button
-//             onClick={handleLogOut}
-//             className="flex items-center gap-3 py-3 px-5 text-red-600 hover:bg-red-50 transition-colors duration-200"
-//           >
-//             <LogOut className="w-5 h-5" />
-//             <span className="font-medium">Log Out</span>
-//           </button>
-//         </div>
-//       </HoverCardContent>
-//     </HoverCard>
-//   );
-// }
-
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { getCurrentUser, logoutUser } from "@/redux/slices/userSlice";
+import { logoutUser } from "@/redux/slices/userSlice";
 import { Separator } from "@/components/ui/separator";
 import {
   HoverCard,
@@ -200,7 +50,7 @@ export default function UserProfileImage() {
       {isLoading && <LoadingState />}
       <HoverCard>
         <HoverCardTrigger className="p-0" asChild>
-          <div className="bg-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center w-10 h-10 transition-transform hover:scale-110">
+          <div className="bg-pink-700 cursor-pointer rounded-full text-white font-semibold flex items-center justify-center sm:w-10 sm:h-10 w-8 h-8 transition-transform hover:scale-110">
             {currentUser?.name?.[0]?.toUpperCase() || "U"}
           </div>
         </HoverCardTrigger>

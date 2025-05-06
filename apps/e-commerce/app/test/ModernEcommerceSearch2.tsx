@@ -267,37 +267,39 @@ const ModernEcommerceSearch = () => {
   return (
     <>
       {loading === true && <LoadingState />}
-      <div className="relative w-[600px]" ref={searchRef}>
+      <div className="relative lg:w-[600px]" ref={searchRef}>
         <form onSubmit={handleSearch} className="flex">
           <div className="relative flex-grow">
             <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-full shadow-sm ggpl-4 px-[8px] py-1 border border-gray-200 hover:border-gray-300 transition-colors">
-              <Select
-                value={selectedCategory}
-                onValueChange={(value) => {
-                  setSelectedCategory(value);
-                  if (query) {
-                    debouncedSearch(query, value);
-                  }
-                }}
-              >
-                <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                  <SelectValue placeholder={t("All Products")} />
-                </SelectTrigger>
-                <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
-                  {manipulatedCategory?.map((category, idx) => (
-                    <SelectGroup key={idx}>
-                      <SelectItem value={category}>
-                        {capitalizeWords(category)}
-                      </SelectItem>
-                    </SelectGroup>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className=" hidden lg:flex">
+                <Select
+                  value={selectedCategory}
+                  onValueChange={(value) => {
+                    setSelectedCategory(value);
+                    if (query) {
+                      debouncedSearch(query, value);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
+                    <SelectValue placeholder={t("All Products")} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
+                    {manipulatedCategory?.map((category, idx) => (
+                      <SelectGroup key={idx}>
+                        <SelectItem value={category}>
+                          {capitalizeWords(category)}
+                        </SelectItem>
+                      </SelectGroup>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <div className="flex items-center flex-grow relative">
+              <div className="flex h-6 sm:h-min items-center flex-grow relative">
                 <Input
                   ref={inputRef}
-                  className="w-full py-2 px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400 text-base"
+                  className="w-full text-[13px] md:text-base md:py-2 md:px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400"
                   placeholder={t("Search for products, categories...")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -327,7 +329,7 @@ const ModernEcommerceSearch = () => {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className={`rounded-full ${
+                    className={`rounded-full hidden lg:flex ${
                       isListening
                         ? "text-red-500 animate-pulse"
                         : "text-gray-500 hover:text-gray-700"
@@ -344,16 +346,15 @@ const ModernEcommerceSearch = () => {
 
               <Button
                 type="submit"
-                className="h-[30px] flex items-center gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
+                className=" text-sm sm:text-base h-[23px] sm:h-[30px] flex items-center gap-1 sm:gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-2  sm:px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
                 aria-label="Search"
                 disabled={status === "loading"}
                 onClick={() => {
-                  console.log("Moses");
                   // inputRef.current?.focus();
                   handleSearch({ preventDefault: () => {} });
                 }}
               >
-                <SearchIcon size={18} /> {t("search")}
+                <SearchIcon className=" w-3 h-3 sm:w-7 sm:h-7" /> {t("search")}
               </Button>
             </div>
 
