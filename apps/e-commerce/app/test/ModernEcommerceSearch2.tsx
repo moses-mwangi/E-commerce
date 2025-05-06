@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FiSearch, FiX, FiChevronDown, FiMic, FiClock } from "react-icons/fi";
 import { AiOutlineFire, AiOutlineStar } from "react-icons/ai";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ import { Category, Subcategory } from "../types/category";
 import useSearch from "./useSearch";
 import e from "express";
 import { useRouter } from "next/navigation";
+import LoadingState from "../components/loaders/LoadingState";
 
 type SearchSuggestion = {
   type: "product" | "category" | "brand" | "recent" | "popular" | string;
@@ -31,6 +32,7 @@ type SearchSuggestion = {
 
 const ModernEcommerceSearch = () => {
   const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
   const {
     query,
     setQuery,
@@ -58,14 +60,16 @@ const ModernEcommerceSearch = () => {
     debouncedSearch,
     startVoiceSearch,
     setSuggestionsCount,
-
-    products,
   } = useSearch();
 
   const manipulatedCategory = [
     "All Categories",
     ...categories.map((el) => el.name),
   ];
+
+  const showLoading = () => {
+    setLoading(true);
+  };
 
   const renderSuggestionIcon = (type: string) => {
     switch (type) {
@@ -261,309 +265,321 @@ const ModernEcommerceSearch = () => {
   };
 
   return (
-    <div className="relative w-[600px]" ref={searchRef}>
-      <form onSubmit={handleSearch} className="flex">
-        <div className="relative flex-grow">
-          <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-full shadow-sm ggpl-4 px-[8px] py-1 border border-gray-200 hover:border-gray-300 transition-colors">
-            <Select
-              value={selectedCategory}
-              onValueChange={(value) => {
-                setSelectedCategory(value);
-                if (query) {
-                  debouncedSearch(query, value);
-                }
-              }}
-            >
-              <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                <SelectValue placeholder={t("All Products")} />
-              </SelectTrigger>
-              <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
-                {manipulatedCategory?.map((category, idx) => (
-                  <SelectGroup key={idx}>
-                    <SelectItem value={category}>
-                      {capitalizeWords(category)}
-                    </SelectItem>
-                  </SelectGroup>
-                ))}
-              </SelectContent>
-            </Select>
+    <>
+      {loading === true && <LoadingState />}
+      <div className="relative w-[600px]" ref={searchRef}>
+        <form onSubmit={handleSearch} className="flex">
+          <div className="relative flex-grow">
+            <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-full shadow-sm ggpl-4 px-[8px] py-1 border border-gray-200 hover:border-gray-300 transition-colors">
+              <Select
+                value={selectedCategory}
+                onValueChange={(value) => {
+                  setSelectedCategory(value);
+                  if (query) {
+                    debouncedSearch(query, value);
+                  }
+                }}
+              >
+                <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
+                  <SelectValue placeholder={t("All Products")} />
+                </SelectTrigger>
+                <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
+                  {manipulatedCategory?.map((category, idx) => (
+                    <SelectGroup key={idx}>
+                      <SelectItem value={category}>
+                        {capitalizeWords(category)}
+                      </SelectItem>
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <div className="flex items-center flex-grow relative">
-              <Input
-                ref={inputRef}
-                className="w-full py-2 px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400 text-base"
-                placeholder={t("Search for products, categories...")}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                aria-autocomplete="list"
-                aria-expanded={showSuggestions}
-                aria-controls="search-suggestions"
-              />
+              <div className="flex items-center flex-grow relative">
+                <Input
+                  ref={inputRef}
+                  className="w-full py-2 px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400 text-base"
+                  placeholder={t("Search for products, categories...")}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
+                  aria-autocomplete="list"
+                  aria-expanded={showSuggestions}
+                  aria-controls="search-suggestions"
+                />
 
-              <div className="absolute right-0 top-0 h-full flex items-center pr-3">
-                {query && (
+                <div className="absolute right-0 top-0 h-full flex items-center pr-3">
+                  {query && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full text-gray-500 hover:text-gray-700"
+                      onClick={() => {
+                        setQuery("");
+                        inputRef.current?.focus();
+                      }}
+                    >
+                      <FiX size={18} />
+                    </Button>
+                  )}
+
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="rounded-full text-gray-500 hover:text-gray-700"
-                    onClick={() => {
-                      setQuery("");
-                      inputRef.current?.focus();
-                    }}
+                    className={`rounded-full ${
+                      isListening
+                        ? "text-red-500 animate-pulse"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                    onClick={startVoiceSearch}
+                    disabled={!recognitionRef.current}
+                    title="Voice search"
                   >
-                    <FiX size={18} />
+                    <FiMic size={18} />
                   </Button>
-                )}
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className={`rounded-full ${
-                    isListening
-                      ? "text-red-500 animate-pulse"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                  onClick={startVoiceSearch}
-                  disabled={!recognitionRef.current}
-                  title="Voice search"
-                >
-                  <FiMic size={18} />
-                </Button>
-                <ImageSearchPopup />
+                  <ImageSearchPopup />
+                </div>
               </div>
+
+              <Button
+                type="submit"
+                className="h-[30px] flex items-center gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
+                aria-label="Search"
+                disabled={status === "loading"}
+                onClick={() => {
+                  console.log("Moses");
+                  // inputRef.current?.focus();
+                  handleSearch({ preventDefault: () => {} });
+                }}
+              >
+                <SearchIcon size={18} /> {t("search")}
+              </Button>
             </div>
 
-            <Button
-              type="submit"
-              className="h-[30px] flex items-center gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
-              aria-label="Search"
-              disabled={status === "loading"}
-              onClick={() => {
-                console.log("Moses");
-                // inputRef.current?.focus();
-                handleSearch({ preventDefault: () => {} });
-              }}
-            >
-              <SearchIcon size={18} /> {t("search")}
-            </Button>
-          </div>
-
-          {showSuggestions && (
-            <div
-              id="search-suggestions"
-              className="absolute z-30 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
-            >
-              {/* Recent searches */}
-              {recentSearches.length > 0 && query.length < 1 && (
-                <div className="p-2 border-b">
-                  <div className="flex items-center px-3 py-2 text-gray-500">
-                    <FiClock className="mr-2" />
-                    <span className="font-medium">Recent searches</span>
-                    <button
-                      className="ml-auto text-xs text-gray-400 hover:text-gray-600"
-                      onClick={() => {
-                        setRecentSearches([]);
-                        localStorage.setItem(
-                          "recentSearches",
-                          JSON.stringify([])
-                        );
-                      }}
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  {recentSearches.map((search, index) => (
-                    <div
-                      key={`recent-${index}`}
-                      className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
-                      onClick={() => {
-                        setQuery(search);
-                        inputRef.current?.focus();
-                        handleSearch({ preventDefault: () => {} });
-                      }}
-                    >
-                      <FiClock className="mr-3 text-gray-400" />
-                      <span>{search}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Popular searches */}
-              {popularSearches.length > 0 && query.length < 1 && (
-                <div className="p-2 border-b">
-                  <div className="flex items-center px-3 py-2 text-gray-500">
-                    <AiOutlineFire className="mr-2" />
-                    <span className="font-medium">Popular right now</span>
-                  </div>
-                  {popularSearches.map((search, index) => (
-                    <div
-                      key={`popular-${index}`}
-                      className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
-                      onClick={() => {
-                        setQuery(search);
-                        inputRef.current?.focus();
-                        handleSearch({ preventDefault: () => {} });
-                      }}
-                    >
-                      <AiOutlineFire className="mr-3 text-gray-400" />
-                      <span>{search}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Trending categories */}
-              {trendingCategories.length > 0 && query.length < 1 && (
-                <div className="p-2 border-b">
-                  <div className="flex items-center px-3 py-2 text-gray-500">
-                    <FiChevronDown className="mr-2" />
-                    <span className="font-medium">Trending categories</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2 px-3 pb-3">
-                    {trendingCategories.map((category, index) => (
-                      <div
-                        key={`category-${index}`}
-                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full cursor-pointer"
+            {showSuggestions && (
+              <div
+                id="search-suggestions"
+                className="absolute z-30 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
+              >
+                {/* Recent searches */}
+                {recentSearches.length > 0 && query.length < 1 && (
+                  <div className="p-2 border-b">
+                    <div className="flex items-center px-3 py-2 text-gray-500">
+                      <FiClock className="mr-2" />
+                      <span className="font-medium">Recent searches</span>
+                      <button
+                        className="ml-auto text-xs text-gray-400 hover:text-gray-600"
                         onClick={() => {
-                          setQuery(category);
-                          setSelectedCategory("All Categories");
+                          setRecentSearches([]);
+                          localStorage.setItem(
+                            "recentSearches",
+                            JSON.stringify([])
+                          );
+                        }}
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    {recentSearches.map((search, index) => (
+                      <div
+                        key={`recent-${index}`}
+                        className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
+                        onClick={() => {
+                          setQuery(search);
                           inputRef.current?.focus();
                           handleSearch({ preventDefault: () => {} });
                         }}
                       >
-                        {category}
+                        <FiClock className="mr-3 text-gray-400" />
+                        <span>{search}</span>
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Search suggestions */}
-              {query.length > 0 && (
-                <div className="p-2">
-                  {isLoading ? (
-                    Array(4)
-                      .fill(0)
-                      .map((_, index) => (
-                        <div
-                          key={`loading-${index}`}
-                          className="px-3 py-3 flex items-center"
-                        >
-                          <Skeleton className="w-8 h-8 rounded mr-3" />
-                          <div className="flex-grow">
-                            <Skeleton className="h-4 w-3/4 mb-2" />
-                            <Skeleton className="h-3 w-1/2" />
-                          </div>
-                        </div>
-                      ))
-                  ) : suggestions.length > 0 ? (
-                    suggestions.map((suggestion, index) => (
+                {/* Popular searches */}
+                {popularSearches.length > 0 && query.length < 1 && (
+                  <div className="p-2 border-b">
+                    <div className="flex items-center px-3 py-2 text-gray-500">
+                      <AiOutlineFire className="mr-2" />
+                      <span className="font-medium">Popular right now</span>
+                    </div>
+                    {popularSearches.map((search, index) => (
                       <div
-                        key={`suggestion-${index}`}
+                        key={`popular-${index}`}
                         className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
                         onClick={() => {
-                          if (suggestion.type === "product") {
-                            const product = suggestion.data as Product;
-                            setQuery(product.name);
-                            push(
-                              `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
-                            );
-                          } else if (suggestion.type === "subProduct") {
-                            const product = suggestion.data as Product;
-                            setQuery(product?.subCategory);
-                            push(
-                              `/category/${product.category}/${product.subCategory}`
-                            );
-                          } else if (suggestion.type === "brand") {
-                            setQuery(suggestion.data as string);
-                            console.log(suggestion.data);
-                          } else if (suggestion.type === "category") {
-                            const category = suggestion.data as Category;
-                            setQuery(category.name);
-                            push(`/category/${category.name}`);
-                          } else if (suggestion.type === "categorySlung") {
-                            const category = suggestion.data as Category;
-                            setQuery(String(category?.slug));
-                            push(`/category/${category.name}`);
-                          } else if (suggestion.type === "subCategoryName") {
-                            const subCategory = suggestion.data as Subcategory;
-                            const proCate = categories.find((el) =>
-                              el.subcategories.some(
-                                (sub) => sub.id === subCategory.id
-                              )
-                            );
-
-                            setQuery(subCategory?.name);
-                            push(
-                              `/category/${proCate?.name}/${subCategory.name}`
-                            );
-                          } else if (suggestion.type === "subCategorySlung") {
-                            const subCategory = suggestion.data as Subcategory;
-                            const proCate = categories.find((el) =>
-                              el.subcategories.some(
-                                (sub) => sub.id === subCategory.id
-                              )
-                            );
-                            setQuery(
-                              String((suggestion?.data as Subcategory)?.slug)
-                            );
-                            push(
-                              `/category/${proCate?.name}/${subCategory.name}`
-                            );
-                          }
+                          setQuery(search);
+                          inputRef.current?.focus();
                           handleSearch({ preventDefault: () => {} });
                         }}
                       >
-                        {renderSuggestionIcon(suggestion.type)}
-                        {renderSuggestionContent(suggestion, query)}
+                        <AiOutlineFire className="mr-3 text-gray-400" />
+                        <span>{search}</span>
                       </div>
-                    ))
-                  ) : query.length >= 2 ? (
-                    <div className="px-4 py-3 text-gray-500">
-                      No results found for &quot;{query}&quot;
-                    </div>
-                  ) : (
-                    <div className="px-4 py-3 text-gray-500">
-                      Type at least 2 characters to see suggestions
-                    </div>
-                  )}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              {query.length > 0 && (
-                <div className="p-2 border-t bg-gray-50 flex justify-between">
-                  <button
-                    type="button"
-                    className="text-sm text-gray-500 hover:text-gray-700"
-                    onClick={() => {
-                      setQuery("");
-                      setShowSuggestions(false);
-                    }}
-                  >
-                    Clear search
-                  </button>
-                  <button
-                    type="submit"
-                    className="text-sm text-primary hover:text-primary/80 font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      // handleSearch({ preventDefault: () => {} });
-                      setSuggestionsCount(suggestions.length);
-                    }}
-                  >
-                    View all results
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </form>
-    </div>
+                {/* Trending categories */}
+                {trendingCategories.length > 0 && query.length < 1 && (
+                  <div className="p-2 border-b">
+                    <div className="flex items-center px-3 py-2 text-gray-500">
+                      <FiChevronDown className="mr-2" />
+                      <span className="font-medium">Trending categories</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 px-3 pb-3">
+                      {trendingCategories.map((category, index) => (
+                        <div
+                          key={`category-${index}`}
+                          className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full cursor-pointer"
+                          onClick={() => {
+                            setQuery(category);
+                            setSelectedCategory("All Categories");
+                            inputRef.current?.focus();
+                            handleSearch({ preventDefault: () => {} });
+                          }}
+                        >
+                          {category}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Search suggestions */}
+                {query.length > 0 && (
+                  <div className="p-2">
+                    {isLoading ? (
+                      Array(4)
+                        .fill(0)
+                        .map((_, index) => (
+                          <div
+                            key={`loading-${index}`}
+                            className="px-3 py-3 flex items-center"
+                          >
+                            <Skeleton className="w-8 h-8 rounded mr-3" />
+                            <div className="flex-grow">
+                              <Skeleton className="h-4 w-3/4 mb-2" />
+                              <Skeleton className="h-3 w-1/2" />
+                            </div>
+                          </div>
+                        ))
+                    ) : suggestions.length > 0 ? (
+                      suggestions.map((suggestion, index) => (
+                        <div
+                          key={`suggestion-${index}`}
+                          className="px-3 py-3 hover:bg-gray-50 cursor-pointer flex items-center"
+                          onClick={() => {
+                            if (suggestion.type === "product") {
+                              const product = suggestion.data as Product;
+                              showLoading();
+                              setQuery(product.name);
+                              push(
+                                `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+                              );
+                            } else if (suggestion.type === "subProduct") {
+                              const product = suggestion.data as Product;
+                              showLoading();
+                              setQuery(product?.subCategory);
+                              push(
+                                `/category/${product.category}/${product.subCategory}`
+                              );
+                            } else if (suggestion.type === "brand") {
+                              setQuery(suggestion.data as string);
+                              showLoading();
+                              console.log(suggestion.data);
+                            } else if (suggestion.type === "category") {
+                              const category = suggestion.data as Category;
+                              showLoading();
+                              setQuery(category.name);
+                              push(`/category/${category.name}`);
+                            } else if (suggestion.type === "categorySlung") {
+                              const category = suggestion.data as Category;
+                              showLoading();
+                              setQuery(String(category?.slug));
+                              push(`/category/${category.name}`);
+                            } else if (suggestion.type === "subCategoryName") {
+                              const subCategory =
+                                suggestion.data as Subcategory;
+                              showLoading();
+                              const proCate = categories.find((el) =>
+                                el.subcategories.some(
+                                  (sub) => sub.id === subCategory.id
+                                )
+                              );
+
+                              setQuery(subCategory?.name);
+                              push(
+                                `/category/${proCate?.name}/${subCategory.name}`
+                              );
+                            } else if (suggestion.type === "subCategorySlung") {
+                              const subCategory =
+                                suggestion.data as Subcategory;
+                              showLoading();
+                              const proCate = categories.find((el) =>
+                                el.subcategories.some(
+                                  (sub) => sub.id === subCategory.id
+                                )
+                              );
+                              setQuery(
+                                String((suggestion?.data as Subcategory)?.slug)
+                              );
+                              push(
+                                `/category/${proCate?.name}/${subCategory.name}`
+                              );
+                            }
+                            handleSearch({ preventDefault: () => {} });
+                          }}
+                        >
+                          {renderSuggestionIcon(suggestion.type)}
+                          {renderSuggestionContent(suggestion, query)}
+                        </div>
+                      ))
+                    ) : query.length >= 2 ? (
+                      <div className="px-4 py-3 text-gray-500">
+                        No results found for &quot;{query}&quot;
+                      </div>
+                    ) : (
+                      <div className="px-4 py-3 text-gray-500">
+                        Type at least 2 characters to see suggestions
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {query.length > 0 && (
+                  <div className="p-2 border-t bg-gray-50 flex justify-between">
+                    <button
+                      type="button"
+                      className="text-sm text-gray-500 hover:text-gray-700"
+                      onClick={() => {
+                        setQuery("");
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      Clear search
+                    </button>
+                    <button
+                      type="submit"
+                      className="text-sm text-primary hover:text-primary/80 font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // handleSearch({ preventDefault: () => {} });
+                        setSuggestionsCount(suggestions.length);
+                      }}
+                    >
+                      View all results
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

@@ -89,7 +89,7 @@ export default function LiveChat() {
         </div>
       )}
       <Card
-        className="flex items-center gap-3 cursor-pointer w-80 p-4 border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
+        className="flex items-center justify-center gap-3 cursor-pointer w-80 p-4 border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
         onClick={() => setShowChat(!showChat)}
       >
         <MessageCircleIcon className="text-blue-500" />

@@ -60,10 +60,10 @@ export default function LiveChat() {
 
   return (
     <div
-      className={`fixed bottom-5 z-50 right-5 ${showChat ? "w-80" : "w-52"}`}
+      className={`fixed bottom-5 z-50 right-5 ${showChat ? "w-80" : "w-56"}`}
     >
       {showChat && (
-        <div className="w-80 p-4 bg-white shadow-2xl rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <div className="p-4 bg-white shadow-2xl rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
           <h3 className="text-lg font-bold flex items-center text-gray-800 dark:text-gray-200">
             <FaComments className="mr-2 text-blue-500" /> AI ChatBot
           </h3>
@@ -105,10 +105,10 @@ export default function LiveChat() {
         </div>
       )}
       <Card
-        className="flex justify-center items-center gap-3 cursor-pointer w-full p-4 border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
+        className=" flex justify-center items-center gap-3 cursor-pointer w-full py-[10px] border bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:border-gray-700"
         onClick={() => setShowChat(!showChat)}
       >
-        <MessageCircleIcon size={21} className="text-blue-500" />
+        <MessageCircleIcon size={20} className="text-blue-500" />
         <p className="text-gray-800 dark:text-gray-200">Live Chat</p>
       </Card>
     </div>

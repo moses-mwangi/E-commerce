@@ -3,11 +3,14 @@
 import { setFav } from "@/redux/slices/favoriteSlice";
 import { RootState } from "@/redux/store";
 import { HeartIcon } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 export default function FavouriteProduct() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const { items: favItems } = useSelector(
@@ -19,12 +22,15 @@ export default function FavouriteProduct() {
     dispatch(setFav(savedFav));
   }, [dispatch]);
 
+  const showLoading = () => {
+    setIsLoading(true);
+    router.push("/pages/favourites");
+  };
+
   return (
     <div>
-      <div
-        className="cursor-pointer"
-        onClick={() => router.push("/pages/favourites")}
-      >
+      {isLoading === true && <LoadingState />}
+      <div className="cursor-pointer" onClick={() => showLoading()}>
         <HeartIcon
           fill={favItems.length > 0 ? "#fca5a5" : "none"}
           color={favItems.length > 0 ? "#fca5a5" : "gray"}

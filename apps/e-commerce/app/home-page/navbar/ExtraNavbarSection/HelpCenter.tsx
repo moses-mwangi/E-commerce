@@ -1,4 +1,5 @@
 import { FileText, HelpCircle, Mail, MessageSquare, Phone } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 export default function HelpCenter() {
@@ -10,19 +11,26 @@ export default function HelpCenter() {
         </h3>
         <div className="space-y-3">
           {[
-            "Order Status",
-            "Returns & Refunds",
-            "Payment Methods",
-            "Account Issues",
-            "Product Questions",
+            { title: "Order Status", path: "/help-center/order-status" },
+            {
+              title: "Returns & Refunds",
+              path: "/help-center/returns-refunds",
+            },
+            { title: "Payment Methods", path: "/help-center/payment-methods" },
+            { title: "Account Issues", path: "/help-center/account-issues" },
+            {
+              title: "Product Questions",
+              path: "/help-center/product-questions",
+            },
           ].map((topic, i) => (
-            <div
+            <Link
               key={i}
+              href={topic.path}
               className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
             >
               <FileText size={16} className="text-gray-500" />
-              <p>{topic}</p>
-            </div>
+              <p>{topic.title}</p>
+            </Link>
           ))}
         </div>
       </div>

@@ -5,19 +5,10 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import smartWatch from "../../../public/newArrival/smart_watch.png";
 import smartWatchs from "../../../public/newArrival/smartSpeker.png";
 import smartWatchb from "../../../public/category_Image/beauty.png";
-import {
-  ShoppingBag,
-  Mic,
-  Camera,
-  TrendingUp,
-  Star,
-  Truck,
-  Shield,
-} from "lucide-react";
-import ImageSearch from "../navbar/search/ImageSearch";
+import { Mic, TrendingUp, Star, Truck, Shield } from "lucide-react";
+import LoadingState from "@/app/components/loaders/LoadingState";
 
 const animations = {
   fadeInUp: {
@@ -63,182 +54,175 @@ const features = [
   },
 ];
 const HeroSection: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const showLoading = () => {
+    setIsLoading(true);
+  };
   return (
-    <section className="relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-300 rounded-full blur-3xl opacity-20" />
-      </div>
+    <>
+      {isLoading === true && <LoadingState />}
+      <section className="relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-300 rounded-full blur-3xl opacity-20" />
+        </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            className="space-y-8"
-            initial="hidden"
-            animate="visible"
-            variants={animations.stagger}
-          >
-            <motion.div className="space-y-4" variants={animations.fadeInUp}>
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                Discover
-                <span className="text-orange-600 block">Smart Shopping</span>
-                Experience
-              </h1>
-              <p className="text-lg text-gray-600 max-w-xl">
-                Experience the future of shopping with AI-powered
-                recommendations, personalized deals, and seamless checkout.
-              </p>
-            </motion.div>
-
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              className="flex flex-wrap gap-4"
-              variants={animations.fadeInUp}
+              className="space-y-8"
+              initial="hidden"
+              animate="visible"
+              variants={animations.stagger}
             >
-              <Link href="/category">
+              <motion.div className="space-y-4" variants={animations.fadeInUp}>
+                <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                  Discover
+                  <span className="text-orange-600 block">Smart Shopping</span>
+                  Experience
+                </h1>
+                <p className="text-lg text-gray-600 max-w-xl">
+                  Experience the future of shopping with AI-powered
+                  recommendations, personalized deals, and seamless checkout.
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="flex flex-wrap gap-4"
+                variants={animations.fadeInUp}
+              >
                 <Button
                   size="lg"
-                  className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200 flex items-center gap-2"
+                  onClick={showLoading}
+                  className="flex gap-5 h-9 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 py-3 shadow-lg transition-all duration-300"
                 >
-                  <ShoppingBag className="w-5 h-5" />
-                  Shop Now
+                  <Link href="/category" className="">
+                    🛍️ Shop Now
+                  </Link>
                 </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 hover:bg-orange-50"
-                onClick={() =>
-                  window.dispatchEvent(new CustomEvent("openVoiceSearch"))
-                }
-              >
-                <Mic className="w-5 h-5 mr-2" />
-                Voice Search
-              </Button>
-
-              <ImageSearch
-                icon={
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-2 hover:bg-orange-50"
-                    onClick={() => {
-                      window.dispatchEvent(new CustomEvent("openImageSearch"));
-                      setShowModal(true);
-                    }}
-                  >
-                    <Camera className="w-5 h-5 mr-2" />
-                    Image Search
-                  </Button>
-                }
-                showModal={showModal}
-                setShowModal={setShowModal}
-              />
-            </motion.div>
-
-            <motion.div
-              className="grid sm:grid-cols-3 gap-6 pt-8"
-              variants={animations.fadeInUp}
-            >
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-orange-100"
-                  whileHover={{ y: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                <Button
+                  size="lg"
+                  onClick={showLoading}
+                  className="h-9 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 py-3 shadow-lg transition-all duration-300"
                 >
-                  <div className="bg-orange-50 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-                    {feature.icon}
-                  </div>
-                  <h3 className="font-semibold text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
-                </motion.div>
-              ))}
-            </motion.div>
+                  <Link href="/category">Explore Category</Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 hover:bg-orange-50 h-9 py-3"
+                  onClick={() =>
+                    window.dispatchEvent(new CustomEvent("openVoiceSearch"))
+                  }
+                >
+                  <Mic className="w-5 h-5 mr-2" />
+                  Voice Search
+                </Button>
+              </motion.div>
 
-            <motion.div
-              className="flex items-center gap-6 pt-4"
-              variants={animations.fadeInUp}
-            >
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-green-500" />
-                <span className="text-sm text-gray-600">Secure Payment</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500" />
-                <span className="text-sm text-gray-600">
-                  Trusted by 10K+ Users
-                </span>
-              </div>
-            </motion.div>
-            <Button>
-              <Link href="/category">Explore Category</Link>
-            </Button>
-          </motion.div>
-
-          {/* Right Side - Hero Images */}
-          <motion.div
-            className="relative"
-            initial="hidden"
-            animate="visible"
-            variants={animations.imageScale}
-          >
-            <div className="relative aspect-square max-w-[600px] mx-auto">
-              {/* Main Product Image */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-orange-100 to-transparent rounded-2xl" />
-              <div className="relative w-full h-full p-6">
-                <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
-                  <Image
-                    src={smartWatchs} // Update with your image
-                    alt="Featured Products"
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-              </div>
-
-              {/* Floating Elements */}
               <motion.div
-                className="absolute -right-8 top-1/4 bg-white rounded-lg shadow-lg p-4"
-                animate={{ y: [0, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
+                className="grid sm:grid-cols-3 gap-6 pt-8"
+                variants={animations.fadeInUp}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
+                {features.map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-orange-100"
+                    whileHover={{ y: -5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="bg-orange-50 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+                      {feature.icon}
+                    </div>
+                    <h3 className="font-semibold text-gray-900">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {feature.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <motion.div
+                className="flex items-center gap-6 pt-4"
+                variants={animations.fadeInUp}
+              >
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-green-500" />
+                  <span className="text-sm text-gray-600">Secure Payment</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-500" />
+                  <span className="text-sm text-gray-600">
+                    Trusted by 10K+ Users
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Side - Hero Images */}
+            <motion.div
+              className="relative"
+              initial="hidden"
+              animate="visible"
+              variants={animations.imageScale}
+            >
+              <div className="relative aspect-square max-w-[600px] mx-auto">
+                {/* Main Product Image */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-100 to-transparent rounded-2xl" />
+                <div className="relative w-full h-full p-6">
+                  <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
                     <Image
-                      src={smartWatchb} // Update with your image
-                      alt="Product"
-                      width={48}
-                      height={48}
+                      src={smartWatchs} // Update with your image
+                      alt="Featured Products"
+                      fill
                       className="object-cover"
+                      priority
                     />
                   </div>
-                  <div>
-                    <p className="font-medium">New Arrival</p>
-                    <p className="text-sm text-gray-600">Just added!</p>
-                  </div>
                 </div>
-              </motion.div>
 
-              <motion.div
-                className="absolute -left-8 bottom-1/4 bg-white rounded-lg shadow-lg p-4"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 2.5 }}
-              >
-                <div className="text-center">
-                  <p className="font-bold text-orange-600">50% OFF</p>
-                  <p className="text-sm text-gray-600">Limited time offer</p>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
+                {/* Floating Elements */}
+                <motion.div
+                  className="absolute -right-8 top-1/4 bg-white rounded-lg shadow-lg p-4"
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <Image
+                        src={smartWatchb} // Update with your image
+                        alt="Product"
+                        width={48}
+                        height={48}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium">New Arrival</p>
+                      <p className="text-sm text-gray-600">Just added!</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="absolute -left-8 bottom-1/4 bg-white rounded-lg shadow-lg p-4"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.5 }}
+                >
+                  <div className="text-center">
+                    <p className="font-bold text-orange-600">50% OFF</p>
+                    <p className="text-sm text-gray-600">Limited time offer</p>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

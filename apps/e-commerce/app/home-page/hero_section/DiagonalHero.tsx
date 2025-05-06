@@ -24,6 +24,7 @@ export default function DiagonalDivider() {
 
   return (
     <section className="container flex text-white ">
+      jjjjj
       <div className="section section-1">
         <div className="h-full w-full">
           <div className="w-[60%] h-full flex flex-col justify-center px-16 bg-gradient-to-br from-gray-900 via-black to-gray-800">
@@ -63,7 +64,6 @@ export default function DiagonalDivider() {
           </div>
         </div>
       </div>
-
       <div className="section section-2 grid grid-cols-[1fr_1fr]">
         <div></div>
         <div className="flex w-full h-svh items-center justify-center">

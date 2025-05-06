@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Apple, CheckCircle2, Play, QrCode } from "lucide-react";
 import React from "react";
 
@@ -52,33 +53,36 @@ export default function GetOurApp() {
       </div>
 
       <div className="flex justify-center">
-        <div className="relative w-48 h-96 border-4 border-gray-800 rounded-3xl overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-8 bg-gray-800"></div>
-          <div className="absolute top-10 left-0 w-full h-full bg-gradient-to-b from-blue-50 to-white p-4">
-            <div className="bg-white rounded-lg shadow-md p-3 mb-3">
+        {/* <div className="relative w-48 h-96 border-4 border-gray-800 rounded-3xl overflow-hidden"> */}
+        <div className="relative w-36 h-72 border-4 border-gray-800 rounded-3xl overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-7 bg-gray-800" />
+
+          <div className="absolute top-7 left-0 w-full h-full bg-gradient-to-b from-blue-50 to-white px-3 py-2">
+            <div className="bg-white rounded-lg shadow-md px-2 py-[6px] mb-3">
               <div className="flex gap-2 mb-2">
-                <div className="bg-gray-200 rounded w-12 h-12"></div>
+                <div className="bg-gray-200 rounded w-10 h-10" />
                 <div className="flex-1">
-                  <div className="bg-gray-200 rounded h-3 w-3/4 mb-2"></div>
-                  <div className="bg-gray-200 rounded h-3 w-1/2"></div>
+                  <div className="bg-gray-200 rounded h-[9px] w-3/4 mb-2" />
+                  <div className="bg-gray-200 rounded h-[9px] w-1/2" />
                 </div>
               </div>
-              <div className="bg-primary text-white text-center py-2 rounded-md text-sm">
+              <Button className="bg-primary h-6 text-white text-center rounded-md text-[11px]">
                 Shop Now
-              </div>
+              </Button>
             </div>
             <div className="text-center">
-              <p className="font-bold text-lg mb-1">Welcome!</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-bold text-[17px] mb-1">Welcome!</p>
+              <p className="text-[11px] text-gray-500">
                 Scan this code to download our app
               </p>
-              <div className="mx-auto my-3 bg-white p-2 w-24 h-24 flex items-center justify-center">
-                <QrCode size={20} className="text-gray-400" />
+              <div className="mx-auto my-2 bg-white p-2 w-32 h-24 flex items-center justify-center">
+                <QrCode size={30} className="text-gray-400 " />
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div>Coming soon</div>
     </div>
   );
 }

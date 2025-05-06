@@ -181,6 +181,8 @@ export const categoryController = {
         "banner",
         "icon",
         "description",
+        "trending",
+        "featured",
       ],
       // limit: limit,
       // offset: categoryOffset, // Pagination for categories

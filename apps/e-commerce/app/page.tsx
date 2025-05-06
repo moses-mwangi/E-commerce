@@ -14,6 +14,7 @@ import { setCart } from "@/redux/slices/cartSlice";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import NewsletterSection from "./home-page/newsletter/NewsletterSection";
+import LiveChat from "./home-page/hero_section/LiveChat";
 
 export default function HomePage() {
   const dispatch: AppDispatch = useDispatch();
@@ -26,7 +27,6 @@ export default function HomePage() {
   return (
     <div>
       <Navbar />
-      {/* <Hero_Section1 /> */}
       <Hero_Section />
       <ProductCategories />
       <TrendingProducts />
@@ -36,6 +36,7 @@ export default function HomePage() {
       <BrowsingHistory />
       <NewsletterSection />
       <Footer />
+      <LiveChat />
     </div>
   );
 }

@@ -32,7 +32,7 @@ export default function NewsletterSection() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1"
+              className="flex-1 focus-visible:ring-orange-500"
             />
             <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
               <Send className="w-4 h-4 mr-2" />
