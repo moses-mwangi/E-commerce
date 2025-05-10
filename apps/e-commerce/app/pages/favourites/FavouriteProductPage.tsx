@@ -54,7 +54,6 @@ export default function FavouritesProductPage() {
 
   const handleAddToCart = (id: any) => {
     const product = products.find((el) => el.id === id);
-    console.log(id);
     if (product) {
       dispatch(addToCart(product));
       toast.success(`${product.name} added to cart!`);
@@ -62,7 +61,6 @@ export default function FavouritesProductPage() {
   };
 
   const handleRemove = (productId: number) => {
-    // dispatch(removeFromCart(productId));
     dispatch(removeFromFav(productId));
   };
 
@@ -73,28 +71,29 @@ export default function FavouritesProductPage() {
   return (
     <>
       {isLoading === true && <LoadingState />}
-      <div className="px-44 mt-8 min-h-screen">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Your Favourites</h1>
+      <div className="px-2 sm:px-6 md:px-8 lg:px-44 mt-4 sm:mt-6 md:mt-8 min-h-screen">
+        <div className="flex sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Your Favourites
+          </h1>
 
           <Link
             href="/category"
-            onClick={() => {
-              setIsLoading(true);
-            }}
+            onClick={() => setIsLoading(true)}
             className="flex items-center text-gray-700 transition-all duration-200 hover:text-blue-400 font-semibold text-sm hover:underline"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Continue Shopping
           </Link>
         </div>
-        <Card className=" containerCart rounded-xl mb-10 mx-auto px-4 py-8">
+
+        <Card className="containerCart rounded-xl mb-10 mx-auto px-4 py-4">
           {favItems.length === 0 && (
-            <div className="text-center py-16 min-h-[40svh]">
-              <h1 className="text-2xl font-bold text-center mb-3">
+            <div className="text-center py-8 sm:py-16 min-h-[40svh]">
+              <h1 className="text-xl sm:text-2xl font-bold text-center mb-3">
                 Your Favourites is Empty
               </h1>
-              <p className="text-gray-500 mb-8">
+              <p className="text-gray-500 mb-6 sm:mb-8">
                 Looks like you haven&apos;t added any favourites item yet.
               </p>
               <Button
@@ -109,58 +108,76 @@ export default function FavouritesProductPage() {
               </Button>
             </div>
           )}
+
           {favItems.length > 0 && (
             <Card className="mb-4">
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  <p>Favourite Items</p>
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex sm:flex-row justify-between items-start sm:items-center gap-4">
+                  {/* <p className="text-[17px] sm:text-xl">Favourite Items</p> */}
+                  <p className="">Favourite Items</p>
                   <div
-                    className="bg-gray-200 hover:bg-gray-300 hover:text-red-700 text-red-500 transition-all duration-200 flex items-center gap-1 cursor-pointer text-[15px] font-medium rounded-sm px-5 py-[8px]"
-                    onClick={() => handleClearFav()}
+                    className="bg-gray-200 hover:bg-gray-300 hover:text-red-700 text-red-500 transition-all duration-200 flex items-center gap-1 cursor-pointer text-sm sm:text-[15px] font-medium rounded-sm px-3 sm:px-5 py-[6px] sm:py-[8px]"
+                    onClick={handleClearFav}
                   >
                     <MdOutlineDelete size={17} />
                     Clear
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                 {favItems.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-4 p-4 border rounded-lg bg-white"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 sm:p-4 border rounded-lg bg-white"
                   >
-                    <Image
-                      src={
-                        item.product.productImages
-                          ? String(
-                              item.product.productImages.find(
-                                (el: any) => el.isMain === true
-                              )?.url
-                            )
-                          : ""
-                      }
-                      alt={item.product.name}
-                      width={80}
-                      height={80}
-                      className="rounded-md object-cover h-20 w-24"
-                    />
-                    <div className="flex-1">
+                    <div className="flex-shrink-0 flex items-center sm:items-start gap-2 sm:gap-0 sm:block">
+                      <Image
+                        src={
+                          item.product.productImages
+                            ? String(
+                                item.product.productImages.find(
+                                  (el: any) => el.isMain === true
+                                )?.url
+                              )
+                            : ""
+                        }
+                        alt={item.product.name}
+                        width={80}
+                        height={80}
+                        className="rounded-md object-cover h-16 w-16 sm:h-20 sm:w-24"
+                      />
+                      <div className="flex-1 sm:hidden min-w-0">
+                        <Link
+                          href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                          className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-2"
+                        >
+                          {item.product.name}
+                        </Link>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Price: ${item.product.price}dd
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 hidden sm:block min-w-0">
                       <Link
                         href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
-                        className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer"
+                        className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-2"
                       >
                         {item.product.name}
                       </Link>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 mt-1">
                         Price: ${item.product.price}
                       </p>
                     </div>
-                    <div
-                      onClick={() => handleAddToCart(item.product.id)}
-                      className="text-rights "
-                    >
-                      <Button className="h-[26px] bg-orange-500 hover:bg-orange-600/85 text-[15px]">
-                        cart
+
+                    <div className="w-full sm:w-auto flex sm:block justify-end">
+                      <Button
+                        onClick={() => handleAddToCart(item.product.id)}
+                        className="h-8 sm:h-[26px] bg-orange-500 hover:bg-orange-600/85 text-sm sm:text-[15px] w-full sm:w-auto"
+                      >
+                        Add to Cart
                       </Button>
                     </div>
                   </div>

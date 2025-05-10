@@ -1,92 +1,8 @@
-// "use client";
-
-// import React from "react";
-// import { motion } from "framer-motion";
-// import Image from "next/image";
-// import { Button } from "@/components/ui/button";
-// import Link from "next/link";
-
-// // Sample New Arrivals Data (Replace with API Fetch Later)
-// const newArrivals = [
-//   {
-//     id: 1,
-//     name: "Smart Fitness Watch",
-//     image: "/products/fitness-watch.png",
-//     price: "$199",
-//   },
-//   {
-//     id: 2,
-//     name: "Wireless Noise Cancelling Headphones",
-//     image: "/products/headphones.png",
-//     price: "$249",
-//   },
-//   {
-//     id: 3,
-//     name: "AI-Powered Smart Lamp",
-//     image: "/products/smart-lamp.png",
-//     price: "$129",
-//   },
-//   {
-//     id: 4,
-//     name: "Luxury Leather Handbag",
-//     image: "/products/handbag.png",
-//     price: "$299",
-//   },
-// ];
-
-// export default function NewArrivals() {
-//   return (
-//     <section className="py-16 bg-white">
-//       <div className="container mx-auto px-8">
-//         <motion.h2
-//           className="text-3xl font-bold text-gray-900 text-center mb-8"
-//           initial={{ opacity: 0, y: -30 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.5 }}
-//         >
-//           ✨ New Arrivals
-//         </motion.h2>
-
-//         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-//           {newArrivals.map((product, index) => (
-//             <motion.div
-//               key={index}
-//               className="bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-2 cursor-pointer"
-//               initial={{ opacity: 0, scale: 0.9 }}
-//               animate={{ opacity: 1, scale: 1 }}
-//               transition={{ duration: 0.3, delay: index * 0.1 }}
-//             >
-//               <Link href={`/product/${product.id}`}>
-//                 <div className="relative w-full h-48">
-//                   <Image
-//                     src={product.image}
-//                     alt={product.name}
-//                     layout="fill"
-//                     objectFit="contain"
-//                     className="rounded-lg"
-//                   />
-//                 </div>
-//                 <h3 className="mt-4 text-lg font-semibold text-gray-900">
-//                   {product.name}
-//                 </h3>
-//                 <p className="text-gray-600">{product.price}</p>
-//                 <Button className="mt-3 bg-orange-600 hover:bg-orange-700 w-full">
-//                   🛒 Add to Cart
-//                 </Button>
-//               </Link>
-//             </motion.div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Tag } from "lucide-react";
+import { ForwardIcon, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import smartSperker from "../../public/newArrival/smartSpeker.png";
 import earbuds from "../../public/newArrival/wireless_Earbud.png";
@@ -94,6 +10,15 @@ import foldedlaptop from "../../public/newArrival/foldedLaptop.png";
 import blender from "../../public/newArrival/blender.png";
 import smartwatch from "../../public/newArrival/smart_watch.png";
 import tablet from "../../public/newArrival/tablet.png";
+import { IoArrowForward } from "react-icons/io5";
+import { IoIosArrowRoundForward } from "react-icons/io";
+import { FaArrowRight } from "react-icons/fa";
+import { fetchCategories } from "@/redux/slices/categorySlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import LoadingState from "../components/loaders/LoadingState";
 // Sample New Arrivals Data
 const newArrivals = [
   {
@@ -134,64 +59,80 @@ const newArrivals = [
   },
 ];
 
-// Masonry Grid Breakpoints
-const breakpointColumnsObj = {
-  default: 3,
-  1100: 2,
-  700: 1,
-};
-
 export default function NewArrivals() {
+  const { push } = useRouter();
+  const dispatch: AppDispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const { products, status } = useSelector((state: RootState) => state.product);
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, status]);
+
+  const arrivedProducts = products;
+
+  const handleRouteProduct = (id: any) => {
+    const product = products.find((el) => el.id === Number(id));
+    if (product) {
+      setIsLoading(true);
+      push(
+        `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+      );
+    }
+  };
+
   return (
-    <section className="py-12 bg-white">
-      <div className="container mx-auto px-6 py-12 rounded-2xl">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-8">
-          New Arrivals
-        </h2>
+    <>
+      {isLoading === true && <LoadingState />}
 
-        <div className="flex gap-6">
-          {newArrivals.map((product, index) => (
-            <motion.div
-              key={product.id}
-              className="bg-white w-48 rounded-lg shadow-md overflow-hidden p-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              {/* "Just Arrived" Badge */}
-              {/* <div className="absolute top-2 left-2 bg-blue-600 text-white px-2 py-1 text-sm font-bold rounded">
-                <Tag className="inline-block mr-1" size={14} /> Just Arrived
-              </div> */}
+      <section className="sm:py-10 py-4 sm:px-9 bg-white">
+        <div className="w-full sm:bg-gray-50 mx-auto px-3 sm:px-6 sm:py-10 rounded-2xl">
+          <div className=" flex items-center justify-between mb-2 sm:mb-8">
+            <p className=" text-base font-semibold text-gray-900">
+              New arrivals
+            </p>
+            <FaArrowRight size={16} className="sm:hidden font-light" />
+          </div>
 
-              {/* Product Image */}
-              <div className=" relative w-full h-32">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={300}
-                  height={200}
-                  // layout="responsive"
-                  objectFit="cover"
-                  className="rounded-lg h-28 w-full"
-                />
-              </div>
+          <div className="flex gap-3 sm:gap-6 overflow-x-scroll hide-scrollbar py-1">
+            {arrivedProducts?.map((product, index) => (
+              <motion.div
+                key={product.id}
+                onClick={() => handleRouteProduct(product.id)}
+                className="bg-white dfhw-full min-w-36 rounded-lg shadow-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <div className=" relative w-full h-32">
+                  <Image
+                    src={String(
+                      product.productImages.find((el) => el.isMain === true)
+                        ?.url
+                    )}
+                    alt={product.name}
+                    width={300}
+                    height={200}
+                    objectFit="cover"
+                    className="rounded-t-lg h-28 w-full"
+                  />
+                </div>
 
-              {/* Product Info */}
-              <h3 className="mt-4 text-[16px] font-semibold text-gray-800">
-                {product.name}
-              </h3>
-              <p className="text-orange-500 text-[15px] font-semibold">
-                {product.price}
-              </p>
-
-              {/* Buy Button */}
-              {/* <Button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white w-full">
-                🛒 Shop Now
-              </Button> */}
-            </motion.div>
-          ))}
+                <div className="flex flex-col px-2 pb-2 sm:px-3 sm:py-3 ">
+                  <h3 className="truncate overflow-hidden whitespace-nowrap sm:text-[16px] text-sm font-semibold text-gray-800">
+                    {product.name}
+                  </h3>
+                  <p className="text-orange-500 sm:text-[15px] text-sm font-semibold">
+                    {product.price}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

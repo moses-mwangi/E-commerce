@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Clock, Globe2, Truck } from "lucide-react";
 import React from "react";
 
@@ -36,7 +38,7 @@ export default function Shipping() {
               placeholder="Tracking number"
               className="flex-1 border rounded-md px-3 py-2 text-sm"
             />
-            <button className="bg-primary text-white px-4 py-2 rounded-md text-sm hover:bg-primary-dark transition">
+            <button className="bg-orange-500 text-white px-4 py-1 rounded-md text-sm hover:bg-orange-600 transition">
               Track
             </button>
           </div>

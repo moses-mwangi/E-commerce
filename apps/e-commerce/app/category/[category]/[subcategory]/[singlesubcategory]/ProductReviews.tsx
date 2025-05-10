@@ -162,8 +162,8 @@ export default function ProductReviews({ productId }: { productId: string }) {
   return (
     <section className="space-y-8">
       <div className="bg-muted/50 p-6 rounded-lg">
-        <div className="flex items-center flex-col md:flex-row gap-8">
-          <div className="flex flex-col items-center">
+        <div className="flex sm:items-center flex-col md:flex-row gap-8">
+          <div className="flex sm:flex-col gap-3 sm:gap-0 items-center">
             <h2 className="text-4xl font-bold">{averageRating}</h2>
             <div className="flex">
               {[...Array(5)].map((_, i) => (
@@ -177,13 +177,13 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 />
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1 sm:block hidden">
               {singleProductReviews.length}{" "}
               {singleProductReviews.length === 1 ? "review" : "reviews"}
             </p>
           </div>
 
-          <div className="flex-1 w-full space-y-[6px]">
+          <div className="sm:flex hidden flex-1 w-full space-y-[6px]">
             {[5, 4, 3, 2, 1].map((rating) => (
               <div key={rating} className="flex items-center gap-2">
                 <button

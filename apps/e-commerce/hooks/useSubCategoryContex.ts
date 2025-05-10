@@ -16,7 +16,7 @@ function useSubCategoryContex() {
   const { items } = useSelector((state: RootState) => state.favourite);
 
   const [gridView, setGridView] = useState(false);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);

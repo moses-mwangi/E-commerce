@@ -203,7 +203,7 @@ function OrdersPage() {
             defaultValue="all"
             className="sm:space-y-6 space-y-5"
           >
-            <TabsList className="w-screen overflow-x-scroll">
+            <TabsList className="flex sm:inline-flex justify-start items-center w-auto overflow-x-auto sm:overflow-hidden">
               {tabsValues.map((el) => {
                 const count = getTabCount(el.value);
                 return (
@@ -438,7 +438,7 @@ function OrdersPage() {
                             <EstimatingTheDeliveryTime order={order} />
                           </div>
 
-                          <div className="mb-6 bg-white">
+                          {/* <div className="mb-6 bg-white">
                             <h3 className="font-medium mb-2">
                               Product Details
                             </h3>
@@ -584,6 +584,174 @@ function OrdersPage() {
                                           }
                                           // defaultRating={4}
                                           // defaultReview="Good sound quality"
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div> */}
+
+                          <div className="mb-6 bg-white">
+                            <h3 className="font-medium mb-2">
+                              Product Details
+                            </h3>
+                            <div className="border rounded-lg overflow-hidden">
+                              <div className="bg-gray-50 p-3 hidden md:grid md:grid-cols-12 font-medium text-sm">
+                                <div className="md:col-span-5 lg:col-span-5">
+                                  Product
+                                </div>
+                                <div className="md:col-span-2">
+                                  Specifications
+                                </div>
+                                <div className="md:col-span-2 text-right">
+                                  Unit Price
+                                </div>
+                                <div className="md:col-span-1 text-right">
+                                  Qty
+                                </div>
+                                <div className="md:col-span-2 text-right">
+                                  Total
+                                </div>
+                              </div>
+
+                              {order?.OrderItems?.map((item) => {
+                                const hasReviewed = hasUserReviewedProduct(
+                                  item.productId,
+                                  order.id,
+                                  currentUserOrder[0].userId
+                                );
+
+                                return (
+                                  <div key={item.id} className="group">
+                                    <div className="p-3 border-t grid grid-cols-2 md:grid-cols-12 gap-2 md:gap-0 text-sm hover:bg-gray-50">
+                                      <div className="col-span-2 md:col-span-5 lg:col-span-5 flex items-start md:items-center">
+                                        <Image
+                                          src={
+                                            item?.Product?.productImages?.find(
+                                              (el: any) => el.isMain === true
+                                            )?.url || ""
+                                          }
+                                          alt={item.Product.name}
+                                          width={60}
+                                          height={60}
+                                          className="rounded-md object-cover h-12 w-12 mr-3"
+                                        />
+                                        <div className="">
+                                          <p className="font-medium">
+                                            {item.Product.name}
+                                          </p>
+                                          <p className="text-xs text-gray-500">
+                                            SKU: N/A
+                                          </p>
+                                          <div className="md:hidden  mt-2 flex gap-4 justify-between">
+                                            <span className="">
+                                              ${item.price.toFixed(2)} ×{" "}
+                                              {item.quantity}
+                                            </span>
+                                            <span className="font-medium">
+                                              $
+                                              {(
+                                                item.price * item.quantity
+                                              )?.toFixed(2)}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="hidden md:block md:col-span-2 text-sm text-gray-500">
+                                        Standard
+                                      </div>
+
+                                      <div className="hidden md:block md:col-span-2 text-right">
+                                        ${item.price.toFixed(2)}
+                                      </div>
+
+                                      <div className="hidden md:block md:col-span-1 text-right">
+                                        {item.quantity}
+                                      </div>
+
+                                      <div className="hidden md:block md:col-span-2 text-right font-medium">
+                                        $
+                                        {(item.price * item.quantity)?.toFixed(
+                                          2
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    <div className="p-3 bg-gray-50 border-t">
+                                      {!hasReviewed ? (
+                                        <Dialog key={item.id}>
+                                          <DialogTrigger
+                                            asChild
+                                            className="disabled:cursor-not-allowed"
+                                            disabled={
+                                              order.paymentStatus !== "paid" &&
+                                              order.status !== "delivered"
+                                            }
+                                          >
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="gap-1 w-full sm:w-auto"
+                                            >
+                                              <Star className="h-4 text-orange-500 w-4" />
+                                              Write a Review
+                                            </Button>
+                                          </DialogTrigger>
+                                          <DialogContent className="max-w-3xl overflow-y-scroll max-h-[90vh]">
+                                            <DialogTitle>
+                                              Write a Review
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                              Share your feedback about this
+                                              product.
+                                            </DialogDescription>
+                                            <ProductReviewForm
+                                              productId={Number(item.productId)}
+                                              userId={Number(
+                                                currentUserOrder[0].userId
+                                              )}
+                                              orderId={Number(order.id)}
+                                              productName={item.Product.name}
+                                              productCategory={
+                                                currentUserOrder[0].OrderItems?.find(
+                                                  (el) =>
+                                                    el.productId ===
+                                                    item.productId
+                                                )?.Product?.category
+                                              }
+                                              productImage={
+                                                item.Product.productImages.find(
+                                                  (image) =>
+                                                    image.isMain === true
+                                                )?.url as string
+                                              }
+                                              defaultRating={4}
+                                              defaultReview="Good sound quality"
+                                            />
+                                          </DialogContent>
+                                        </Dialog>
+                                      ) : (
+                                        <EditReviewForm
+                                          productId={Number(item.productId)}
+                                          userId={Number(
+                                            currentUserOrder[0].userId
+                                          )}
+                                          orderId={Number(order.id)}
+                                          productName={item.Product.name}
+                                          productCategory={
+                                            currentUserOrder[0]?.OrderItems?.find(
+                                              (el) =>
+                                                el.productId === item.productId
+                                            )?.Product?.category
+                                          }
+                                          productImage={
+                                            item.Product.productImages.find(
+                                              (image) => image.isMain === true
+                                            )?.url as string
+                                          }
                                         />
                                       )}
                                     </div>

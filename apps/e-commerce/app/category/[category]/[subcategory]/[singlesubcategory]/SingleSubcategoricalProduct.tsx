@@ -392,11 +392,11 @@ export default function SingleSuCategoricalProductPage() {
               </div>
             </Card>
           </div>
-          <Tabs defaultValue="specifications" className="mt-12">
+          <Tabs defaultValue="reviews" className="mt-12">
             <TabsList className="w-full justify-start border-b">
+              <TabsTrigger value="reviews">Reviews</TabsTrigger>
               <TabsTrigger value="specifications">Specifications</TabsTrigger>
               <TabsTrigger value="details">Product Details</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews</TabsTrigger>
             </TabsList>
             <TabsContent value="specifications" className="mt-6">
               <div className="grid grid-cols-2 gap-4">

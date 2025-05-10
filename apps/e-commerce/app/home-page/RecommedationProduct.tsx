@@ -1,117 +1,139 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import earbuds from "../../public/newArrival/wireless_Earbud.png";
+import { Star, Eye, Heart } from "lucide-react";
+import Image from "next/image";
+import LoadingState from "@/app/components/loaders/LoadingState";
+import useCategoryContex from "@/hooks/useCategoryContex";
+import { useRouter } from "next/navigation";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 
-// Sample recommended products data
-const recommendedProducts = [
-  {
-    id: 1,
-    name: "Noise-Canceling Earbuds",
-    price: "$79.99",
-    image: earbuds,
-    rating: 4.7,
-  },
-  {
-    id: 2,
-    name: "Portable Blender",
-    price: "$49.99",
-    image: earbuds,
-    rating: 4.5,
-  },
-  {
-    id: 3,
-    name: "Smart Fitness Band",
-    price: "$69.99",
-    image: earbuds,
-    rating: 4.6,
-  },
-  {
-    id: 4,
-    name: "Ergonomic Office Chair",
-    price: "$199.99",
-    image: earbuds,
-    rating: 4.8,
-  },
-  {
-    id: 5,
-    name: "4-in-1 Wireless Charger",
-    price: "$39.99",
-    image: earbuds,
-    rating: 4.4,
-  },
-  {
-    id: 6,
-    name: "Home Security Camera",
-    price: "$149.99",
-    image: earbuds,
-    rating: 4.7,
-  },
-];
+export default function Reccomeded() {
+  const { push } = useRouter();
+  const dispatch: AppDispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const { products, status } = useSelector((state: RootState) => state.product);
+  const { categories } = useSelector((state: RootState) => state.category);
 
-// Animation Variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, delay: index * 0.1, type: "spring" },
-  }),
-};
+  const { items: favItems } = useCategoryContex();
 
-export default function RecommendedForYou() {
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProducts());
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, status]);
+
+  const handleRouteProduct = (id: any) => {
+    const product = products.find((el) => el.id === Number(id));
+    if (product) {
+      setIsLoading(true);
+      push(
+        `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+      );
+    }
+  };
+
   return (
-    <section className="py-16 bg-gray-100">
-      <div className="container mx-auto px-8">
-        <motion.h2
-          className="text-4xl font-extrabold text-gray-900 text-center mb-12"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Recommended For You
-        </motion.h2>
+    <>
+      {isLoading && <LoadingState />}
 
-        {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {recommendedProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-2 cursor-pointer"
-              initial="hidden"
-              animate="visible"
-              custom={index}
-              variants={fadeInUp}
-            >
-              <div className="relative w-full h-48">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  layout="fill"
-                  objectFit="contain"
-                  className="rounded-lg"
-                />
-              </div>
-              <h3 className="mt-4 text-lg font-bold text-gray-900">
-                {product.name}
-              </h3>
-              <p className="text-gray-600 mt-1">{product.price}</p>
-              <p className="text-yellow-500 mt-1">⭐ {product.rating}</p>
+      <div className="bg-gray-50 px-3 sm:px-11 rounded-xl mx-auto pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
+        <div className="">
+          <h2 className="text-[17px] sm:text-xl font-semibold">Just for you</h2>
+        </div>
 
-              <div className="mt-4 flex gap-3">
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2">
-                  🛒 Add to Cart
-                </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
-                  🔍 View Details
-                </Button>
-              </div>
-            </motion.div>
-          ))}
-        </div> */}
+        <div className={``}>
+          <div
+            className={`grid cursor-pointer grid-cols-2 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 gap-3 flex-1`}
+          >
+            {products?.map((product) => (
+              <Card
+                key={product.id}
+                onClick={() => handleRouteProduct(product.id)}
+                className={` bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden`}
+              >
+                <div
+                  className={`h-32 sm:h-44  bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
+                >
+                  <Image
+                    className="w-full hover:scale-105 transition-all duration-300 h-full object-cover group-hover:scale-105"
+                    src={
+                      product.productImages
+                        ? String(
+                            product.productImages.find(
+                              (el) => el.isMain === true
+                            )?.url
+                          )
+                        : ""
+                    }
+                    alt={product.name}
+                    width={500}
+                    height={500}
+                  />
+
+                  <Button
+                    size="icon"
+                    className="absolute top-2 right-2 bg-gray-100/65 hover:bg-gray-100 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-8 h-8"
+                  >
+                    <Heart
+                      fill={
+                        favItems.some((el) => el.product.id === product.id)
+                          ? "oklch(70.4% 0.191 22.216)"
+                          : "white"
+                      }
+                      className="w-4 h-4 text-red-400"
+                    />
+                  </Button>
+                </div>
+
+                <CardContent
+                  className={`flex flex-col justify-between flex-1 px-0`}
+                >
+                  <div className="p-2">
+                    <h2 className="sm:text-[15px] text-sm font-semibold text-gray-900 dark:text-gray-100 overflow-hidden truncate">
+                      {product.name}
+                    </h2>
+                    <p className="text-xs sm:text-[13px] text-gray-600 dark:text-gray-400">
+                      {product.description.substring(0, 50)}...
+                    </p>
+
+                    <div className="flex items-center gap-2 text-sm sm:text-[15px] font-semibold">
+                      <p className="text-gray-800 dark:text-gray-200">
+                        ${product.price}
+                      </p>
+                      {product.discount > 0 && (
+                        <p className="text-red-500 px-1 sm:px-2 py-0.5 text-xs rounded-md">
+                          -{product.discount}%
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex gap-1 items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                      {[...Array(5)].map((_, index) => (
+                        <Star
+                          key={index}
+                          className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                            index < product.ratings
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      ))}
+                      <span className="ml-1">({product.ratings})</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
-    </section>
+    </>
   );
 }

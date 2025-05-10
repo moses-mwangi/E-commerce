@@ -258,106 +258,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchCategories } from "@/redux/slices/categorySlice";
-import { Card } from "@/components/ui/card";
-
-function ProductCategoriesMobile() {
-  const router = useRouter();
-  const dispatch: AppDispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const { categories, status } = useSelector(
-    (state: RootState) => state.category
-  );
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, status]);
-
-  const goToCategory = (categoryName: string) => {
-    setIsLoading(true);
-    router.push(`/category/${categoryName.toLowerCase()}`);
-  };
-
-  return (
-    <>
-      {isLoading && <LoadingState />}
-      <section className=" bg-gradient-to-b from-white to-gray-50 sm:hidden">
-        <div className=" mx-auto py-6 px-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-1"
-          >
-            <div className="flex gap-6 items-center justify-between">
-              <h2 className="text-base font-semibold text-gray-900">
-                Shop by Category
-              </h2>
-              <ChevronRight className="w-5 h-5" />
-            </div>
-
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-3 py-2 overflow-x-auto hide-scrollbar"
-                >
-                  {categories?.map((category) => (
-                    <motion.div
-                      key={category.id}
-                      whileHover={{ y: -5 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="group cursor-pointer relative w-full"
-                      onMouseEnter={() => setActiveCategory(category.name)}
-                      onMouseLeave={() => setActiveCategory(null)}
-                      onClick={() => goToCategory(category.name)}
-                    >
-                      <Card className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 px-4 py-2 w-full h-full flex  gap-2 items-center">
-                        <div className="relative">
-                          <div className="w-16 h-16 mx-auto rounded-full bg-gray-50 flex items-center justify-center shadow-inner">
-                            {category?.icon ? (
-                              <div
-                                className="w-full h-full rounded-full bg-contain bg-center bg-no-repeat"
-                                style={{
-                                  backgroundImage: `url(${category.icon})`,
-                                  backgroundSize: "cover",
-                                  backgroundPosition: "center",
-                                }}
-                              />
-                            ) : (
-                              <div className="w-12 h-12 bg-gray-200 rounded-full" />
-                            )}
-                          </div>
-                        </div>
-
-                        <div className=" w-full">
-                          <h3 className="font-medium text-[15px] text-gray-900 flex whitespace-nowrap group-hover:text-primary transition-colors line-clamp-2">
-                            {category.name}
-                          </h3>
-                          <p className="text-xs flex whitespace-nowrap text-gray-500">
-                            {category.itemCount || 0} products
-                          </p>
-                        </div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-    </>
-  );
-}
 
 export default function ProductCategories() {
   const router = useRouter();
@@ -416,9 +316,8 @@ export default function ProductCategories() {
   return (
     <>
       {isLoading && <LoadingState />}
-      <ProductCategoriesMobile />
-      <section className="py-12 md:py-16 sm:px-6 md:px-12 bg-gradient-to-b from-white to-gray-50 hidden sm:block">
-        <div className="dcontainer bg-gray-100/85 mx-auto py-6 px-4 md:px-6 lg:px-8 rounded-2xl">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 rounded-2xl">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

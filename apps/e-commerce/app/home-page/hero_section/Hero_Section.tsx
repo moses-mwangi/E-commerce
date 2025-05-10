@@ -7,8 +7,19 @@ import Image from "next/image";
 import Link from "next/link";
 import smartWatchs from "../../../public/newArrival/smartSpeker.png";
 import smartWatchb from "../../../public/category_Image/beauty.png";
-import { Mic, TrendingUp, Star, Truck, Shield } from "lucide-react";
+import {
+  Mic,
+  TrendingUp,
+  Star,
+  Truck,
+  Shield,
+  HelpCircle,
+  ListOrdered,
+} from "lucide-react";
 import LoadingState from "@/app/components/loaders/LoadingState";
+import { Card } from "@/components/ui/card";
+import { FaListUl } from "react-icons/fa";
+import { FcDataProtection } from "react-icons/fc";
 
 const animations = {
   fadeInUp: {
@@ -53,6 +64,71 @@ const features = [
     description: "Free shipping on orders over $50",
   },
 ];
+
+const mobile = [
+  {
+    icon: <FaListUl className="w-4 h-4 text-orange-500" />,
+    title: "All categories",
+    color: "or",
+  },
+  {
+    icon: <TrendingUp className="w-5 h-5 text-orange-500" />,
+    title: "Trending Products",
+    color: "",
+  },
+  {
+    icon: <Star className="w-5 h-5 text-yellow-500" />,
+    title: "Best Deals",
+    color: "blu",
+  },
+  {
+    icon: <Truck className="w-5 h-5 text-green-500" />,
+    title: "Fast Delivery",
+    color: "gr",
+  },
+  {
+    icon: <HelpCircle className="w-5 h-5 text-green-500" />,
+    title: "Help Center",
+    color: "gr",
+  },
+
+  {
+    icon: <FcDataProtection className="w-5 h-5 text-green-500" />,
+    title: "Protection",
+    color: "gr",
+  },
+];
+
+const MobileHeroSection: React.FC = () => {
+  return (
+    <div className=" sm:hidden w-full flex flex-col gap-2 rounded-sm p-3 ">
+      <p className=" text-[15px] font-semibold">For your busines</p>
+      <div className=" overflow-x-scroll flex cursor-pointer  gap-3 sm:gap-4 hide-scrollbar">
+        {mobile.map((el, idx) => (
+          <div
+            onClick={() => {
+              // subCategoryRoute(sub.name, sub.id);
+            }}
+            key={idx}
+            className="group w-full"
+          >
+            <Card className="bg-white w-full rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow h-full">
+              <div className="flex gap-2 items-center justify-between h-full">
+                <div>
+                  <h3 className="font-medium whitespace-nowrap text-sm sm:text-base text-gray-900 group-hover:text-blue-600">
+                    {el.title}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-500">{el.icon}</p>
+              </div>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const HeroSection: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,7 +138,8 @@ const HeroSection: React.FC = () => {
   return (
     <>
       {isLoading === true && <LoadingState />}
-      <section className="relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
+      <MobileHeroSection />
+      <section className=" hidden sm:block relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-300 rounded-full blur-3xl opacity-20" />

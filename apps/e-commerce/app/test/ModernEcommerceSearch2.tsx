@@ -21,9 +21,9 @@ import ImageSearchPopup from "./ImageSearchPopUp";
 import { capitalizeWords, Product } from "../types/products";
 import { Category, Subcategory } from "../types/category";
 import useSearch from "./useSearch";
-import e from "express";
 import { useRouter } from "next/navigation";
 import LoadingState from "../components/loaders/LoadingState";
+import { useTranslation } from "react-i18next";
 
 type SearchSuggestion = {
   type: "product" | "category" | "brand" | "recent" | "popular" | string;
@@ -61,6 +61,11 @@ const ModernEcommerceSearch = () => {
     startVoiceSearch,
     setSuggestionsCount,
   } = useSearch();
+
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+  };
 
   const manipulatedCategory = [
     "All Categories",
@@ -299,7 +304,7 @@ const ModernEcommerceSearch = () => {
               <div className="flex h-6 sm:h-min items-center flex-grow relative">
                 <Input
                   ref={inputRef}
-                  className="w-full text-[13px] md:text-base md:py-2 md:px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400"
+                  className="w-full text-[12px] md:text-[15px] md:py-2 md:px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400"
                   placeholder={t("Search for products, categories...")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -346,7 +351,7 @@ const ModernEcommerceSearch = () => {
 
               <Button
                 type="submit"
-                className=" text-sm sm:text-base h-[23px] sm:h-[30px] flex items-center gap-1 sm:gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-2  sm:px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
+                className=" text-[13px] sm:text-[15px] h-[23px] sm:h-[30px] flex items-center gap-1 sm:gap-2 bg-orange-500 hover:bg-orange-600/90 text-white px-2  sm:px-5 py-[2px] rounded-full font-medium shadow-sm transition duration-200"
                 aria-label="Search"
                 disabled={status === "loading"}
                 onClick={() => {

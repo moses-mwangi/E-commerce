@@ -25,14 +25,16 @@ export default function HomePage() {
     }
   }, [dispatch]);
   return (
+    // <div className=" overflow-x-hidden">
     <div className=" overflow-x-hidden">
       <Navbar />
       <Hero_Section />
       <ProductCategories />
-      <TrendingProducts />
-      <BestSellers />
       <NewArrivals />
+      <TrendingProducts />
+      {/* <BestSellers /> */}
       <RecommendedForYou />
+
       <BrowsingHistory />
       <NewsletterSection />
       <Footer />
