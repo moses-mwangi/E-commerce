@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import ImageSearchPopup from "./ImageSearchPopUp";
-import { capitalizeWords, Product } from "../types/products";
-import { Category, Subcategory } from "../types/category";
+import { capitalizeWords, Product } from "../../../types/products";
+import { Category, Subcategory } from "../../../types/category";
 import useSearch from "./useSearch";
 import { useRouter } from "next/navigation";
-import LoadingState from "../components/loaders/LoadingState";
+import LoadingState from "../../../components/loaders/LoadingState";
 import { useTranslation } from "react-i18next";
 
 type SearchSuggestion = {
@@ -275,7 +275,7 @@ const ModernEcommerceSearch = () => {
       <div className="relative lg:w-[600px]" ref={searchRef}>
         <form onSubmit={handleSearch} className="flex">
           <div className="relative flex-grow">
-            <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-full shadow-sm ggpl-4 px-[8px] py-1 border border-gray-200 hover:border-gray-300 transition-colors">
+            <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-lg py-[6px] sm:py-1 sm:rounded-full shadow-sm ggpl-4 px-[8px] border border-gray-200 hover:border-gray-300 transition-colors">
               <div className=" hidden lg:flex">
                 <Select
                   value={selectedCategory}
@@ -304,11 +304,11 @@ const ModernEcommerceSearch = () => {
               <div className="flex h-6 sm:h-min items-center flex-grow relative">
                 <Input
                   ref={inputRef}
-                  className="w-full text-[12px] md:text-[15px] md:py-2 md:px-3 text-gray-800 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400"
-                  placeholder={t("Search for products, categories...")}
+                  className="w-full text-[14px] md:text-[15px] md:py-2 md:px-0 text-gray-600 bg-transparent border-none shadow-none focus-visible:ring-0 focus:ring-0 placeholder-gray-400"
+                  placeholder={t("Search for products...")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  onFocus={() => setShowSuggestions(true)}
+                  onFocus={() => setShowSuggestions((s) => true)}
                   aria-autocomplete="list"
                   aria-expanded={showSuggestions}
                   aria-controls="search-suggestions"
@@ -366,7 +366,7 @@ const ModernEcommerceSearch = () => {
             {showSuggestions && (
               <div
                 id="search-suggestions"
-                className="absolute z-30 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
+                className="absolute z-50 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
               >
                 {/* Recent searches */}
                 {recentSearches.length > 0 && query.length < 1 && (

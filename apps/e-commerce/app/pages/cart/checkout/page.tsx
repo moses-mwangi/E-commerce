@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Footer from "@/app/home-page/footer/Footer";
+import Footer from "@/app/components/footer/Footer";
 import Logo from "@/app/home-page/navbar/logo/Logo";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
 import Link from "next/link";

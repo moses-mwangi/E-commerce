@@ -11,6 +11,7 @@ class Product extends Model {
   public description!: string;
   public stock!: number;
   public brand?: string;
+  public trending?: boolean;
   public images!: string[];
   public specifications?: object[];
   public discount?: number;
@@ -60,6 +61,10 @@ Product.init(
     },
     brand: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    trending: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     images: {

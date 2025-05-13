@@ -17,7 +17,7 @@ import OrdersSection from "./sections/OrdersSection";
 import WishlistSection from "./sections/WishlistSection";
 import PaymentSection from "./sections/payment/PaymentSection";
 import SettingsSection from "./sections/SettingsSection";
-import Footer from "@/app/home-page/footer/Footer";
+import Footer from "@/app/components/footer/Footer";
 import Logo from "@/app/home-page/navbar/logo/Logo";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";

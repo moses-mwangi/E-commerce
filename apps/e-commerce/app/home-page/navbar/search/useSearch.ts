@@ -1,8 +1,8 @@
 import { AppDispatch, RootState } from "@/redux/store";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Category } from "../types/category";
-import { Product } from "../types/products";
+import { Category } from "../../../types/category";
+import { Product } from "../../../types/products";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { debounce } from "lodash";

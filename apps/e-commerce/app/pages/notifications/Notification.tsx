@@ -5,7 +5,7 @@ import Logo from "@/app/home-page/navbar/logo/Logo";
 import Link from "next/link";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
 import { useEffect, useState } from "react";
-import Footer from "@/app/home-page/footer/Footer";
+import Footer from "@/app/components/footer/Footer";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2,

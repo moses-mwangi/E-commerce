@@ -115,13 +115,6 @@ body {
   width: 100%;
 }
 
-.backg {
-  background-image: url("../public/category_Image/eletronicSBanner.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
 .loader {
   width: 10px;
   height: 10px;
@@ -136,8 +129,6 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
-  /* font-size: 3;
-  padding: 2; */
 }
 
 .hide-scrollbar {

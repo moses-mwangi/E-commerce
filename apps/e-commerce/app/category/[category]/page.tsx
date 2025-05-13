@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import Category from "./categoryComponents/Category";
-import Footer from "@/app/home-page/footer/Footer";
+import Footer from "@/app/components/footer/Footer";
 
 export default function CategoryPage() {
   const { category } = useParams();

@@ -11,6 +11,7 @@ class Subcategory extends Model {
   public description?: string;
   public slug!: string;
   public itemCount!: number;
+  public trending?: boolean;
 }
 
 Subcategory.init(
@@ -49,12 +50,15 @@ Subcategory.init(
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
-      // unique: true,
     },
     itemCount: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+    },
+    trending: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
   },
   {

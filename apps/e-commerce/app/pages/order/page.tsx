@@ -1,4 +1,4 @@
-import Footer from "@/app/home-page/footer/Footer";
+import Footer from "@/app/components/footer/Footer";
 import Navbar from "@/app/home-page/navbar/Navbar";
 import React from "react";
 // import OrdersPage from "./Alibaba";

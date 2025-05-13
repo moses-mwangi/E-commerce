@@ -15,14 +15,14 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-orange-50 via-white to-orange-50">
-      <div className="container mx-auto py-6 px-4">
+    <section className="py-6 sm:py-12 mx-auto sm:px-6 md:px-7 lg:px-9 bg-gradient-to-br from-orange-50 via-white to-orange-50">
+      <div className=" bg-[#f4f4f4] mx-auto py-6 px-4 sm:rounded-2xl">
         <div className="max-w-2xl mx-auto text-center">
-          <Mail className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <Mail className="w-8 h-8 sm:w-12 sm:h-12 text-orange-500 mx-auto mb-4" />
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
             Subscribe to Our Newsletter
           </h2>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 text-[15px] sm:text-base mb-8">
             Get updates about new products and special offers
           </p>
 
@@ -32,9 +32,9 @@ export default function NewsletterSection() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 focus-visible:ring-orange-500"
+              className="flex-1 text-[15px] sm:text-base focus-visible:ring-orange-500 bg-white"
             />
-            <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
+            <Button type="submit" className="bg-orange-500 hover:bg-orange-600">
               <Send className="w-4 h-4 mr-2" />
               Subscribe
             </Button>

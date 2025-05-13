@@ -4,9 +4,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
-import smartWatchs from "../../../public/newArrival/smartSpeker.png";
-import smartWatchb from "../../../public/category_Image/beauty.png";
 import {
   Mic,
   TrendingUp,
@@ -14,12 +11,19 @@ import {
   Truck,
   Shield,
   HelpCircle,
-  ListOrdered,
+  ShoppingBag,
+  Search,
+  ChevronRight,
 } from "lucide-react";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Card } from "@/components/ui/card";
-import { FaListUl } from "react-icons/fa";
-import { FcDataProtection } from "react-icons/fc";
+
+// Product images
+import featuredProduct from "../../../public/newArrival/smartSpeker.png";
+import secondaryProduct from "../../../public/category_Image/beauty.png";
+import product3 from "../../../public/fashion/image.png";
+import product4 from "../../../public/newArrival/foldedLaptop.png";
+import ModernEcommerceSearch from "@/app/home-page/navbar/search/ModernEcommerceSearch2";
 
 const animations = {
   fadeInUp: {
@@ -45,107 +49,155 @@ const animations = {
       },
     },
   },
+  float: {
+    y: [0, -15, 0],
+    transition: {
+      repeat: Infinity,
+      duration: 3,
+      ease: "easeInOut",
+    },
+  },
 };
 
 const features = [
   {
-    icon: <TrendingUp className="w-5 h-5 text-orange-500" />,
+    icon: <TrendingUp className="w-5 h-5" />,
     title: "Trending Products",
     description: "Discover what's hot right now",
+    color: "bg-blue-100 text-blue-600",
   },
   {
-    icon: <Star className="w-5 h-5 text-yellow-500" />,
+    icon: <Star className="w-5 h-5" />,
     title: "Best Deals",
     description: "Up to 50% off on selected items",
+    color: "bg-amber-100 text-amber-600",
   },
   {
-    icon: <Truck className="w-5 h-5 text-green-500" />,
+    icon: <Truck className="w-5 h-5" />,
     title: "Fast Delivery",
     description: "Free shipping on orders over $50",
+    color: "bg-emerald-100 text-emerald-600",
   },
 ];
 
-const mobile = [
+const mobileCategories = [
   {
-    icon: <FaListUl className="w-4 h-4 text-orange-500" />,
-    title: "All categories",
-    color: "or",
+    icon: <TrendingUp className="w-4 h-4" />,
+    title: "Trending",
+    color: "bg-blue-100 text-blue-600",
   },
   {
-    icon: <TrendingUp className="w-5 h-5 text-orange-500" />,
-    title: "Trending Products",
-    color: "",
+    icon: <Star className="w-4 h-4" />,
+    title: "Deals",
+    color: "bg-amber-100 text-amber-600",
   },
   {
-    icon: <Star className="w-5 h-5 text-yellow-500" />,
-    title: "Best Deals",
-    color: "blu",
+    icon: <ShoppingBag className="w-4 h-4" />,
+    title: "New Arrivals",
+    color: "bg-purple-100 text-purple-600",
   },
   {
-    icon: <Truck className="w-5 h-5 text-green-500" />,
-    title: "Fast Delivery",
-    color: "gr",
+    icon: <Truck className="w-4 h-4" />,
+    title: "Delivery",
+    color: "bg-emerald-100 text-emerald-600",
   },
   {
-    icon: <HelpCircle className="w-5 h-5 text-green-500" />,
-    title: "Help Center",
-    color: "gr",
+    icon: <Shield className="w-4 h-4" />,
+    title: "Security",
+    color: "bg-green-100 text-green-600",
   },
-
   {
-    icon: <FcDataProtection className="w-5 h-5 text-green-500" />,
-    title: "Protection",
-    color: "gr",
+    icon: <HelpCircle className="w-4 h-4" />,
+    title: "Support",
+    color: "bg-indigo-100 text-indigo-600",
   },
 ];
 
-const MobileHeroSection: React.FC = () => {
+const MobileHeroSection = () => {
   return (
-    <div className=" sm:hidden w-full flex flex-col gap-2 rounded-sm p-3 ">
-      <p className=" text-[15px] font-semibold">For your busines</p>
-      <div className=" overflow-x-scroll flex cursor-pointer  gap-3 sm:gap-4 hide-scrollbar">
-        {mobile.map((el, idx) => (
-          <div
-            onClick={() => {
-              // subCategoryRoute(sub.name, sub.id);
-            }}
-            key={idx}
-            className="group w-full"
-          >
-            <Card className="bg-white w-full rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow h-full">
-              <div className="flex gap-2 items-center justify-between h-full">
-                <div>
-                  <h3 className="font-medium whitespace-nowrap text-sm sm:text-base text-gray-900 group-hover:text-blue-600">
-                    {el.title}
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500">{el.icon}</p>
-              </div>
-            </Card>
+    <div className="sm:hidden w-full pt-4 px-3">
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl py-6 px-4 mb-4 relative">
+        <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-200 rounded-full opacity-20"></div>
+        <div className="relative z-10">
+          <h1 className="text-2xl font-bold mb-2">
+            Smart <span className="text-orange-600">Shopping</span>
+          </h1>
+          <p className="text-gray-600 mb-4">Discover amazing deals today</p>
+
+          <div className="z-50 mb-3">
+            <ModernEcommerceSearch />
           </div>
-        ))}
+          <Button className="w-full bg-orange-600 hover:bg-orange-700">
+            <ShoppingBag className="mr-2 w-4 h-4" />
+            Shop Now
+          </Button>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto hide-scrollbar pt-2">
+        <div className="flex space-x-3">
+          {mobileCategories.map((item, index) => (
+            <motion.div
+              key={index}
+              whileTap={{ scale: 0.95 }}
+              className="flex-shrink-0"
+            >
+              <Card className="p-3 flex items-center space-x-2 rounded-md">
+                <div className={`${item.color} p-2 rounded-lg`}>
+                  {item.icon}
+                </div>
+                <span className="text-sm font-medium">{item.title}</span>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-const HeroSection: React.FC = () => {
+const HeroSection = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(0);
+
+  const products = [
+    {
+      name: "Premium Smart Speaker",
+      description: "Voice-controlled with premium sound quality",
+      price: 199.99,
+      discountPrice: 169.99,
+      image: featuredProduct,
+      colors: ["#FF6B6B", "#4ECDC4", "#45B7D1"],
+    },
+    {
+      name: "Beauty Essentials Kit",
+      description: "All your skincare needs in one package",
+      price: 89.99,
+      discountPrice: 69.99,
+      image: secondaryProduct,
+      colors: ["#FF9F1C", "#FF70A6", "#9775FA"],
+    },
+  ];
 
   const showLoading = () => {
     setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 1000);
   };
+
   return (
     <>
-      {isLoading === true && <LoadingState />}
+      {isLoading && <LoadingState />}
       <MobileHeroSection />
-      <section className=" hidden sm:block relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50">
+
+      <section className="hidden sm:block relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-amber-50 overflow-hidden">
+        {/* Background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-300 rounded-full blur-3xl opacity-20" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-300 rounded-full blur-3xl opacity-20" />
+          <div className="absolute top-1/2 left-1/2 w-full h-96 bg-gradient-radial from-orange-100 to-transparent opacity-10" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               className="space-y-8"
@@ -154,6 +206,10 @@ const HeroSection: React.FC = () => {
               variants={animations.stagger}
             >
               <motion.div className="space-y-4" variants={animations.fadeInUp}>
+                <div className="inline-flex items-center bg-white px-3 py-1 rounded-full text-sm font-medium mb-3 shadow-sm border border-orange-100">
+                  <span className="h-2 w-2 bg-orange-500 rounded-full mr-2"></span>
+                  Summer Sale Live Now
+                </div>
                 <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
                   Discover
                   <span className="text-orange-600 block">Smart Shopping</span>
@@ -172,47 +228,50 @@ const HeroSection: React.FC = () => {
                 <Button
                   size="lg"
                   onClick={showLoading}
-                  className="flex gap-5 h-9 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 py-3 shadow-lg transition-all duration-300"
+                  className="h-10 px-6 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
                 >
-                  <Link href="/category" className="">
-                    🛍️ Shop Now
-                  </Link>
+                  <ShoppingBag className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform" />
+                  {/* 🛍️ */}
+                  <span>Shop Now</span>
+                  <ChevronRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                 </Button>
                 <Button
                   size="lg"
                   onClick={showLoading}
-                  className="h-9 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 py-3 shadow-lg transition-all duration-300"
+                  className="h-10 px-6 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
                 >
-                  <Link href="/category">Explore Category</Link>
+                  <span>Explore category</span>
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 hover:bg-orange-50 h-9 py-3"
+                  className="h-10 px-6 border-2 hover:bg-orange-50 transition-colors"
                   onClick={() =>
                     window.dispatchEvent(new CustomEvent("openVoiceSearch"))
                   }
                 >
-                  <Mic className="w-5 h-5 mr-2" />
+                  <Mic className="mr-2 w-5 h-5" />
                   Voice Search
                 </Button>
               </motion.div>
 
               <motion.div
-                className="grid sm:grid-cols-3 gap-6 pt-8"
+                className="grid sm:grid-cols-3 gap-6 pt-4"
                 variants={animations.fadeInUp}
               >
                 {features.map((feature, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-orange-100"
+                    className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-orange-50 hover:shadow-md transition-all"
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <div className="bg-orange-50 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+                    <div
+                      className={`${feature.color} w-10 h-10 rounded-lg flex items-center justify-center mb-[14px]`}
+                    >
                       {feature.icon}
                     </div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-gray-900 mb-[2px]">
                       {feature.title}
                     </h3>
                     <p className="text-sm text-gray-600">
@@ -223,7 +282,7 @@ const HeroSection: React.FC = () => {
               </motion.div>
 
               <motion.div
-                className="flex items-center gap-6 pt-4"
+                className="flex flex-wrap items-center gap-6 pt-4"
                 variants={animations.fadeInUp}
               >
                 <div className="flex items-center gap-2">
@@ -233,65 +292,140 @@ const HeroSection: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-yellow-500" />
                   <span className="text-sm text-gray-600">
-                    Trusted by 10K+ Users
+                    10K+ Happy Customers
                   </span>
                 </div>
               </motion.div>
             </motion.div>
 
-            {/* Right Side - Hero Images */}
+            {/* Right Side - Product showcase */}
             <motion.div
-              className="relative"
+              className="relative hidden md:block"
               initial="hidden"
               animate="visible"
               variants={animations.imageScale}
             >
               <div className="relative aspect-square max-w-[600px] mx-auto">
-                {/* Main Product Image */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-orange-100 to-transparent rounded-2xl" />
-                <div className="relative w-full h-full p-6">
-                  <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
-                    <Image
-                      src={smartWatchs} // Update with your image
-                      alt="Featured Products"
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                </div>
-
-                {/* Floating Elements */}
+                {/* Main product */}
                 <motion.div
-                  className="absolute -right-8 top-1/4 bg-white rounded-lg shadow-lg p-4"
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="absolute inset-0 bg-white rounded-3xl shadow-2xl overflow-hidden"
+                  whileHover={{ scale: 1.02 }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50" />
+                  <div className="relative w-full h-full p-8 flex items-center justify-center">
+                    <motion.div
+                      className="relative w-full h-full"
+                      animate={animations.float}
+                    >
                       <Image
-                        src={smartWatchb} // Update with your image
-                        alt="Product"
-                        width={48}
-                        height={48}
-                        className="object-cover"
+                        src={products[activeProduct].image}
+                        alt={products[activeProduct].name}
+                        fill
+                        className="object-contain"
+                        priority
                       />
-                    </div>
-                    <div>
-                      <p className="font-medium">New Arrival</p>
-                      <p className="text-sm text-gray-600">Just added!</p>
+                    </motion.div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-6 border-t border-orange-100">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-lg text-gray-900">
+                          {products[activeProduct].name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {products[activeProduct].description}
+                        </p>
+                        <div className="flex mt-2 space-x-2">
+                          {products[activeProduct].colors.map((color, i) => (
+                            <div
+                              key={i}
+                              className="w-5 h-5 rounded-full border border-gray-200"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        {products[activeProduct].discountPrice ? (
+                          <>
+                            <span className="text-xl font-bold text-gray-900">
+                              $
+                              {products[activeProduct].discountPrice.toFixed(2)}
+                            </span>
+                            <span className="text-sm text-gray-500 line-through block">
+                              ${products[activeProduct].price.toFixed(2)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xl font-bold text-gray-900">
+                            ${products[activeProduct].price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
 
+                {/* Floating product 1 */}
                 <motion.div
-                  className="absolute -left-8 bottom-1/4 bg-white rounded-lg shadow-lg p-4"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 2.5 }}
+                  className="absolute -right-8 top-1/4 bg-white rounded-xl shadow-lg p-4 w-40 cursor-pointer"
+                  animate={{ y: [0, 15, 0] }}
+                  transition={{ repeat: Infinity, duration: 3.5 }}
+                  onClick={() => setActiveProduct(0)}
+                  whileHover={{ scale: 1.05 }}
                 >
-                  <div className="text-center">
-                    <p className="font-bold text-orange-600">50% OFF</p>
-                    <p className="text-sm text-gray-600">Limited time offer</p>
+                  <div className="mb-2 h-24 bg-orange-50 rounded-lg flex items-center justify-center">
+                    <Image
+                      src={product3}
+                      alt="Headphones"
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm truncate">
+                      Wireless Headphones
+                    </p>
+                    <p className="text-xs text-gray-500">$199.99</p>
+                  </div>
+                </motion.div>
+
+                {/* Floating product 2 */}
+                <motion.div
+                  className="absolute -left-8 bottom-1/4 bg-white rounded-xl shadow-lg p-4 w-40 cursor-pointer"
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ repeat: Infinity, duration: 4 }}
+                  onClick={() => setActiveProduct(1)}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="mb-2 h-24 bg-amber-50 rounded-lg flex items-center justify-center">
+                    <Image
+                      src={product4}
+                      alt="Smartwatch"
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm truncate">
+                      Smart Watch Pro
+                    </p>
+                    <p className="text-xs text-gray-500">$249.99</p>
+                  </div>
+                </motion.div>
+
+                {/* Floating discount badge */}
+                <motion.div
+                  className="absolute -bottom-4 right-8 bg-orange-600 text-white px-4 py-2 rounded-full shadow-xl"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                >
+                  <div className="flex items-center">
+                    <span className="font-bold">50% OFF</span>
+                    <span className="mx-1">|</span>
+                    <span className="text-sm">Today Only</span>
                   </div>
                 </motion.div>
               </div>

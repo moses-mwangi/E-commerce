@@ -43,9 +43,14 @@ export default function Reccomeded() {
     <>
       {isLoading && <LoadingState />}
 
-      <div className="bg-gray-50 px-3 sm:px-11 rounded-xl mx-auto pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
-        <div className="">
-          <h2 className="text-[17px] sm:text-xl font-semibold">Just for you</h2>
+      <div className="sm:bg-[#f4f4f4] px-3 sm:px-6 md:px-7 lg:px-10 sm:py-6 mx-auto dark:bg-gray-900 min-h-max">
+        <div className="flex sm:flex-col items-center sm:items-start justify-between mb-2 sm:mb-4">
+          <p className=" text-base sm:text-2xl font-semibold text-gray-900">
+            Just for you
+          </p>
+          <p className=" hidden sm:flex text-[16px] text-gray-600">
+            Stay ahead of others with our latest product
+          </p>
         </div>
 
         <div className={``}>

@@ -1,6 +1,6 @@
 import React from "react";
 import ProductForm from "./productUpload/Product";
-import Footer from "../../../home-page/footer/Footer";
+import Footer from "../../../components/footer/Footer";
 import Navbar from "../../../home-page/navbar/Navbar";
 
 export default function Admin() {

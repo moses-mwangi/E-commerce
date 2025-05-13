@@ -119,7 +119,7 @@ export default function SignInForm() {
         </Button>
       </div>
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-100 to-orange-300 p-6">
-        <Card className="w-[415px] max-w-md p-6 bg-white rounded-lg shadow-md">
+        <Card className="sm:w-[415px] max-w-md p-6 bg-white rounded-lg shadow-md">
           <div className="text-center pt-2 py-6">
             <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
             <p className="text-gray-600 mt-2">Sign in to access your account</p>

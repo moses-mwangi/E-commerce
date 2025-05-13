@@ -12,7 +12,7 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import Navbar from "../home-page/navbar/Navbar";
-import Footer from "../home-page/footer/Footer";
+import Footer from "../components/footer/Footer";
 import { Pagination } from "../components/pagination/pagination";
 
 export default function ProductCategories() {
