@@ -381,6 +381,7 @@ import { FiEye } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import UserBrowsingHistory from "../userBrowser/UserBrowsingHistory";
 import Recommedation from "../frequencySearched/FrequencySearched";
+import { Card } from "@/components/ui/card";
 
 const CategoriesSection = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -414,7 +415,7 @@ const CategoriesSection = () => {
         </h2>
         <div className="overflow-x-auto sm:overflow-x-hidden hide-scrollbar flex space-x-3 sm:space-x-0 sm:grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
           {categories.map((category, index) => (
-            <div
+            <Card
               key={index}
               className="flex-shrink-0 group bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 flex gap-2 sm:gap-0 sm:flex-col items-center cursor-pointer border border-gray-100 hover:border-blue-200"
             >
@@ -429,7 +430,7 @@ const CategoriesSection = () => {
                   {category.count}+ items
                 </span>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

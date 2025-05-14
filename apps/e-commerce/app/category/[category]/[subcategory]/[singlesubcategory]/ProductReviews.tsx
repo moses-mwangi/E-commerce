@@ -183,7 +183,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
             </p>
           </div>
 
-          <div className="sm:flex hidden flex-1 w-full space-y-[6px]">
+          <div className="sm:block hidden flex-1 w-full space-y-[6px]">
             {[5, 4, 3, 2, 1].map((rating) => (
               <div key={rating} className="flex items-center gap-2">
                 <button

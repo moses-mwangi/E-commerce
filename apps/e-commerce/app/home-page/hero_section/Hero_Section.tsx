@@ -12,7 +12,6 @@ import {
   Shield,
   HelpCircle,
   ShoppingBag,
-  Search,
   ChevronRight,
 } from "lucide-react";
 import LoadingState from "@/app/components/loaders/LoadingState";
@@ -24,6 +23,7 @@ import secondaryProduct from "../../../public/category_Image/beauty.png";
 import product3 from "../../../public/fashion/image.png";
 import product4 from "../../../public/newArrival/foldedLaptop.png";
 import ModernEcommerceSearch from "@/app/home-page/navbar/search/ModernEcommerceSearch2";
+import { useRouter } from "next/navigation";
 
 const animations = {
   fadeInUp: {
@@ -113,7 +113,14 @@ const mobileCategories = [
   },
 ];
 
-const MobileHeroSection = () => {
+const MobileHeroSection = ({ setIsLoading }: any) => {
+  const router = useRouter();
+
+  const handleNavigateToCategory = () => {
+    setIsLoading(true);
+    router.push("/category");
+  };
+
   return (
     <div className="sm:hidden w-full pt-4 px-3">
       <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl py-6 px-4 mb-4 relative">
@@ -127,10 +134,19 @@ const MobileHeroSection = () => {
           <div className="z-50 mb-3">
             <ModernEcommerceSearch />
           </div>
-          <Button className="w-full bg-orange-600 hover:bg-orange-700">
-            <ShoppingBag className="mr-2 w-4 h-4" />
-            Shop Now
-          </Button>
+          <div className="w-full grid grid-cols-2 gap-2">
+            <Button className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300">
+              <ShoppingBag className="mr-2 w-4 h-4" />
+              Shop Now
+            </Button>
+
+            <Button
+              onClick={handleNavigateToCategory}
+              className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
+            >
+              <span>Explore category</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -142,7 +158,7 @@ const MobileHeroSection = () => {
               whileTap={{ scale: 0.95 }}
               className="flex-shrink-0"
             >
-              <Card className="p-3 flex items-center space-x-2 rounded-md">
+              <Card className="p-3 flex items-center space-x-2 rounded-md shadow-md">
                 <div className={`${item.color} p-2 rounded-lg`}>
                   {item.icon}
                 </div>
@@ -157,6 +173,7 @@ const MobileHeroSection = () => {
 };
 
 const HeroSection = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [activeProduct, setActiveProduct] = useState(0);
 
@@ -184,10 +201,16 @@ const HeroSection = () => {
     setTimeout(() => setIsLoading(false), 1000);
   };
 
+  const handleNavigateToCategory = () => {
+    setIsLoading(true);
+    router.push("/category");
+    // setTimeout(() => setIsLoading(false), 1000);
+  };
+
   return (
     <>
       {isLoading && <LoadingState />}
-      <MobileHeroSection />
+      <MobileHeroSection setIsLoading={setIsLoading} />
 
       <section className="hidden sm:block relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-amber-50 overflow-hidden">
         {/* Background elements */}
@@ -237,7 +260,7 @@ const HeroSection = () => {
                 </Button>
                 <Button
                   size="lg"
-                  onClick={showLoading}
+                  onClick={handleNavigateToCategory}
                   className="h-10 px-6 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
                 >
                   <span>Explore category</span>
