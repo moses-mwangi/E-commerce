@@ -1,30 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-// "use client";
-
-// import { Button } from "@/components/ui/button";
-// import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
-// import { AppDispatch, RootState } from "@/redux/store";
-// import React, { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-
-// export default function ProductReviews() {
-//   const dispatch: AppDispatch = useDispatch();
-//   const { reviews } = useSelector((state: RootState) => state.review);
-//   useEffect(() => {
-//     dispatch(fetchReviews());
-//   }, [dispatch]);
-
-//   return (
-//     <div>
-//       <div className="space-y-4">
-//         <div className="flex items-center justify-between">
-//           <h3 className="text-xl font-semibold">Customer Reviews</h3>
-//           <Button>Write a Review</Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -40,7 +13,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "@/components/ui/skeleton";
-// import ReviewForm from "./ReviewForm"; // Your existing review form component
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
@@ -52,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { FaThumbsUp } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
+import { capitalizeWords } from "@/app/types/products";
 
 interface ReviewFilters {
   rating: number | null;
@@ -278,7 +251,9 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                      <h4 className="font-medium ">{review.user.name}</h4>
+                      <h4 className="font-medium ">
+                        {capitalizeWords(review.user.name)}
+                      </h4>
                       <div className="flex text-sm items-center gap-2 mt-1">
                         <div className="flex">
                           {[...Array(5)].map((_, i) => (
@@ -321,12 +296,15 @@ export default function ProductReviews({ productId }: { productId: string }) {
                             key={idx}
                             className="w-16 h-16 rounded-md overflow-hidden border cursor-pointer hover:opacity-80 transition-opacity"
                           >
-                            <img
-                              src={
-                                image.isMain === true ? image.url : image.url
-                              }
-                              alt={`Review image ${idx + 1}`}
-                              className="w-full h-full object-cover"
+                            <div
+                              className="w-full h-full object-cover inset-0"
+                              style={{
+                                backgroundImage: `url(${
+                                  image.isMain === true ? image.url : image.url
+                                })`,
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                              }}
                             />
                           </div>
                         ))}
@@ -442,19 +420,6 @@ export default function ProductReviews({ productId }: { productId: string }) {
           </Button>
         </div>
       )}
-
-      {/* Review Form Modal */}
-      {/* {showReviewForm && (
-        <ReviewForm
-          productId={productId}
-          userId="current-user-id" // Replace with actual user ID
-          orderId="order-id-if-available" // Optional
-          productName="Product Name" // Pass the actual product name
-          productImage="product-image-url" // Pass the actual product image
-          productCategory="product-category" // Pass the actual category
-          onCancel={() => setShowReviewForm(false)}
-        />
-      )} */}
     </section>
   );
 }

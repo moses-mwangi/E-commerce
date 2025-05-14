@@ -32,9 +32,9 @@ import {
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { Subcategory } from "@/app/types/category";
 import { useRouter } from "next/navigation";
+import ProductCard from "./ProductCard";
 
 export default function Category() {
-  const { push } = useRouter();
   const {
     isLoading,
     gridView,
@@ -64,10 +64,9 @@ export default function Category() {
     <>
       {isLoading && <LoadingState />}
 
-      <div className="bg-gray-50 px-4 sm:px-6 rounded-xl mx-auto container pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
-        {/* Category Navigation */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 sm:pb-6">
+      <div className="bg-gray-50 px-3 sm:px-6 rounded-xl mx-auto container pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
+        <div className="mb-5 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 pb-4 sm:pb-6">
             <h2 className="text-[17px] sm:text-xl font-semibold">
               Browse {capitalizeWords(decodeURIComponent(String(category)))} by
               Category
@@ -234,155 +233,159 @@ export default function Category() {
             )}
           </AnimatePresence>
 
-          <div
-            className={`grid ${
-              !gridView
-                ? " grid"
-                : !showFilters
-                ? "grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                : " sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            } gap-4 sm:gap-6 flex-1`}
-          >
-            {filteredProducts?.map((product) => (
-              <Card
-                key={product.id}
-                className={`${
-                  gridView
-                    ? "flex flex-col h-full"
-                    : "flex flex-col sm:flex-row h-auto sm:h-[280px]"
-                } bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden`}
-              >
-                <div
-                  className={`group ${
-                    gridView
-                      ? "aspect-square h-auto rounded-b-none rounded-t-md"
-                      : "w-full sm:w-1/3 h-48 sm:h-full"
-                  } bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
-                >
-                  <Image
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                    src={
-                      product.productImages
-                        ? String(
-                            product.productImages.find(
-                              (el) => el.isMain === true
-                            )?.url
-                          )
-                        : ""
-                    }
-                    alt={product.name}
-                    width={500}
-                    height={500}
-                  />
-
-                  <Button
-                    onClick={() => handleAddToFavourite(product.id)}
-                    size="icon"
-                    className="absolute top-2 right-2 bg-gray-100/65 hover:bg-gray-100 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-8 h-8"
-                  >
-                    <Heart
-                      fill={
-                        favItems.some((el) => el.product.id === product.id)
-                          ? "oklch(70.4% 0.191 22.216)"
-                          : "white"
-                      }
-                      className="w-4 h-4 text-red-400"
-                    />
-                  </Button>
-                </div>
-
-                <CardContent
+          <div>
+            <div
+              className={` hidden sm:grid ${
+                !gridView
+                  ? " grid"
+                  : !showFilters
+                  ? "grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  : " sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              } gap-4 sm:gap-6 flex-1`}
+            >
+              {filteredProducts?.map((product) => (
+                <Card
+                  key={product.id}
                   className={`${
-                    gridView ? "p-3 sm:p-4" : "p-3 sm:p-4 sm:w-2/3"
-                  } flex flex-col justify-between flex-1`}
+                    gridView
+                      ? "flex flex-col h-full"
+                      : "flex flex-col sm:flex-row h-auto sm:h-[280px]"
+                  } bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden`}
                 >
-                  <div className="space-y-2 sm:space-y-3">
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
-                      {product.name}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                      {product.description}
-                    </p>
+                  <div
+                    className={`group ${
+                      gridView
+                        ? "aspect-square h-auto rounded-b-none rounded-t-md"
+                        : "w-full sm:w-1/3 h-48 sm:h-full"
+                    } bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
+                  >
+                    <Image
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      src={
+                        product.productImages
+                          ? String(
+                              product.productImages.find(
+                                (el) => el.isMain === true
+                              )?.url
+                            )
+                          : ""
+                      }
+                      alt={product.name}
+                      width={500}
+                      height={500}
+                    />
 
-                    <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
-                      <p className="text-gray-800 dark:text-gray-200">
-                        ${product.price}
+                    <Button
+                      onClick={() => handleAddToFavourite(product.id)}
+                      size="icon"
+                      className="absolute top-2 right-2 bg-gray-100/65 hover:bg-gray-100 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-8 h-8"
+                    >
+                      <Heart
+                        fill={
+                          favItems.some((el) => el.product.id === product.id)
+                            ? "oklch(70.4% 0.191 22.216)"
+                            : "white"
+                        }
+                        className="w-4 h-4 text-red-400"
+                      />
+                    </Button>
+                  </div>
+
+                  <CardContent
+                    className={`${
+                      gridView ? "p-3 sm:p-4" : "p-3 sm:p-4 sm:w-2/3"
+                    } flex flex-col justify-between flex-1`}
+                  >
+                    <div className="space-y-2 sm:space-y-3">
+                      <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                        {product.name}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                        {product.description}
                       </p>
-                      {product.discount > 0 && (
-                        <p className="text-red-500 bg-red-100 dark:bg-red-900 px-1 sm:px-2 py-0.5 text-xs rounded-md">
-                          -{product.discount}%
+
+                      <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
+                        <p className="text-gray-800 dark:text-gray-200">
+                          ${product.price}
                         </p>
+                        {product.discount > 0 && (
+                          <p className="text-red-500 bg-red-100 dark:bg-red-900 px-1 sm:px-2 py-0.5 text-xs rounded-md">
+                            -{product.discount}%
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex gap-1 items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                        {[...Array(5)].map((_, index) => (
+                          <Star
+                            key={index}
+                            className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                              index < product.ratings
+                                ? "text-yellow-500"
+                                : "text-gray-400"
+                            }`}
+                          />
+                        ))}
+                        <span className="ml-1">({product.ratings})</span>
+                      </div>
+
+                      {!gridView && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2 mt-2 text-xs sm:text-sm">
+                          {product.specifications
+                            ?.slice(0, 6)
+                            .map((spec: any, idx: any) => (
+                              <div className="flex gap-1" key={idx}>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                  {spec.key}:
+                                </p>
+                                <p className="text-gray-700 dark:text-gray-300 truncate">
+                                  {spec.value}
+                                </p>
+                              </div>
+                            ))}
+                        </div>
                       )}
                     </div>
 
-                    <div className="flex gap-1 items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                      {[...Array(5)].map((_, index) => (
-                        <Star
-                          key={index}
-                          className={`w-3 h-3 sm:w-4 sm:h-4 ${
-                            index < product.ratings
-                              ? "text-yellow-500"
-                              : "text-gray-400"
-                          }`}
-                        />
-                      ))}
-                      <span className="ml-1">({product.ratings})</span>
+                    <div
+                      className={`grid ${
+                        gridView ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3"
+                      } gap-2 mt-3 sm:mt-4`}
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
+                        onClick={() => handleAddToCart(product.id)}
+                      >
+                        Add to Cart
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
+                        onClick={() => handleBuyNow(product.id)}
+                      >
+                        Buy Now
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className={`${
+                          gridView
+                            ? "col-span-2 w-full"
+                            : "sm:flex col-span-2 sm:col-span-1"
+                        } w-full text-xs sm:text-sm h-8 sm:h-9`}
+                        onClick={() => handleRoute(product.name, product.id)}
+                      >
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                        View
+                      </Button>
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-                    {!gridView && (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2 mt-2 text-xs sm:text-sm">
-                        {product.specifications
-                          ?.slice(0, 6)
-                          .map((spec: any, idx: any) => (
-                            <div className="flex gap-1" key={idx}>
-                              <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                {spec.key}:
-                              </p>
-                              <p className="text-gray-700 dark:text-gray-300 truncate">
-                                {spec.value}
-                              </p>
-                            </div>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div
-                    className={`grid ${
-                      gridView ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3"
-                    } gap-2 mt-3 sm:mt-4`}
-                  >
-                    <Button
-                      size="sm"
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
-                      onClick={() => handleAddToCart(product.id)}
-                    >
-                      Add to Cart
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
-                      onClick={() => handleBuyNow(product.id)}
-                    >
-                      Buy Now
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={`${
-                        gridView
-                          ? "col-span-2 w-full"
-                          : "sm:flex col-span-2 sm:col-span-1"
-                      } w-full text-xs sm:text-sm h-8 sm:h-9`}
-                      onClick={() => handleRoute(product.name, product.id)}
-                    >
-                      <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      View
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <ProductCard val="category" />
           </div>
         </div>
       </div>

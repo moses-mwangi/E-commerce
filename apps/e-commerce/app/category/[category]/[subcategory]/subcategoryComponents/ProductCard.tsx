@@ -20,83 +20,13 @@ export function ProductCard({ product, view }: ProductCardProps) {
 
   if (view === "list") {
     return (
-      // <motion.div
-      //   initial={{ opacity: 0 }}
-      //   animate={{ opacity: 1 }}
-      //   className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-      // >
-      //   <div className="flex">
-      //     <div className="relative w-48 h-48">
-      //       <Image
-      //         src={product.images[0]}
-      //         alt={product.name}
-      //         fill
-      //         className="object-cover rounded-l-lg"
-      //       />
-      //     </div>
-      //     <div className="flex-1 p-6">
-      //       <div className="flex justify-between items-start">
-      //         <div>
-      //           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-      //             {product.name}
-      //           </h3>
-      //           <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-      //             {product.description}
-      //           </p>
-      //         </div>
-      //         <Button variant="ghost" size="icon">
-      //           <Heart className="w-5 h-5" />
-      //         </Button>
-      //       </div>
-      //       <div className="flex items-center gap-2 mb-4">
-      //         <div className="flex items-center">
-      //           {[...Array(5)].map((_, i) => (
-      //             <Star
-      //               key={i}
-      //               className={`w-4 h-4 ${
-      //                 i < product.rating
-      //                   ? "text-yellow-400 fill-current"
-      //                   : "text-gray-300"
-      //               }`}
-      //             />
-      //           ))}
-      //         </div>
-      //         <span className="text-sm text-gray-500">
-      //           ({product.reviews} reviews)
-      //         </span>
-      //       </div>
-      //       <div className="flex items-center justify-between">
-      //         <div className="space-x-2">
-      //           <span className="text-2xl font-bold text-gray-900">
-      //             ${product.price}
-      //           </span>
-      //           {product.originalPrice && (
-      //             <span className="text-sm text-gray-500 line-through">
-      //               ${product.originalPrice}
-      //             </span>
-      //           )}
-      //         </div>
-      //         <Button asChild>
-      //           <Link href={`/product/${product.id}`}>View Details</Link>
-      //         </Button>
-      //       </div>
-      //     </div>
-      //   </div>
-      // </motion.div>
-
       <div className="">
         <Card
           className={`grid ${" grid-cols-3 gap-3 h-auto"}   hover:cursor-pointer gap-2  bg-white dark:bg-gray-800 shadow-lg rounded-xl`}
           key={product.id}
         >
           <div
-            className={`group ${
-              // view
-              //   ?
-              " h-[260px] rounded-b-none rounded-t-md"
-              // "h-full"
-              // "h-[96%] rounded-md"
-            } bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
+            className={`group ${" h-[260px] rounded-b-none rounded-t-md"} bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
           >
             <Image
               className="h-full w-full hover:scale-110 transition-all duration-200 object-cover"

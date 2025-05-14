@@ -20,7 +20,7 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
     return res.data.users;
   } catch (err) {
     // console.error("Error:", err);
-    toast.error("Error in fetching user");
+    // toast.error("Error in fetching user");
     throw err;
   }
 });

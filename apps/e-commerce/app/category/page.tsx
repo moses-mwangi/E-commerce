@@ -279,7 +279,7 @@ const CategoryCard = ({
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.05, duration: 0.3 }}
     whileHover={{ y: -5 }}
-    className="flex-shrink-0 px-2"
+    className="flex-shrink-0"
   >
     <Link href={`/category/${category.slug}`} className="group block w-full">
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden border-2 border-gray-100 shadow-sm group-hover:border-orange-300 transition-all">
@@ -301,7 +301,7 @@ const CategoryCard = ({
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 rounded-full" />
       </div>
-      <span className="block text-sm text-center mt-3 text-gray-700 group-hover:text-orange-600 transition-colors whitespace-nowrap">
+      <span className="block text-sm text-center mt-1 sm:mt-3 text-gray-700 group-hover:text-orange-600 transition-colors whitespace-nowrap">
         {category.name}
       </span>
     </Link>
@@ -338,14 +338,14 @@ export default function CategoriesPage() {
           </motion.div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 -mt-16 z-20 relative">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 -mt-16 z-20 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-lg px-4 py-3 sm:p-6 md:p-8"
+            className="bg-white rounded-xl shadow-lg px-[13px] py-3 sm:p-6 md:p-8"
           >
-            <div className="flex overflow-x-auto hide-scrollbar gap-6 sm:gap-8">
+            <div className="flex overflow-x-auto hide-scrollbar gap-3 sm:gap-8">
               {subCategories.map((category, index) => (
                 <CategoryCard
                   key={category.slug}

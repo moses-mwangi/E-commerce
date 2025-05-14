@@ -223,18 +223,18 @@ export default function SingleSuCategoricalProductPage() {
               />
             </div>
 
-            <Card className="flex rounded-lg flex-col shadow-xl gap-4 lg:w-full px-5 py-6">
-              <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            <Card className="flex rounded-lg flex-col shadow-xl gap-0 sm:gap-4 lg:w-full px-3 sm:px-5 py-6">
+              <h2 className="sm:text-xl text-[17px] font-semibold text-gray-700 dark:text-gray-300">
                 {product.brand}
               </h2>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {product.name}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-[16px]">
+              <p className="text-gray-600 dark:text-gray-400 text-sm pt-1 sm:pt-0 sm:text-[16px]">
                 {product.description}
               </p>
-              <div className="flex gap-6 py-3">
-                <div className="flex items-center gap-3 text-xl font-semibold">
+              <div className="flex items-center gap-6 py-3">
+                <div className="flex items-center gap-3 text-[18px] sm:text-xl font-semibold">
                   <p className="text-gray-800 dark:text-gray-200">
                     ${product.price}
                   </p>
@@ -249,7 +249,7 @@ export default function SingleSuCategoricalProductPage() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
+                      className={`w-4 h-4 sm:w-5 sm:h-5 ${
                         i < product.ratings
                           ? "text-yellow-500"
                           : "text-gray-300"
@@ -262,10 +262,10 @@ export default function SingleSuCategoricalProductPage() {
                 </div>
               </div>
 
-              <p className="text-sm text-[15px] text-gray-500">
+              <p className="text-sm sm:text-[15px] pb-3 sm:pb-0 text-gray-500">
                 {product.stock > 0 ? (
                   <span className="text-green-600 font-semibold flex items-center">
-                    <Check size={20} className="mr-1" /> In Stock
+                    <Check className="mr-1 w-4 h-4 sm:w-5 sm:h-5" /> In Stock
                   </span>
                 ) : (
                   <span className="text-red-500 font-semibold">
@@ -317,6 +317,7 @@ export default function SingleSuCategoricalProductPage() {
                 </label>
                 <div className="flex items-center">
                   <Button
+                    className=" h-8"
                     variant="outline"
                     size="icon"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -329,9 +330,10 @@ export default function SingleSuCategoricalProductPage() {
                     onChange={(e) =>
                       setQuantity(Math.max(1, parseInt(e.target.value) || 1))
                     }
-                    className="w-20 text-center mx-2"
+                    className="w-20 h-8 text-center mx-2"
                   />
                   <Button
+                    className=" h-8"
                     variant="outline"
                     size="icon"
                     onClick={() => setQuantity(quantity + 1)}
@@ -343,14 +345,14 @@ export default function SingleSuCategoricalProductPage() {
 
               <div className="flex gap-4 py-4">
                 <Button
-                  className="flex-1 bg-orange-600 hover:bg-orange-500"
+                  className="flex-1 h-8 sm:h-9 bg-orange-600 hover:bg-orange-500"
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Add to Cart
                 </Button>
                 <Button
-                  className="flex-1 bg-orange-600 hover:bg-orange-500"
+                  className="flex-1 h-8 sm:h-9 bg-orange-600 hover:bg-orange-500"
                   onClick={() => handleBuyNow(product.id)}
                 >
                   Buy Now
@@ -361,7 +363,7 @@ export default function SingleSuCategoricalProductPage() {
                   onClick={() => {
                     handleAddToFavourite(product.id);
                   }}
-                  className=""
+                  className=" h-8 sm:h-auto"
                 >
                   <Heart
                     fill={`${
@@ -372,15 +374,15 @@ export default function SingleSuCategoricalProductPage() {
                     className="w-6 h-6 text-red-400"
                   />
                 </Button>
-                <Button variant="outline" size="icon">
+                <Button className="h-8 sm:h-auto" variant="outline" size="icon">
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t">
+              <div className="flex overflow-x-scroll hide-scrollbar lg:overflow-x-hidden lg:grid lg:grid-cols-3 gap-4 pt-6 border-t">
                 {productFeatures.map((feature, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center text-center p-4 rounded-lg bg-gray-50"
+                    className=" flex-shrink-0 flex flex-col items-center text-center p-4 rounded-lg bg-gray-50"
                   >
                     {feature.icon}
                     <h3 className="font-medium mt-2">{feature.title}</h3>

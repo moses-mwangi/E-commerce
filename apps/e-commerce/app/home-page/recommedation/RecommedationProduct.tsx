@@ -100,12 +100,12 @@ export default function Reccomeded() {
                 <CardContent
                   className={`flex flex-col justify-between flex-1 px-0`}
                 >
-                  <div className="p-2">
-                    <h2 className="sm:text-[15px] text-sm font-semibold text-gray-900 dark:text-gray-100 overflow-hidden truncate">
+                  <div className="p-2 space-y-[5px]">
+                    <h2 className="sm:text-[15px] text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
                       {product.name}
                     </h2>
-                    <p className="text-xs sm:text-[13px] text-gray-600 dark:text-gray-400">
-                      {product.description.substring(0, 50)}...
+                    <p className="text-xs sm:text-[13px] text-gray-600 dark:text-gray-400 line-clamp-2">
+                      {product.description}
                     </p>
 
                     <div className="flex items-center gap-2 text-sm sm:text-[15px] font-semibold">
