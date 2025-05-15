@@ -36,8 +36,11 @@ const pg_connect = async () => {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
     // await sequelize.sync({ force: true });
+    // await User.sync({ force: true });
+
     // await sequelize.sync({ alter: true }); /////does not delete data
     // await Order.sync({ alter: true });
+
     // Review.destroy({ where: {}, truncate: true }),
     // Review.destroy({ where: {} });
   } catch (err) {

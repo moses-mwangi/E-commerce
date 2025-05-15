@@ -1,0 +1,684 @@
+{
+  "name": "Fashion",
+  "icon": "👗",
+  "banner": "None",
+  "slug": "fashion-category",
+  "description": "The world's most complete fashion destination. Shop clothing, shoes, accessories, and luxury items for men, women, kids, plus-size, and gender-neutral styles. 1M+ items across 50+ categories.",
+  "featured": "on",
+  "trending": "on",
+  "itemCount": "1000000+",
+  "filters": [
+    {
+      "name": "Brand",
+      "options": [
+        "Nike",
+        "Gucci",
+        "Zara",
+        "H&M",
+        "Louis Vuitton",
+        "Adidas",
+        "Levi's",
+        "Prada",
+        "Balenciaga",
+        "Uniqlo",
+        "Chanel",
+        "Dior",
+        "Versace",
+        "Tommy Hilfiger",
+        "Calvin Klein"
+      ]
+    },
+    {
+      "name": "Price",
+      "options": [
+        "Under $20",
+        "$20-$50",
+        "$50-$100",
+        "$100-$200",
+        "$200-$500",
+        "$500+"
+      ]
+    },
+    {
+      "name": "Material",
+      "options": [
+        "Cotton",
+        "Denim",
+        "Silk",
+        "Leather",
+        "Wool",
+        "Cashmere",
+        "Linen",
+        "Polyester",
+        "Spandex",
+        "Velvet"
+      ]
+    },
+    {
+      "name": "Size System",
+      "options": ["US", "UK", "EU", "International"]
+    },
+    {
+      "name": "Sustainability",
+      "options": [
+        "Organic",
+        "Recycled",
+        "Vegan",
+        "Fair Trade",
+        "Carbon Neutral"
+      ]
+    },
+    {
+      "name": "Occasion",
+      "options": [
+        "Casual",
+        "Formal",
+        "Work",
+        "Wedding",
+        "Sports",
+        "Beach",
+        "Party"
+      ]
+    },
+    {
+      "name": "Season",
+      "options": ["Spring", "Summer", "Fall", "Winter", "All-Season"]
+    },
+    {
+      "name": "Pattern",
+      "options": [
+        "Solid",
+        "Striped",
+        "Floral",
+        "Plaid",
+        "Animal Print",
+        "Graphic"
+      ]
+    }
+  ],
+  "subcategories": [
+    {
+      "name": "Women's dresses",
+      "slug": "fashion-womens-dresses",
+      "description": "Elegant and casual dresses in various lengths and styles for every occasion.",
+      "itemCount": "15000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "Maxi",
+            "Midi",
+            "Mini",
+            "Wrap",
+            "Bodycon",
+            "Shirt",
+            "A-line"
+          ]
+        },
+        {
+          "name": "Sleeve Length",
+          "options": ["Sleeveless", "Short", "3/4", "Long"]
+        }
+      ]
+    },
+    {
+      "name": "Women's Jeans",
+      "slug": "jeans-for-women",
+      "description": "Classic and modern jean styles designed to flatter every figure.",
+      "itemCount": "8000",
+      "filters": [
+        {
+          "name": "Fit",
+          "options": ["Skinny", "Straight", "Bootcut", "Flare", "Boyfriend"]
+        },
+        { "name": "Rise", "options": ["High", "Mid", "Low"] }
+      ]
+    },
+    {
+      "name": "Women's Jackets & Coats",
+      "slug": "womens-jackets-coats",
+      "description": "Layer up with our collection of trendy outerwear for all seasons.",
+      "itemCount": "6000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "Denim Jackets",
+            "Leather Jackets",
+            "Trench Coats",
+            "Puffer Jackets"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women’s Footwear",
+      "slug": "womens-footwear",
+      "description": "Find the perfect pair of heels, flats, sneakers, boots, sandals, and slippers for women. Available in a variety of materials, colors, and sizes.",
+      "itemCount": "25000",
+      "filters": [
+        {
+          "name": "Category",
+          "options": [
+            "Heels",
+            "Flats",
+            "Sneakers",
+            "Boots",
+            "Sandals",
+            "Slippers"
+          ]
+        },
+        { "name": "Size", "options": ["EU 35-42", "US 4-10", "UK 2-8"] },
+        {
+          "name": "Material",
+          "options": ["Leather", "Suede", "Canvas", "Synthetic", "Mesh"]
+        },
+        {
+          "name": "Color",
+          "options": ["Black", "White", "Pink", "Beige", "Multicolor"]
+        },
+        {
+          "name": "Occasion",
+          "options": ["Casual", "Sports", "Formal", "Office", "Outdoor"]
+        }
+      ]
+    },
+    {
+      "name": "Handbags",
+      "slug": "fashion-handbags",
+      "description": "Stylish handbags in all shapes and sizes for every occasion.",
+      "itemCount": "8000",
+      "filters": [
+        { "name": "Type", "options": ["Tote", "Satchel", "Hobo", "Clutch"] }
+      ]
+    },
+    {
+      "name": "Backpacks",
+      "slug": "fashion-backpacks",
+      "description": "Functional and fashionable backpacks for everyday use.",
+      "itemCount": "3000",
+      "filters": [
+        { "name": "Material", "options": ["Leather", "Canvas", "Nylon"] }
+      ]
+    },
+    {
+      "name": "Men’s Clothing",
+      "slug": "mens-clothing",
+      "description": "Discover stylish and comfortable clothing for men, including t-shirts, shirts, hoodies, jackets, suits, pants, shorts, jeans, and sweaters. Perfect for casual, formal, and sportswear occasions.",
+      "itemCount": "50000",
+      "filters": [
+        {
+          "name": "Category",
+          "options": [
+            "T-Shirts",
+            "Shirts",
+            "Hoodies",
+            "Jackets",
+            "Suits",
+            "Pants",
+            "Shorts",
+            "Jeans",
+            "Sweaters"
+          ]
+        },
+        {
+          "name": "Material",
+          "options": ["Cotton", "Denim", "Polyester", "Leather", "Wool"]
+        },
+        {
+          "name": "Fit",
+          "options": ["Slim Fit", "Regular Fit", "Oversized", "Relaxed Fit"]
+        },
+        {
+          "name": "Size",
+          "options": ["XS", "S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Color",
+          "options": [
+            "Red",
+            "Blue",
+            "Black",
+            "White",
+            "Green",
+            "Yellow",
+            "Multicolor"
+          ]
+        },
+        {
+          "name": "Occasion",
+          "options": ["Casual", "Formal", "Business", "Sportswear"]
+        }
+      ]
+    },
+    {
+      "name": "Men’s Shoes",
+      "slug": "mens footwear",
+      "description": "Step out in style with men’s sneakers, loafers, formal shoes, boots, sandals, and slippers. Choose from leather, suede, canvas, and synthetic materials.",
+      "itemCount": "20000",
+      "filters": [
+        {
+          "name": "Category",
+          "options": [
+            "Sneakers",
+            "Loafers",
+            "Formal Shoes",
+            "Boots",
+            "Sandals",
+            "Slippers"
+          ]
+        },
+        { "name": "Size", "options": ["EU 38-46", "US 5-12", "UK 5-11"] },
+        {
+          "name": "Material",
+          "options": ["Leather", "Suede", "Canvas", "Synthetic", "Mesh"]
+        },
+        {
+          "name": "Color",
+          "options": ["Black", "White", "Brown", "Blue", "Gray", "Multicolor"]
+        },
+        {
+          "name": "Occasion",
+          "options": ["Casual", "Sports", "Formal", "Office", "Outdoor"]
+        }
+      ]
+    },
+    {
+      "name": "Men's Shirts",
+      "slug": "mens-shirts-fashion",
+      "description": "Smart and casual shirt options for work or weekend.",
+      "itemCount": "10000",
+      "filters": [
+        { "name": "Type", "options": ["Dress", "Casual", "Polo", "Flannel"] }
+      ]
+    },
+    {
+      "name": "Men's Jeans",
+      "slug": "mens-jeans-styles",
+      "description": "Jeans for men in every fit and wash you could want.",
+      "itemCount": "8000",
+      "filters": [
+        { "name": "Fit", "options": ["Slim", "Straight", "Relaxed", "Tapered"] }
+      ]
+    },
+    {
+      "name": "Men's Jackets",
+      "slug": "womens-jackets-coats",
+      "description": "Layer up with our collection of trendy outerwear for all seasons.",
+      "itemCount": "6000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "Denim Jackets",
+            "Leather Jackets",
+            "Trench Coats",
+            "Puffer Jackets"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "",
+      "slug": "",
+      "description": "",
+      "itemCount": 0,
+      "filters": [
+        {
+          "name": "",
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Women's dresses",
+      "slug": "fashion-womens-dresses",
+      "description": "Elegant and casual dresses in various lengths and styles for every occasion.",
+      "itemCount": "15000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "Maxi",
+            "Midi",
+            "Mini",
+            "Wrap",
+            "Bodycon",
+            "Shirt",
+            "A-line"
+          ]
+        },
+        {
+          "name": "Sleeve Length",
+          "options": ["Sleeveless", "Short", "3/4", "Long"]
+        }
+      ]
+    },
+    {
+      "name": "Tops & Blouses",
+      "slug": "womens-tops-blouses",
+      "description": "Trendy and comfortable tops, blouses, and bodysuits for everyday and formal wear.",
+      "itemCount": "12000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "T-Shirts",
+            "Blouses",
+            "Crop Tops",
+            "Bodysuits",
+            "Tank Tops"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Women's Jeans",
+      "slug": "jeans-for-women",
+      "description": "Classic and modern jean styles designed to flatter every figure.",
+      "itemCount": "8000",
+      "filters": [
+        {
+          "name": "Fit",
+          "options": ["Skinny", "Straight", "Bootcut", "Flare", "Boyfriend"]
+        },
+        { "name": "Rise", "options": ["High", "Mid", "Low"] }
+      ]
+    },
+    {
+      "name": "Jackets & Coats",
+      "slug": "womens-jackets-coats",
+      "description": "Layer up with our collection of trendy outerwear for all seasons.",
+      "itemCount": "6000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": [
+            "Denim Jackets",
+            "Leather Jackets",
+            "Trench Coats",
+            "Puffer Jackets"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heels",
+      "slug": "fashion-heels",
+      "description": "Elevate your look with stylish heels for every event.",
+      "itemCount": "5000",
+      "filters": [
+        {
+          "name": "Height",
+          "options": ["Low (1-2in)", "Medium (2-3in)", "High (3in+)"]
+        }
+      ]
+    },
+    {
+      "name": "Boots",
+      "slug": "fashion-boots-women",
+      "description": "From ankle to over-the-knee, find boots that complete your outfit.",
+      "itemCount": "4000",
+      "filters": [
+        {
+          "name": "Style",
+          "options": ["Ankle", "Knee-High", "Over-the-Knee", "Chelsea"]
+        }
+      ]
+    },
+    {
+      "name": "Handbags",
+      "slug": "fashion-handbags",
+      "description": "Stylish handbags in all shapes and sizes for every occasion.",
+      "itemCount": "8000",
+      "filters": [
+        { "name": "Type", "options": ["Tote", "Satchel", "Hobo", "Clutch"] }
+      ]
+    },
+    {
+      "name": "Backpacks",
+      "slug": "fashion-backpacks",
+      "description": "Functional and fashionable backpacks for everyday use.",
+      "itemCount": "3000",
+      "filters": [
+        { "name": "Material", "options": ["Leather", "Canvas", "Nylon"] }
+      ]
+    },
+    {
+      "name": "Men's Shirts",
+      "slug": "mens-shirts-fashion",
+      "description": "Smart and casual shirt options for work or weekend.",
+      "itemCount": "10000",
+      "filters": [
+        { "name": "Type", "options": ["Dress", "Casual", "Polo", "Flannel"] }
+      ]
+    },
+    {
+      "name": "Men's Jeans",
+      "slug": "mens-jeans-styles",
+      "description": "Jeans for men in every fit and wash you could want.",
+      "itemCount": "8000",
+      "filters": [
+        { "name": "Fit", "options": ["Slim", "Straight", "Relaxed", "Tapered"] }
+      ]
+    },
+    {
+      "name": "Baby Clothing",
+      "slug": "baby-apparel",
+      "description": "Adorable and comfy outfits for the littlest fashionistas.",
+      "itemCount": "8000",
+      "filters": [{ "name": "Age", "options": ["Newborn", "0-6M", "6-12M"] }]
+    },
+    {
+      "name": "Plus Size Fashion",
+      "slug": "fashion-plus-size",
+      "description": "Chic and trendy outfits in inclusive sizes for every shape.",
+      "itemCount": "20000",
+      "filters": [{ "name": "Size Range", "options": ["1X-3X", "4X-6X"] }]
+    },
+    {
+      "name": "Petite Fashion",
+      "slug": "fashion-petite",
+      "description": "Tailored styles designed to flatter petite frames.",
+      "itemCount": "10000",
+      "filters": [{ "name": "Fit", "options": ["Slim", "Regular"] }]
+    },
+    {
+      "name": "Maternity Wear",
+      "slug": "fashion-maternity",
+      "description": "Comfort meets style with our curated maternity fashion.",
+      "itemCount": "8000",
+      "filters": [
+        { "name": "Trimester", "options": ["First", "Second", "Third"] }
+      ]
+    },
+    {
+      "name": "Gender Neutral",
+      "slug": "gender-inclusive-fashion",
+      "description": "Timeless and inclusive styles for every identity.",
+      "itemCount": "5000",
+      "filters": [{ "name": "Style", "options": ["Casual", "Minimal", "Bold"] }]
+    },
+    {
+      "name": "Luxury & Designer",
+      "slug": "designer-luxury-fashion",
+      "description": "Exclusive pieces from top luxury fashion houses.",
+      "itemCount": "10000",
+      "filters": [
+        { "name": "Designer", "options": ["Gucci", "Prada", "Balenciaga"] }
+      ]
+    },
+    {
+      "name": "Wedding Guest",
+      "slug": "fashion-wedding-guest",
+      "description": "Elegant attire options perfect for attending weddings.",
+      "itemCount": "5000",
+      "filters": [
+        {
+          "name": "Dress Code",
+          "options": ["Formal", "Semi-Formal", "Black Tie Optional"]
+        }
+      ]
+    },
+    {
+      "name": "Work Attire",
+      "slug": "professional-fashion",
+      "description": "Polished and professional pieces for every work environment.",
+      "itemCount": "12000",
+      "filters": [
+        {
+          "name": "Type",
+          "options": ["Suits", "Blazers", "Dress Pants", "Work Dresses"]
+        }
+      ]
+    },
+    {
+      "name": "Streetwear",
+      "slug": "urban-streetwear",
+      "description": "Bold and trendy urban wear for men and women.",
+      "itemCount": "15000",
+      "filters": [
+        { "name": "Style", "options": ["Oversized", "Graphic", "Monochrome"] }
+      ]
+    },
+    {
+      "name": "Vintage Inspired",
+      "slug": "vintage-retro-fashion",
+      "description": "Timeless fashion with a vintage flair and retro details.",
+      "itemCount": "8000",
+      "filters": [{ "name": "Era", "options": ["70s", "80s", "90s", "Y2K"] }]
+    }
+  ]
+}

@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Star,
-  ShoppingCart,
   Search,
   Grid,
   List,
@@ -31,7 +30,6 @@ import {
 } from "@/components/ui/select";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { Subcategory } from "@/app/types/category";
-import { useRouter } from "next/navigation";
 import ProductCard from "./ProductCard";
 
 export default function Category() {
@@ -90,27 +88,26 @@ export default function Category() {
                     subCategoryRoute(sub.name, sub.id);
                   }}
                   key={sub.name}
-                  className="group w-full"
+                  className="group wss-full flex-shrink-0"
                 >
-                  <div className="bg-white w-full rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow h-full">
-                    <div className="flex items-center justify-between h-full">
+                  <Card className="bg-white  w-full rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow h-full">
+                    <div className="flex gap-3 sm:gap-4 items-center justify-between h-full">
                       <div>
                         <h3 className="font-medium whitespace-nowrap text-sm sm:text-base text-gray-900 group-hover:text-blue-600">
                           {sub.name}
                         </h3>
-                        <p className="text-xs sm:text-sm text-gray-500">
-                          {sub.itemCount} products
+                        <p className="text-xs sm:text-sm text-gray-500 flex w-full">
+                          {sub.itemCount}+ products
                         </p>
                       </div>
                       <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-blue-600" />
                     </div>
-                  </div>
+                  </Card>
                 </div>
               ))}
           </div>
         </div>
 
-        {/* Search and Filter Bar */}
         <div className="sticky top-0 z-10 bg-white rounded-lg my-3 sm:my-4 dark:bg-gray-800 shadow-md p-3 sm:p-4">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
@@ -122,7 +119,7 @@ export default function Category() {
                 <Input
                   type="text"
                   placeholder="Search products..."
-                  className="pl-9 sm:pl-10 w-full focus-visible:ring-orange-500 text-sm sm:text-base"
+                  className="pl-9 sm:pl-10 max-w-[420px] w-full focus-visible:ring-orange-500 text-sm sm:text-base"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -182,9 +179,7 @@ export default function Category() {
           </div>
         </div>
 
-        {/* Main Content Area */}
         <div className={`flex flex-col sm:flex-row gap-4 sm:gap-6`}>
-          {/* Filters Sidebar */}
           <AnimatePresence>
             {showFilters && (
               <div className="sm:w-64 w-full p-3 sm:p-4 bg-white dark:bg-gray-800 rounded shadow-md">

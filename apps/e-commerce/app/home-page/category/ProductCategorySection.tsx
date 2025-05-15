@@ -389,7 +389,7 @@ const CategoriesSection = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const dispatch: AppDispatch = useDispatch();
-  const { categories: cat, status } = useSelector(
+  const { categories, status } = useSelector(
     (state: RootState) => state.category
   );
 
@@ -398,17 +398,6 @@ const CategoriesSection = () => {
       dispatch(fetchCategories());
     }
   }, [dispatch, status]);
-
-  const categories = [
-    { name: "Industrial Machinery", icon: "⚙️", count: 1245 },
-    { name: "Consumer Electronics", icon: "📱", count: 876 },
-    { name: "Jewelry & Watches", icon: "⌚", count: 532 },
-    { name: "Apparel & Accessories", icon: "👔", count: 1567 },
-    { name: "Home & Garden", icon: "🏠", count: 943 },
-    { name: "Health & Beauty", icon: "💄", count: 721 },
-    { name: "Sports & Outdoors", icon: "⚽", count: 612 },
-    { name: "Toys & Games", icon: "🎮", count: 489 },
-  ];
 
   return (
     <>
@@ -437,7 +426,7 @@ const CategoriesSection = () => {
                     {category.name}
                   </h3>
                   <span className="text-sm text-gray-500 mt-1 sm:text-center">
-                    {category.count}+ items
+                    {category.itemCount}+ items
                   </span>
                 </div>
               </Card>

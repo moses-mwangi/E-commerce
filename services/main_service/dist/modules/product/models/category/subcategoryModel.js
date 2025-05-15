@@ -42,12 +42,15 @@ Subcategory.init({
     slug: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        // unique: true,
     },
     itemCount: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+    },
+    trending: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: true,
     },
 }, {
     sequelize: pg_database_1.default,

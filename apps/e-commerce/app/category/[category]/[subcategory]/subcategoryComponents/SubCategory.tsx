@@ -100,7 +100,7 @@ export default function SubCategory() {
                   <Input
                     type="text"
                     placeholder="Search products..."
-                    className="pl-9 sm:pl-10 w-full focus-visible:ring-orange-500 text-sm sm:text-base"
+                    className="pl-9 sm:pl-10 w-full max-w-[420px] focus-visible:ring-orange-500 text-sm sm:text-base"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />

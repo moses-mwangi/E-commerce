@@ -49,6 +49,10 @@ Product.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    trending: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: true,
+    },
     images: {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
         allowNull: true,
