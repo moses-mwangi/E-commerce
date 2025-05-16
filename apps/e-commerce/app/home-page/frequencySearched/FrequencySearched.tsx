@@ -54,7 +54,7 @@ export default function FrequencySearched() {
               key={index}
               className="flex-shrink-0 w-[185px] bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow group"
             >
-              <div className="relative h-36 sm:h-40 bg-gray-100 overflow-hidden">
+              <div className="relative h-36 sm:h-40 shadow-sm bg-gray-100 overflow-hidden">
                 <div
                   className="absolute inset-0 bg-gradient-to-b from-transparent to-black hover:scale-105 transition-all duration-200"
                   style={{
@@ -67,7 +67,7 @@ export default function FrequencySearched() {
                   }}
                 />
                 {product.discount && (
-                  <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                  <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-[2px] rounded">
                     {Math.round(product.discount)}% OFF
                   </span>
                 )}
@@ -90,7 +90,7 @@ export default function FrequencySearched() {
                 </span>
                 <button
                   onClick={() => handleAddToCart(product.id)}
-                  className="flex items-center justify-center whitespace-nowrap mx-auto absolute text-sm bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-4 py-[6px] rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="flex items-center justify-center whitespace-nowrap mx-auto absolute text-sm bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-4 py-[4px] rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <FiShoppingCart className="mr-1" /> Quick Add
                 </button>
@@ -100,7 +100,7 @@ export default function FrequencySearched() {
                   href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
                   onClick={() => handleRouteProduct(product.id)}
                 >
-                  <h3 className="w-full overflow-hidden whitespace-nowrap truncate font-medium text-gray-900 mb-1">
+                  <h3 className="w-full overflow-hidden text-[15px] whitespace-nowrap truncate font-medium text-gray-900 mb-1">
                     {product.name}
                   </h3>
                   <div className="flex items-center mb-2">
@@ -123,18 +123,18 @@ export default function FrequencySearched() {
                   <div className="flex items-center">
                     {product.discount ? (
                       <div>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-[16px] font-bold text-gray-900">
                           {(
                             product.price -
                             (product.discount / 100) * product.price
                           ).toFixed(2)}
                         </span>
-                        <span className="text-sm text-gray-500 line-through ml-2">
+                        <span className="text-[15px] text-gray-500 line-through ml-2">
                           ${product.price.toFixed(2)}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-lg font-bold text-gray-900">
+                      <span className="text-[15px] font-bold text-gray-900">
                         ${product.price.toFixed(2)}
                       </span>
                     )}

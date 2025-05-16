@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,6 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import Image from "next/image";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "framer-motion";
@@ -57,6 +56,12 @@ export default function Category() {
     handleBuyNow,
     items: favItems,
   } = useCategoryContex();
+
+  useEffect(() => {
+    if (window.innerWidth > 640) {
+      setShowFilters(true);
+    }
+  }, [setShowFilters]);
 
   return (
     <>
@@ -182,7 +187,7 @@ export default function Category() {
         <div className={`flex flex-col sm:flex-row gap-4 sm:gap-6`}>
           <AnimatePresence>
             {showFilters && (
-              <div className="sm:w-64 w-full p-3 sm:p-4 bg-white dark:bg-gray-800 rounded shadow-md">
+              <div className=" sm:max-w-72 sm:w-full w-full p-3 sm:p-4 bg-white dark:bg-gray-800 rounded shadow-md">
                 <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
                   Filters
                 </h2>
@@ -236,7 +241,7 @@ export default function Category() {
                   : !showFilters
                   ? "grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                   : " sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              } gap-4 sm:gap-6 flex-1`}
+              } gap-4 sm:gap-3 flex-1`}
             >
               {filteredProducts?.map((product) => (
                 <Card
@@ -244,17 +249,32 @@ export default function Category() {
                   className={`${
                     gridView
                       ? "flex flex-col h-full"
-                      : "flex flex-col sm:flex-row h-auto sm:h-[280px]"
+                      : "flex flex-col sm:flex-row h-auto sm:h-[220px]"
                   } bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden`}
                 >
                   <div
-                    className={`group ${
+                    className={`group shadow-sm ${
                       gridView
-                        ? "aspect-square h-auto rounded-b-none rounded-t-md"
-                        : "w-full sm:w-1/3 h-48 sm:h-full"
+                        ? "aspect-square h-44 rounded-b-none rounded-t-md"
+                        : "w-full sm:w-64  h-20 sm:h-full"
                     } bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
                   >
-                    <Image
+                    <div
+                      className="w-full h-full"
+                      style={{
+                        backgroundImage: product.productImages
+                          ? `url(${String(
+                              product.productImages.find(
+                                (el) => el.isMain === true
+                              )?.url
+                            )})`
+                          : "",
+
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                      }}
+                    />
+                    {/* <Image
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                       src={
                         product.productImages
@@ -268,7 +288,7 @@ export default function Category() {
                       alt={product.name}
                       width={500}
                       height={500}
-                    />
+                    /> */}
 
                     <Button
                       onClick={() => handleAddToFavourite(product.id)}
@@ -291,11 +311,11 @@ export default function Category() {
                       gridView ? "p-3 sm:p-4" : "p-3 sm:p-4 sm:w-2/3"
                     } flex flex-col justify-between flex-1`}
                   >
-                    <div className="space-y-2 sm:space-y-3">
-                      <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                    <div className="space-y-2 sm:space-y-2">
+                      <h2 className="text-base sm:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
                         {product.name}
                       </h2>
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                         {product.description}
                       </p>
 
@@ -325,15 +345,18 @@ export default function Category() {
                       </div>
 
                       {!gridView && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-2 mt-2 text-xs sm:text-sm">
+                        <div className="grid grid-cols-2 sm:flex sm:fleffx-wrap w-full gap-1 sm:gap-2 mt-2 text-xs sm:text-sm">
                           {product.specifications
-                            ?.slice(0, 6)
+                            ?.slice(0, 2)
                             .map((spec: any, idx: any) => (
-                              <div className="flex gap-1" key={idx}>
-                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                              <div
+                                className="flex rounded w-full sm:w-auto overflow-hidden whitespace-nowrap text-ellipsis"
+                                key={idx}
+                              >
+                                <p className="font-semibold text-gray-900 dark:text-gray-100 mr-1 line-clamp-1">
                                   {spec.key}:
                                 </p>
-                                <p className="text-gray-700 dark:text-gray-300 truncate">
+                                <p className="text-gray-700 dark:text-gray-300 truncate line-clamp-1">
                                   {spec.value}
                                 </p>
                               </div>
@@ -344,19 +367,21 @@ export default function Category() {
 
                     <div
                       className={`grid ${
-                        gridView ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3"
-                      } gap-2 mt-3 sm:mt-4`}
+                        gridView
+                          ? "grid-cols-2 mt-3"
+                          : "grid-cols-2 sm:grid-cols-3"
+                      } gap-2`}
                     >
                       <Button
                         size="sm"
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
+                        className="w-full h-7 bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm sm:h-8"
                         onClick={() => handleAddToCart(product.id)}
                       >
                         Add to Cart
                       </Button>
                       <Button
                         size="sm"
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-9"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-xs sm:text-sm h-8 sm:h-8"
                         onClick={() => handleBuyNow(product.id)}
                       >
                         Buy Now
@@ -368,7 +393,7 @@ export default function Category() {
                           gridView
                             ? "col-span-2 w-full"
                             : "sm:flex col-span-2 sm:col-span-1"
-                        } w-full text-xs sm:text-sm h-8 sm:h-9`}
+                        } w-full text-xs sm:text-sm h-8 sm:h-8`}
                         onClick={() => handleRoute(product.name, product.id)}
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />

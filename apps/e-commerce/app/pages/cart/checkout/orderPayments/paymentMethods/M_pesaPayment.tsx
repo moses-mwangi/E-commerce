@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import React, { useState, useEffect, useRef } from "react";
-import M_Pesa from "../../../../../../public/mpesa.png";
+import M_Pesa from "../../../../../../public/paymentImages/mpesa.png";
 import Image from "next/image";
 
 interface MpesaPaymentProps {

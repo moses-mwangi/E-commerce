@@ -67,7 +67,7 @@ export default function ProductCard({ val }: { val: string }) {
             >
               <div className="space-y-[6px] p-2">
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
-                  {product.name} dddddddddd
+                  {product.name}
                 </h2>
                 <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                   {product.description}

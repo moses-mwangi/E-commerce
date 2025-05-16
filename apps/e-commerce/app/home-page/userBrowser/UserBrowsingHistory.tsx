@@ -57,7 +57,7 @@ export default function UserBrowsingHistory() {
               key={index}
               className="flex-shrink-0 w-[185px]  bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow group/fav"
             >
-              <div className="relative h-36 sm:h-40 bg-gray-100 overflow-hidden">
+              <div className="relative h-36 sm:h-40 shadow-sm bg-gray-100 overflow-hidden">
                 <div
                   className="absolute inset-0 bg-gradient-to-b from-transparent to-black hover:scale-105 transition-all duration-200"
                   style={{
@@ -93,10 +93,10 @@ export default function UserBrowsingHistory() {
                   onClick={() => handleRouteProduct(item.id)}
                   className="flex flex-col items-start"
                 >
-                  <h3 className="truncate overflow-hidden whitespace-nowrap w-full font-medium text-gray-900 text-[15px] sm:text-[16px]">
+                  <h3 className="truncate text-[15px] overflow-hidden whitespace-nowrap w-full font-medium text-gray-900">
                     {item.name}
                   </h3>
-                  <div className="text-right text-[15px] sm:text-[16px]">
+                  <div className="text-right text-[15px] sm:text-[15px]">
                     <p className="font-bold text-gray-900">
                       ${item.price.toFixed(2)}
                     </p>
@@ -104,7 +104,6 @@ export default function UserBrowsingHistory() {
                 </Link>
                 <div className="flex flex-col gap-3">
                   <span className="text-sm pt-1 text-gray-500 flex items-center">
-                    {/* <FiClock className="mr-1" /> {item.viewedAt} */}
                     <FiClock className="mr-1" /> 3 days ago
                   </span>
                   <button

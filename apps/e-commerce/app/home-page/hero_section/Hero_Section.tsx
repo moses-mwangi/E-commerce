@@ -17,11 +17,8 @@ import {
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Card } from "@/components/ui/card";
 
-// Product images
 import featuredProduct from "../../../public/newArrival/smartSpeker.png";
-import secondaryProduct from "../../../public/category_Image/beauty.png";
-import product3 from "../../../public/fashion/image.png";
-import product4 from "../../../public/newArrival/foldedLaptop.png";
+import secondaryProduct from "../../../public/category_Image/electronics.png";
 import ModernEcommerceSearch from "@/app/home-page/navbar/search/ModernEcommerceSearch2";
 import { useRouter } from "next/navigation";
 
@@ -204,7 +201,6 @@ const HeroSection = () => {
   const handleNavigateToCategory = () => {
     setIsLoading(true);
     router.push("/category");
-    // setTimeout(() => setIsLoading(false), 1000);
   };
 
   return (
@@ -213,7 +209,6 @@ const HeroSection = () => {
       <MobileHeroSection setIsLoading={setIsLoading} />
 
       <section className="hidden sm:block relative min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-amber-50 overflow-hidden">
-        {/* Background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-20" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-300 rounded-full blur-3xl opacity-20" />
@@ -254,7 +249,6 @@ const HeroSection = () => {
                   className="h-10 px-6 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
                 >
                   <ShoppingBag className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform" />
-                  {/* 🛍️ */}
                   <span>Shop Now</span>
                   <ChevronRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                 </Button>
@@ -321,7 +315,6 @@ const HeroSection = () => {
               </motion.div>
             </motion.div>
 
-            {/* Right Side - Product showcase */}
             <motion.div
               className="relative hidden md:block"
               initial="hidden"
@@ -329,7 +322,6 @@ const HeroSection = () => {
               variants={animations.imageScale}
             >
               <div className="relative aspect-square max-w-[600px] mx-auto">
-                {/* Main product */}
                 <motion.div
                   className="absolute inset-0 bg-white rounded-3xl shadow-2xl overflow-hidden"
                   whileHover={{ scale: 1.02 }}
@@ -344,7 +336,7 @@ const HeroSection = () => {
                         src={products[activeProduct].image}
                         alt={products[activeProduct].name}
                         fill
-                        className="object-contain"
+                        className="object-contain rounded-t-sm"
                         priority
                       />
                     </motion.div>
@@ -389,7 +381,6 @@ const HeroSection = () => {
                   </div>
                 </motion.div>
 
-                {/* Floating product 1 */}
                 <motion.div
                   className="absolute -right-8 top-1/4 bg-white rounded-xl shadow-lg p-4 w-40 cursor-pointer"
                   animate={{ y: [0, 15, 0] }}
@@ -399,7 +390,7 @@ const HeroSection = () => {
                 >
                   <div className="mb-2 h-24 bg-orange-50 rounded-lg flex items-center justify-center">
                     <Image
-                      src={product3}
+                      src={featuredProduct}
                       alt="Headphones"
                       width={80}
                       height={80}
@@ -414,7 +405,6 @@ const HeroSection = () => {
                   </div>
                 </motion.div>
 
-                {/* Floating product 2 */}
                 <motion.div
                   className="absolute -left-8 bottom-1/4 bg-white rounded-xl shadow-lg p-4 w-40 cursor-pointer"
                   animate={{ y: [0, -15, 0] }}
@@ -424,7 +414,7 @@ const HeroSection = () => {
                 >
                   <div className="mb-2 h-24 bg-amber-50 rounded-lg flex items-center justify-center">
                     <Image
-                      src={product4}
+                      src={secondaryProduct}
                       alt="Smartwatch"
                       width={80}
                       height={80}
@@ -439,9 +429,8 @@ const HeroSection = () => {
                   </div>
                 </motion.div>
 
-                {/* Floating discount badge */}
                 <motion.div
-                  className="absolute -bottom-4 right-8 bg-orange-600 text-white px-4 py-2 rounded-full shadow-xl"
+                  className="absolute -top-4 right-8 bg-orange-600 text-white px-4 py-2 rounded-full shadow-xl"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ repeat: Infinity, duration: 2 }}
                 >

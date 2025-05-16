@@ -74,7 +74,7 @@ export default function CategoriesPage() {
       <main className="bg-white min-h-screen">
         <div
           style={{
-            backgroundImage: `url(${"/bg1.png"})`,
+            backgroundImage: `url(${"/bg.png"})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",

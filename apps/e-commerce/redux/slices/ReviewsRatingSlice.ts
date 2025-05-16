@@ -19,7 +19,7 @@ interface Review {
     email: string;
   };
   product: {
-    id: 3;
+    id: number;
     name: string;
     productImages: Images[];
   };

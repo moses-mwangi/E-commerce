@@ -24,7 +24,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { FaThumbsUp } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
-import { capitalizeWords } from "@/app/types/products";
+import { capitalizeWords, Images, Product } from "@/app/types/products";
+import { fetchProductById } from "@/redux/slices/productSlice";
+import { defaultUserNames } from "@/app/types/reviews";
 
 interface ReviewFilters {
   rating: number | null;
@@ -32,10 +34,61 @@ interface ReviewFilters {
   hasMedia: boolean;
 }
 
+const getRandomName = () => {
+  const index = Math.floor(Math.random() * defaultUserNames.length);
+  return defaultUserNames[index];
+};
+
+const defaultReviews = (product: Product) => {
+  return [
+    {
+      id: "default-1",
+      userId: 33425432,
+      productId: product?.id,
+      orderId: "default-order",
+      user: {
+        name: getRandomName(),
+        id: 3342543235,
+        email: "",
+      },
+      rating: 5,
+      comment:
+        "This product exceeded my expectations! The quality is amazing and it works perfectly.",
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      product: {
+        id: product?.id,
+        name: product?.name,
+        productImages: product?.productImages as Images[],
+      },
+    },
+    {
+      id: "default-2",
+      userId: 4664854235,
+      productId: product?.id,
+      orderId: "default-order",
+      user: {
+        name: getRandomName(),
+        id: 4664854235,
+        email: "",
+      },
+      rating: 4,
+      comment:
+        "Very good product. Works as described and arrived quickly. Would recommend!",
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      product: {
+        id: product?.id,
+        name: product?.name,
+        productImages: product?.productImages as Images[],
+      },
+    },
+  ];
+};
+
 export default function ProductReviews({ productId }: { productId: string }) {
   const dispatch: AppDispatch = useDispatch();
   const { reviews, status } = useSelector((state: RootState) => state.review);
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  const { selectedProduct } = useSelector((state: RootState) => state.product);
+  // const [showReviewForm, setShowReviewForm] = useState(false);
   const [filters, setFilters] = useState<ReviewFilters>({
     rating: null,
     sort: "newest",
@@ -43,12 +96,18 @@ export default function ProductReviews({ productId }: { productId: string }) {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 5;
-  const singleProductReviews = reviews?.filter(
-    (el) => el.productId.toString() === productId.toString()
-  );
+
+  const singleProductReviews =
+    reviews?.filter((el) => el.productId.toString() === productId.toString())
+      .length > 0
+      ? reviews
+          ?.filter((el) => el.productId.toString() === productId.toString())
+          .concat(defaultReviews(selectedProduct as Product))
+      : defaultReviews(selectedProduct as Product);
 
   useEffect(() => {
     dispatch(fetchReviews());
+    dispatch(fetchProductById(Number(productId)));
   }, [dispatch, productId]);
 
   const filteredReviews = React.useMemo(() => {
@@ -59,7 +118,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
     }
     if (filters.hasMedia) {
       result = result.filter(
-        (review) => review?.product.productImages?.length > 0
+        (review) => review?.product?.productImages?.length > 0
         // ||
         //   review?.videos?.length > 0
       );
@@ -151,7 +210,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
               ))}
             </div>
             <p className="text-sm text-muted-foreground mt-1 sm:block hidden">
-              {singleProductReviews.length}{" "}
+              {singleProductReviews.length}
               {singleProductReviews.length === 1 ? "review" : "reviews"}
             </p>
           </div>
@@ -282,8 +341,10 @@ export default function ProductReviews({ productId }: { productId: string }) {
                     </Badge>
                   </div>
 
-                  <h5 className="font-medium mt-2">{review.product.name}</h5>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <h5 className="font-medium mt-2 line-clamp-1">
+                    {review.product.name}
+                  </h5>
+                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                     {review.comment}
                   </p>
 
@@ -350,7 +411,10 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 Clear filters
               </Button>
             ) : (
-              <Button className="mt-4" onClick={() => setShowReviewForm(true)}>
+              <Button
+                className="mt-4"
+                // onClick={() => setShowReviewForm(true)}
+              >
                 Write a Review
               </Button>
             )}
