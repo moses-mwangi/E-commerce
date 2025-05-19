@@ -9,8 +9,11 @@ import LoadingState from "../../components/loaders/LoadingState";
 import { FiHeart } from "react-icons/fi";
 import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
+import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
+import { capitalizeWords } from "@/app/types/products";
 
 export default function NewArrivals() {
+  const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { products, status } = useSelector((state: RootState) => state.product);
@@ -54,7 +57,7 @@ export default function NewArrivals() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <div className="relative h-32 md:h-36 lg:h-40 bg-gray-100 overflow-hidden">
+                <div className="relative h-32 shadow-sm md:h-36 lg:h-40 bg-gray-100 overflow-hidden">
                   <div
                     className="absolute inset-0 bg-gradient-to-b from-transparent to-black rounded-t-lg hover:scale-105 transition-all duration-200"
                     style={{
@@ -94,7 +97,9 @@ export default function NewArrivals() {
                     {product.name}
                   </h3>
                   <p className="text-orange-500 sm:text-[15px] text-sm font-semibold">
-                    ${product.price}
+                    {`${product.currency} ${product.price
+                      .toFixed(2)
+                      .toLocaleString()}`}
                   </p>
                 </Link>
               </motion.div>

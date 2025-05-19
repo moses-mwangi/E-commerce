@@ -12,12 +12,15 @@ import Navbar from "../home-page/navbar/Navbar";
 import Footer from "../components/footer/Footer";
 import CategoriesSection from "../home-page/category/ProductCategorySection";
 import Reccomeded from "../home-page/recommedation/RecommedationProduct";
+import { Category, Subcategory } from "../types/category";
 
 const CategoryCard = ({
   category,
+  categories,
   index,
 }: {
   category: any;
+  categories: Category[];
   index: number;
 }) => (
   <motion.div
@@ -27,7 +30,14 @@ const CategoryCard = ({
     whileHover={{ y: -5 }}
     className="flex-shrink-0"
   >
-    <Link href={`/category/${category.slug}`} className="group block w-full">
+    <Link
+      href={`/category/${
+        categories.find((el) =>
+          el.subcategories.some((s) => s.name === category.name)
+        )?.name
+      }/${category.name}`}
+      className="group block w-full"
+    >
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden border-2 border-gray-100 shadow-sm group-hover:border-orange-300 transition-all">
         {category.image ? (
           <div
@@ -59,6 +69,8 @@ export default function CategoriesPage() {
   const { categories, status } = useSelector(
     (state: RootState) => state.category
   );
+
+  // categories.find(el=>el.subcategories.some(s=>s.name===))
 
   useEffect(() => {
     if (status === "idle") {
@@ -108,6 +120,7 @@ export default function CategoriesPage() {
               {subCategories.map((category, index) => (
                 <CategoryCard
                   key={category.slug}
+                  categories={categories}
                   category={category}
                   index={index}
                 />

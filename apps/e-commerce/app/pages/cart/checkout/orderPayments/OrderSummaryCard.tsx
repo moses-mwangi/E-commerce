@@ -67,7 +67,7 @@ export default function OrderSummaryCard({ details }: any) {
                     {item.Product.brand} {item.Product.name}
                   </p>
                   <p>
-                    USD {item.price} × {item.quantity}
+                    {`${selectedOrder.currency} ${item.price} × ${item.quantity}`}
                   </p>
                   <p className="text-xs text-gray-400">
                     Order No: ORD-{new Date(item.createdAt).getFullYear()}-
@@ -84,21 +84,28 @@ export default function OrderSummaryCard({ details }: any) {
                 Subtotal ({selectedOrder.OrderItems.length} items)
               </span>
               <span className="font-medium">
-                USD ${subtotal.toLocaleString()}
+                {`${selectedOrder.currency} ${subtotal
+                  .toFixed(2)
+                  .toLocaleString()}`}
               </span>
             </div>
 
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Processing Fee</span>
               <span className="font-medium">
-                USD ${processingFee.toLocaleString()}
+                {`${selectedOrder.currency} ${processingFee
+                  .toFixed(2)
+                  .toLocaleString()}`}
               </span>
             </div>
 
             <div className="pt-2 border-t border-gray-200 flex justify-between">
               <span className="text-gray-600 font-semibold">Total Amount</span>
               <span className="text-[18px] font-bold">
-                USD ${totalAmount.toLocaleString()}.00
+                {/* USD ${totalAmount.toLocaleString()}.00 */}
+                {`${selectedOrder.currency} ${totalAmount
+                  .toFixed(2)
+                  .toLocaleString()}`}
               </span>
             </div>
           </div>

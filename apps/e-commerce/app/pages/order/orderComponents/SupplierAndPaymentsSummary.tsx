@@ -177,12 +177,14 @@ export default function SupplierAndPaymentsSummary({
               <div className="flex justify-between">
                 <span className="text-gray-600">Item Subtotal:</span>
                 <span className="font-medium">
-                  ${order?.totalPrice?.toFixed(2)}
+                  {`${order.currency} ${order?.totalPrice?.toFixed(2)}`}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Discount:</span>
-                <span className="text-green-600 font-medium">- $34.00</span>
+                <span className="text-green-600 font-medium opacity-35">
+                  - $34.00
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping Fee:</span>
@@ -190,11 +192,13 @@ export default function SupplierAndPaymentsSummary({
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tax:</span>
-                <span className="font-medium">$0.00</span>
+                <span className="font-medium opacity-35">$0.00</span>
               </div>
               <div className="border-t pt-3 flex justify-between font-bold">
                 <span>Total:</span>
-                <span>${order?.totalPrice?.toFixed(2)}</span>
+                <span>{`${order.currency} ${order?.totalPrice?.toFixed(
+                  2
+                )}`}</span>
               </div>
             </div>
 
@@ -207,8 +211,8 @@ export default function SupplierAndPaymentsSummary({
                 <Button
                   className={`${
                     order?.paymentStatus === "paid"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-yellow-50 text-yellow-600"
+                      ? "bg-green-100 text-green-600 hover:bg-green-200/85"
+                      : "bg-yellow-50 text-yellow-600 hover:bg-yellow-100/90"
                   } h-6 `}
                 >
                   {order?.paymentStatus === "paid" ? "Completed" : "Pending"}

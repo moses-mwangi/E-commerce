@@ -17,6 +17,7 @@ export interface Product {
   reviews: string[] | null;
   createdAt: string;
   updatedAt: string;
+  currency: string;
 }
 
 export interface Images {

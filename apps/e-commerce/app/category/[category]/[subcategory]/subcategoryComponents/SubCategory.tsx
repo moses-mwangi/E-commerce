@@ -14,7 +14,6 @@ import {
   Heart,
   ChevronRight,
 } from "lucide-react";
-import Image from "next/image";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence } from "framer-motion";
@@ -29,8 +28,11 @@ import {
 } from "@/components/ui/select";
 import useSubCategoryContex from "@/hooks/useSubCategoryContex";
 import ProductCard from "../../categoryComponents/ProductCard";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 
 export default function SubCategory() {
+  const { selectedCurrency } = useLanguage_Currency();
+
   const {
     isLoading,
     setIsLoading,
@@ -302,7 +304,9 @@ export default function SubCategory() {
 
                         <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
                           <p className="text-gray-800 dark:text-gray-200">
-                            ${product.price}
+                            {`${product.currency} ${product.price
+                              .toFixed(2)
+                              .toLocaleString()}`}
                           </p>
                           {product.discount > 0 && (
                             <p className="text-red-500 bg-red-100 dark:bg-red-900 px-1 sm:px-2 py-0.5 text-xs rounded-md">

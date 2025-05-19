@@ -9,8 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
+import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
+import { capitalizeWords } from "@/app/types/products";
 
 export default function FrequencySearched() {
+  const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { products, status } = useSelector((state: RootState) => state.product);
@@ -124,18 +127,26 @@ export default function FrequencySearched() {
                     {product.discount ? (
                       <div>
                         <span className="text-[16px] font-bold text-gray-900">
-                          {(
+                          {`${product.currency} ${(
                             product.price -
                             (product.discount / 100) * product.price
-                          ).toFixed(2)}
+                          )
+                            .toFixed(2)
+                            .toLocaleString()}`}
                         </span>
                         <span className="text-[15px] text-gray-500 line-through ml-2">
-                          ${product.price.toFixed(2)}
+                          {`${selectedCurrency} ${product.price
+                            .toFixed(2)
+                            .toLocaleString()}`}
                         </span>
                       </div>
                     ) : (
                       <span className="text-[15px] font-bold text-gray-900">
-                        ${product.price.toFixed(2)}
+                        {`
+                        ${product.currency} ${product.price
+                          .toFixed(2)
+                          .toLocaleString()}
+                        `}
                       </span>
                     )}
                   </div>

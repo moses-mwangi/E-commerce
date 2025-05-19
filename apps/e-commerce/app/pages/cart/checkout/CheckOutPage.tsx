@@ -8,6 +8,8 @@ import { useSearchParams } from "next/navigation";
 import { useCheckOut } from "@/hooks/useCheckOut";
 import Image from "next/image";
 import { Product } from "@/app/types/products";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Button } from "@/components/ui/button";
 
 interface OrderSummaryProps {
   products: (Product & { quantity?: number })[];
@@ -18,11 +20,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   products,
   orderNumber,
 }) => {
+  const { selectedCurrency } = useLanguage_Currency();
+
   const subtotal = products.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
   );
   const processingFee = subtotal * 0.01;
+
   const totalAmount = subtotal + processingFee;
 
   return (
@@ -53,11 +58,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                 />
               </div>
               <div className="text-gray-600 text-[13px]">
-                <p className="font-medium text-gray-600 hover:underline cursor-pointer">
+                <p className="font-medium text-gray-600 hover:underline cursor-pointer line-clamp-1">
                   {item.brand} {item.name}
                 </p>
                 <p>
-                  USD {item.price.toFixed(2)} × {item.quantity || 1}
+                  {`${selectedCurrency.toLocaleUpperCase()} ${item.price.toFixed(
+                    2
+                  )}`}
+                  ×{item.quantity || 1}
                 </p>
                 <p className="text-xs text-gray-400">SKU: {"N/A"}</p>
               </div>
@@ -71,18 +79,24 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               Subtotal ({products.length}{" "}
               {products.length === 1 ? "item" : "items"})
             </span>
-            <span className="font-medium">USD ${subtotal.toFixed(2)}</span>
+            <span className="font-medium">{`${selectedCurrency.toLocaleUpperCase()} ${subtotal.toFixed(
+              2
+            )}`}</span>
           </div>
 
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Processing Fee</span>
-            <span className="font-medium">USD ${processingFee.toFixed(2)}</span>
+            <span className="font-medium">{`${selectedCurrency.toLocaleUpperCase()} ${processingFee.toFixed(
+              2
+            )}`}</span>
           </div>
 
           <div className="pt-2 border-t border-gray-200 flex justify-between">
             <span className="text-gray-600 font-semibold">Total Amount</span>
             <span className="text-[18px] font-bold">
-              USD ${totalAmount.toFixed(2)}
+              {`${selectedCurrency.toLocaleUpperCase()} ${totalAmount.toFixed(
+                2
+              )}`}
             </span>
           </div>
         </div>
@@ -105,10 +119,21 @@ export default function CheckOutPage() {
     ? products.filter((el) => el.id.toString() === id.toString())
     : [];
 
-  const cartProducts = items.map((item) => ({
-    ...item.product,
-    quantity: item.quantity,
-  }));
+  const cartProducts = items
+    .map((item) => {
+      const product = products.find((p) => p.id === item.productId);
+
+      return product
+        ? {
+            ...product,
+            quantity: Number(item.quantity),
+          }
+        : null;
+    })
+    .filter(
+      (product): product is Product & { quantity: number } => product !== null
+    );
+  // .filter(Boolean);
 
   const selectedProducts = id ? buyProduct : cartProducts;
 
@@ -117,6 +142,7 @@ export default function CheckOutPage() {
       <div className="pt-4 md:pt-8">
         <PaymentProgress val={1} />
       </div>
+
       <div className="flex pb-8 flex-col lg:flex-row gap-5 mx-auto w-full justify-center">
         <div className="max-w-3xl w-full">
           <CheckOutForm />

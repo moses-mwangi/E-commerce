@@ -1,6 +1,7 @@
 import { fetchOrderById } from "@/redux/slices/orderSlice";
 import { getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import { convertPrice, getCurrentCurrency } from "@/utils/currency";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -67,7 +68,9 @@ export function usePayments({ details }: { details?: any } = {}) {
       0
     ) || 0;
 
-  const processingFee = 13;
+  const currentCurrency = getCurrentCurrency();
+
+  const processingFee = convertPrice(13, "KES", currentCurrency);
   const totalAmount = subtotal + processingFee;
 
   const handleCardDetailsChange = (details: any) => {

@@ -1,9 +1,15 @@
 import { OrderState } from "@/app/types/order";
+import {
+  convertPrice,
+  getCurrentCurrency,
+  CurrencyCode,
+} from "@/utils/currency";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
+const BASE_CURRENCY: CurrencyCode = "KES";
 
 type OrdersItemType = {
   userId: string | undefined;
@@ -51,7 +57,48 @@ export const fetchOrders = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      return res.data.orders;
+
+      const currentCurrency = getCurrentCurrency();
+
+      const transformedOrders = res.data.orders.map((order: any) => {
+        const convertedOrder = {
+          ...order,
+          totalPrice: convertPrice(
+            order.totalPrice,
+            BASE_CURRENCY,
+            currentCurrency
+          ),
+          originalTotalPrice: order.totalPrice,
+          currency: currentCurrency,
+        };
+
+        const convertedItems = order.OrderItems.map((item: any) => ({
+          ...item,
+          price: convertPrice(item.price, BASE_CURRENCY, currentCurrency),
+          Product: {
+            ...item.Product,
+            price: convertPrice(
+              item.Product.price,
+              BASE_CURRENCY,
+              currentCurrency
+            ),
+            originalPrice: item.Product.price,
+            costPrice: convertPrice(
+              item.Product.costPrice,
+              BASE_CURRENCY,
+              currentCurrency
+            ),
+            originalCostPrice: item.Product.costPrice,
+          },
+        }));
+
+        return {
+          ...convertedOrder,
+          OrderItems: convertedItems,
+        };
+      });
+
+      return transformedOrders;
     } catch (err) {
       return handleOrderError(err, "fetching");
     }
@@ -63,7 +110,45 @@ export const fetchOrderById = createAsyncThunk(
   async (orderId: number) => {
     try {
       const res = await axios.get(`${API_URL}/order/${orderId}`);
-      return res.data.order;
+
+      const currentCurrency = getCurrentCurrency();
+
+      const order = res.data.order;
+      const convertedOrder = {
+        ...order,
+        totalPrice: convertPrice(
+          order.totalPrice,
+          BASE_CURRENCY,
+          currentCurrency
+        ),
+        originalTotalPrice: order.totalPrice,
+        currency: currentCurrency,
+      };
+
+      const convertedItems = order.OrderItems.map((item: any) => ({
+        ...item,
+        price: convertPrice(item.price, BASE_CURRENCY, currentCurrency),
+        Product: {
+          ...item.Product,
+          price: convertPrice(
+            item.Product.price,
+            BASE_CURRENCY,
+            currentCurrency
+          ),
+          originalPrice: item.Product.price,
+          costPrice: convertPrice(
+            item.Product.costPrice,
+            BASE_CURRENCY,
+            currentCurrency
+          ),
+          originalCostPrice: item.Product.costPrice,
+        },
+      }));
+
+      return {
+        ...convertedOrder,
+        OrderItems: convertedItems,
+      };
     } catch (err) {
       return handleOrderError(err, "fetch");
     }

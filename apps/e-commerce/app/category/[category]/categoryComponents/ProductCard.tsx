@@ -1,4 +1,6 @@
 import LoadingState from "@/app/components/loaders/LoadingState";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { capitalizeWords } from "@/app/types/products";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useCategoryContex from "@/hooks/useCategoryContex";
@@ -7,6 +9,7 @@ import { Heart, Star, Eye } from "lucide-react";
 import React from "react";
 
 export default function ProductCard({ val }: { val: string }) {
+  const { selectedCurrency } = useLanguage_Currency();
   const categoryContext = useCategoryContex();
   const subCategoryContext = useSubCategoryContex();
 
@@ -75,7 +78,10 @@ export default function ProductCard({ val }: { val: string }) {
 
                 <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
                   <p className="text-gray-800 dark:text-gray-200">
-                    ${product.price}
+                    {/* ${product.price} */}
+                    {`${capitalizeWords(product.currency)} ${product.price
+                      .toFixed(2)
+                      .toLocaleString()}`}
                   </p>
                   {product.discount > 0 && (
                     <p className="text-red-500 bg-red-100 dark:bg-red-900 px-1 sm:px-2 py-0.5 text-xs rounded-md">

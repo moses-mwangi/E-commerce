@@ -245,7 +245,7 @@ const ModernEcommerceSearch = () => {
         );
       case "brand":
         return (
-          <div className="flex bg-red-500 items-center w-full">
+          <div className="flex items-center w-full">
             <span className="font-medium">
               {highlightMatch(
                 capitalizeWords(suggestion.data as string),

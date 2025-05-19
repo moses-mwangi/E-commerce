@@ -36,6 +36,7 @@ import { string } from "zod";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { addToFav } from "@/redux/slices/favoriteSlice";
 import { capitalizeWords } from "@/app/types/products";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 
 const productFeatures = [
   {
@@ -56,6 +57,8 @@ const productFeatures = [
 ];
 
 export default function SingleSuCategoricalProductPage() {
+  const { selectedCurrency } = useLanguage_Currency();
+
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
@@ -249,7 +252,12 @@ export default function SingleSuCategoricalProductPage() {
               <div className="flex items-center gap-6 py-3">
                 <div className="flex items-center gap-3 text-[18px] sm:text-xl font-semibold">
                   <p className="text-gray-800 dark:text-gray-200">
-                    ${product.price}
+                    {/* {`${capitalizeWords(selectedCurrency)} ${product.price
+                      .toFixed(2)
+                      .toLocaleString()}`} */}
+                    {`${product.currency} ${product.price
+                      .toFixed(2)
+                      .toLocaleString()}`}
                   </p>
                   {product.discount > 0 && (
                     <span className="text-red-500 hidden sm:flex bg-red-100 dark:bg-red-900 px-2 py-1 text-sm rounded-md">

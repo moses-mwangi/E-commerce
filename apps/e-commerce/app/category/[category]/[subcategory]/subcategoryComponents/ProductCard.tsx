@@ -3,11 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Star, Heart, Eye, ShoppingCart } from "lucide-react";
-// import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { Product } from "../../categoryComponents/product";
 import { Card, CardContent } from "@/components/ui/card";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { capitalizeWords } from "@/app/types/products";
+
+// import { Product } from "@/types/product";
 // import { Product } from "../product";
 
 interface ProductCardProps {
@@ -17,6 +20,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, view }: ProductCardProps) {
   const { category, subcategory } = useParams();
+  // const { selectedCurrency } = useLanguage_Currency();
 
   if (view === "list") {
     return (
@@ -57,7 +61,9 @@ export function ProductCard({ product, view }: ProductCardProps) {
 
               <div className="flex items-center gap-3 mt-2 text-lg font-semibold">
                 <p className="text-gray-800 dark:text-gray-200">
-                  ${product.price}
+                  {`${capitalizeWords(product.currency)} ${product.price
+                    .toFixed(2)
+                    .toLocaleString()}`}
                 </p>
                 {/* {product.discount > 0 && (
                   <p className="text-red-500 bg-red-100 dark:bg-red-900 px-2 py-1 text-xs rounded-md">
@@ -168,11 +174,15 @@ export function ProductCard({ product, view }: ProductCardProps) {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-gray-900">
-              ${product.price}
+              {`${capitalizeWords(product.currency)} ${product.price
+                .toFixed(2)
+                .toLocaleString()}`}
             </span>
             {product.originalPrice && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.originalPrice}
+                {`${capitalizeWords(product.currency)} ${product.originalPrice
+                  .toFixed(2)
+                  .toLocaleString()}`}
               </span>
             )}
           </div>

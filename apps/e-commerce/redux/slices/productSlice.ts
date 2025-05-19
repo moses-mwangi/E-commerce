@@ -3,7 +3,13 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import dotenv from "dotenv";
 import toast from "react-hot-toast";
-// import { number } from "zod";
+import {
+  convertPrice,
+  getCurrentCurrency,
+  CurrencyCode,
+} from "../../utils/currency";
+
+const BASE_CURRENCY: CurrencyCode = "KES";
 
 dotenv.config();
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
@@ -11,7 +17,18 @@ const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
 export const fetchProducts = createAsyncThunk("products/fetchAll", async () => {
   try {
     const res = await axios.get(`${API_URL}/product`);
-    return res.data.products;
+
+    const currentCurrency = getCurrentCurrency();
+
+    const productsCurrencyChange = res.data.products.map((product: any) => ({
+      ...product,
+      price: convertPrice(product.price, BASE_CURRENCY, currentCurrency),
+      originalPrice: product.price,
+      currency: currentCurrency,
+    }));
+
+    // return res.data.products;
+    return productsCurrencyChange;
   } catch (err) {
     console.error(err);
     throw new Error("Failed to fetch products");
@@ -23,7 +40,18 @@ export const fetchProductById = createAsyncThunk(
   async (id: number) => {
     try {
       const res = await axios.get(`${API_URL}/product/${id}`);
-      return res.data.product;
+
+      const currentCurrency = getCurrentCurrency();
+      const product = res.data.product;
+
+      const productCurrencyChange = {
+        ...product,
+        price: convertPrice(product.price, BASE_CURRENCY, currentCurrency),
+        originalPrice: product.price,
+        currency: currentCurrency,
+      };
+
+      return productCurrencyChange;
     } catch (err) {
       console.error(err);
       throw new Error("Failed to fetch product");

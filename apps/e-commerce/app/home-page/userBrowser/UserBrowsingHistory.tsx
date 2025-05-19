@@ -8,8 +8,11 @@ import React, { useEffect, useState } from "react";
 import { FiClock, FiHeart } from "react-icons/fi";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
+import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
+import { capitalizeWords } from "@/app/types/products";
 
 export default function UserBrowsingHistory() {
+  const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
   const { products, status } = useSelector((state: RootState) => state.product);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,12 +96,14 @@ export default function UserBrowsingHistory() {
                   onClick={() => handleRouteProduct(item.id)}
                   className="flex flex-col items-start"
                 >
-                  <h3 className="truncate text-[15px] overflow-hidden whitespace-nowrap w-full font-medium text-gray-900">
+                  <h3 className="truncate text-[15px] overflow-hidden whitespace-nowrap w-full font-semibold text-gray-900/95">
                     {item.name}
                   </h3>
                   <div className="text-right text-[15px] sm:text-[15px]">
                     <p className="font-bold text-gray-900">
-                      ${item.price.toFixed(2)}
+                      {`${item.currency} ${item.price
+                        .toFixed(2)
+                        .toLocaleString()}`}
                     </p>
                   </div>
                 </Link>
@@ -108,7 +113,7 @@ export default function UserBrowsingHistory() {
                   </span>
                   <button
                     onClick={() => handleAddToCart(item.id)}
-                    className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full flex items-center justify-center"
+                    className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-md flex items-center justify-center"
                   >
                     Add to Cart
                   </button>

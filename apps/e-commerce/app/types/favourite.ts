@@ -14,6 +14,7 @@ export interface Product {
   description: string;
   stock: number;
   brand: string | null;
+  currency: string;
   images: string[];
   specifications: Record<string, any> | null;
   discount: number;

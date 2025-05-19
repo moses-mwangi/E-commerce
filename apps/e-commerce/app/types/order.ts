@@ -25,6 +25,7 @@ export type Order = {
   updatedAt: string;
   User: User;
   OrderItems: OrderItem[];
+  currency: string;
 
   country: string;
   county: string;

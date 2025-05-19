@@ -12,8 +12,10 @@ import { fetchProducts } from "@/redux/slices/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchCategories } from "@/redux/slices/categorySlice";
+import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 
 export default function Reccomeded() {
+  const { selectedCurrency } = useLanguage_Currency();
   const { push } = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -110,7 +112,9 @@ export default function Reccomeded() {
 
                     <div className="flex items-center gap-2 text-sm sm:text-[15px] font-semibold">
                       <p className="text-gray-800 dark:text-gray-200">
-                        ${product.price}
+                        {`${product.currency} ${product.price
+                          .toFixed(2)
+                          .toLocaleString()}`}
                       </p>
                       {product.discount > 0 && (
                         <p className="text-red-500 px-1 sm:px-2 py-0.5 text-xs rounded-md">

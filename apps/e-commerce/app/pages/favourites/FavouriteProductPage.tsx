@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShoppingCart, X } from "lucide-react";
 import { MdOutlineDelete } from "react-icons/md";
 
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
@@ -18,6 +18,9 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Product } from "@/app/types/products";
+import { FiDelete } from "react-icons/fi";
 
 export default function FavouritesProductPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +28,8 @@ export default function FavouritesProductPage() {
   const dispatch: AppDispatch = useDispatch();
   const { products } = useSelector((state: RootState) => state.product);
   const { categories } = useSelector((state: RootState) => state.category);
+
+  const { selectedCurrency } = useLanguage_Currency();
 
   const { items: favItems } = useSelector(
     (state: RootState) => state.favourite
@@ -40,17 +45,22 @@ export default function FavouritesProductPage() {
     ?.subcategories.find(
       (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
     );
+  const savedFav = JSON.parse(localStorage.getItem("fav") || "[]");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
       const savedFav = JSON.parse(localStorage.getItem("fav") || "[]");
 
-      dispatch(setCart(savedCart));
-      dispatch(setFav(savedFav));
+      const favProducts = products
+        .filter((pro) => savedFav.some((el: any) => el.product.id === pro.id))
+        .map((val) => {
+          return { product: val };
+        });
+
+      dispatch(setFav(favProducts));
       dispatch(fetchProducts());
     }
-  }, [dispatch]);
+  }, [dispatch, products]);
 
   const handleAddToCart = (id: any) => {
     const product = products.find((el) => el.id === id);
@@ -113,7 +123,6 @@ export default function FavouritesProductPage() {
             <Card className="mb-4">
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="flex sm:flex-row justify-between items-start sm:items-center gap-4">
-                  {/* <p className="text-[17px] sm:text-xl">Favourite Items</p> */}
                   <p className="">Favourite Items</p>
                   <div
                     className="bg-gray-200 hover:bg-gray-300 hover:text-red-700 text-red-500 transition-all duration-200 flex items-center gap-1 cursor-pointer text-sm sm:text-[15px] font-medium rounded-sm px-3 sm:px-5 py-[6px] sm:py-[8px]"
@@ -155,7 +164,9 @@ export default function FavouritesProductPage() {
                           {item.product.name}
                         </Link>
                         <p className="text-sm text-gray-500 mt-1">
-                          Price: ${item.product.price}dd
+                          {`Price : ${selectedCurrency.toLocaleUpperCase()} ${
+                            item.product.price
+                          }`}
                         </p>
                       </div>
                     </div>
@@ -163,22 +174,28 @@ export default function FavouritesProductPage() {
                     <div className="flex-1 hidden sm:block min-w-0">
                       <Link
                         href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
-                        className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-2"
+                        className="font-medium w-full hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-1"
                       >
                         {item.product.name}
                       </Link>
                       <p className="text-sm text-gray-500 mt-1">
-                        Price: ${item.product.price}
+                        {`Price : ${item.product.currency} ${item.product.price}`}
                       </p>
                     </div>
 
-                    <div className="w-full sm:w-auto flex sm:block justify-end">
+                    <div className="w-full sm:w-auto flex sm:flex-col gap-4 sm:space-y-2 items-center sm:block justify-end">
                       <Button
                         onClick={() => handleAddToCart(item.product.id)}
-                        className="h-8 sm:h-[26px] bg-orange-500 hover:bg-orange-600/85 text-sm sm:text-[15px] w-full sm:w-auto"
+                        className="h-8 sm:h-[26px] bg-orange-500 rounded-sm sm:rounded-[2px] hover:bg-orange-600/85 text-sm sm:text-[15px] w-full sm:w-auto"
                       >
-                        Add to Cart
+                        <ShoppingCart />
                       </Button>
+                      <button
+                        onClick={() => handleRemove(item.product.id)}
+                        className=" transition-all duration-300 px-5 sm:px-3 py-2 sm:py-[2px] rounded-[2px] flex mx-auto text-red-500 hover:bg-slate-100"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 ))}

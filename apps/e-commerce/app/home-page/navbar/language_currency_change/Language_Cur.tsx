@@ -12,14 +12,23 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import useLanguage_Currency from "./useLanguage_Currency";
 
-const currencyOptions = [
+type CurrencyOption = "usd" | "eur" | "kes";
+type LanguageOption = "en" | "fr" | "it" | "ar";
+
+interface Option {
+  value: string;
+  label: string;
+}
+
+const currencyOptions: Option[] = [
   { value: "usd", label: "USD ($)" },
   { value: "eur", label: "EUR (€)" },
-  { value: "kes", label: "KES (KSh)" },
+  { value: "ksh", label: "KES (KSh)" },
 ];
 
-const languageOptions = [
+const languageOptions: Option[] = [
   { value: "en", label: "English" },
   { value: "fr", label: "French" },
   { value: "it", label: "Italian" },
@@ -27,40 +36,17 @@ const languageOptions = [
 ];
 
 export default function LanguageCurrencySelector() {
-  const [dropDown, setDropDown] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const { t, i18n } = useTranslation();
-
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
-  const [selectedCurrency, setSelectedCurrency] = useState("usd");
-
-  const [tempLanguage, setTempLanguage] = useState(selectedLanguage);
-  const [tempCurrency, setTempCurrency] = useState(selectedCurrency);
-
-  const displayLanguage = languageOptions.find(
-    (l) => l.value === selectedLanguage
-  )?.label;
-  const displayCurrency = currencyOptions.find(
-    (c) => c.value === selectedCurrency
-  )?.label;
-
-  function handleSave() {
-    setSelectedLanguage(tempLanguage);
-    setSelectedCurrency(tempCurrency);
-    setDropDown(false);
-
-    i18n.changeLanguage(tempLanguage); // Use tempLanguage instead of selectedLanguage
-    localStorage.setItem("language", tempLanguage); // Save to localStorage
-  }
-
-  useEffect(() => {
-    const storedLanguage = localStorage.getItem("language");
-    if (storedLanguage) {
-      setSelectedLanguage(storedLanguage);
-      i18n.changeLanguage(storedLanguage);
-    }
-  }, [i18n]);
+  const {
+    setDropDown,
+    dropDown,
+    displayCurrency,
+    displayLanguage,
+    tempCurrency,
+    tempLanguage,
+    setTempCurrency,
+    setTempLanguage,
+    handleSave,
+  } = useLanguage_Currency();
 
   return (
     <div className="relative">
@@ -92,7 +78,7 @@ export default function LanguageCurrencySelector() {
                   Language
                 </p>
                 <Select onValueChange={setTempLanguage} value={tempLanguage}>
-                  <SelectTrigger>
+                  <SelectTrigger className=" focus:ring-orange-500">
                     <SelectValue placeholder="Choose language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -110,7 +96,7 @@ export default function LanguageCurrencySelector() {
                   Currency
                 </p>
                 <Select onValueChange={setTempCurrency} value={tempCurrency}>
-                  <SelectTrigger>
+                  <SelectTrigger className="focus:ring-orange-500">
                     <SelectValue placeholder="Choose currency" />
                   </SelectTrigger>
                   <SelectContent>

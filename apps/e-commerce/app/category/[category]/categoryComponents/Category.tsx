@@ -30,6 +30,7 @@ import {
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { Subcategory } from "@/app/types/category";
 import ProductCard from "./ProductCard";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 
 export default function Category() {
   const {
@@ -56,6 +57,8 @@ export default function Category() {
     handleBuyNow,
     items: favItems,
   } = useCategoryContex();
+
+  const { selectedCurrency } = useLanguage_Currency();
 
   useEffect(() => {
     if (window.innerWidth > 640) {
@@ -274,21 +277,6 @@ export default function Category() {
                         backgroundSize: "cover",
                       }}
                     />
-                    {/* <Image
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      src={
-                        product.productImages
-                          ? String(
-                              product.productImages.find(
-                                (el) => el.isMain === true
-                              )?.url
-                            )
-                          : ""
-                      }
-                      alt={product.name}
-                      width={500}
-                      height={500}
-                    /> */}
 
                     <Button
                       onClick={() => handleAddToFavourite(product.id)}
@@ -321,7 +309,11 @@ export default function Category() {
 
                       <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
                         <p className="text-gray-800 dark:text-gray-200">
-                          ${product.price}
+                          {/* ${product.price} */}
+
+                          {`${capitalizeWords(product.currency)} ${product.price
+                            .toFixed(2)
+                            .toLocaleString()}`}
                         </p>
                         {product.discount > 0 && (
                           <p className="text-red-500 bg-red-100 dark:bg-red-900 px-1 sm:px-2 py-0.5 text-xs rounded-md">

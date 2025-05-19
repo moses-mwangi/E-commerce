@@ -45,12 +45,14 @@ export default function AIRecommendations() {
                 />
               </div>
               <div className="px-2 py-2">
-                <h3 className="mt-2 text-base sm:text-lg sm:font-semibold">
+                <h3 className="mt-2 text-sm sm:text-base sm:font-semibold line-clamp-1">
                   {product.name}
                 </h3>
 
                 <div className="flex gap-2">
-                  <p className="text-sm text-gray-500">${product.price}</p>
+                  <p className="text-sm text-gray-500">
+                    {product.currency} {product.price}
+                  </p>
                   <div className="text-sm text-gray-500">
                     <p
                       className={`${

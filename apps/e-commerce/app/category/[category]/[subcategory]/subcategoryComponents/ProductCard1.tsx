@@ -7,6 +7,8 @@ import { Star, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { Product } from "../../categoryComponents/product";
+import { capitalizeWords } from "@/app/types/products";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 // import { Product } from "../product";
 
 interface ProductCardProps {
@@ -16,6 +18,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, view }: ProductCardProps) {
   const { category, subcategory } = useParams();
+  const { selectedCurrency } = useLanguage_Currency();
 
   if (view === "list") {
     return (
@@ -67,11 +70,15 @@ export function ProductCard({ product, view }: ProductCardProps) {
             <div className="flex items-center justify-between">
               <div className="space-x-2">
                 <span className="text-2xl font-bold text-gray-900">
-                  ${product.price}
+                  {`${product.currency} ${product.price
+                    .toFixed(2)
+                    .toLocaleString()}`}
                 </span>
                 {product.originalPrice && (
                   <span className="text-sm text-gray-500 line-through">
-                    ${product.originalPrice}
+                    {`${product.currency} ${product.originalPrice
+                      .toFixed(2)
+                      .toLocaleString()}`}
                   </span>
                 )}
               </div>
@@ -131,11 +138,15 @@ export function ProductCard({ product, view }: ProductCardProps) {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-gray-900">
-              ${product.price}
+              {`${product.currency} ${product.price
+                .toFixed(2)
+                .toLocaleString()}`}
             </span>
             {product.originalPrice && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.originalPrice}
+                {`${product.currency} ${product.originalPrice
+                  .toFixed(2)
+                  .toLocaleString()}`}
               </span>
             )}
           </div>
