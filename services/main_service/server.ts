@@ -94,3 +94,10 @@ process.on("unhandledRejection", (reason, promise) => {
     reason,
   });
 });
+
+// "@types/express-validatosssssssr": "4.4",
+//     "@types/sequelize": "4.4",
+//     "@types/os": "4.4",
+//     "@types/cluster": "4.4",
+//     "@types/cloudinary": "4.4",
+//     "@types/dotenv": "9"

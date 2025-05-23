@@ -21,6 +21,4 @@ router.route("/card/webhook").post(body_parser_1.default.raw({ type: "applicatio
     req.rawBody = req.body.toString("utf8");
     next();
 }, CardPaymentController_1.handleWebhook);
-///// PAYPAL PAYMENTS
-// router.route("/paypal").post();
 exports.default = router;

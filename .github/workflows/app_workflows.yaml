@@ -14,7 +14,7 @@ on:
           - company_site
           - e-commerce
           - hypermart_main
-          - main_service
+          # - main_service
         default: company_site
 
 jobs:
