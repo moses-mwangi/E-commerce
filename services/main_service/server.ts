@@ -15,6 +15,8 @@ import Product from "./modules/product/models/product/productModels";
 import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
 import paymentAssociation from "./modules/payments/models/paymentAssociation";
 import Review from "./modules/reviews/models/reviewModel/reviewModels";
+import Payment from "./modules/payments/models/paymentModel";
+import logger from "./modules/payments/utils/logger";
 
 orderAssociations();
 categoryAssociations();
@@ -36,10 +38,11 @@ const pg_connect = async () => {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
     // await sequelize.sync({ force: true });
-    // await User.sync({ force: true });
+    // await Payment.sync({ force: true });
 
     // await sequelize.sync({ alter: true }); /////does not delete data
     // await Order.sync({ alter: true });
+    // await Payment.sync({ alter: true });
 
     // Review.destroy({ where: {}, truncate: true }),
     // Review.destroy({ where: {} });
@@ -84,3 +87,10 @@ if (cluster.isPrimary) {
   //   });
   // });
 }
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Unhandled Rejection", {
+    promise,
+    reason,
+  });
+});

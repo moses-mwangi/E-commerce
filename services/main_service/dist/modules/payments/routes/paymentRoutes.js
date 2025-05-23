@@ -10,6 +10,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const payments_1 = require("../controllers/payments");
 const router = express_1.default.Router();
 router.route("/").get(payments_1.getPayments);
+router.route("/:id").delete(payments_1.deletePayments);
 //////  M_PESA PAYMENTS
 const mpesaController = new M_PesaPaymentController_1.MpesaController();
 router.post("/mpesa", (req, res) => mpesaController.initiatePayment(req, res));

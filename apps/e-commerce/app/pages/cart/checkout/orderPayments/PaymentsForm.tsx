@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import CardPayment from "../orderPayments/paymentMethods/CardPayment";
 import MpesaPayment from "../orderPayments/paymentMethods/M_pesaPayment";
-import PaypalPayment from "../orderPayments/paymentMethods/PaypalPayment";
+import MobileMoney from "./paymentMethods/MobileMoney";
 import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
 import PayPal from "../../../../../public/paymentImages/paypay.png";
 import M_Pesa from "../../../../../public/paymentImages/mpesa.png";
@@ -47,16 +47,17 @@ const paymentMethods: PaymentMethod[] = [
     description: "Pay with M-Pesa mobile money",
   },
   {
-    id: "paypal",
-    title: "PayPal",
-    icon: PayPal as unknown as string,
-    description: "Pay with your PayPal account",
+    id: "mobile money",
+    title: "Mobile Money",
+    icon: M_Pesa as unknown as string,
+    description: "Pay with MTN,Airtel, or other mobile wallets",
   },
+
   {
     id: "bank",
     title: "Bank Transfer",
     icon: bank as unknown as string,
-    description: "Direct bank transfer",
+    description: "Direct transfer from your bank account",
   },
 ];
 
@@ -185,14 +186,14 @@ export default function PaymentsForm({ setDetails }: any) {
                           onDetailsChange={handleMpesaDetailsChange}
                         />
                       )}
-                      {method.title === "PayPal" && (
-                        <PaypalPayment
-                          onDetailsChange={handlePaypalDetailsChange}
+                      {method.title === "Mobile Money" && (
+                        <MobileMoney
+                        // onDetailsChange={handleMobileDetailsChange}
                         />
                       )}
                       {method.title === "Bank Transfer" && (
                         <BankTransferPayment
-                          onDetailsChange={handleBankDetailsChange}
+                        // onDetailsChange={handleBankDetailsChange}
                         />
                       )}
                     </div>

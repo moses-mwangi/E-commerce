@@ -12,6 +12,7 @@ const os_1 = require("os");
 const cluster_1 = __importDefault(require("cluster"));
 const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
 const reviewAssociation_1 = __importDefault(require("./modules/reviews/models/reviewModel/reviewAssociation"));
+const logger_1 = __importDefault(require("./modules/payments/utils/logger"));
 (0, orderAssociations_1.default)();
 (0, categoryAssociations_1.default)();
 (0, productAssociation_1.default)();
@@ -29,9 +30,10 @@ const pg_connect = async () => {
         pg_database_1.default.authenticate();
         console.log("The PostgreSQL database has successfully connected");
         // await sequelize.sync({ force: true });
-        // await User.sync({ force: true });
+        // await Payment.sync({ force: true });
         // await sequelize.sync({ alter: true }); /////does not delete data
         // await Order.sync({ alter: true });
+        // await Payment.sync({ alter: true });
         // Review.destroy({ where: {}, truncate: true }),
         // Review.destroy({ where: {} });
     }
@@ -69,3 +71,9 @@ else {
     //   });
     // });
 }
+process.on("unhandledRejection", (reason, promise) => {
+    logger_1.default.error("Unhandled Rejection", {
+        promise,
+        reason,
+    });
+});

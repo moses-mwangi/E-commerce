@@ -1,5 +1,5 @@
-export { default as paypalRouter } from "../payments/routes/payPalpaymentsRoutes";
 export { default as payments } from "./routes/paymentRoutes";
+export { default as paystackPayments } from "./routes/paymentPaystackRoutes";
 
 // export * from './controllers/userController';
 // export * from './services/userService';

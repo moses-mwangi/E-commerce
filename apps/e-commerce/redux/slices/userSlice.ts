@@ -21,7 +21,7 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
   } catch (err) {
     // console.error("Error:", err);
     // toast.error("Error in fetching user");
-    throw err;
+    // throw err;
   }
 });
 
@@ -143,29 +143,27 @@ export const getCurrentUser = createAsyncThunk(
 
       return response.data.user;
     } catch (err) {
-      const axiosError = err as AxiosError;
-
-      if (axiosError.response?.status === 401) {
-        const errorMessage = "Your session has expired. Please log in again.";
-
-        alert(errorMessage);
-        document.cookie =
-          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie =
-          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      } else {
-        // Handle other errors
-        // toast.error("Error getting current user");
-        // console.error("Error:", axiosError);
-        document.cookie =
-          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie =
-          "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      }
-      return rejectWithValue(
-        axiosError.response?.data ||
-          "An error occurred while fetching the current user."
-      );
+      // const axiosError = err as AxiosError;
+      // if (axiosError.response?.status === 401) {
+      //   const errorMessage = "Your session has expired. Please log in again.";
+      //   alert(errorMessage);
+      //   document.cookie =
+      //     "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      //   document.cookie =
+      //     "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // } else {
+      //   // Handle other errors
+      //   // toast.error("Error getting current user");
+      //   // console.error("Error:", axiosError);
+      //   document.cookie =
+      //     "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      //   document.cookie =
+      //     "tokens=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // }
+      // return rejectWithValue(
+      //   axiosError.response?.data ||
+      //     "An error occurred while fetching the current user."
+      // );
     }
   }
 );

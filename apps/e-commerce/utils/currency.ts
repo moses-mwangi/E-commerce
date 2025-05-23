@@ -1,9 +1,12 @@
-export type CurrencyCode = "USD" | "EUR" | "KES";
+export type CurrencyCode = "USD" | "EUR" | "KES" | "NGN" | "GHS" | "ZAR";
 
 let exchangeRates: Record<CurrencyCode, number> = {
   USD: 1,
   EUR: 0.93,
-  KES: 190,
+  KES: 130,
+  GHS: 1,
+  ZAR: 2,
+  NGN: 8,
 };
 
 export const getCurrentCurrency = (): CurrencyCode => {
@@ -28,6 +31,9 @@ export const updateExchangeRates = async () => {
       USD: 1,
       EUR: data.rates.EUR,
       KES: data.rates.KES,
+      GHS: data.rates.GHS,
+      NGN: data.rates.NGN,
+      ZAR: data.rates.ZAR,
     };
 
     return {

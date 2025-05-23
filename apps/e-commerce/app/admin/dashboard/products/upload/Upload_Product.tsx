@@ -306,13 +306,18 @@ export default function ProductUploadPage() {
                 <div>
                   <Label>Selling Price</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                      $
+                    <span className="absolute text-[13px] left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                      KES
                     </span>
                     <Input
                       type="number"
-                      {...register("price", { required: true, min: 0 })}
-                      className="pl-8 focus-visible:ring-orange-500"
+                      step="any"
+                      {...register("price", {
+                        required: true,
+                        min: 0,
+                        valueAsNumber: true,
+                      })}
+                      className="pl-11 focus-visible:ring-orange-500"
                       placeholder="0.00"
                     />
                   </div>
@@ -320,13 +325,18 @@ export default function ProductUploadPage() {
                 <div>
                   <Label>Cost Price</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                      $
+                    <span className="absolute text-[13px] left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                      KES
                     </span>
                     <Input
-                      className="pl-8 focus-visible:ring-orange-500"
                       type="number"
-                      {...register("costPrice", { required: true, min: 0 })}
+                      step="any"
+                      {...register("costPrice", {
+                        required: true,
+                        min: 0,
+                        valueAsNumber: true,
+                      })}
+                      className="pl-11 focus-visible:ring-orange-500"
                       placeholder="0.00"
                     />
                   </div>
@@ -336,7 +346,12 @@ export default function ProductUploadPage() {
                   <Input
                     className=" focus-visible:ring-orange-500"
                     type="number"
-                    {...register("discount", { min: 0, max: 100 })}
+                    step="any"
+                    {...register("discount", {
+                      min: 0,
+                      max: 100,
+                      valueAsNumber: true,
+                    })}
                     placeholder="0"
                   />
                 </div>
@@ -388,7 +403,12 @@ export default function ProductUploadPage() {
                   <Input
                     className=" focus-visible:ring-orange-500"
                     type="number"
-                    {...register("ratings", { min: 0, max: 5 })}
+                    step="any"
+                    {...register("ratings", {
+                      min: 0,
+                      max: 5,
+                      valueAsNumber: true,
+                    })}
                     placeholder="0"
                   />
                 </div>

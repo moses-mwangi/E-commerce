@@ -10,12 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import useLanguage_Currency from "./useLanguage_Currency";
-
-type CurrencyOption = "usd" | "eur" | "kes";
-type LanguageOption = "en" | "fr" | "it" | "ar";
 
 interface Option {
   value: string;
@@ -23,9 +18,12 @@ interface Option {
 }
 
 const currencyOptions: Option[] = [
-  { value: "usd", label: "USD ($)" },
-  { value: "eur", label: "EUR (€)" },
-  { value: "ksh", label: "KES (KSh)" },
+  { value: "USD", label: "USD ($)" },
+  { value: "EUR", label: "EUR (€)" },
+  { value: "KES", label: "KES (KSh)" },
+  { value: "NGN", label: "NGN (₦)" },
+  { value: "GHS", label: "GHS (₵)" },
+  { value: "ZAR", label: "ZAR (R)" },
 ];
 
 const languageOptions: Option[] = [

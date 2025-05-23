@@ -521,10 +521,9 @@ function OrdersPage() {
                                       </div>
 
                                       <div className="hidden md:block md:col-span-2 text-right font-medium">
-                                        $
-                                        {(item.price * item.quantity)?.toFixed(
-                                          2
-                                        )}
+                                        {`${order.currency} ${(
+                                          item.price * item.quantity
+                                        )?.toFixed(2)}`}
                                       </div>
                                     </div>
 

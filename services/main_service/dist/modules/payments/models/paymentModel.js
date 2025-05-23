@@ -25,10 +25,6 @@ Payment.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
-    paymentMethod: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-    },
     amount: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,
@@ -36,16 +32,42 @@ Payment.init({
     currency: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
+        defaultValue: "KES",
     },
     status: {
+        type: sequelize_1.DataTypes.ENUM("initiated", "pending", "success", "failed", "refunded"),
+        defaultValue: "initiated",
+    },
+    paymentMethod: {
+        type: sequelize_1.DataTypes.ENUM("card", "bank", "bank_transfer", "mobile_money", "ussd", "qr"),
+    },
+    reference: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        defaultValue: "pending",
+        unique: true,
+    },
+    paymentReference: {
+        type: sequelize_1.DataTypes.STRING,
+    },
+    authorizationUrl: {
+        type: sequelize_1.DataTypes.TEXT,
+    },
+    gatewayResponse: {
+        type: sequelize_1.DataTypes.TEXT,
     },
 }, {
     sequelize: pg_database_1.default,
     modelName: "Payment",
     tableName: "payments",
     timestamps: true,
+    indexes: [
+        // {
+        //   fields: ["reference"],
+        //   unique: true,
+        // },
+        {
+            fields: ["orderId"],
+        },
+    ],
 });
 exports.default = Payment;

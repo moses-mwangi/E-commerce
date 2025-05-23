@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-type CurrencyOption = "usd" | "eur" | "ksh";
-type LanguageOption = "en" | "fr" | "it" | "ar";
-
 interface Option {
   value: string;
   label: string;
 }
 
 const currencyOptions: Option[] = [
-  { value: "usd", label: "USD ($)" },
-  { value: "eur", label: "EUR (€)" },
-  { value: "ksh", label: "KES (KSh)" },
+  { value: "USD", label: "USD ($)" },
+  // { value: "EUR", label: "EUR (€)" },
+  { value: "KES", label: "KES (KSh)" },
+  { value: "NGN", label: "NGN (₦)" },
+  { value: "GHS", label: "GHS (₵)" },
+  { value: "ZAR", label: "ZAR (R)" },
 ];
 
 const languageOptions: Option[] = [
@@ -29,7 +29,7 @@ function useLanguage_Currency() {
   const { t, i18n } = useTranslation();
 
   const [selectedLanguage, setSelectedLanguage] = useState("en");
-  const [selectedCurrency, setSelectedCurrency] = useState("ksh");
+  const [selectedCurrency, setSelectedCurrency] = useState("KES");
 
   const [tempCurrency, setTempCurrency] = useState(selectedCurrency);
   const [tempLanguage, setTempLanguage] = useState(selectedLanguage);
@@ -55,7 +55,7 @@ function useLanguage_Currency() {
 
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") || "en";
-    const storedCurrency = localStorage.getItem("currency") || "ksh";
+    const storedCurrency = localStorage.getItem("currency") || "KES";
 
     setSelectedLanguage(storedLanguage);
     setTempLanguage(storedLanguage);

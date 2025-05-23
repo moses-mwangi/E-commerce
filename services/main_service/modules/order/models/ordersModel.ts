@@ -136,8 +136,12 @@ interface OrderAttributes {
     | "in_transit"
     | "delivered"
     | "cancelled";
-  paymentStatus: "paid" | "unpaid" | "failed";
+  paymentStatus: "paid" | "unpaid" | "failed" | "refunded";
   paymentMethod?: string;
+  mpesaReceiptNumber?: string;
+  trackingNumber?: string;
+  paymentDetails?: any;
+  paymentReference?: string;
   statusHistory: {
     pending: Date | null;
     confirmed: Date | null;
@@ -147,9 +151,6 @@ interface OrderAttributes {
     delivered: Date | null;
     cancelled: Date | null;
   };
-  mpesaReceiptNumber?: string;
-  trackingNumber?: string;
-  paymentDetails?: any;
 
   shippingAddress: string;
   streetAddress: string;
@@ -187,8 +188,13 @@ class Order extends Model {
     | "in_transit"
     | "delivered"
     | "cancelled";
-  public paymentStatus!: "paid" | "unpaid" | "failed";
+  public paymentStatus!: "paid" | "unpaid" | "failed" | "refunded";
   public paymentMethod!: string;
+  public mpesaReceiptNumber!: string;
+  public trackingNumber!: string;
+  public paymentDetails!: any;
+  public paymentReference!: string;
+
   public statusHistory!: {
     pending: Date | null;
     confirmed: Date | null;
@@ -198,9 +204,6 @@ class Order extends Model {
     delivered: Date | null;
     cancelled: Date | null;
   };
-  public mpesaReceiptNumber!: string;
-  public trackingNumber!: string;
-  public paymentDetails!: any;
 
   // SHIPPING ADDRESS FIELD
   public shippingAddress!: string;
@@ -294,7 +297,7 @@ Order.init(
       defaultValue: "pending",
     },
     paymentStatus: {
-      type: DataTypes.ENUM("paid", "unpaid", "failed"),
+      type: DataTypes.ENUM("paid", "unpaid", "failed", "refunded"),
       defaultValue: "unpaid",
     },
     statusHistory: {
@@ -310,6 +313,7 @@ Order.init(
       },
     },
     paymentMethod: { type: DataTypes.STRING, allowNull: true },
+    paymentReference: { type: DataTypes.STRING, allowNull: true },
     mpesaReceiptNumber: { type: DataTypes.STRING, allowNull: true },
     trackingNumber: {
       type: DataTypes.STRING,

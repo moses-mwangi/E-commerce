@@ -7,6 +7,7 @@ import cors from "cors";
 import { authRouter, userRouter } from "./modules/users";
 import { orderRouter } from "./modules/order";
 import { payments } from "./modules/payments";
+import { paystackPayments } from "./modules/payments";
 import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
 import { reviewRouter } from "./modules/reviews";
@@ -92,6 +93,7 @@ app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
 
 app.use("/api/payment", payments);
+app.use("/api/payments", paystackPayments);
 
 app.use(globalErrorHandler);
 

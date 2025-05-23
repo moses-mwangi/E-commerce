@@ -11,6 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const users_1 = require("./modules/users");
 const order_1 = require("./modules/order");
 const payments_1 = require("./modules/payments");
+const payments_2 = require("./modules/payments");
 const product_1 = require("./modules/product");
 const product_2 = require("./modules/product");
 const reviews_1 = require("./modules/reviews");
@@ -74,6 +75,7 @@ app.use("/api/category", product_2.categoryRouter);
 app.use("/api/order", order_1.orderRouter);
 app.use("/api/review", reviews_1.reviewRouter);
 app.use("/api/payment", payments_1.payments);
+app.use("/api/payments", payments_2.paystackPayments);
 app.use(GlobalErrorHandler_1.default);
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 //   console.error(err.stack);

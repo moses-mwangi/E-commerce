@@ -5,11 +5,12 @@ import {
   createPaymentIntent,
 } from "../controllers/CardPaymentController";
 import bodyParser from "body-parser";
-import { getPayments } from "../controllers/payments";
+import { deletePayments, getPayments } from "../controllers/payments";
 
 const router = express.Router();
 
 router.route("/").get(getPayments);
+router.route("/:id").delete(deletePayments);
 
 //////  M_PESA PAYMENTS
 const mpesaController = new MpesaController();

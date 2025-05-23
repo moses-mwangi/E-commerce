@@ -54,7 +54,7 @@ export const fetchReviews = createAsyncThunk(
 
       return await response.data.data.reviews;
     } catch (err: any) {
-      return handleReviewError(err, "get");
+      // return handleReviewError(err, "get");
     }
   }
 );
@@ -70,7 +70,7 @@ export const fetchReview = createAsyncThunk(
 
       return await response.data;
     } catch (err: any) {
-      return handleReviewError(err, "get");
+      // return handleReviewError(err, "get");
     }
   }
 );

@@ -178,7 +178,7 @@ Order.init({
         defaultValue: "pending",
     },
     paymentStatus: {
-        type: sequelize_1.DataTypes.ENUM("paid", "unpaid", "failed"),
+        type: sequelize_1.DataTypes.ENUM("paid", "unpaid", "failed", "refunded"),
         defaultValue: "unpaid",
     },
     statusHistory: {
@@ -194,6 +194,7 @@ Order.init({
         },
     },
     paymentMethod: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    paymentReference: { type: sequelize_1.DataTypes.STRING, allowNull: true },
     mpesaReceiptNumber: { type: sequelize_1.DataTypes.STRING, allowNull: true },
     trackingNumber: {
         type: sequelize_1.DataTypes.STRING,
