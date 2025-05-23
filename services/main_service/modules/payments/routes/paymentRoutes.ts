@@ -30,7 +30,4 @@ router.route("/card/webhook").post(
   handleWebhook
 );
 
-///// PAYPAL PAYMENTS
-router.route("/paypal").post();
-
 export default router;

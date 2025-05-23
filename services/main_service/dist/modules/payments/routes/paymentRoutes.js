@@ -22,5 +22,5 @@ router.route("/card/webhook").post(body_parser_1.default.raw({ type: "applicatio
     next();
 }, CardPaymentController_1.handleWebhook);
 ///// PAYPAL PAYMENTS
-router.route("/paypal").post();
+// router.route("/paypal").post();
 exports.default = router;
