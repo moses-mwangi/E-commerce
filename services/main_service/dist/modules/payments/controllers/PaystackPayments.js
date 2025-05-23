@@ -43,6 +43,7 @@ const ordersModel_1 = __importDefault(require("../../order/models/ordersModel"))
 const paymentModel_1 = __importDefault(require("../models/paymentModel"));
 const logger_1 = __importStar(require("../utils/logger"));
 const express_validator_1 = require("express-validator");
+const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
 const paystackClient = (0, paystack_1.default)(process.env.PAYSTACK_SECRET_KEY);
 const FRONTEND_URL = String(process.env.FRONTEND_URL) || "http://localhost:3000";
 exports.validatePaymentInitialization = [
@@ -77,7 +78,6 @@ const initializePayment = async (req, res) => {
         });
         if (existingPayment) {
             logger_1.default.warn(`Duplicate payment attempt for order: ${orderId}`);
-            console.log("The order has being payed");
             return res
                 .status(400)
                 .json({ error: "This order has already been paid" });
@@ -125,12 +125,7 @@ const initializePayment = async (req, res) => {
             };
         }
         logger_1.default.info(`Initializing payment for order ${orderId}`, { paymentData });
-        console.log("Transactiom:", transaction);
-        console.log("PAYMENTS ORDERS : ", paymentData);
-        // Initialize Paystack payment
         const payment = await paystackClient.transaction.initialize(paymentData);
-        console.log("PAYMENTS PAYSTACK : ", payment);
-        // Update transaction with Paystack reference
         await transaction.update({
             paymentReference: payment.data.reference,
             authorizationUrl: payment.data.authorization_url,
@@ -159,13 +154,11 @@ exports.initializePayment = initializePayment;
 const verifyPayment = async (req, res) => {
     try {
         const { reference } = req.query;
-        console.log("REFERENCE", reference);
         if (!reference) {
             return res.status(400).json({ error: "Reference is required" });
         }
         logger_1.default.info(`Verifying payment with reference: ${reference}`);
         const verification = await paystackClient.transaction.verify(reference);
-        console.log("VERIFICATION", verification);
         if (verification.data.status === "success") {
             const { metadata, gateway_response, channel, amount } = verification.data;
             const paymentRecord = await paymentModel_1.default.findOne({ where: { reference } });
@@ -173,17 +166,22 @@ const verifyPayment = async (req, res) => {
                 logger_1.default.error(`Amount mismatch for payment ${reference}`);
                 return res.status(400).json({ error: "Payment amount mismatch" });
             }
-            await paymentModel_1.default.update({
-                status: "success",
-                paymentMethod: channel,
-                gatewayResponse: gateway_response,
-            }, { where: { reference } });
-            await ordersModel_1.default.update({
-                status: "confirmed",
-                paymentStatus: "paid",
-                paymentMethod: channel,
-                paymentReference: reference,
-            }, { where: { id: metadata.order_id } });
+            await pg_database_1.default.transaction(async (t) => {
+                await paymentModel_1.default.update({
+                    status: "success",
+                    paymentMethod: channel,
+                    gatewayResponse: gateway_response,
+                }, { where: { reference }, transaction: t });
+                await ordersModel_1.default.updateStatus(parseInt(metadata.orderId, 10), "confirmed", {
+                    transaction: t,
+                });
+                await ordersModel_1.default.update({
+                    status: "confirmed",
+                    paymentStatus: "paid",
+                    paymentMethod: channel,
+                    paymentReference: reference,
+                }, { where: { id: metadata.order_id }, transaction: t });
+            });
             logger_1.default.info(`Payment verified successfully: ${reference}`);
             return res.json({
                 success: true,
@@ -231,7 +229,6 @@ const paystackWebhook = async (req, res) => {
         channel: data.channel,
     });
     logger_1.default.info(`Received Paystack webhook event kk: ${event}`, { data });
-    console.log("WEBHOOK DATA", data);
     try {
         switch (event) {
             case "charge.success":
@@ -272,30 +269,32 @@ exports.paystackWebhook = paystackWebhook;
 async function handleSuccessfulCharge(data) {
     const { reference, metadata, channel, gateway_response, amount } = data;
     logger_1.default.info(`Handling successful charge for ${reference}`);
-    // Verify payment record exists
     const payment = await paymentModel_1.default.findOne({ where: { reference } });
     if (!payment) {
         logger_1.default.error(`Payment record not found for reference: ${reference}`);
         return;
     }
-    console.log(data, payment.amount);
-    // Verify amount matches
     if (Number(amount) / 100 !== Number(payment.amount)) {
         logger_1.default.error(`Amount mismatch for payment ${reference}`);
         await handleSuspiciousPayment(reference, "amount_mismatch");
         return;
     }
-    await paymentModel_1.default.update({
-        status: "success",
-        paymentMethod: channel,
-        gatewayResponse: gateway_response || "Payment successful",
-    }, { where: { reference } });
-    await ordersModel_1.default.update({
-        status: "confirmed",
-        paymentStatus: "paid",
-        paymentMethod: channel,
-        paymentReference: reference,
-    }, { where: { id: Number(metadata.order_id) } });
+    await pg_database_1.default.transaction(async (t) => {
+        await paymentModel_1.default.update({
+            status: "success",
+            paymentMethod: channel,
+            gatewayResponse: gateway_response || "Payment successful",
+        }, { where: { reference }, transaction: t });
+        await ordersModel_1.default.updateStatus(parseInt(metadata.order_id, 10), "confirmed", {
+            transaction: t,
+        });
+        await ordersModel_1.default.update({
+            status: "confirmed",
+            paymentStatus: "paid",
+            paymentMethod: channel,
+            paymentReference: reference,
+        }, { where: { id: Number(metadata.order_id) }, transaction: t });
+    });
     // Here you would:
     // 1. Send payment confirmation email
     // 2. Update inventory
@@ -305,30 +304,37 @@ async function handleSuccessfulCharge(data) {
 async function handleSuccessfulTransfer(data) {
     const { reference, metadata } = data;
     logger_1.default.info(`Handling successful transfer for ${reference}`);
-    await paymentModel_1.default.update({
-        status: "success",
-        paymentMethod: "bank_transfer",
-        gatewayResponse: "Bank transfer completed",
-    }, { where: { reference } });
-    await ordersModel_1.default.update({
-        status: "confirmed",
-        paymentStatus: "paid",
-        paymentMethod: "bank_transfer",
-        paymentReference: reference,
-    }, { where: { id: Number(metadata.order_id) } });
+    await pg_database_1.default.transaction(async (t) => {
+        await paymentModel_1.default.update({
+            status: "success",
+            paymentMethod: "bank_transfer",
+            gatewayResponse: "Bank transfer completed",
+        }, { where: { reference }, transaction: t });
+        await ordersModel_1.default.updateStatus(parseInt(metadata.order_id, 10), "confirmed", {
+            transaction: t,
+        });
+        await ordersModel_1.default.update({
+            status: "confirmed",
+            paymentStatus: "paid",
+            paymentMethod: "bank_transfer",
+            paymentReference: reference,
+        }, { where: { id: Number(metadata.order_id) }, transaction: t });
+    });
 }
 async function handleFailedPayment(data) {
     const { reference, metadata, gateway_response } = data;
     logger_1.default.warn(`Handling failed payment for ${reference}`);
-    await paymentModel_1.default.update({
-        status: "failed",
-        gatewayResponse: gateway_response || "Payment failed",
-    }, { where: { reference } });
-    await ordersModel_1.default.update({
-        status: "pending",
-        paymentStatus: "failed",
-        paymentReference: reference,
-    }, { where: { id: metadata.order_id } });
+    await pg_database_1.default.transaction(async (t) => {
+        await paymentModel_1.default.update({
+            status: "failed",
+            gatewayResponse: gateway_response || "Payment failed",
+        }, { where: { reference }, transaction: t });
+        await ordersModel_1.default.update({
+            status: "pending",
+            paymentStatus: "failed",
+            paymentReference: reference,
+        }, { where: { id: metadata.order_id }, transaction: t });
+    });
     // Here you would:
     // 1. Notify customer
     // 2. Possibly retry the payment
@@ -336,29 +342,33 @@ async function handleFailedPayment(data) {
 async function handleFailedTransfer(data) {
     const { reference, metadata, gateway_response } = data;
     logger_1.default.warn(`Handling failed transfer for ${reference}`);
-    await paymentModel_1.default.update({
-        status: "failed",
-        paymentMethod: "bank_transfer",
-        gatewayResponse: gateway_response || "Bank transfer failed",
-    }, { where: { reference } });
-    await ordersModel_1.default.update({
-        status: "pending",
-        paymentStatus: "failed",
-        paymentMethod: "bank_transfer",
-        paymentReference: reference,
-    }, { where: { id: metadata.order_id } });
+    await pg_database_1.default.transaction(async (t) => {
+        await paymentModel_1.default.update({
+            status: "failed",
+            paymentMethod: "bank_transfer",
+            gatewayResponse: gateway_response || "Bank transfer failed",
+        }, { where: { reference }, transaction: t });
+        await ordersModel_1.default.update({
+            status: "pending",
+            paymentStatus: "failed",
+            paymentMethod: "bank_transfer",
+            paymentReference: reference,
+        }, { where: { id: metadata.order_id }, transaction: t });
+    });
 }
 async function handleRefundProcessed(data) {
     const { reference, metadata } = data;
     logger_1.default.info(`Handling refund for ${reference}`);
-    await paymentModel_1.default.update({
-        status: "refunded",
-        gatewayResponse: "Payment refunded",
-    }, { where: { reference } });
-    await ordersModel_1.default.update({
-        status: "pending",
-        paymentStatus: "refunded",
-    }, { where: { id: metadata.order_id } });
+    await pg_database_1.default.transaction(async (t) => {
+        await paymentModel_1.default.update({
+            status: "refunded",
+            gatewayResponse: "Payment refunded",
+        }, { where: { reference }, transaction: t });
+        await ordersModel_1.default.update({
+            status: "pending",
+            paymentStatus: "refunded",
+        }, { where: { id: metadata.order_id }, transaction: t });
+    });
 }
 async function handleSubscriptionCreated(data) {
     // Implement subscription handling logic

@@ -5,6 +5,7 @@ import Order from "../../order/models/ordersModel";
 import Payment from "../models/paymentModel";
 import logger, { paymentLogger } from "../utils/logger";
 import { body, validationResult } from "express-validator";
+import sequelize from "../../../shared/config/pg_database";
 
 const paystackClient = paystack(process.env.PAYSTACK_SECRET_KEY!);
 const FRONTEND_URL =
@@ -88,7 +89,6 @@ export const initializePayment = async (req: Request, res: Response) => {
     if (existingPayment) {
       logger.warn(`Duplicate payment attempt for order: ${orderId}`);
 
-      console.log("The order has being payed");
       return res
         .status(400)
         .json({ error: "This order has already been paid" });
@@ -140,15 +140,9 @@ export const initializePayment = async (req: Request, res: Response) => {
     }
 
     logger.info(`Initializing payment for order ${orderId}`, { paymentData });
-    console.log("Transactiom:", transaction);
-    console.log("PAYMENTS ORDERS : ", paymentData);
 
-    // Initialize Paystack payment
     const payment = await paystackClient.transaction.initialize(paymentData);
 
-    console.log("PAYMENTS PAYSTACK : ", payment);
-
-    // Update transaction with Paystack reference
     await transaction.update({
       paymentReference: payment.data.reference,
       authorizationUrl: payment.data.authorization_url,
@@ -182,8 +176,6 @@ export const verifyPayment = async (
   try {
     const { reference } = req.query;
 
-    console.log("REFERENCE", reference);
-
     if (!reference) {
       return res.status(400).json({ error: "Reference is required" });
     }
@@ -191,8 +183,6 @@ export const verifyPayment = async (
     logger.info(`Verifying payment with reference: ${reference}`);
 
     const verification = await paystackClient.transaction.verify(reference);
-
-    console.log("VERIFICATION", verification);
 
     if (verification.data.status === "success") {
       const { metadata, gateway_response, channel, amount } = verification.data;
@@ -202,25 +192,30 @@ export const verifyPayment = async (
         logger.error(`Amount mismatch for payment ${reference}`);
         return res.status(400).json({ error: "Payment amount mismatch" });
       }
+      await sequelize.transaction(async (t) => {
+        await Payment.update(
+          {
+            status: "success",
+            paymentMethod: channel,
+            gatewayResponse: gateway_response,
+          },
+          { where: { reference }, transaction: t }
+        );
 
-      await Payment.update(
-        {
-          status: "success",
-          paymentMethod: channel,
-          gatewayResponse: gateway_response,
-        },
-        { where: { reference } }
-      );
+        await Order.updateStatus(parseInt(metadata.orderId, 10), "confirmed", {
+          transaction: t,
+        });
 
-      await Order.update(
-        {
-          status: "confirmed",
-          paymentStatus: "paid",
-          paymentMethod: channel,
-          paymentReference: reference,
-        },
-        { where: { id: metadata.order_id } }
-      );
+        await Order.update(
+          {
+            status: "confirmed",
+            paymentStatus: "paid",
+            paymentMethod: channel,
+            paymentReference: reference,
+          },
+          { where: { id: metadata.order_id }, transaction: t }
+        );
+      });
 
       logger.info(`Payment verified successfully: ${reference}`);
 
@@ -276,8 +271,6 @@ export const paystackWebhook = async (req: Request, res: Response) => {
 
   logger.info(`Received Paystack webhook event kk: ${event}`, { data });
 
-  console.log("WEBHOOK DATA", data);
-
   try {
     switch (event) {
       case "charge.success":
@@ -320,39 +313,42 @@ async function handleSuccessfulCharge(data: WebhookData) {
 
   logger.info(`Handling successful charge for ${reference}`);
 
-  // Verify payment record exists
   const payment = await Payment.findOne({ where: { reference } });
   if (!payment) {
     logger.error(`Payment record not found for reference: ${reference}`);
     return;
   }
-  console.log(data, payment.amount);
 
-  // Verify amount matches
   if (Number(amount) / 100 !== Number(payment.amount)) {
     logger.error(`Amount mismatch for payment ${reference}`);
     await handleSuspiciousPayment(reference, "amount_mismatch");
     return;
   }
 
-  await Payment.update(
-    {
-      status: "success",
-      paymentMethod: channel,
-      gatewayResponse: gateway_response || "Payment successful",
-    },
-    { where: { reference } }
-  );
+  await sequelize.transaction(async (t) => {
+    await Payment.update(
+      {
+        status: "success",
+        paymentMethod: channel,
+        gatewayResponse: gateway_response || "Payment successful",
+      },
+      { where: { reference }, transaction: t }
+    );
 
-  await Order.update(
-    {
-      status: "confirmed",
-      paymentStatus: "paid",
-      paymentMethod: channel,
-      paymentReference: reference,
-    },
-    { where: { id: Number(metadata.order_id) } }
-  );
+    await Order.updateStatus(parseInt(metadata.order_id, 10), "confirmed", {
+      transaction: t,
+    });
+
+    await Order.update(
+      {
+        status: "confirmed",
+        paymentStatus: "paid",
+        paymentMethod: channel,
+        paymentReference: reference,
+      },
+      { where: { id: Number(metadata.order_id) }, transaction: t }
+    );
+  });
 
   // Here you would:
   // 1. Send payment confirmation email
@@ -366,24 +362,30 @@ async function handleSuccessfulTransfer(data: WebhookData) {
 
   logger.info(`Handling successful transfer for ${reference}`);
 
-  await Payment.update(
-    {
-      status: "success",
-      paymentMethod: "bank_transfer",
-      gatewayResponse: "Bank transfer completed",
-    },
-    { where: { reference } }
-  );
+  await sequelize.transaction(async (t) => {
+    await Payment.update(
+      {
+        status: "success",
+        paymentMethod: "bank_transfer",
+        gatewayResponse: "Bank transfer completed",
+      },
+      { where: { reference }, transaction: t }
+    );
 
-  await Order.update(
-    {
-      status: "confirmed",
-      paymentStatus: "paid",
-      paymentMethod: "bank_transfer",
-      paymentReference: reference,
-    },
-    { where: { id: Number(metadata.order_id) } }
-  );
+    await Order.updateStatus(parseInt(metadata.order_id, 10), "confirmed", {
+      transaction: t,
+    });
+
+    await Order.update(
+      {
+        status: "confirmed",
+        paymentStatus: "paid",
+        paymentMethod: "bank_transfer",
+        paymentReference: reference,
+      },
+      { where: { id: Number(metadata.order_id) }, transaction: t }
+    );
+  });
 }
 
 async function handleFailedPayment(data: WebhookData) {
@@ -391,22 +393,24 @@ async function handleFailedPayment(data: WebhookData) {
 
   logger.warn(`Handling failed payment for ${reference}`);
 
-  await Payment.update(
-    {
-      status: "failed",
-      gatewayResponse: gateway_response || "Payment failed",
-    },
-    { where: { reference } }
-  );
+  await sequelize.transaction(async (t) => {
+    await Payment.update(
+      {
+        status: "failed",
+        gatewayResponse: gateway_response || "Payment failed",
+      },
+      { where: { reference }, transaction: t }
+    );
 
-  await Order.update(
-    {
-      status: "pending",
-      paymentStatus: "failed",
-      paymentReference: reference,
-    },
-    { where: { id: metadata.order_id } }
-  );
+    await Order.update(
+      {
+        status: "pending",
+        paymentStatus: "failed",
+        paymentReference: reference,
+      },
+      { where: { id: metadata.order_id }, transaction: t }
+    );
+  });
 
   // Here you would:
   // 1. Notify customer
@@ -418,24 +422,26 @@ async function handleFailedTransfer(data: WebhookData) {
 
   logger.warn(`Handling failed transfer for ${reference}`);
 
-  await Payment.update(
-    {
-      status: "failed",
-      paymentMethod: "bank_transfer",
-      gatewayResponse: gateway_response || "Bank transfer failed",
-    },
-    { where: { reference } }
-  );
+  await sequelize.transaction(async (t) => {
+    await Payment.update(
+      {
+        status: "failed",
+        paymentMethod: "bank_transfer",
+        gatewayResponse: gateway_response || "Bank transfer failed",
+      },
+      { where: { reference }, transaction: t }
+    );
 
-  await Order.update(
-    {
-      status: "pending",
-      paymentStatus: "failed",
-      paymentMethod: "bank_transfer",
-      paymentReference: reference,
-    },
-    { where: { id: metadata.order_id } }
-  );
+    await Order.update(
+      {
+        status: "pending",
+        paymentStatus: "failed",
+        paymentMethod: "bank_transfer",
+        paymentReference: reference,
+      },
+      { where: { id: metadata.order_id }, transaction: t }
+    );
+  });
 }
 
 async function handleRefundProcessed(data: WebhookData) {
@@ -443,21 +449,23 @@ async function handleRefundProcessed(data: WebhookData) {
 
   logger.info(`Handling refund for ${reference}`);
 
-  await Payment.update(
-    {
-      status: "refunded",
-      gatewayResponse: "Payment refunded",
-    },
-    { where: { reference } }
-  );
+  await sequelize.transaction(async (t) => {
+    await Payment.update(
+      {
+        status: "refunded",
+        gatewayResponse: "Payment refunded",
+      },
+      { where: { reference }, transaction: t }
+    );
 
-  await Order.update(
-    {
-      status: "pending",
-      paymentStatus: "refunded",
-    },
-    { where: { id: metadata.order_id } }
-  );
+    await Order.update(
+      {
+        status: "pending",
+        paymentStatus: "refunded",
+      },
+      { where: { id: metadata.order_id }, transaction: t }
+    );
+  });
 }
 
 async function handleSubscriptionCreated(data: any) {
