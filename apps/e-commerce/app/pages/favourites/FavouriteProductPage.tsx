@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, setCart } from "@/redux/slices/cartSlice";
+import { addToCart } from "@/redux/slices/cartSlice";
 import { clearFav, removeFromFav, setFav } from "@/redux/slices/favoriteSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 
@@ -19,8 +19,8 @@ import toast from "react-hot-toast";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import { Product } from "@/app/types/products";
-import { FiDelete } from "react-icons/fi";
 
 export default function FavouritesProductPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,6 @@ export default function FavouritesProductPage() {
     ?.subcategories.find(
       (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
     );
-  const savedFav = JSON.parse(localStorage.getItem("fav") || "[]");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -159,6 +158,10 @@ export default function FavouritesProductPage() {
                       <div className="flex-1 sm:hidden min-w-0">
                         <Link
                           href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                          onClick={() => {
+                            setIsLoading(true);
+                            dispatch(addToRecentlyViewed(item.product));
+                          }}
                           className="font-medium hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-2"
                         >
                           {item.product.name}
@@ -174,6 +177,10 @@ export default function FavouritesProductPage() {
                     <div className="flex-1 hidden sm:block min-w-0">
                       <Link
                         href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                        onClick={() => {
+                          setIsLoading(true);
+                          dispatch(addToRecentlyViewed(item.product));
+                        }}
                         className="font-medium w-full hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer line-clamp-1"
                       >
                         {item.product.name}

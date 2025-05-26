@@ -2,11 +2,14 @@
 
 import { Category, Subcategory } from "@/app/types/category";
 import { Product } from "@/app/types/products";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import { AppDispatch } from "@/redux/store";
 import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 interface Cate {
   categories: Category[];
@@ -30,6 +33,7 @@ export default function AllCategories({
   subProducts,
 }: Cate) {
   const { push } = useRouter();
+  const dispatch: AppDispatch = useDispatch();
 
   return (
     <div className="w-svw grid grid-cols-[1fr_1fr_1.5fr] px-10">
@@ -115,6 +119,7 @@ export default function AllCategories({
                 push(
                   `/category/${isCategory}/${isSubCategory}/${subProduct.name}?id=${subProduct.id}`
                 );
+                dispatch(addToRecentlyViewed(subProduct));
               }}
             >
               <div className="flex flex-col items-center">

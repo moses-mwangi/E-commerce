@@ -10,7 +10,8 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
-import { capitalizeWords } from "@/app/types/products";
+import { Product } from "@/app/types/products";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 export default function FrequencySearched() {
   const { selectedCurrency } = useLanguage_Currency();
@@ -32,8 +33,9 @@ export default function FrequencySearched() {
 
   const recommendedProductss = products;
 
-  const handleRouteProduct = (id: any) => {
+  const handleRouteProduct = (product: Product) => {
     setIsLoading(true);
+    dispatch(addToRecentlyViewed(product));
   };
 
   return (
@@ -101,7 +103,7 @@ export default function FrequencySearched() {
               <div className="px-3 py-3">
                 <Link
                   href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
-                  onClick={() => handleRouteProduct(product.id)}
+                  onClick={() => handleRouteProduct(product)}
                 >
                   <h3 className="w-full overflow-hidden text-[15px] whitespace-nowrap truncate font-medium text-gray-900 mb-1">
                     {product.name}

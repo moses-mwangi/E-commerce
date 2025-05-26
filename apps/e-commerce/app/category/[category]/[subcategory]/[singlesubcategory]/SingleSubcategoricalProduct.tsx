@@ -27,12 +27,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import ImageScrol from "./ImageScrol";
-import AIRecommendations from "./AIRecommendations";
+import RelatedProducts from "./RelatedProducts";
 import ARProductViewer from "./ARProductViewer";
 import LiveChat from "./LiveChat";
 import { Card } from "@/components/ui/card";
 import ProductReviews from "./ProductReviews";
-import { string } from "zod";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { addToFav } from "@/redux/slices/favoriteSlice";
 import { capitalizeWords } from "@/app/types/products";
@@ -71,7 +70,6 @@ export default function SingleSuCategoricalProductPage() {
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
-  // const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
@@ -195,18 +193,6 @@ export default function SingleSuCategoricalProductPage() {
                 onMouseMove={handleImageHover}
               >
                 {product.productImages && (
-                  // <div
-                  //   style={{
-                  //     backgroundImage: `url(${
-                  //       product.productImages
-                  //         ? product.productImages[selectedImage]?.url
-                  //         : ""
-                  //     })`,
-                  //     backgroundPosition: "center",
-                  //     backgroundSize: "cover",
-                  //   }}
-                  //   className=" w-full h-full"
-                  // />
                   <Image
                     src={
                       product.productImages
@@ -450,13 +436,10 @@ export default function SingleSuCategoricalProductPage() {
             </TabsContent>
           </Tabs>
           <div className="mt-10">
-            <AIRecommendations />
+            <RelatedProducts product={product} />
           </div>
 
-          <div className="mt-10">
-            <h3 className="text-2xl font-semibold mb-4">
-              3D & AR Product Viewer
-            </h3>
+          <div className="">
             <ARProductViewer productName={product.name} />
           </div>
 

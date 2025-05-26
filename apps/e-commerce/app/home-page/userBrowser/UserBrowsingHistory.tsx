@@ -1,20 +1,16 @@
 import LoadingState from "@/app/components/loaders/LoadingState";
 import useCategoryContex from "@/hooks/useCategoryContex";
-import { fetchCategories } from "@/redux/slices/categorySlice";
-import { fetchProducts } from "@/redux/slices/productSlice";
-import { AppDispatch, RootState } from "@/redux/store";
+import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FiClock, FiHeart } from "react-icons/fi";
 import { GrNext, GrPrevious } from "react-icons/gr";
-import { useDispatch, useSelector } from "react-redux";
-import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
-import { capitalizeWords } from "@/app/types/products";
+import { useDispatch } from "react-redux";
+import useBrowsingHistory from "./useBrowsingHistory";
+import { clearRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 export default function UserBrowsingHistory() {
-  const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
-  const { products, status } = useSelector((state: RootState) => state.product);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -23,27 +19,32 @@ export default function UserBrowsingHistory() {
     items: favItems,
   } = useCategoryContex();
 
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProducts());
-    }
-  }, [dispatch, status]);
-
-  const recentlyReviewed = products;
+  const { recentlyViewed } = useBrowsingHistory();
 
   const handleRouteProduct = (id: any) => {
     setIsLoading(true);
   };
 
+  const clearBrowsingHistory = () => {
+    dispatch(clearRecentlyViewed());
+  };
+
   return (
     <>
       {isLoading === true && <LoadingState />}
-      <div className=" hover:cursor-pointer bg-[#f4f4f4] px-3 sm:px-6 py-3 sm:py-5 sm:rounded-2xl relative group">
+      <div
+        className={`${
+          recentlyViewed.length <= 0 && "hidden"
+        } hover:cursor-pointer bg-[#f4f4f4] px-3 sm:px-6 py-3 sm:py-5 sm:rounded-2xl relative group`}
+      >
         <div className="flex justify-between items-center mb-3 sm:mb-6">
           <h2 className="text-base sm:text-xl md:text-2xl font-semibold text-gray-900">
             Recently Viewed
           </h2>
-          <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+          <button
+            onClick={() => clearBrowsingHistory()}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          >
             Clear all
           </button>
         </div>
@@ -55,7 +56,7 @@ export default function UserBrowsingHistory() {
           <GrNext className=" w-4 h-4" />
         </button>
         <div className="flex gap-3 overflow-x-auto hide-scrollbar">
-          {recentlyReviewed?.map((item, index) => (
+          {recentlyViewed?.map((item, index) => (
             <div
               key={index}
               className="flex-shrink-0 w-[185px]  bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow group/fav"

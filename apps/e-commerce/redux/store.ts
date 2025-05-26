@@ -8,6 +8,7 @@ import analyticReducer from "./slices/AnalyticsSlice";
 import categoryReducer from "./slices/categorySlice";
 import payment from "./slices/PaymentSlice";
 import review from "./slices/ReviewsRatingSlice";
+import recently from "./slices/BrowsingHistory";
 import { useDispatch } from "react-redux";
 
 export const store = configureStore({
@@ -21,6 +22,7 @@ export const store = configureStore({
     category: categoryReducer,
     payment: payment,
     review: review,
+    recently: recently,
   },
 });
 

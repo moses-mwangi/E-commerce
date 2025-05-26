@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "../../components/loaders/LoadingState";
 import { FiHeart } from "react-icons/fi";
 import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
+import { Product } from "@/app/types/products";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 export default function NewArrivals() {
   const dispatch: AppDispatch = useDispatch();
@@ -25,8 +26,9 @@ export default function NewArrivals() {
 
   const popularProducts = products;
 
-  const handleRouteProduct = (id: any) => {
+  const handleRouteProduct = (product: Product) => {
     setIsLoading(true);
+    dispatch(addToRecentlyViewed(product));
   };
 
   return (
@@ -88,7 +90,7 @@ export default function NewArrivals() {
 
                 <Link
                   href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
-                  onClick={() => handleRouteProduct(product.id)}
+                  onClick={() => handleRouteProduct(product)}
                   className="flex flex-col items-center  px-2 pb-2 sm:px-3 sm:py-3 "
                 >
                   <p className="truncate hover:text-orange-500 transition-all duration-200  w-full text-center overflow-hidden whitespace-nowrap sm:text-[16px] text-sm font-semibold text-gray-900">

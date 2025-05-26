@@ -1,3 +1,4 @@
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import { addToCart, setCart } from "@/redux/slices/cartSlice";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
@@ -112,14 +113,18 @@ function useCategoryContex() {
     const proCategory = filteredProducts.find(
       (el) => el.id.toString() === String(id)
     );
-    setIsLoading(true);
-    const param = new URLSearchParams();
-    param.set("id", id);
-    router.push(
-      `/category/${category}/${
-        proCategory?.subCategory
-      }/${name}?${param.toString()}`
-    );
+    if (proCategory) {
+      setIsLoading(true);
+      const param = new URLSearchParams();
+      param.set("id", id);
+      router.push(
+        `/category/${category}/${
+          proCategory?.subCategory
+        }/${name}?${param.toString()}`
+      );
+
+      dispatch(addToRecentlyViewed(proCategory));
+    }
   };
 
   const subCategoryRoute = (name: string, id: any) => {

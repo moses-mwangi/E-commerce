@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Eye, Heart } from "lucide-react";
+import { Star, Heart } from "lucide-react";
 import Image from "next/image";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import useCategoryContex from "@/hooks/useCategoryContex";
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 export default function Reccomeded() {
   const { selectedCurrency } = useLanguage_Currency();
@@ -38,6 +39,7 @@ export default function Reccomeded() {
       push(
         `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
       );
+      dispatch(addToRecentlyViewed(product));
     }
   };
 

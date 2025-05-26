@@ -19,7 +19,7 @@ import { Card } from "@/components/ui/card";
 
 import featuredProduct from "../../../public/newArrival/smartSpeker.png";
 import secondaryProduct from "../../../public/category_Image/electronics.png";
-import ModernEcommerceSearch from "@/app/home-page/navbar/search/ModernEcommerceSearch2";
+import MobileEcommerceSearch from "@/app/home-page/navbar/search/MobileEcommerceSearch";
 import { useRouter } from "next/navigation";
 
 const animations = {
@@ -129,7 +129,7 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
           <p className="text-gray-600 mb-4">Discover amazing deals today</p>
 
           <div className="z-50 mb-3">
-            <ModernEcommerceSearch />
+            <MobileEcommerceSearch />
           </div>
           <div className="w-full grid grid-cols-2 gap-2">
             <Button className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300">

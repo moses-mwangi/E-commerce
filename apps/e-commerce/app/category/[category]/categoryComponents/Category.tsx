@@ -72,12 +72,16 @@ export default function Category() {
 
       <div className="bg-gray-50 px-3 sm:px-6 rounded-xl mx-auto container pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
         <div className="mb-5 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 pb-4 sm:pb-6">
-            <h2 className="text-[17px] sm:text-xl font-semibold">
+          <div className="flex sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 pb-4 sm:pb-6">
+            <h2 className=" hidden sm:flex text-[17px] sm:text-xl font-semibold">
               Browse {capitalizeWords(decodeURIComponent(String(category)))} by
               Category
             </h2>
-            <Card className="text-gray-700 items-center bg-gray-50 text-xs sm:text-sm px-2 py-1 transition-all duration-150 rounded-md hover:text-gray-600 w-full sm:w-auto">
+
+            <h2 className=" sm:hidden text-[17px]">
+              {capitalizeWords(decodeURIComponent(String(category)))}
+            </h2>
+            <Card className="text-gray-700 items-center bg-gray-50 text-xs sm:text-sm px-2 py-1 transition-all duration-150 rounded-md hover:text-gray-600 ddw-full sm:w-auto">
               <Link
                 href="/category"
                 className="flex items-center gap-2 sm:gap-3 mx-auto"

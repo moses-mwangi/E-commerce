@@ -2,7 +2,15 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Smartphone, X, Loader2, Check, AlertCircle } from "lucide-react";
+import {
+  Smartphone,
+  X,
+  Loader2,
+  Check,
+  AlertCircle,
+  Box,
+  Clock,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function ARProductViewer({
@@ -15,7 +23,6 @@ export default function ARProductViewer({
   const [arActive, setArActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check for WebXR/AR support
   useEffect(() => {
     const checkSupport = async () => {
       try {
@@ -38,11 +45,9 @@ export default function ARProductViewer({
     setIsLoading(true);
     setError(null);
 
-    // Simulate AR loading (replace with actual AR implementation)
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setArActive(true);
-      // In a real implementation, you would initialize your AR viewer here
       toast.success("succes");
     } catch (err) {
       setError("Failed to launch AR viewer");
@@ -109,75 +114,124 @@ export default function ARProductViewer({
   }
 
   return (
-    <Card className="p-6 rounded-lg">
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1">
-          <h2 className="text-xl font-bold mb-2">
-            View {productName} in your space
-          </h2>
-          <p className="text-gray-600 mb-4">
-            See how this product looks in your room before you buy. Works on
-            most modern smartphones.
-          </p>
+    <div className="">
+      <h3 className="text-[22px] sm:text-2xl font-bold mb-4 sm:mb-6 mt-7 sm:mt-12">
+        3D & AR Product Viewer
+      </h3>
 
-          <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3">
-              {isSupported === null ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : isSupported ? (
-                <Check className="h-4 w-4 text-green-500" />
-              ) : (
-                <AlertCircle className="h-4 w-4 text-yellow-500" />
-              )}
-              <span className="text-sm">
-                {isSupported === null
-                  ? "Checking AR support..."
-                  : isSupported
-                  ? "Your device supports AR"
-                  : "AR may not be supported on your device"}
-              </span>
+      <Card className="p-6 sm:p-8 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex flex-col lg:flex-row gap-8 items-center">
+          <div className="flex-1 space-y-4">
+            <div className="space-y-2">
+              <h2 className="sm:text-2xl text-lg font-bold text-gray-900">
+                View {productName} in Your Space
+              </h2>
+              <p className="text-gray-600">
+                Experience this product in augmented reality before purchasing.
+                See how it fits and looks in your actual environment.
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Smartphone className="h-4 w-4 text-blue-500" />
-              <span className="text-sm">Requires motion sensor/camera</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
+              <Clock className="h-4 w-4" />
+              Coming Soon
             </div>
-          </div>
 
-          <Button
-            onClick={launchAR}
-            disabled={isSupported === false || isLoading}
-            className="w-full md:w-auto gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Launching AR...
-              </>
-            ) : (
-              <>
-                <Smartphone className="h-4 w-4" />
-                View in AR
-              </>
+            <div className="space-y-3 py-2">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5">
+                  {isSupported === null ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
+                  ) : isSupported ? (
+                    <Check className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4 text-yellow-500" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">
+                    {isSupported === null
+                      ? "Checking AR capabilities..."
+                      : isSupported
+                      ? "Your device supports AR"
+                      : "Limited AR support detected"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {isSupported
+                      ? "Ready for immersive experiences"
+                      : "Some features may not be available"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Smartphone className="h-4 w-4 text-blue-500 mt-0.5" />
+                <div>
+                  <p className="font-medium text-gray-900">Mobile Experience</p>
+                  <p className="text-sm text-gray-500">
+                    Requires camera and motion sensors for full functionality
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <Button
+                onClick={launchAR}
+                disabled={true}
+                className="w-full gap-2 relative"
+                variant="outline"
+              >
+                <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
+                  Soon
+                </div>
+                <Box className="h-4 w-4" />
+                Preview in AR
+              </Button>
+
+              <p className="text-sm text-center text-gray-500">
+                We&apos;re working hard to bring this feature to you soon!
+              </p>
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
             )}
-          </Button>
+          </div>
 
-          {error && (
-            <p className="mt-3 text-sm text-red-500 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" /> {error}
-            </p>
-          )}
-        </div>
+          <div className="flex-1 w-full max-w-md">
+            <div className="relative aspect-[1] bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 bg-white/90 rounded-lg shadow-md flex items-center justify-center">
+                    <Box className="h-12 w-12 text-gray-400" />
+                  </div>
 
-        <div className="flex-1 bg-gray-100 rounded-lg flex items-center justify-center">
-          <div className="relative w-full h-64">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center">
-              <Smartphone className="h-12 w-12 text-gray-400" />
-              <div className="absolute bottom-4 left-4 right-4 h-16 bg-white/80 rounded-lg"></div>
+                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-black/10 blur-sm rounded-full"></div>
+                </div>
+              </div>
+
+              <div className="absolute inset-0 bg-black/5 backdrop-blur-[1px] flex flex-col items-center justify-center p-6 text-center">
+                <div className="bg-white/90 border border-gray-200 rounded-lg p-4 shadow-sm max-w-xs">
+                  <h4 className="font-semibold text-gray-900 mb-1">
+                    Feature Preview
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Our AR viewer will be available in the next update
+                  </p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/10 to-transparent flex items-center justify-center gap-4 px-6">
+                <div className="h-2 w-16 bg-white/80 rounded-full"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 }

@@ -72,13 +72,12 @@ export default function ProductCard({ val }: { val: string }) {
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
                   {product.name}
                 </h2>
-                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-2">
                   {product.description}
                 </p>
 
                 <div className="flex items-center gap-2 text-base sm:text-lg font-semibold">
                   <p className="text-gray-800 dark:text-gray-200">
-                    {/* ${product.price} */}
                     {`${capitalizeWords(product.currency)} ${product.price
                       .toFixed(2)
                       .toLocaleString()}`}

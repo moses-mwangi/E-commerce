@@ -8,14 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { t } from "i18next";
 import { SearchIcon } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import ImageSearchPopup from "./ImageSearchPopUp";
 import { capitalizeWords, Product } from "../../../types/products";
@@ -276,31 +269,6 @@ const ModernEcommerceSearch = () => {
         <form onSubmit={handleSearch} className="flex">
           <div className="relative flex-grow">
             <div className="flex items-center focus-within:ring-1 focus-within:ring-orange-400/70 justify-between w-full bg-white rounded-lg py-[6px] sm:py-1 sm:rounded-full shadow-sm ggpl-4 px-[8px] border border-gray-200 hover:border-gray-300 transition-colors">
-              <div className=" hidden lg:flex">
-                <Select
-                  value={selectedCategory}
-                  onValueChange={(value) => {
-                    setSelectedCategory(value);
-                    if (query) {
-                      debouncedSearch(query, value);
-                    }
-                  }}
-                >
-                  <SelectTrigger className="space-x-1 focus:ring-0 focus:ring-primary/20 w-auto h-[32px] bg-gray-50 text-gray-700 rounded-full text-sm hover:bg-gray-100 transition-colors">
-                    <SelectValue placeholder={t("All Products")} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
-                    {manipulatedCategory?.map((category, idx) => (
-                      <SelectGroup key={idx}>
-                        <SelectItem value={category}>
-                          {capitalizeWords(category)}
-                        </SelectItem>
-                      </SelectGroup>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               <div className="flex h-6 sm:h-min items-center flex-grow relative">
                 <Input
                   ref={inputRef}
@@ -366,9 +334,8 @@ const ModernEcommerceSearch = () => {
             {showSuggestions && (
               <div
                 id="search-suggestions"
-                className="absolute z-50 overflow-y-auto custom-scroll rounded-tl-sm max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
+                className="absolute z-50 overflow-y-auto custom-scroll rounded-tl-sm max-h-[50svh] sm:max-h-[70svh] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg"
               >
-                {/* Recent searches */}
                 {recentSearches.length > 0 && query.length < 1 && (
                   <div className="p-2 border-b">
                     <div className="flex items-center px-3 py-2 text-gray-500">
@@ -404,7 +371,6 @@ const ModernEcommerceSearch = () => {
                   </div>
                 )}
 
-                {/* Popular searches */}
                 {popularSearches.length > 0 && query.length < 1 && (
                   <div className="p-2 border-b">
                     <div className="flex items-center px-3 py-2 text-gray-500">
@@ -428,7 +394,6 @@ const ModernEcommerceSearch = () => {
                   </div>
                 )}
 
-                {/* Trending categories */}
                 {trendingCategories.length > 0 && query.length < 1 && (
                   <div className="p-2 border-b">
                     <div className="flex items-center px-3 py-2 text-gray-500">
@@ -454,7 +419,6 @@ const ModernEcommerceSearch = () => {
                   </div>
                 )}
 
-                {/* Search suggestions */}
                 {query.length > 0 && (
                   <div className="p-2">
                     {isLoading ? (

@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "../../components/loaders/LoadingState";
 import { FiHeart } from "react-icons/fi";
 import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
-import { capitalizeWords } from "@/app/types/products";
+import { Product } from "@/app/types/products";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 export default function NewArrivals() {
   const { selectedCurrency } = useLanguage_Currency();
@@ -28,8 +28,9 @@ export default function NewArrivals() {
 
   const arrivedProducts = products;
 
-  const handleRouteProduct = (id: any) => {
+  const handleRouteProduct = (product: Product) => {
     setIsLoading(true);
+    dispatch(addToRecentlyViewed(product));
   };
 
   return (
@@ -52,7 +53,7 @@ export default function NewArrivals() {
             {arrivedProducts?.map((product, index) => (
               <motion.div
                 key={product.id}
-                className="bg-white dfhw-full min-w-36 rounded-lg shadow-sm cursor-pointer group"
+                className="bg-white min-w-36 rounded-lg shadow-sm cursor-pointer group"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -90,7 +91,7 @@ export default function NewArrivals() {
 
                 <Link
                   href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
-                  onClick={() => handleRouteProduct(product.id)}
+                  onClick={() => handleRouteProduct(product)}
                   className="flex flex-col px-2 pb-2 sm:px-3 sm:py-3 "
                 >
                   <h3 className="truncate overflow-hidden whitespace-nowrap w-full sm:text-[16px] text-sm font-semibold text-gray-800">

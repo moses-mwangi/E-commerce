@@ -19,7 +19,8 @@ export default function Logo() {
         }}
       >
         <Image
-          src="/images/amazon.png"
+          // src="/images/amazon.png"
+          src="/logo.png"
           className=""
           alt=""
           width={100}

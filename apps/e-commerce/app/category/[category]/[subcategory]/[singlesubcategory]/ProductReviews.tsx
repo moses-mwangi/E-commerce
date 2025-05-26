@@ -88,7 +88,6 @@ export default function ProductReviews({ productId }: { productId: string }) {
   const dispatch: AppDispatch = useDispatch();
   const { reviews, status } = useSelector((state: RootState) => state.review);
   const { selectedProduct } = useSelector((state: RootState) => state.product);
-  // const [showReviewForm, setShowReviewForm] = useState(false);
   const [filters, setFilters] = useState<ReviewFilters>({
     rating: null,
     sort: "newest",
@@ -144,7 +143,6 @@ export default function ProductReviews({ productId }: { productId: string }) {
     }
   }, [filters, singleProductReviews]);
 
-  // Pagination
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = filteredReviews.slice(
@@ -192,8 +190,8 @@ export default function ProductReviews({ productId }: { productId: string }) {
   }
 
   return (
-    <section className="space-y-8">
-      <div className="bg-muted/50 p-6 rounded-lg">
+    <section className="sm:space-y-8 space-y-6">
+      <div className="sm:bg-muted/50   px-2 sm:px-5 py-2 sm:py-5 rounded-lg">
         <div className="flex sm:items-center flex-col md:flex-row gap-8">
           <div className="flex sm:flex-col gap-3 sm:gap-0 items-center">
             <h2 className="text-4xl font-bold">{averageRating}</h2>
@@ -251,8 +249,10 @@ export default function ProductReviews({ productId }: { productId: string }) {
         </div>
       </div>
 
-      <div className="flex bg-gray-50 p-3 rounded-lg flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h3 className="text-xl font-semibold">Customer Reviews</h3>
+      <div className="flex sm:bg-muted/50 sm:p-3 rounded-lg flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h3 className={` hidden sm:flex text-xl font-semibold`}>
+          Customer Reviews
+        </h3>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select
@@ -294,8 +294,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
         </div>
       </div>
 
-      {/* Reviews List */}
-      <div className="space-y-6 bg-gray-50/25">
+      <div className="space-y-6  bg-gray-50/25">
         {currentReviews.length > 0 ? (
           currentReviews.map((review) => (
             <div key={review.id} className="border-b pb-6 last:border-b-0">
@@ -411,12 +410,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 Clear filters
               </Button>
             ) : (
-              <Button
-                className="mt-4"
-                // onClick={() => setShowReviewForm(true)}
-              >
-                Write a Review
-              </Button>
+              <Button className="mt-4">Write a Review</Button>
             )}
           </div>
         )}

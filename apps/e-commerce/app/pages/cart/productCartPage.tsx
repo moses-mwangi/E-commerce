@@ -25,6 +25,7 @@ import { Card } from "@/components/ui/card";
 import { MdOutlineDelete } from "react-icons/md";
 import { Product } from "@/app/types/products";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 
 interface CartItem {
   productId: number;
@@ -100,7 +101,7 @@ export default function ProductCartPage() {
       {isLoading && <LoadingState />}
       <div className="min-h-screen">
         {/* Header Section */}
-        <div className="px-2 sm:px-6 lg:px-16 xl:px-44 flex sm:flex-row items-center justify-between mt-4 sm:mt-8 mb-6 sm:mb-8 sm:gap-4">
+        <div className="px-2 sm:px-6 lg:px-11 flex sm:flex-row items-center justify-between mt-4 sm:mt-8 mb-6 sm:mb-8 sm:gap-4">
           <h1 className="text-lg sm:text-3xl font-bold text-gray-900">
             Shopping Cart
           </h1>
@@ -164,6 +165,10 @@ export default function ProductCartPage() {
                       <div className="space-y-2 sm:space-y-1">
                         <Link
                           href={`/category/${product.category}/${proSubCategory?.name}/${product.name}?id=${product.id}`}
+                          onClick={() => {
+                            setIsLoading(true);
+                            dispatch(addToRecentlyViewed(item.product));
+                          }}
                           className="font-semibold text-base sm:text-lg hover:underline hover:text-gray-700 transition-all duration-200 cursor-pointer"
                         >
                           {product.name}
