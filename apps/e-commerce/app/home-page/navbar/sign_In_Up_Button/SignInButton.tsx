@@ -46,7 +46,7 @@ export default function SignInBotton() {
               router.push("/registration/signin");
             }}
           >
-            <User2 className=" h-5 w-5" />
+            <User2 className=" h-6 w-6" />
           </button>
           <Button
             className=" hidden sm:flex text-sm sm:text-[15px] h-[21px] sm:h-9 bg-orange-500 font-semibold hover:bg-orange-600 hover:text-slate-100 transition-all duration-200 px-3 sm:px-7 py-2 rounded-full"

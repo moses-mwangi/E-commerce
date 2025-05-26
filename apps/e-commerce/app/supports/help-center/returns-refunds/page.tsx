@@ -1,53 +1,3 @@
-// // app/help/returns-refunds/page.tsx
-// import { ArrowLeft } from "lucide-react";
-// import Link from "next/link";
-
-// export default function ReturnsRefundsHelp() {
-//   return (
-//     <div className="p-6 max-w-4xl mx-auto">
-//       <Link
-//         href="/help"
-//         className="flex items-center gap-2 text-sm text-primary mb-6"
-//       >
-//         <ArrowLeft size={16} /> Back to Help Center
-//       </Link>
-
-//       <h1 className="text-2xl font-bold mb-4">Returns & Refunds</h1>
-
-//       <div className="space-y-6">
-//         <section>
-//           <h2 className="text-lg font-semibold mb-2">Our Return Policy</h2>
-//           <p className="text-gray-600">
-//             You may return most items within 30 days of delivery for a full
-//             refund. Items must be unused and in their original packaging.
-//           </p>
-//         </section>
-
-//         <section>
-//           <h2 className="text-lg font-semibold mb-2">
-//             How to Initiate a Return
-//           </h2>
-//           <ol className="list-decimal pl-5 space-y-2 text-gray-600">
-//             <li>Go to &quot;My Orders&quot; in your account</li>
-//             <li>Select the item(s) you want to return</li>
-//             <li>Print the prepaid return label</li>
-//             <li>Ship the package back to us</li>
-//           </ol>
-//         </section>
-
-//         <section>
-//           <h2 className="text-lg font-semibold mb-2">Refund Timeline</h2>
-//           <p className="text-gray-600">
-//             Refunds are processed within 3-5 business days after we receive your
-//             return. It may take additional time for your bank to post the
-//             credit.
-//           </p>
-//         </section>
-//       </div>
-//     </div>
-//   );
-// }
-// app/help/returns-refunds/page.tsx
 import {
   ArrowLeft,
   Package,
@@ -65,14 +15,13 @@ export default function ReturnsRefundsHelp() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <Link
-        href="/help"
+        href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
       >
         <ArrowLeft size={16} /> Back to Help Center
       </Link>
 
       <div className="flex items-start gap-8">
-        {/* Main Content */}
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
@@ -81,7 +30,6 @@ export default function ReturnsRefundsHelp() {
             <h1 className="text-3xl font-bold">Returns & Refunds</h1>
           </div>
 
-          {/* Policy Highlights */}
           <div className="grid md:grid-cols-3 gap-4 mb-8">
             <div className="border rounded-lg p-4 hover:border-primary transition-colors">
               <div className="flex items-center gap-2 mb-2">
@@ -112,14 +60,12 @@ export default function ReturnsRefundsHelp() {
             </div>
           </div>
 
-          {/* Return Process */}
           <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
               <RefreshCw className="text-primary" /> How to Return an Item
             </h2>
 
             <div className="relative">
-              {/* Progress Stepper */}
               <div className="absolute left-4 h-full w-px bg-gray-200 top-0 -z-10" />
               <div className="space-y-8">
                 {[
@@ -172,7 +118,6 @@ export default function ReturnsRefundsHelp() {
             </div>
           </div>
 
-          {/* Refund Information */}
           <div className="space-y-6">
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -218,7 +163,6 @@ export default function ReturnsRefundsHelp() {
               </div>
             </section>
 
-            {/* Exceptions */}
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <AlertCircle className="text-yellow-500" /> Return Exceptions
@@ -253,7 +197,6 @@ export default function ReturnsRefundsHelp() {
           </div>
         </div>
 
-        {/* Quick Help Sidebar */}
         <div className="hidden md:block w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Need Help With Your Return?</h3>

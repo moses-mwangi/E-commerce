@@ -1,21 +1,19 @@
-// app/help/account-issues/page.tsx
 import { ArrowLeft, Lock, User, Mail, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button"; // ShadCN or custom button
-import { Input } from "@/components/ui/input"; // ShadCN or custom input
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function AccountIssuesHelp() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <Link
-        href="/help"
+        href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
       >
         <ArrowLeft size={16} /> Back to Help Center
       </Link>
 
       <div className="flex items-start gap-8">
-        {/* Main Content */}
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
@@ -24,7 +22,6 @@ export default function AccountIssuesHelp() {
             <h1 className="text-3xl font-bold">Account Support</h1>
           </div>
 
-          {/* Interactive Troubleshooter */}
           <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <AlertCircle className="text-yellow-500" /> Account Troubleshooter
@@ -46,7 +43,6 @@ export default function AccountIssuesHelp() {
             </div>
           </div>
 
-          {/* Common Solutions */}
           <div className="space-y-8">
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -113,7 +109,6 @@ export default function AccountIssuesHelp() {
           </div>
         </div>
 
-        {/* Quick Help Sidebar */}
         <div className="hidden md:block w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Need Immediate Help?</h3>

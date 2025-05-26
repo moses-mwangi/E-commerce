@@ -132,7 +132,7 @@ export default function PaymentMethodsHelp() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <Link
-        href="/help"
+        href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
       >
         <ArrowLeft size={16} /> Back to Help Center

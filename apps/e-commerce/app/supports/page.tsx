@@ -23,25 +23,25 @@ export default function HelpCenter() {
       icon: <Package size={18} className="text-primary" />,
       title: "Track My Order",
       desc: "Check shipping status and delivery estimates",
-      link: "/help/order-status",
+      link: "/supports/help-center/order-status",
     },
     {
       icon: <RefreshCw size={18} className="text-primary" />,
       title: "Start a Return",
       desc: "How to return or exchange an item",
-      link: "/help/returns-refunds",
+      link: "/supports/help-center/returns-refunds",
     },
     {
       icon: <CreditCard size={18} className="text-primary" />,
       title: "Payment Issues",
       desc: "Declined payments and refund questions",
-      link: "/help/payment-methods",
+      link: "/supports/help-center/payment-methods",
     },
     {
       icon: <User size={18} className="text-primary" />,
       title: "Account Help",
       desc: "Password reset and login problems",
-      link: "/help/account-issues",
+      link: "/supports/help-center/account-issues",
     },
   ];
 
@@ -74,12 +74,11 @@ export default function HelpCenter() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Hero Section */}
+    <div className="sm:p-6 p-2 max-w-7xl mx-auto">
       <div className="bg-gradient-to-r from-primary/5 to-blue-50 rounded-2xl p-8 mb-12 text-center border">
         <div className="max-w-3xl mx-auto">
           <div className="bg-primary/10 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
-            <HelpCircle className="text-primary" size={28} />
+            <HelpCircle className="text-green-600" size={28} />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             How can we help you today?
@@ -87,7 +86,7 @@ export default function HelpCenter() {
           <div className="relative max-w-xl mx-auto">
             <Input
               placeholder="Search help articles..."
-              className="pl-10 pr-4 py-6 text-base"
+              className="pl-10 pr-4 py-6 text-base bg-white focus-visible:ring-orange-500"
             />
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -100,7 +99,6 @@ export default function HelpCenter() {
         </div>
       </div>
 
-      {/* Popular Topics */}
       <div className="mb-12">
         <h2 className="text-xl font-semibold mb-6">Popular Topics</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -108,7 +106,7 @@ export default function HelpCenter() {
             <Link
               key={i}
               href={topic.link}
-              className="border rounded-xl p-5 hover:border-primary transition-colors hover:shadow-sm group"
+              className="border rounded-xl p-5 hover:border-orange-500/85 transition-colors hover:shadow-sm group"
             >
               <div className="flex items-start gap-3">
                 <div className="bg-primary/10 p-2 rounded-lg">{topic.icon}</div>
@@ -156,7 +154,6 @@ export default function HelpCenter() {
         </div>
       </div>
 
-      {/* Contact Options */}
       <div className="border rounded-2xl overflow-hidden">
         <div className="bg-primary/5 p-6 border-b">
           <h2 className="text-xl font-semibold">Still need help?</h2>
@@ -174,8 +171,8 @@ export default function HelpCenter() {
               Speak directly with our support agents
             </p>
             <div className="space-y-1">
-              <p className="font-medium">US: +1 (800) 123-4567</p>
-              <p className="text-sm text-gray-600">Mon-Fri, 9AM-6PM EST</p>
+              <p className="font-medium">Call Us: +254 725672675</p>
+              <p className="text-sm text-gray-600">Mon-Fri, 5AM-9PM EST</p>
             </div>
             <Button variant="outline" className="mt-4 w-full">
               Call Now
@@ -191,7 +188,7 @@ export default function HelpCenter() {
             <p className="text-gray-600 text-sm mb-4">
               Get help within 24 hours
             </p>
-            <p className="font-medium">support@example.com</p>
+            <p className="font-medium">moses.mwangi.me@gmail.com</p>
             <Button variant="outline" className="mt-4 w-full">
               Send Email
             </Button>
@@ -207,7 +204,9 @@ export default function HelpCenter() {
               Instant messaging with our team
             </p>
             <p className="font-medium">Available now</p>
-            <Button className="mt-4 w-full">Start Chat</Button>
+            <Button className="mt-4 w-full bg-orange-500/95 hover:bg-orange-600/95">
+              Start Chat
+            </Button>
           </div>
         </div>
       </div>
@@ -237,7 +236,7 @@ export default function HelpCenter() {
           ].map((faq, i) => (
             <div
               key={i}
-              className="border rounded-lg p-5 hover:border-primary transition-colors"
+              className="border rounded-lg p-5 hover:border-orange-500/80 transition-colors"
             >
               <h3 className="font-medium mb-2">{faq.question}</h3>
               <p className="text-gray-600">{faq.answer}</p>
