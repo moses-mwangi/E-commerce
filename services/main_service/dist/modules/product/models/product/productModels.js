@@ -31,6 +31,10 @@ Product.init({
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,
     },
+    sold: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
     costPrice: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,

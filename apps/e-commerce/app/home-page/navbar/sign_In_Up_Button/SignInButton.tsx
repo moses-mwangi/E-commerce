@@ -17,7 +17,9 @@ export default function SignInBotton() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated, currentUser } = useSelector(
+    (state: RootState) => state.user
+  );
 
   const { t, i18n } = useTranslation();
 
@@ -32,7 +34,7 @@ export default function SignInBotton() {
 
   return (
     <div className="">
-      {isAuthenticated === true ? (
+      {isAuthenticated === true && currentUser ? (
         <div>
           <UserProfileImage />
         </div>

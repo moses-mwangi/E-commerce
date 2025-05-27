@@ -9,9 +9,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex relative min-h-screen bg-gray-50">
+    <div className="flex relative min-h-screen">
       <SupportNavbar />
-      <div className="flex w-full min-h-screen bg-gray-50 mt-[60px]">
+      <div className="flex w-full min-h-screen mt-[60px]">
         {children}
         <Toaster position="top-right" />
       </div>

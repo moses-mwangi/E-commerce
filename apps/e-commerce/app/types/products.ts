@@ -8,6 +8,7 @@ export interface Product {
   costPrice: number;
   description: string;
   stock: number;
+  sold: number;
   brand: string | null;
   images: string[];
   productImages: Images[];

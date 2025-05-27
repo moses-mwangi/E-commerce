@@ -7,6 +7,7 @@ class Product extends Model {
   public category!: string;
   public subCategory!: string;
   public price!: number;
+  public sold?: number;
   public costPrice!: number;
   public description!: string;
   public stock!: number;
@@ -43,6 +44,10 @@ Product.init(
     },
     price: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    sold: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     costPrice: {
