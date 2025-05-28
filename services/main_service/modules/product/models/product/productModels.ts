@@ -6,13 +6,19 @@ class Product extends Model {
   public name!: string;
   public category!: string;
   public subCategory!: string;
+
   public price!: number;
-  public sold?: number;
   public costPrice!: number;
+  public dealPrice?: number;
+  public sold?: number;
+
   public description!: string;
   public stock!: number;
   public brand?: string;
+
   public trending?: boolean;
+  public trendingScore?: number;
+
   public images!: string[];
   public specifications?: object[];
   public discount?: number;
@@ -46,9 +52,15 @@ Product.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    dealPrice: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: 0,
+    },
     sold: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: 0,
     },
     costPrice: {
       type: DataTypes.FLOAT,
@@ -71,6 +83,16 @@ Product.init(
     trending: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
+      defaultValue: false,
+    },
+    trendingScore: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 50,
+      validate: {
+        min: 50,
+        max: 100,
+      },
     },
     images: {
       type: DataTypes.ARRAY(DataTypes.STRING),

@@ -90,35 +90,35 @@ const mobileCategories = [
     title: "Deals",
     color: "bg-amber-100 text-amber-600",
     url: "/pages/deals",
-    bg: "bg-gradient-to-r from-red-600 to-orange-500 text-white ",
+    bg: "bg-gradient-to-r from-red-600 to-orange-500 text-white",
   },
   {
     icon: <ShoppingBag className="w-4 h-4" />,
     title: "New Arrivals",
     color: "bg-purple-100 text-purple-600",
     url: "/pages/new-arrivals",
-    bg: "",
+    bg: "bg-gradient-to-r from-green-600 to-emerald-500 text-white",
   },
   {
     icon: <Truck className="w-4 h-4" />,
     title: "Delivery",
     color: "bg-emerald-100 text-emerald-600",
     url: "/supports/help-center/deliveryInformation",
-    bg: "",
+    bg: "bg-gradient-to-r from-blue-500 to-cyan-400 text-white",
   },
   {
     icon: <Shield className="w-4 h-4" />,
     title: "Security",
     color: "bg-green-100 text-green-600",
     url: "/supports/security",
-    bg: "",
+    bg: "bg-gradient-to-r from-indigo-600 to-violet-500 text-white",
   },
   {
     icon: <HelpCircle className="w-4 h-4" />,
     title: "Support",
     color: "bg-indigo-100 text-indigo-600",
     url: "/supports",
-    bg: "",
+    bg: "bg-gradient-to-r from-sky-500 to-blue-400 text-white",
   },
 ];
 
@@ -171,7 +171,7 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
               }}
             >
               <Card
-                className={`p-3 flex items-center space-x-2 rounded-md shadow-md ${item.bg}`}
+                className={`p-3 min-w-32 flex items-center space-x-2 rounded-md shadow-md ${item.bg}`}
               >
                 <div className={`${item.color} p-2 rounded-lg`}>
                   {item.icon}

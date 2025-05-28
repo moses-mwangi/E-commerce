@@ -3,16 +3,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const pg_database_1 = __importDefault(require("./shared/config/pg_database"));
-const orderAssociations_1 = __importDefault(require("./modules/order/models/orderAssociations"));
-const categoryAssociations_1 = __importDefault(require("./modules/product/models/category/categoryAssociations"));
-const os_1 = require("os");
 const cluster_1 = __importDefault(require("cluster"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const os_1 = require("os");
+const app_1 = __importDefault(require("./app"));
+const orderAssociations_1 = __importDefault(require("./modules/order/models/orderAssociations"));
+const logger_1 = __importDefault(require("./modules/payments/utils/logger"));
+const categoryAssociations_1 = __importDefault(require("./modules/product/models/category/categoryAssociations"));
 const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
 const reviewAssociation_1 = __importDefault(require("./modules/reviews/models/reviewModel/reviewAssociation"));
-const logger_1 = __importDefault(require("./modules/payments/utils/logger"));
+const pg_database_1 = __importDefault(require("./shared/config/pg_database"));
 (0, orderAssociations_1.default)();
 (0, categoryAssociations_1.default)();
 (0, productAssociation_1.default)();
@@ -31,9 +31,8 @@ const pg_connect = async () => {
         console.log("The PostgreSQL database has successfully connected");
         // await sequelize.sync({ force: true });
         // await Payment.sync({ force: true });
-        // await sequelize.sync({ alter: true }); /////does not delete data
-        // await Order.sync({ alter: true });
-        // await Payment.sync({ alter: true });
+        // await sequelize.sync({ alter: true });
+        // await Product.sync({ alter: true });
         // Review.destroy({ where: {}, truncate: true }),
         // Review.destroy({ where: {} });
     }
@@ -77,9 +76,3 @@ process.on("unhandledRejection", (reason, promise) => {
         reason,
     });
 });
-// "@types/express-validatosssssssr": "4.4",
-//     "@types/sequelize": "4.4",
-//     "@types/os": "4.4",
-//     "@types/cluster": "4.4",
-//     "@types/cloudinary": "4.4",
-//     "@types/dotenv": "9"

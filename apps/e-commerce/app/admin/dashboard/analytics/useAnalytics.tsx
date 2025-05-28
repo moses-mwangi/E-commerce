@@ -1,12 +1,11 @@
-import { Order } from "@/app/types/order";
-import { capitalizeWords } from "@/app/types/products";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
-import { getCurrentUser, fetchUsers } from "@/redux/slices/userSlice";
-import { RootState, AppDispatch } from "@/redux/store";
+import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import {
   endOfMonth,
+  format,
   isSameDay,
   isSameMonth,
   isWithinInterval,
@@ -14,9 +13,8 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { format } from "date-fns";
-import React, { useEffect, useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function useAnalytics() {
   const [selectedPeriod, setSelectedPeriod] = useState("6");

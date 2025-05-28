@@ -12,6 +12,8 @@ import useCategoryContex from "@/hooks/useCategoryContex";
 import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 import { Product } from "@/app/types/products";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import { Button } from "@/components/ui/button";
+import Reccomeded from "../recommedation/RecommedationProduct";
 
 export default function FrequencySearched() {
   const { selectedCurrency } = useLanguage_Currency();
@@ -26,12 +28,12 @@ export default function FrequencySearched() {
   } = useCategoryContex();
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProducts());
-    }
+    // if (status === "idle") {
+    dispatch(fetchProducts());
+    // }
   }, [dispatch, status]);
 
-  const recommendedProductss = products;
+  const recommendedProducts = products;
 
   const handleRouteProduct = (product: Product) => {
     setIsLoading(true);
@@ -42,8 +44,13 @@ export default function FrequencySearched() {
     <>
       {isLoading === true && <LoadingState />}
       <div className=" bg-[#f4f4f4] px-3 sm:px-6 py-3 sm:py-5 sm:rounded-2xl relative group/product cursor-pointer">
-        <p className=" text-base sm:text-xl md:text-2xl font-semibold text-gray-900 mb-3 sm:mb-6">
-          Frequently searched
+        <p
+          onClick={() => {
+            console.log(recommendedProducts);
+          }}
+          className=" text-base sm:text-xl md:text-2xl font-semibold text-gray-900 mb-3 sm:mb-6"
+        >
+          Frequently searched dddd
         </p>
 
         <button className="absolute text-sm top-1/2 left-1 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow-md opacity-0 group-hover/product:opacity-100 transition-opacity z-50">
@@ -54,7 +61,7 @@ export default function FrequencySearched() {
         </button>
 
         <div className=" relative flex gap-3 overflow-x-auto hide-scrollbar">
-          {recommendedProductss.map((product, index) => (
+          {recommendedProducts.map((product, index) => (
             <div
               key={index}
               className="flex-shrink-0 w-[185px] bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow group"

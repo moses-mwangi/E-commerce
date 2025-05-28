@@ -4,8 +4,12 @@ export interface Product {
   status: string;
   category: string;
   subCategory: string;
+
   price: number;
   costPrice: number;
+  dealPrice: number;
+  originalPrice: number;
+
   description: string;
   stock: number;
   sold: number;
@@ -15,6 +19,10 @@ export interface Product {
   specifications: Record<string, any> | null;
   discount: number;
   ratings: number;
+
+  trending: boolean | null;
+  trendingScore: number;
+
   reviews: string[] | null;
   createdAt: string;
   updatedAt: string;

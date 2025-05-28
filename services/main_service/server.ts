@@ -1,22 +1,13 @@
-import app from "./app";
+import cluster from "cluster";
 import dotenv from "dotenv";
-import sequelize from "./shared/config/pg_database";
-import orderAssociations from "./modules/order/models/orderAssociations";
-import Order from "./modules/order/models/ordersModel";
-import OrderItem from "./modules/order/models/itemOrder";
-import User from "./modules/users/models/userMode";
-import categoryAssociations from "./modules/product/models/category/categoryAssociations";
-import { Sequelize } from "sequelize";
 import { cpus } from "os";
-import cluster, { Worker } from "cluster";
-import ProductImage from "./modules/product/models/product/productImageModel";
-import productAssociation from "./modules/product/models/product/productAssociation";
-import Product from "./modules/product/models/product/productModels";
-import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
-import paymentAssociation from "./modules/payments/models/paymentAssociation";
-import Review from "./modules/reviews/models/reviewModel/reviewModels";
-import Payment from "./modules/payments/models/paymentModel";
+import app from "./app";
+import orderAssociations from "./modules/order/models/orderAssociations";
 import logger from "./modules/payments/utils/logger";
+import categoryAssociations from "./modules/product/models/category/categoryAssociations";
+import productAssociation from "./modules/product/models/product/productAssociation";
+import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
+import sequelize from "./shared/config/pg_database";
 
 orderAssociations();
 categoryAssociations();
@@ -40,9 +31,8 @@ const pg_connect = async () => {
     // await sequelize.sync({ force: true });
     // await Payment.sync({ force: true });
 
-    // await sequelize.sync({ alter: true }); /////does not delete data
-    // await Order.sync({ alter: true });
-    // await Payment.sync({ alter: true });
+    // await sequelize.sync({ alter: true });
+    // await Product.sync({ alter: true });
 
     // Review.destroy({ where: {}, truncate: true }),
     // Review.destroy({ where: {} });
@@ -94,10 +84,3 @@ process.on("unhandledRejection", (reason, promise) => {
     reason,
   });
 });
-
-// "@types/express-validatosssssssr": "4.4",
-//     "@types/sequelize": "4.4",
-//     "@types/os": "4.4",
-//     "@types/cluster": "4.4",
-//     "@types/cloudinary": "4.4",
-//     "@types/dotenv": "9"

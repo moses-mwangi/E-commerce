@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import React, { Dispatch, SetStateAction, useRef } from "react";
-// import { HorizontalCategories } from "./page";
-import { Separator } from "@/components/ui/separator";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import LoadingState from "@/app/components/loaders/LoadingState";
 import { Subcategory } from "@/app/types/category";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/app/types/products";
+import { Separator } from "@/components/ui/separator";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   activeTabProduct: Product[];
@@ -23,8 +24,12 @@ export default function Reusable_Category_Sub_Products({
   setActive,
   subCategory,
 }: Props) {
+  const { push, back } = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div>
+      {isLoading === true && <LoadingState />}
       <HorizontalCategories
         categories={categories}
         subCategory={subCategory}
@@ -36,9 +41,15 @@ export default function Reusable_Category_Sub_Products({
         {activeTabProduct?.map((product) => (
           <div
             key={product.id}
-            className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+            onClick={() => {
+              setIsLoading(true);
+              push(
+                `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+              );
+            }}
+            className="border rounded-lg cursor-pointer overflow-hidden hover:shadow-lg transition-shadow"
           >
-            <div className="relative">
+            <div className="relative overflow-hidden">
               <Image
                 src={String(
                   product.productImages.find((el) => el.isMain === true)?.url
@@ -46,7 +57,7 @@ export default function Reusable_Category_Sub_Products({
                 alt={product.name}
                 width={300}
                 height={300}
-                className="w-full aspect-square object-cover"
+                className="w-full hover:scale-105 transition-all duration-200 aspect-square object-cover"
               />
 
               <div className=" hidden absolute bottom-2 left-2 right-2 bg-black/70 text-white text-xs p-1 rounded">
