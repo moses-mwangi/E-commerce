@@ -21,6 +21,7 @@ import featuredProduct from "../../../public/newArrival/smartSpeker.png";
 import secondaryProduct from "../../../public/category_Image/electronics.png";
 import MobileEcommerceSearch from "@/app/home-page/navbar/search/MobileEcommerceSearch";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const animations = {
   fadeInUp: {
@@ -127,7 +128,7 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
 
   const handleNavigateToCategory = () => {
     setIsLoading(true);
-    router.push("/category");
+    // router.push("/category");
   };
 
   return (
@@ -153,7 +154,7 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
               onClick={handleNavigateToCategory}
               className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 shadow-lg transition-all duration-300 group"
             >
-              <span>Explore category</span>
+              <Link href={`/category`}>Explore category</Link>
             </Button>
           </div>
         </div>
@@ -167,6 +168,7 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
               whileTap={{ scale: 0.95 }}
               className={`flex-shrink-0 `}
               onClick={() => {
+                setIsLoading(true);
                 router.push(`${item.url}`);
               }}
             >
