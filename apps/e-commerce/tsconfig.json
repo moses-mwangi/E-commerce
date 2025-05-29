@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,16 +23,30 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
+    // "**/*.ts",
+    // "**/*.tsx",
+    // ".next/types/**/*.ts",
+    "app",
+    "app/home-page/navbar/favouriteButton/FavouriteProductIcon.tsx",
+    "components",
     "global.d.ts",
-    "app/home-page/navbar/favouriteButton/FavouriteProductIcon.tsx"
+    "hooks",
+    "lib",
+    "locales",
+    "next-env.d.ts",
+    "redux",
+    "types",
+    "utils",
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    ".next",
+    "node_modules"
+  ]
 }
