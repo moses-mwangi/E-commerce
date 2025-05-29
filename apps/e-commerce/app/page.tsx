@@ -2,7 +2,8 @@
 
 import React from "react";
 import Navbar from "./home-page/navbar/Navbar";
-import Hero_Section from "./home-page/hero_section/Hero_Section";
+
+// import Hero_Section from "./home-page/hero_section/Hero_Section";
 import ProductCategories from "./home-page/category/ProductCategorySection";
 import TrendingProducts from "./home-page/trend/TredingProduct";
 import RecommendedForYou from "./home-page/recommedation/RecommedationProduct";
@@ -15,6 +16,11 @@ import LiveChat from "./home-page/hero_section/LiveChat";
 import UserBrowsingHistory from "./home-page/userBrowser/UserBrowsingHistory";
 import FrequencySearched from "./home-page/frequencySearched/FrequencySearched";
 import Carosoul from "./home-page/Carosoul";
+import dynamic from "next/dynamic";
+
+const Hero_Section = dynamic(
+  () => import("./home-page/hero_section/Hero_Section")
+);
 
 export default function HomePage() {
   const { recentlyViewed } = useSelector((state: RootState) => state.recently);
@@ -35,9 +41,15 @@ export default function HomePage() {
         <FrequencySearched />
       </div>
       <Carosoul />
+      <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Qui odit
+        necessitatibus similique quasi commodi at cum harum neque, ipsa,
+        expedita illo! Omnis, labore. Minima eos earum voluptate quaerat
+        suscipit? Itaque.
+      </p>
       <NewArrivals />
       <TrendingProducts />
-      {/* <BestSellers /> */}
+
       <RecommendedForYou />
 
       <NewsletterSection />
