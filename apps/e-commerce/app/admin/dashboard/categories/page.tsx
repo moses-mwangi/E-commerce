@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Pagination } from "@/app/components/pagination/pagination";
+import usePagination from "@/app/components/pagination/usePagination";
+import { capitalizeWords } from "@/app/types/products";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -11,20 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 import { deleteCategory, fetchCategories } from "@/redux/slices/categorySlice";
-import DeleteCategory from "./DeleteCategory";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { capitalizeWords } from "@/app/types/products";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Pagination } from "@/app/components/pagination/pagination";
-import usePagination from "@/app/components/pagination/usePagination";
+import { useDispatch, useSelector } from "react-redux";
+import DeleteCategory from "./DeleteCategory";
 
 export default function CategoriesPage() {
   const { push } = useRouter();

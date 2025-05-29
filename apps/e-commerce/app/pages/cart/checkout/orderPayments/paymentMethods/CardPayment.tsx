@@ -1,41 +1,22 @@
 "use client";
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Controller, useForm } from "react-hook-form";
 import { usePaystackPayment } from "react-paystack";
 
-import { usePayments } from "@/hooks/usePayment";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCardContex } from "@/hooks/paymentContext";
+import { usePayments } from "@/hooks/usePayment";
 import toast from "react-hot-toast";
-import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import M_Pesa from "../../../../../../public/paymentImages/mpesa.png";
-import anex from "../../../../../../public/paymentImages/amex.png";
-import discover from "../../../../../../public/paymentImages/discoverCard.png";
-import master from "../../../../../../public/paymentImages/masterCard.png";
-import dinner from "../../../../../../public/paymentImages/dinnerCard.png";
-import jcb from "../../../../../../public/paymentImages/jcbCard.png";
-import unionPay from "../../../../../../public/paymentImages/unionPay.png";
-import axios from "axios";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import axios from "axios";
 
 interface FormValues {
   firstName: string;
   surName: string;
   email: string;
 }
-
-const cardBrands = [
-  { name: "Visa", icon: M_Pesa },
-  { name: "Mastercard", icon: master },
-  { name: "American Express", icon: anex },
-  { name: "Discover", icon: discover },
-  { name: "JCB", icon: jcb },
-  { name: "Diners Club", icon: dinner },
-  { name: "UnionPay", icon: unionPay },
-];
 
 type Currency = "KES" | "NGN" | "USD" | "GHS" | "ZAR";
 type PaymentChannels = "card" | "bank" | "ussd" | "qr" | "mobile_money";

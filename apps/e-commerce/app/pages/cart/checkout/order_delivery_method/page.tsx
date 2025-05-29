@@ -1,16 +1,13 @@
 "use client";
 
-import React from "react";
-
 import Footer from "@/app/components/footer/Footer";
-import Logo from "@/app/home-page/navbar/logo/Logo";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
+import CartPage from "@/app/home-page/navbar/cart/Cart";
+import Logo from "@/app/home-page/navbar/logo/Logo";
 import Link from "next/link";
 import { FaBell } from "react-icons/fa";
-import CartPage from "@/app/home-page/navbar/cart/Cart";
-import DeliveryMethod from "./DeliveryMethod";
-import { Button } from "@/components/ui/button";
 import PaymentProgress from "../orderPayments/PaymentProgress";
+import DeliveryMethod from "./DeliveryMethod";
 
 export default function Page() {
   return (

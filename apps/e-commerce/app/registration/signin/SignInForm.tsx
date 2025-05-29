@@ -1,27 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import z from "zod";
 
-import { FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
-import { SiWeb3Dotjs } from "react-icons/si";
-import { FcGoogle } from "react-icons/fc";
-import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "@/redux/store";
-import { fetchUsers, loginUserAsync } from "@/redux/slices/userSlice";
-import LoadingState from "@/app/components/loaders/LoadingState";
-import { ArrowLeft, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Checkbox } from "@/components/ui/checkbox";
+import { fetchUsers, loginUserAsync } from "@/redux/slices/userSlice";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { FaApple, FaFacebook, FaFingerprint } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { SiWeb3Dotjs } from "react-icons/si";
+import { useSelector } from "react-redux";
 
 const schema = z.object({
   email: z.string().email("Invalid email format"),

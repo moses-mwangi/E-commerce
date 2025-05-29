@@ -1,15 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle, CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function EmailVerifiedPage() {
   const [loading, setLoading] = useState(false);

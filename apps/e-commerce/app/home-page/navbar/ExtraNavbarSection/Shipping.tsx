@@ -1,7 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Clock, Globe2, Truck } from "lucide-react";
-import React from "react";
 
 export default function Shipping() {
   return (

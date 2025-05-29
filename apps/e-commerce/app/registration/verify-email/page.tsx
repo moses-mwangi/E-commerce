@@ -14,7 +14,6 @@ import { Card } from "@/components/ui/card";
 export default function EmailVerifiedPage() {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-  // const { searchParams } = new URL(window.location.href);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 

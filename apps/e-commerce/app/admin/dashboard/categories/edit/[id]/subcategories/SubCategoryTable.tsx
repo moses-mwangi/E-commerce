@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
 
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { capitalizeWords } from "@/app/types/products";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -12,23 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, ArrowLeft } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteCategory,
   deleteSubcategory,
   fetchCategories,
   getSubcategories,
 } from "@/redux/slices/categorySlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { ArrowLeft, Edit, Plus, Search, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { capitalizeWords } from "@/app/types/products";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteSubCategory from "./DeleteSubCategory";
-import { sub } from "date-fns";
 
 export default function SubCategoryTable() {
   const { push, back } = useRouter();

@@ -1,19 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import {
-  startOfWeek,
-  subWeeks,
-  isAfter,
-  isBefore,
-  format,
-  subMonths,
-  // isThisMonth,
-  startOfMonth,
   endOfMonth,
   isWithinInterval,
+  startOfMonth,
+  subMonths,
 } from "date-fns";
-import { fetchReviews } from "@/redux/slices/ReviewsRatingSlice";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function useReviews() {
   const [currentPage, setCurrentPage] = useState(1);

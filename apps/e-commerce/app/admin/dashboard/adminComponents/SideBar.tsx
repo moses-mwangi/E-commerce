@@ -1,19 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { getCurrentUser } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SidebarItemProps, sidebarItems } from "./sidebar_Type_Item";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getCurrentUser } from "@/redux/slices/userSlice";
-import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
-import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import LoadingState from "@/app/components/loaders/LoadingState";
+import { SidebarItemProps, sidebarItems } from "./sidebar_Type_Item";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(true);

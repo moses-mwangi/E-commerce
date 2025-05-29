@@ -1,41 +1,40 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { fetchCategories } from "@/redux/slices/categorySlice";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import {
-  Star,
-  Heart,
-  Share2,
-  Shield,
-  ChevronRight,
   Check,
+  ChevronRight,
+  Heart,
   Package,
   RefreshCcw,
+  Share2,
+  Shield,
   ShoppingCart,
+  Star,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/redux/slices/productSlice";
-import { fetchCategories } from "@/redux/slices/categorySlice";
 
-import { addToCart, setCart } from "@/redux/slices/cartSlice";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import toast from "react-hot-toast";
-import { Input } from "@/components/ui/input";
-import ImageScrol from "./ImageScrol";
-import RelatedProducts from "./RelatedProducts";
-import ARProductViewer from "./ARProductViewer";
-import LiveChat from "./LiveChat";
-import { Card } from "@/components/ui/card";
-import ProductReviews from "./ProductReviews";
 import LoadingState from "@/app/components/loaders/LoadingState";
-import { addToFav } from "@/redux/slices/favoriteSlice";
 import { capitalizeWords } from "@/app/types/products";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { addToCart, setCart } from "@/redux/slices/cartSlice";
+import { addToFav } from "@/redux/slices/favoriteSlice";
+import toast from "react-hot-toast";
+import ARProductViewer from "./ARProductViewer";
+import ImageScrol from "./ImageScrol";
+import LiveChat from "./LiveChat";
+import ProductReviews from "./ProductReviews";
+import RelatedProducts from "./RelatedProducts";
 
 const productFeatures = [
   {
@@ -56,15 +55,13 @@ const productFeatures = [
 ];
 
 export default function SingleSuCategoricalProductPage() {
-  const { selectedCurrency } = useLanguage_Currency();
-
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const { push } = useRouter();
 
-  const { category, subcategory, singleProduct } = useParams();
+  const { category, subcategory } = useParams();
   const dispatch: AppDispatch = useDispatch();
 
   const [showZoom, setShowZoom] = useState(false);

@@ -1,17 +1,12 @@
-import React from "react";
+import { capitalizeWords } from "@/app/types/products";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Eye, Heart, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Star, Heart, Eye, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { Product } from "../../categoryComponents/product";
-import { Card, CardContent } from "@/components/ui/card";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
-import { capitalizeWords } from "@/app/types/products";
-
-// import { Product } from "@/types/product";
-// import { Product } from "../product";
 
 interface ProductCardProps {
   product: Product;
@@ -20,7 +15,6 @@ interface ProductCardProps {
 
 export function ProductCard({ product, view }: ProductCardProps) {
   const { category, subcategory } = useParams();
-  // const { selectedCurrency } = useLanguage_Currency();
 
   if (view === "list") {
     return (
@@ -90,27 +84,11 @@ export function ProductCard({ product, view }: ProductCardProps) {
                 className={`${
                   view ? " grid-cols-1" : "grid-cols-3"
                 } mt-2 text-sm grid `}
-              >
-                {/* {product.specifications
-                  ?.slice(0, 6)
-                  .map((spec: any, idx: any) => (
-                    <div className="flex gap-1" key={idx}>
-                      <p className="font-semibold text-gray-900 dark:text-gray-100">
-                        {spec.key}:
-                      </p>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        {spec.value}
-                      </p>
-                    </div>
-                  ))} */}
-              </div>
+              ></div>
             </div>
 
             <div className="flex gap-2 mt-3">
-              <Button
-                className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md"
-                // onClick={() => handleAddToCart(product.id)}
-              >
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 flex items-center gap-2 shadow-md">
                 <ShoppingCart /> Add to Cart
               </Button>
               <Button

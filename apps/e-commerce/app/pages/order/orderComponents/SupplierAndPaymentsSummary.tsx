@@ -1,33 +1,32 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Clock,
   Mail,
-  Phone,
-  Store,
   MessageSquare,
-  X,
+  Phone,
   RefreshCw,
+  Store,
+  X,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function SupplierAndPaymentsSummary({
@@ -113,7 +112,6 @@ export default function SupplierAndPaymentsSummary({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Supplier Information Card */}
         <Card className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-4 border-b">
             <CardTitle className="text-lg font-semibold flex items-center gap-2">
@@ -165,7 +163,6 @@ export default function SupplierAndPaymentsSummary({
           </CardContent>
         </Card>
 
-        {/* Order Summary Card */}
         <Card className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-4 border-b">
             <CardTitle className="text-lg font-semibold">

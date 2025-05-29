@@ -1,5 +1,4 @@
 import React from "react";
-// import CartPage from "../pages/cart/page";
 import UserProfileImage from "../components/users/UserProfileImage";
 import { FaBell } from "react-icons/fa";
 import Link from "next/link";

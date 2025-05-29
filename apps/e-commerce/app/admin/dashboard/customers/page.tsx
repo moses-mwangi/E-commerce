@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Pagination } from "@/app/components/pagination/pagination";
+import usePagination from "@/app/components/pagination/usePagination";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -11,16 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Filter, Mail, Phone, MoreVertical } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchUsers } from "@/redux/slices/userSlice";
 import { fetchOrders } from "@/redux/slices/orderSlice";
+import { fetchUsers } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
-import usePagination from "@/app/components/pagination/usePagination";
-import { Pagination } from "@/app/components/pagination/pagination";
-import { Separator } from "@/components/ui/separator";
+import { Filter, Mail, MoreVertical, Phone, Search } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function CustomersPage() {
   const { orders } = useSelector((state: RootState) => state.order);

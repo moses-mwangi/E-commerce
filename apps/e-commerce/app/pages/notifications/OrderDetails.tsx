@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/button";
+import { Image } from "@radix-ui/react-avatar";
 
 export default function OrderDetails({ order }: { order: any }) {
   return (
@@ -10,7 +10,7 @@ export default function OrderDetails({ order }: { order: any }) {
           {order.products?.map((product: any) => (
             <div key={product.id} className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <img
+                <Image
                   src={product.image}
                   alt={product.name}
                   className="w-16 h-16 rounded-md object-cover"

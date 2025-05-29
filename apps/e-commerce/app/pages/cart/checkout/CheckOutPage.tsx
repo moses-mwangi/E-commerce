@@ -1,15 +1,14 @@
 "use client";
 
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Product } from "@/app/types/products";
+import { Card } from "@/components/ui/card";
+import { useCheckOut } from "@/hooks/useCheckOut";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 import CheckOutForm from "./CheckOutForm";
 import PaymentProgress from "./orderPayments/PaymentProgress";
-import { Card } from "@/components/ui/card";
-import { useSearchParams } from "next/navigation";
-import { useCheckOut } from "@/hooks/useCheckOut";
-import Image from "next/image";
-import { Product } from "@/app/types/products";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
-import { Button } from "@/components/ui/button";
 
 interface OrderSummaryProps {
   products: (Product & { quantity?: number })[];

@@ -1,18 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  MessageCircle,
-  Send,
-  Phone,
-  Mail,
-  Search,
-  MoreVertical,
-  User,
-  Circle,
-} from "lucide-react";
+import { Circle, Mail, MoreVertical, Phone, Search, Send } from "lucide-react";
+import { useState } from "react";
 
 interface Message {
   id: number;

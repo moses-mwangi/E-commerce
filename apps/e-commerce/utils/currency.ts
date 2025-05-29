@@ -10,8 +10,6 @@ let exchangeRates: Record<CurrencyCode, number> = {
 };
 
 export const getCurrentCurrency = (): CurrencyCode => {
-  // const currency = (localStorage.getItem("currency") as CurrencyCode) || "KES";
-
   const currency = localStorage.getItem("currency")
     ? localStorage.getItem("currency")?.toUpperCase() === "KSH"
       ? "KES"
@@ -51,27 +49,6 @@ export const convertPrice = (
   from: CurrencyCode,
   to: CurrencyCode
 ): number => {
-  const exchangeRate = updateExchangeRates();
-
   const amountInUSD = amount / exchangeRates[from];
   return parseFloat((amountInUSD * exchangeRates[to]).toFixed(2));
 };
-
-// export const formatPrice = (amount: number, currency: CurrencyCode): string => {
-//   const formatter = new Intl.NumberFormat(getLocale(currency), {
-//     style: "currency",
-//     currency,
-//     minimumFractionDigits: 2,
-//     maximumFractionDigits: 2,
-//   });
-//   return formatter.format(amount);
-// };
-
-// const getLocale = (currency: CurrencyCode): string => {
-//   const locales: Record<CurrencyCode, string> = {
-//     USD: "en-US",
-//     EUR: "de-DE",
-//     KES: "sw-KE",
-//   };
-//   return locales[currency];
-// };

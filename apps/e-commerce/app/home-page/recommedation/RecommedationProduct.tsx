@@ -1,27 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Star, Heart } from "lucide-react";
-import Image from "next/image";
 import LoadingState from "@/app/components/loaders/LoadingState";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import useCategoryContex from "@/hooks/useCategoryContex";
-import { useRouter } from "next/navigation";
-import { fetchProducts } from "@/redux/slices/productSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchCategories } from "@/redux/slices/categorySlice";
-import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import { fetchCategories } from "@/redux/slices/categorySlice";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Heart, Star } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Reccomeded() {
-  const { selectedCurrency } = useLanguage_Currency();
   const { push } = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { products, status } = useSelector((state: RootState) => state.product);
-  const { categories } = useSelector((state: RootState) => state.category);
 
   const { items: favItems } = useCategoryContex();
 

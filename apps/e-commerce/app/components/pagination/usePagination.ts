@@ -1,14 +1,6 @@
-import { fetchOrders } from "@/redux/slices/orderSlice";
-import { fetchUsers } from "@/redux/slices/userSlice";
-import { AppDispatch, RootState } from "@/redux/store";
-import { set } from "nprogress";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 function usePagination(products: any[]) {
-  // const { orders } = useSelector((state: RootState) => state.order);
-  // const dispatch: AppDispatch = useDispatch();
-
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
@@ -16,7 +8,6 @@ function usePagination(products: any[]) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const productPerPage = 10;
 
-  // Filter orders based on search term and filters
   const filteredProduct = products.filter((product) => {
     if (product.paymentStatus && product.User.name && product.totalPrice) {
       const searchLower = searchTerm.toLowerCase();
@@ -27,11 +18,9 @@ function usePagination(products: any[]) {
         product.paymentStatus.toLowerCase().includes(searchLower) ||
         product.totalPrice.toString().includes(searchLower);
 
-      // Status filter matching
       const matchesStatus =
         statusFilters.length === 0 || statusFilters.includes(product.status);
 
-      // Payment filter matching
       const matchesPayment =
         paymentFilters.length === 0 ||
         paymentFilters.includes(product.paymentStatus);
@@ -42,7 +31,6 @@ function usePagination(products: any[]) {
     }
   });
 
-  // Pagination calculations
   const totalPages = Math.ceil(filteredProduct.length / productPerPage);
   const indexOfLastProduct = currentPage * productPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productPerPage;

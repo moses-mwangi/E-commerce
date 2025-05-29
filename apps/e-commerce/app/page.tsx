@@ -3,8 +3,8 @@
 import React from "react";
 import Navbar from "./home-page/navbar/Navbar";
 
-// import Hero_Section from "./home-page/hero_section/Hero_Section";
 import ProductCategories from "./home-page/category/ProductCategorySection";
+
 import TrendingProducts from "./home-page/trend/TredingProduct";
 import RecommendedForYou from "./home-page/recommedation/RecommedationProduct";
 import NewArrivals from "./home-page/new_arrivals/New Arrivals";

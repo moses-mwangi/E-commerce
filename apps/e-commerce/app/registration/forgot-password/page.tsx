@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Mail, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
-import Logo from "@/app/home-page/navbar/logo/logo1";
 import { fetchUsers, requestPasswordReset } from "@/redux/slices/userSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
+import { motion } from "framer-motion";
+import { ArrowLeft, CheckCircle, Loader2, Mail } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ForgotPasswordPage() {
   const { push } = useRouter();

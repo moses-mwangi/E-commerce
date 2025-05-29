@@ -1,4 +1,3 @@
-// app/help/page.tsx
 import {
   HelpCircle,
   FileText,

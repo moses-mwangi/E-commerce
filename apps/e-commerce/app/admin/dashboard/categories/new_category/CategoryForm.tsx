@@ -1,28 +1,20 @@
-import React, { use, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { Plus, Minus, Save, Loader2, Upload, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { SubcategoryFieldset } from "./SubcategoryFieldset";
-import { Card } from "@/components/ui/card";
-import { FilterFieldset } from "./FilterFieldset";
-import toast from "react-hot-toast";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { createCategory } from "@/redux/slices/categorySlice";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { createCategory } from "@/redux/slices/categorySlice";
+import { AppDispatch } from "@/redux/store";
+import { ArrowLeft, Loader2, Plus, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { FilterFieldset } from "./FilterFieldset";
+import { SubcategoryFieldset } from "./SubcategoryFieldset";
 
 interface CategoryFormData {
   name: string;

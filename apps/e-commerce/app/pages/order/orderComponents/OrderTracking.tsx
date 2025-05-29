@@ -15,7 +15,6 @@ type StatusStep = {
   name: string;
   status: "complete" | "current" | "upcoming";
   date: string;
-  // Add status field to track the actual status name
   statusField: string;
 };
 

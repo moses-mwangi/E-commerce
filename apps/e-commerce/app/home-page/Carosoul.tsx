@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  FiEye,
   FiChevronLeft,
   FiChevronRight,
+  FiEye,
+  FiHeadphones,
   FiPlay,
   FiShoppingBag,
-  FiHeadphones,
 } from "react-icons/fi";
-import eletronicSBanner from "@/public/category_Image/eletronicSBanner.png";
 
-// Define decoration types
 type DecorationType =
   | "vr-headset"
   | "summer-beach"

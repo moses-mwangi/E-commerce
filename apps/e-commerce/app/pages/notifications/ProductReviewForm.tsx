@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 
 export default function ProductReviewForm({
   productId,
@@ -32,7 +32,7 @@ export default function ProductReviewForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex items-center space-x-4">
-        <img
+        <Image
           src={productImage}
           alt={productName}
           className="w-16 h-16 rounded-md object-cover"

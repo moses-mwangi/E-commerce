@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  Home,
-  Package,
-  Users,
   BarChart,
-  Settings,
-  MessageSquare,
-  ShoppingCart,
-  Layers,
-  Star,
   Bell,
+  HelpCircle,
+  Home,
+  Layers,
+  MessageSquare,
+  Package,
+  Settings,
+  ShoppingCart,
+  Star,
   Tag,
   Truck,
-  HelpCircle,
+  Users,
 } from "lucide-react";
 
 export interface SidebarItemProps {

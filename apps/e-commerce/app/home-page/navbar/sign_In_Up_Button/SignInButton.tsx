@@ -1,16 +1,15 @@
 "use client";
 
+import LoadingState from "@/app/components/loaders/LoadingState";
+import UserProfileImage from "@/app/components/users/UserProfileImage";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, getCurrentUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import UserProfileImage from "@/app/components/users/UserProfileImage";
-import { t } from "i18next";
-import LoadingState from "@/app/components/loaders/LoadingState";
-import { useTranslation } from "react-i18next";
 import { User2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignInBotton() {
   const [isLoading, setIsLoading] = useState(false);

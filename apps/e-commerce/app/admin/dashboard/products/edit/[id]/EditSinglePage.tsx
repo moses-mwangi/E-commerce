@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,21 +14,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, Upload, X } from "lucide-react";
-import { toast } from "react-hot-toast";
-import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProductById, updateProduct } from "@/redux/slices/productSlice";
-import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 import { fetchCategories } from "@/redux/slices/categorySlice";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { fetchProductById, updateProduct } from "@/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { ArrowLeft, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 interface ProductImage {
   id: number;

@@ -1,15 +1,11 @@
-import React from "react";
+import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Star, Heart } from "lucide-react";
-// import { Product } from "@/types/product";
-import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { Product } from "../../categoryComponents/product";
-import { capitalizeWords } from "@/app/types/products";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
-// import { Product } from "../product";
 
 interface ProductCardProps {
   product: Product;

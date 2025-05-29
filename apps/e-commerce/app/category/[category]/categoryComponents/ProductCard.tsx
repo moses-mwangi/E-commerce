@@ -1,15 +1,12 @@
 import LoadingState from "@/app/components/loaders/LoadingState";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 import { capitalizeWords } from "@/app/types/products";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import useSubCategoryContex from "@/hooks/useSubCategoryContex";
-import { Heart, Star, Eye } from "lucide-react";
-import React from "react";
+import { Eye, Heart, Star } from "lucide-react";
 
 export default function ProductCard({ val }: { val: string }) {
-  const { selectedCurrency } = useLanguage_Currency();
   const categoryContext = useCategoryContex();
   const subCategoryContext = useSubCategoryContex();
 

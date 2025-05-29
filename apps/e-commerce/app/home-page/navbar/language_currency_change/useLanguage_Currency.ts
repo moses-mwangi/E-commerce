@@ -8,7 +8,6 @@ interface Option {
 
 const currencyOptions: Option[] = [
   { value: "USD", label: "USD ($)" },
-  // { value: "EUR", label: "EUR (€)" },
   { value: "KES", label: "KES (KSh)" },
   { value: "NGN", label: "NGN (₦)" },
   { value: "GHS", label: "GHS (₵)" },

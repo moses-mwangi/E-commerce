@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { FaArrowRight } from "react-icons/fa";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/redux/slices/productSlice";
-import LoadingState from "../../components/loaders/LoadingState";
-import { FiHeart } from "react-icons/fi";
-import Link from "next/link";
-import useCategoryContex from "@/hooks/useCategoryContex";
-import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 import { Product } from "@/app/types/products";
+import useCategoryContex from "@/hooks/useCategoryContex";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { FiHeart } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingState from "../../components/loaders/LoadingState";
+import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 
 export default function NewArrivals() {
-  const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { products, status } = useSelector((state: RootState) => state.product);

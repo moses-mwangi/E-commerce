@@ -1,35 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Settings,
-  User,
-  Bell,
-  Shield,
-  CreditCard,
-  Globe,
-  Mail,
-  Store,
-  Palette,
-  ChevronRight,
-  Trash2,
-} from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import toast from "react-hot-toast";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Bell,
+  ChevronRight,
+  CreditCard,
+  Globe,
+  Mail,
+  Palette,
+  Settings,
+  Shield,
+  Store,
+  Trash2,
+  User,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type SettingsSection = {
   title: string;

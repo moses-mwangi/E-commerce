@@ -1,28 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { logoutUser } from "@/redux/slices/userSlice";
-import { Separator } from "@/components/ui/separator";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Separator } from "@/components/ui/separator";
+import { logoutUser } from "@/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import {
-  ShoppingBag,
   Heart,
-  User,
-  MessageSquare,
   LogOut,
-  User2,
+  MessageSquare,
   Settings2,
+  ShoppingBag,
+  User2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
-import LoadingState from "../loaders/LoadingState";
 import { FaBell } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingState from "../loaders/LoadingState";
 
 export default function UserProfileImage() {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { motion } from "framer-motion";
-import { fetchCategories } from "@/redux/slices/categorySlice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Link from "next/link";
-import Navbar from "../home-page/navbar/Navbar";
 import Footer from "../components/footer/Footer";
 import CategoriesSection from "../home-page/category/ProductCategorySection";
+import Navbar from "../home-page/navbar/Navbar";
 import Reccomeded from "../home-page/recommedation/RecommedationProduct";
-import { Category, Subcategory } from "../types/category";
+import { Category } from "../types/category";
 
 const CategoryCard = ({
   category,
@@ -69,8 +68,6 @@ export default function CategoriesPage() {
   const { categories, status } = useSelector(
     (state: RootState) => state.category
   );
-
-  // categories.find(el=>el.subcategories.some(s=>s.name===))
 
   useEffect(() => {
     if (status === "idle") {

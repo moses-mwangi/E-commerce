@@ -1,23 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Star,
-  Search,
-  Grid,
-  List,
-  ChevronDown,
-  Eye,
-  Sliders,
-  Heart,
-  ChevronRight,
-} from "lucide-react";
 import LoadingState from "@/app/components/loaders/LoadingState";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import {
   Select,
   SelectContent,
@@ -27,12 +13,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useSubCategoryContex from "@/hooks/useSubCategoryContex";
+import { AnimatePresence } from "framer-motion";
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  Grid,
+  Heart,
+  List,
+  Search,
+  Sliders,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect } from "react";
 import ProductCard from "../../categoryComponents/ProductCard";
-import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 
 export default function SubCategory() {
-  const { selectedCurrency } = useLanguage_Currency();
-
   const {
     isLoading,
     setIsLoading,

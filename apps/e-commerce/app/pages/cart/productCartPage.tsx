@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -26,6 +25,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { Product } from "@/app/types/products";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import Image from "next/image";
 
 interface CartItem {
   productId: number;
@@ -75,7 +75,6 @@ export default function ProductCartPage() {
       });
 
       dispatch(setCart(cartProducts));
-      // dispatch(setCart(savedCart));
     }
   }, [dispatch, products]);
 
@@ -100,7 +99,6 @@ export default function ProductCartPage() {
     <>
       {isLoading && <LoadingState />}
       <div className="min-h-screen">
-        {/* Header Section */}
         <div className="px-2 sm:px-6 lg:px-11 flex sm:flex-row items-center justify-between mt-4 sm:mt-8 mb-6 sm:mb-8 sm:gap-4">
           <h1 className="text-lg sm:text-3xl font-bold text-gray-900">
             Shopping Cart
@@ -115,7 +113,6 @@ export default function ProductCartPage() {
           </Link>
         </div>
 
-        {/* Empty Cart State */}
         {cartItems.length === 0 && (
           <div className="px-4 sm:px-8 md:px-16 lg:px-40">
             <Card className="bg-gray-100 rounded-xl text-center py-12 sm:py-16 min-h-[50svh]">
@@ -148,7 +145,7 @@ export default function ProductCartPage() {
                   >
                     <div className="w-full grid grid-cols-1 sm:grid-cols-[100px_1fr] gap-3 sm:gap-4">
                       <div className="w-full h-32 sm:h-28">
-                        <img
+                        <Image
                           src={
                             product.productImages
                               ? String(
@@ -237,7 +234,6 @@ export default function ProductCartPage() {
               })}
             </div>
 
-            {/* Order Summary */}
             <div className="lg:sticky lg:top-24 lg:self-start w-full lg:w-96">
               <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6">
                 <Label className="text-base sm:text-lg">Order Summary</Label>

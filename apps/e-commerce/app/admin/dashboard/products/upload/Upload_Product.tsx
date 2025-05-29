@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,6 +22,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchCategories } from "@/redux/slices/categorySlice";
+import Image from "next/image";
 
 interface ProductImage {
   id: number;
@@ -231,7 +231,7 @@ export default function ProductUploadPage() {
                     key={index}
                     className="relative aspect-square rounded-lg overflow-hidden group"
                   >
-                    <img
+                    <Image
                       src={image.preview}
                       alt="Preview"
                       className="w-full h-full object-cover"

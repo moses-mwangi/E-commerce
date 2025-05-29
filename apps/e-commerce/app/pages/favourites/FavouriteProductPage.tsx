@@ -1,26 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { clearFav, removeFromFav, setFav } from "@/redux/slices/favoriteSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft, ShoppingCart, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MdOutlineDelete } from "react-icons/md";
 
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
-import toast from "react-hot-toast";
-import { fetchProducts } from "@/redux/slices/productSlice";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
-import { Product } from "@/app/types/products";
+import { fetchProducts } from "@/redux/slices/productSlice";
+import Image from "next/image";
+import toast from "react-hot-toast";
 
 export default function FavouritesProductPage() {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,26 +1,25 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { Separator } from "@/components/ui/separator";
-import { Shield, AlertCircle, Banknote } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { motion, AnimatePresence } from "framer-motion";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle, Shield } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect } from "react";
+import bank from "../../../../../public/paymentImages/bank.png";
+import Card_Payment from "../../../../../public/paymentImages/card.png";
+import M_Pesa from "../../../../../public/paymentImages/mpesa.png";
+import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
 import CardPayment from "../orderPayments/paymentMethods/CardPayment";
 import MpesaPayment from "../orderPayments/paymentMethods/M_pesaPayment";
 import MobileMoney from "./paymentMethods/MobileMoney";
-import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
-import PayPal from "../../../../../public/paymentImages/paypay.png";
-import M_Pesa from "../../../../../public/paymentImages/mpesa.png";
-import bank from "../../../../../public/paymentImages/bank.png";
-import Card_Payment from "../../../../../public/paymentImages/card.png";
-import Image from "next/image";
 
+import AvailableCard from "@/app/components/AvailableCards";
+import { usePayments } from "@/hooks/usePayment";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { usePayments } from "@/hooks/usePayment";
-import AvailableCard from "@/app/components/AvailableCards";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!

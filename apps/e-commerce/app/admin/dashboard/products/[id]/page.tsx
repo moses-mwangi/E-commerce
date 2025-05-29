@@ -1,28 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Edit,
-  Trash2,
-  Package,
-  DollarSign,
-  ShoppingCart,
-  Calendar,
-} from "lucide-react";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   deleteProduct,
   fetchProductById,
   fetchProducts,
 } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  ArrowLeft,
+  Calendar,
+  DollarSign,
+  Edit,
+  Package,
+  ShoppingCart,
+  Trash2,
+} from "lucide-react";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteProduct from "../DeleteProduct";
 
 export default function ProductDetailsPage() {
@@ -31,13 +31,10 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const [selectedProductId, setSelectedProductId] = useState<number>();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const dispatch: AppDispatch = useDispatch();
-  const { products, selectedProduct } = useSelector(
-    (state: RootState) => state.product
-  );
+  const { selectedProduct } = useSelector((state: RootState) => state.product);
 
   useEffect(() => {
     dispatch(fetchProducts());

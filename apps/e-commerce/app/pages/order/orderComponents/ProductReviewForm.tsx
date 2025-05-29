@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { createReview } from "@/redux/slices/ReviewsRatingSlice";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
+import Image from "next/image";
 
 interface ReviewFormProps {
   productId: number;
@@ -202,7 +202,7 @@ export default function ProductReviewForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-h-[400px]">
       <div className="flex items-center space-x-4">
-        <img
+        <Image
           src={productImage || "/placeholder-product.jpg"}
           alt={productName}
           className="w-16 h-16 rounded-md object-cover"

@@ -1,14 +1,11 @@
-import React from "react";
-import M_Pesa from "../../public/paymentImages/mpesa.png";
+import Image from "next/image";
 import anex from "../../public/paymentImages/amex.png";
-import discover from "../../public/paymentImages/discoverCard.png";
-import master from "../../public/paymentImages/masterCard.png";
 import dinner from "../../public/paymentImages/dinnerCard.png";
+import discover from "../../public/paymentImages/discoverCard.png";
 import jcb from "../../public/paymentImages/jcbCard.png";
+import master from "../../public/paymentImages/masterCard.png";
+import M_Pesa from "../../public/paymentImages/mpesa.png";
 import unionPay from "../../public/paymentImages/unionPay.png";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { CardBrand } from "@stripe/stripe-js";
-import Image, { StaticImageData } from "next/image";
 
 const cardBrands = [
   {

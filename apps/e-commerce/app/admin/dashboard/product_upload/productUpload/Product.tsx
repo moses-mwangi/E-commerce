@@ -1,17 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect, SetStateAction } from "react";
-import { useForm } from "react-hook-form";
-import { useDropzone } from "react-dropzone";
-import { motion } from "framer-motion";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import axios from "axios";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Stepper } from "@/components/ui/Stepper";
+import { Textarea } from "@/components/ui/textarea";
+import { Image } from "@radix-ui/react-avatar";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const ProductForm = () => {
   const [step, setStep] = useState(1);
@@ -186,7 +185,7 @@ const ProductForm = () => {
             <div className="flex flex-wrap gap-3 mt-4">
               {images.map((file, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <Image
                     src={(file as any).preview}
                     className="w-20 h-20 object-cover cursor-pointer rounded-lg shadow-md"
                     alt="Preview"
@@ -328,7 +327,7 @@ const ProductForm = () => {
               <div className="flex flex-wrap gap-3 mt-2">
                 {images.length > 0 ? (
                   images.map((file, index) => (
-                    <img
+                    <Image
                       key={index}
                       src={file.preview}
                       className="w-20 h-20 object-cover rounded-lg shadow-md"

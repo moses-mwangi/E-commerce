@@ -1,34 +1,29 @@
 "use client";
-// /* eslint-disable @next/next/no-img-element */
 
-import {
-  useStripe,
-  useElements,
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-} from "@stripe/react-stripe-js";
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCardContex } from "@/hooks/paymentContext";
+import { usePayments } from "@/hooks/usePayment";
 import { cardPayment } from "@/redux/slices/PaymentSlice";
 import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
+import {
+  CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { usePayments } from "@/hooks/usePayment";
-import { useCardContex } from "@/hooks/paymentContext";
-import M_Pesa from "../../../../../../public/paymentImages/mpesa.png";
+import { useDispatch } from "react-redux";
 import anex from "../../../../../../public/paymentImages/amex.png";
-import discover from "../../../../../../public/paymentImages/discoverCard.png";
-import master from "../../../../../../public/paymentImages/masterCard.png";
 import dinner from "../../../../../../public/paymentImages/dinnerCard.png";
+import discover from "../../../../../../public/paymentImages/discoverCard.png";
 import jcb from "../../../../../../public/paymentImages/jcbCard.png";
+import master from "../../../../../../public/paymentImages/masterCard.png";
+import M_Pesa from "../../../../../../public/paymentImages/mpesa.png";
 import unionPay from "../../../../../../public/paymentImages/unionPay.png";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { CardBrand } from "@stripe/stripe-js";
-import Image, { StaticImageData } from "next/image";
-import AvailableCard from "@/app/components/AvailableCards";
 
 interface FormValues {
   firstName: string;

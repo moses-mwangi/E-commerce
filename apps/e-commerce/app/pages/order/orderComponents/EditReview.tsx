@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { createReview } from "@/redux/slices/ReviewsRatingSlice";
 import ButtonLoader from "@/app/components/loaders/ButtonLoader";
 import { Card } from "@/components/ui/card";
+import { Image } from "@radix-ui/react-avatar";
 
 interface ReviewFormProps {
   productId: number;
@@ -274,7 +274,7 @@ export default function EditReviewForm({
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="relative w-16 h-16 flex-shrink-0">
-                    <img
+                    <Image
                       src={productImage || "/placeholder-product.jpg"}
                       alt={productName}
                       className="w-full h-full rounded-md object-cover"

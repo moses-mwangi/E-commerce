@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useRef, useState } from "react";
 import Footer from "@/app/components/footer/Footer";
-import Logo from "@/app/home-page/navbar/logo/Logo";
 import UserProfileImage from "@/app/components/users/UserProfileImage";
-import Link from "next/link";
-import { FaBell } from "react-icons/fa";
 import CartPage from "@/app/home-page/navbar/cart/Cart";
-import PaymentsForm from "./PaymentsForm";
-import OrderSummaryCard from "./OrderSummaryCard";
-import SmsSentModal from "./SmsSentModal";
-import PaymentProgress from "./PaymentProgress";
+import Logo from "@/app/home-page/navbar/logo/Logo";
 import { PaymentProvider } from "@/hooks/paymentContext";
+import Link from "next/link";
+import { useState } from "react";
+import { FaBell } from "react-icons/fa";
+import OrderSummaryCard from "./OrderSummaryCard";
+import PaymentProgress from "./PaymentProgress";
+import PaymentsForm from "./PaymentsForm";
+import SmsSentModal from "./SmsSentModal";
 
 export default function Page() {
   const [details, setDetails] = useState();

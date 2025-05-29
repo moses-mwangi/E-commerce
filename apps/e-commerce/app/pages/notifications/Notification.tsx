@@ -1,24 +1,9 @@
 "use client";
 
-import { FaBell, FaBoxOpen, FaQuestionCircle } from "react-icons/fa";
-import Logo from "@/app/home-page/navbar/logo/Logo";
-import Link from "next/link";
-import UserProfileImage from "@/app/components/users/UserProfileImage";
-import { useEffect, useState } from "react";
 import Footer from "@/app/components/footer/Footer";
+import UserProfileImage from "@/app/components/users/UserProfileImage";
+import Logo from "@/app/home-page/navbar/logo/Logo";
 import { Button } from "@/components/ui/button";
-import {
-  CheckCircle2,
-  Settings,
-  ArrowRight,
-  X,
-  Truck,
-  CircleAlertIcon,
-} from "lucide-react";
-import { GiSwapBag } from "react-icons/gi";
-import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
-import { getCurrentUser } from "@/redux/slices/userSlice";
 import {
   Dialog,
   DialogContent,
@@ -26,13 +11,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import OrderTracking from "./OrderTracking";
+import { getCurrentUser } from "@/redux/slices/userSlice";
+import { AppDispatch } from "@/redux/store";
+import { ArrowRight, CheckCircle2, Settings, Truck } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaBell, FaBoxOpen, FaQuestionCircle } from "react-icons/fa";
+import { GiSwapBag } from "react-icons/gi";
+import { useDispatch } from "react-redux";
 import OrderDetails from "./OrderDetails";
-import ProductReviewForm from "./ProductReviewForm";
+import OrderTracking from "./OrderTracking";
 import Pagination from "./Pagination";
+import ProductReviewForm from "./ProductReviewForm";
 
 const notificationData = [
   {
