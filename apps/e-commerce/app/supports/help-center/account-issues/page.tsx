@@ -2,10 +2,18 @@ import { ArrowLeft, Lock, User, Mail, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AccountIssuesHelp() {
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="px-3 sm:px-8 py-6 bg-[#f4f4f4] w-full mx-auto">
       <Link
         href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
@@ -31,15 +39,28 @@ export default function AccountIssuesHelp() {
                 <h3 className="font-medium">
                   What issue are you experiencing?
                 </h3>
-                <select className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                  <option>Select an issue...</option>
-                  <option>Can&apos;t log in</option>
-                  <option>Password reset not working</option>
-                  <option>Account locked</option>
-                  <option>Email verification problems</option>
-                </select>
+                <Select>
+                  <SelectTrigger className=" focus:ring-orange-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="issue">Select an issue...</SelectItem>
+                      <SelectItem value="issueb">Can&apos;t log in</SelectItem>
+                      <SelectItem value="issued">
+                        Password reset not working
+                      </SelectItem>
+                      <SelectItem value="issuew">Account locked</SelectItem>
+                      <SelectItem value="issuez">
+                        Email verification problems
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
-              <Button className="w-full">Find Solution</Button>
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Find Solution
+              </Button>
             </div>
           </div>
 
@@ -49,7 +70,7 @@ export default function AccountIssuesHelp() {
                 <Lock className="text-primary" /> Login Problems
               </h2>
               <div className="space-y-4">
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="p-4 bg-card rounded-lg border border-blue-100">
                   <h3 className="font-medium text-blue-800">
                     Reset Your Password
                   </h3>
@@ -60,12 +81,14 @@ export default function AccountIssuesHelp() {
                   <div className="mt-3 flex gap-3">
                     <Input
                       placeholder="Your email address"
-                      className="flex-1"
+                      className="flex-1 focus-visible:ring-orange-500"
                     />
-                    <Button variant="outline">Send Reset Link</Button>
+                    <Button variant="outline" className="">
+                      Send Reset Link
+                    </Button>
                   </div>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="p-4 bg-card rounded-lg">
                   <h3 className="font-medium">
                     Two-Factor Authentication Issues
                   </h3>
@@ -86,16 +109,21 @@ export default function AccountIssuesHelp() {
                 <Mail className="text-primary" /> Email Verification
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="border rounded-lg p-4 hover:border-primary transition-colors">
+                <div className="border rounded-lg p-4 bg-card hover:border-orange-400 transition-colors">
                   <h3 className="font-medium">
                     Didn&apos;t receive verification email?
                   </h3>
                   <p className="text-sm text-gray-600 mt-1 mb-3">
                     Check spam folder or request a new one:
                   </p>
-                  <Button size="sm">Resend Verification</Button>
+                  <Button
+                    size="sm"
+                    className="bg-orange-500/95 hover:bg-orange-600/95"
+                  >
+                    Resend Verification
+                  </Button>
                 </div>
-                <div className="border rounded-lg p-4 hover:border-primary transition-colors">
+                <div className="border rounded-lg p-4 bg-card hover:border-orange-400 transition-colors">
                   <h3 className="font-medium">Changing Your Email</h3>
                   <p className="text-sm text-gray-600 mt-1 mb-3">
                     Need to update your email address?
@@ -112,7 +140,9 @@ export default function AccountIssuesHelp() {
         <div className="hidden md:block w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Need Immediate Help?</h3>
-            <Button className="w-full mb-2">Live Chat</Button>
+            <Button className="w-full mb-2 bg-orange-500/95 hover:bg-orange-600/95">
+              Live Chat
+            </Button>
             <Button variant="outline" className="w-full">
               Call Support
             </Button>

@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function ReturnsRefundsHelp() {
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="py-4 sm:py-6 px-2 sm:px-8 w-full mx-auto max-w-7xl">
       <Link
         href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
@@ -25,33 +25,33 @@ export default function ReturnsRefundsHelp() {
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
-              <RefreshCw className="text-primary" size={24} />
+              <RefreshCw className="text-green-500" size={24} />
             </div>
             <h1 className="text-3xl font-bold">Returns & Refunds</h1>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mb-8">
-            <div className="border rounded-lg p-4 hover:border-primary transition-colors">
+            <div className="border rounded-lg p-4 hover:border-orange-400 cursor-pointer transition-colors">
               <div className="flex items-center gap-2 mb-2">
-                <Package size={18} className="text-primary" />
+                <Package size={18} className="text-sky-500" />
                 <h3 className="font-medium">30-Day Returns</h3>
               </div>
               <p className="text-sm text-gray-600">
                 Most items can be returned within 30 days of delivery
               </p>
             </div>
-            <div className="border rounded-lg p-4 hover:border-primary transition-colors">
+            <div className="border rounded-lg p-4 hover:border-orange-400 cursor-pointer transition-colors">
               <div className="flex items-center gap-2 mb-2">
-                <CreditCard size={18} className="text-primary" />
+                <CreditCard size={18} className="text-purple-500" />
                 <h3 className="font-medium">Full Refunds</h3>
               </div>
               <p className="text-sm text-gray-600">
                 Original payment method refunded upon return approval
               </p>
             </div>
-            <div className="border rounded-lg p-4 hover:border-primary transition-colors">
+            <div className="border rounded-lg p-4 hover:border-orange-400 cursor-pointer transition-colors">
               <div className="flex items-center gap-2 mb-2">
-                <Truck size={18} className="text-primary" />
+                <Truck size={18} className="text-green-500" />
                 <h3 className="font-medium">Free Returns</h3>
               </div>
               <p className="text-sm text-gray-600">
@@ -62,7 +62,7 @@ export default function ReturnsRefundsHelp() {
 
           <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-              <RefreshCw className="text-primary" /> How to Return an Item
+              <RefreshCw className="text-green-500" /> How to Return an Item
             </h2>
 
             <div className="relative">
@@ -74,28 +74,28 @@ export default function ReturnsRefundsHelp() {
                     title: "Start Your Return",
                     description:
                       "Go to 'My Orders' and select the item(s) you want to return",
-                    icon: <Package className="text-primary" size={18} />,
+                    icon: <Package className="text-sky-500" size={18} />,
                   },
                   {
                     step: 2,
                     title: "Print Return Label",
                     description:
                       "Download and print the prepaid shipping label",
-                    icon: <CreditCard className="text-primary" size={18} />,
+                    icon: <CreditCard className="text-purple-500" size={18} />,
                   },
                   {
                     step: 3,
                     title: "Package Your Item",
                     description:
                       "Include all original packaging and accessories",
-                    icon: <Package className="text-primary" size={18} />,
+                    icon: <Package className="text-sky-500" size={18} />,
                   },
                   {
                     step: 4,
                     title: "Ship It Back",
                     description:
                       "Drop off at any carrier location or schedule a pickup",
-                    icon: <Truck className="text-primary" size={18} />,
+                    icon: <Truck className="text-green-500" size={18} />,
                   },
                 ].map((step) => (
                   <div key={step.step} className="flex gap-4">
@@ -114,7 +114,9 @@ export default function ReturnsRefundsHelp() {
             </div>
 
             <div className="mt-6">
-              <Button className="w-full md:w-auto">Start Return Process</Button>
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 md:w-auto">
+                Start Return Process
+              </Button>
             </div>
           </div>
 
@@ -200,7 +202,9 @@ export default function ReturnsRefundsHelp() {
         <div className="hidden md:block w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Need Help With Your Return?</h3>
-            <Button className="w-full mb-2">Live Chat</Button>
+            <Button className="w-full bg-orange-500 hover:bg-orange-600 mb-2">
+              Live Chat
+            </Button>
             <Button variant="outline" className="w-full">
               Email Support
             </Button>

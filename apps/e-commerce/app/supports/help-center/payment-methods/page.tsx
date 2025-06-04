@@ -10,6 +10,7 @@ import {
   Check,
   MessageSquare,
   Phone,
+  Smartphone,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -19,41 +20,51 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
+import { GrShieldSecurity } from "react-icons/gr";
+import { MdSecurity } from "react-icons/md";
 
 export default function PaymentMethodsHelp() {
   const paymentMethods = [
     {
-      icon: <CreditCard size={20} className="text-primary" />,
+      icon: <CreditCard size={20} className="text-blue-500" />, // Blue = trust/security (cards)
       title: "Credit/Debit Cards",
       description: "Secure payments with 256-bit encryption",
-      types: ["Visa", "Mastercard", "American Express", "Discover", "JCB"],
+      types: ["Visa", "Mastercard", "Verve"],
       security: "PCI-DSS compliant",
       popular: true,
     },
     {
-      icon: <Wallet size={20} className="text-primary" />,
-      title: "Digital Wallets",
-      description: "Fast checkout without entering details",
-      types: ["PayPal", "Apple Pay", "Google Pay", "Samsung Pay"],
-      security: "Tokenized transactions",
+      icon: <Smartphone size={20} className="text-teal-500" />,
+      title: "MPESA",
+      description: "Mobile money payments via Safaricom",
+      types: ["Pay via MPESA"],
+      security: "SIM-linked authentication",
       popular: true,
     },
     {
-      icon: <Bitcoin size={20} className="text-primary" />,
-      title: "Cryptocurrency",
-      description: "Decentralized payment options",
-      types: ["Bitcoin", "Ethereum", "Litecoin", "USDC"],
-      security: "Blockchain secured",
-      popular: false,
-    },
-    {
-      icon: <Banknote size={20} className="text-primary" />,
+      icon: <Banknote size={20} className="text-green-600" />,
       title: "Bank Transfers",
       description: "Direct from your bank account",
       types: ["ACH (US)", "SEPA (EU)", "Direct Debit"],
       security: "Two-factor authentication",
       popular: false,
     },
+    // {
+    //   icon: <Wallet size={20} className="text-purple-500" />,
+    //   title: "Digital Wallets",
+    //   description: "Fast checkout without entering details",
+    //   types: ["PayPal", "Apple Pay", "Google Pay", "Samsung Pay"],
+    //   security: "Tokenized transactions",
+    //   popular: true,
+    // },
+    // {
+    //   icon: <Bitcoin size={20} className="text-amber-500" />,
+    //   title: "Cryptocurrency",
+    //   description: "Decentralized payment options",
+    //   types: ["Bitcoin", "Ethereum", "Litecoin", "USDC"],
+    //   security: "Blockchain secured",
+    //   popular: false,
+    // },
   ];
 
   const commonIssues = [
@@ -75,7 +86,7 @@ export default function PaymentMethodsHelp() {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="py-4 sm:py-6 px-2 sm:px-8 w-full mx-auto max-w-7xl">
       <Link
         href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
@@ -88,7 +99,7 @@ export default function PaymentMethodsHelp() {
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
-              <CreditCard className="text-primary" size={24} />
+              <CreditCard className="text-purple-500" size={24} />
             </div>
             <h1 className="text-3xl font-bold">Payment Methods</h1>
           </div>
@@ -98,7 +109,7 @@ export default function PaymentMethodsHelp() {
             {paymentMethods.map((method, i) => (
               <div
                 key={i}
-                className="border rounded-xl p-5 hover:shadow-sm transition-shadow hover:border-primary"
+                className="border rounded-xl p-5 hover:shadow-sm transition-shadow hover:border-orange-400"
               >
                 <div className="flex items-start gap-3 mb-3">
                   <div className="bg-primary/10 p-2 rounded-lg">
@@ -120,7 +131,7 @@ export default function PaymentMethodsHelp() {
                 </div>
                 <div className="mt-4">
                   <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Shield size={14} className="text-primary" />
+                    <Shield size={14} className="" />
                     <span>Accepted Types:</span>
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -152,19 +163,7 @@ export default function PaymentMethodsHelp() {
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <h3 className="font-medium flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  </svg>
+                  <Shield className=" w-4 h-4 text-green-500" />
                   Encryption
                 </h3>
                 <p className="text-sm text-gray-600">
@@ -173,27 +172,7 @@ export default function PaymentMethodsHelp() {
               </div>
               <div className="space-y-2">
                 <h3 className="font-medium flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
+                  <MdSecurity className=" w-4 h-4 text-blue-500" />
                   Fraud Protection
                 </h3>
                 <p className="text-sm text-gray-600">
@@ -202,21 +181,7 @@ export default function PaymentMethodsHelp() {
               </div>
               <div className="space-y-2">
                 <h3 className="font-medium flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M12 16v-4"></path>
-                    <path d="M12 8h.01"></path>
-                  </svg>
+                  <AlertCircle className=" w-4 h-4 text-yellow-500" />
                   No Storage
                 </h3>
                 <p className="text-sm text-gray-600">

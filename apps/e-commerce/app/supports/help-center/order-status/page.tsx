@@ -9,10 +9,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function OrderStatusHelp() {
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="py-4 sm:py-6 px-2 sm:px-8 w-full mx-auto max-w-7xl">
       <Link
         href="/supports"
         className="flex items-center gap-2 text-sm text-primary mb-6 hover:underline"
@@ -21,19 +22,19 @@ export default function OrderStatusHelp() {
       </Link>
 
       <div className="flex items-start gap-8">
-        {/* Main Content */}
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
-              <Package className="text-primary" size={24} />
+              <Package className="text-blue-500" size={24} />
             </div>
-            <h1 className="text-3xl font-bold">Order Status Information</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              Order Status Information
+            </h1>
           </div>
 
-          {/* How to Check Status */}
-          <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Package className="text-primary" /> How to Check Your Order
+          <Card className="bg-white border rounded-xl px-3 sm:px-6 py-6 mb-8 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+              <Package className="text-sky-500" /> How to Check Your Order
               Status
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
@@ -51,7 +52,7 @@ export default function OrderStatusHelp() {
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <Mail
-                      className="text-primary mt-0.5 flex-shrink-0"
+                      className="text-rose-500 mt-0.5 flex-shrink-0"
                       size={16}
                     />
                     <span>You&apos;ll receive emails at each stage:</span>
@@ -62,35 +63,36 @@ export default function OrderStatusHelp() {
                 </ul>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Shipping Information */}
           <div className="space-y-6">
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Clock className="text-primary" /> Processing & Shipping Times
+                <Clock className="text-indigo-500" /> Processing & Shipping
+                Times
               </h2>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
                   {
                     type: "Order Processing",
                     time: "1-2 business days",
-                    icon: <Package className="text-primary" size={18} />,
+                    icon: <Package className="text-sky-500" size={18} />,
                   },
                   {
                     type: "Standard Shipping",
                     time: "3-5 business days",
-                    icon: <Truck className="text-primary" size={18} />,
+                    icon: <Truck className="text-green-500" size={18} />,
                   },
                   {
                     type: "International",
                     time: "7-14 business days",
-                    icon: <MapPin className="text-primary" size={18} />,
+                    icon: <MapPin className="text-blue-500" size={18} />,
                   },
                 ].map((option, i) => (
                   <div
                     key={i}
-                    className="border rounded-lg p-4 hover:border-primary transition-colors"
+                    className="border rounded-lg p-4 cursor-pointer hover:border-orange-400 transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       {option.icon}
@@ -149,7 +151,6 @@ export default function OrderStatusHelp() {
               </div>
             </section>
 
-            {/* Troubleshooting */}
             <section>
               <h2 className="text-xl font-semibold mb-4">
                 Need Help With Your Order?
@@ -176,7 +177,6 @@ export default function OrderStatusHelp() {
           </div>
         </div>
 
-        {/* Quick Help Sidebar */}
         <div className="hidden md:block w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Common Questions</h3>
@@ -205,7 +205,9 @@ export default function OrderStatusHelp() {
           </div>
           <div className="border rounded-xl p-5">
             <h3 className="font-semibold mb-3">Support Options</h3>
-            <Button className="w-full mb-2">Live Chat</Button>
+            <Button className="w-full bg-orange-500 hover:bg-orange-600 mb-2">
+              Live Chat
+            </Button>
             <Button variant="outline" className="w-full">
               Email Us
             </Button>

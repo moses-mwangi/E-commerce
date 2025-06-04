@@ -15,6 +15,13 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+const deliveryMessages = [
+  "Great news! We deliver within Nairobi, including its metropolitan and surrounding areas. Order today and get your items right at your doorstep!",
+  "Delivery available in Nakuru! Enjoy fast and reliable service straight to your location.",
+  "Now delivering in Mombasa! Place your order and experience smooth, hassle-free delivery.",
+  "Kisumu delivery coming soon! Stay tuned as we expand our reach to serve you better.",
+];
+
 export default function DeliveryInformationPage() {
   return (
     <div className="px-3 py-5 sm:px-6 sm:py-6 max-w-7xl mx-auto">
@@ -25,7 +32,7 @@ export default function DeliveryInformationPage() {
         <ArrowLeft size={16} /> Back to Help Center
       </Link>
 
-      <div className="flex items-start gap-8">
+      <div className="flex flex-col sm:flex-row items-start gap-8">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary/10 p-2 rounded-full">
@@ -36,7 +43,7 @@ export default function DeliveryInformationPage() {
             </h1>
           </div>
 
-          <div className="bg-white border rounded-xl p-6 mb-8 shadow-md">
+          <div className="bg-white border rounded-xl px-4 sm:px-6 py-6 mb-8 shadow-md">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Package className="text-stone-600" /> How Your Order Reaches You
             </h2>
@@ -46,7 +53,8 @@ export default function DeliveryInformationPage() {
                 {
                   icon: <Clock className="text-blue-500" size={20} />,
                   title: "Order Processing",
-                  description: "1-2 business days to prepare your items",
+                  description:
+                    "Processing time may vary slightly based on your location, with direct delivery available in covered areas.",
                 },
                 {
                   icon: <Truck className="text-green-500" size={20} />,
@@ -56,7 +64,8 @@ export default function DeliveryInformationPage() {
                 {
                   icon: <MapPin className="text-blue-500" size={20} />,
                   title: "Delivery Areas",
-                  description: "Nationwide coverage with international options",
+                  description:
+                    "Available within Nairobi,Nakuru, Mombasa, Kiambu!. Globally with extra transportation cost",
                 },
               ].map((item, index) => (
                 <div
@@ -88,7 +97,7 @@ export default function DeliveryInformationPage() {
                 ].map((step, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <div className="bg-primary/10 text-primary rounded-full p-1 mt-0.5">
-                      <Check size={16} />
+                      <Check size={16} className=" text-green-500" />
                     </div>
                     <span>{step}</span>
                   </li>
@@ -97,7 +106,7 @@ export default function DeliveryInformationPage() {
             </div>
           </div>
 
-          <div className="border shadow-md rounded-xl p-6 mb-8">
+          <div className="border shadow-md rounded-xl px-4 sm:px-6 py-6 mb-8">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Truck className="text-green-500" /> Delivery Options
             </h2>
@@ -106,8 +115,8 @@ export default function DeliveryInformationPage() {
               {[
                 {
                   type: "Standard Delivery",
-                  time: "3-5 business days",
-                  price: "Free on orders over $50",
+                  time: "2-4 business days",
+                  price: "Free on orders over KES 7,000",
                   features: [
                     "Trackable",
                     "Signature not required",
@@ -117,7 +126,7 @@ export default function DeliveryInformationPage() {
                 {
                   type: "Express Delivery",
                   time: "1-2 business days",
-                  price: "$9.99",
+                  price: "KES 500",
                   features: [
                     "Priority processing",
                     "Live tracking",
@@ -127,13 +136,14 @@ export default function DeliveryInformationPage() {
                 {
                   type: "Same-Day Delivery",
                   time: "Within 4 hours",
-                  price: "$14.99",
+                  price: "KES 800",
                   features: [
                     "Available in select areas",
                     "Order by 2PM local time",
                     "Real-time courier tracking",
                   ],
-                  available: ["New York", "Los Angeles", "Chicago"],
+                  // available: ["New York", "Los Angeles", "Chicago"],
+                  available: ["Nairobi", "Kiambu", "Nakuru", "Mombasa"],
                 },
                 {
                   type: "International Delivery",
@@ -172,8 +182,8 @@ export default function DeliveryInformationPage() {
 
                   {option.available && (
                     <div className="mt-3 pt-3 border-t text-xs">
-                      <p className="font-medium">Available in:</p>
-                      <p>{option.available.join(", ")}</p>
+                      <p className="font-medium">Available within:</p>
+                      <p>{option.available.join(", ")} etc...</p>
                     </div>
                   )}
                 </div>
@@ -181,7 +191,7 @@ export default function DeliveryInformationPage() {
             </div>
           </div>
 
-          <div className="border rounded-xl p-6 mb-8 bg-blue-50 border-blue-100">
+          <div className=" hidden sm:block border rounded-xl px-4 sm:px-6 py-6 mb-8 bg-blue-50 border-blue-100">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-blue-800">
               <Shield className="text-blue-700" /> Our Delivery Promises
             </h2>
@@ -208,7 +218,7 @@ export default function DeliveryInformationPage() {
             </div>
           </div>
 
-          <div className="border rounded-xl p-6">
+          <div className="border rounded-xl px-4 sm:px-6 py-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <HelpCircle className="text-blue-500" /> Tracking Your Package
             </h2>
@@ -247,7 +257,7 @@ export default function DeliveryInformationPage() {
                   It may take 24-48 hours for tracking information to appear
                   after shipment.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full bg-gray-200">
                   Contact Support
                 </Button>
               </div>
@@ -255,7 +265,7 @@ export default function DeliveryInformationPage() {
           </div>
         </div>
 
-        <div className="hidden md:block w-72 space-y-6 sticky top-6">
+        <div className=" w-full sm:w-72 space-y-6 sticky top-6">
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-5">
             <h3 className="font-semibold mb-3">Need Help Now?</h3>
             <Button className="w-full bg-orange-500/90 hover:bg-orange-600/90 mb-2 flex items-center gap-2">
@@ -274,7 +284,7 @@ export default function DeliveryInformationPage() {
             </p>
           </div>
 
-          <div className="border rounded-xl p-5">
+          <div className="border rounded-xl p-5 px-4 sm:px-5 py-5">
             <h3 className="font-semibold mb-3">Delivery FAQs</h3>
             <ul className="space-y-3 text-sm">
               <li>

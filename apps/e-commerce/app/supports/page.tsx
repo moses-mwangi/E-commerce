@@ -19,25 +19,25 @@ import { Input } from "@/components/ui/input";
 export default function HelpCenter() {
   const popularTopics = [
     {
-      icon: <Package size={18} className="text-primary" />,
+      icon: <Package size={18} className="text-blue-500" />,
       title: "Track My Order",
       desc: "Check shipping status and delivery estimates",
       link: "/supports/help-center/order-status",
     },
     {
-      icon: <RefreshCw size={18} className="text-primary" />,
+      icon: <RefreshCw size={18} className="text-green-500" />,
       title: "Start a Return",
       desc: "How to return or exchange an item",
       link: "/supports/help-center/returns-refunds",
     },
     {
-      icon: <CreditCard size={18} className="text-primary" />,
+      icon: <CreditCard size={18} className="text-purple-500" />,
       title: "Payment Issues",
       desc: "Declined payments and refund questions",
       link: "/supports/help-center/payment-methods",
     },
     {
-      icon: <User size={18} className="text-primary" />,
+      icon: <User size={18} className="text-orange-500" />,
       title: "Account Help",
       desc: "Password reset and login problems",
       link: "/supports/help-center/account-issues",
@@ -53,12 +53,12 @@ export default function HelpCenter() {
         "Shipping options",
         "International delivery",
       ],
-      icon: <Package size={20} className="text-primary" />,
+      icon: <Package size={20} className="text-blue-500" />,
     },
     {
       title: "Returns & Refunds",
       topics: ["Return policy", "Start a return", "Refund status", "Exchanges"],
-      icon: <RefreshCw size={20} className="text-primary" />,
+      icon: <RefreshCw size={20} className="text-green-500" />,
     },
     {
       title: "Account & Security",
@@ -68,13 +68,13 @@ export default function HelpCenter() {
         "Two-factor auth",
         "Privacy settings",
       ],
-      icon: <Shield size={20} className="text-primary" />,
+      icon: <Shield size={20} className="text-blue-500" />,
     },
   ];
 
   return (
     <div className="sm:p-6 p-2 max-w-7xl mx-auto">
-      <div className="bg-gradient-to-r from-primary/5 to-blue-50 rounded-2xl p-8 mb-8 sm:mb-12 text-center border">
+      <div className="bg-gradient-to-r from-primary/5 to-blue-50 rounded-2xl px-5 sm:px-8 py-8 mb-8 sm:mb-12 text-center border">
         <div className="max-w-3xl mx-auto">
           <div className="bg-primary/10 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
             <HelpCircle className="text-green-600" size={28} />
@@ -165,7 +165,7 @@ export default function HelpCenter() {
           <div className="p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <Phone className="text-primary" size={20} />
+                <Phone className="text-sky-500" size={20} />
               </div>
               <h3 className="font-semibold">Phone Support</h3>
             </div>
@@ -183,7 +183,7 @@ export default function HelpCenter() {
           <div className="p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <Mail className="text-primary" size={20} />
+                <Mail className="text-rose-500" size={20} />
               </div>
               <h3 className="font-semibold">Email Us</h3>
             </div>
@@ -198,7 +198,7 @@ export default function HelpCenter() {
           <div className="p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <MessageSquare className="text-primary" size={20} />
+                <MessageSquare className="text-emerald-500" size={20} />
               </div>
               <h3 className="font-semibold">Live Chat</h3>
             </div>
