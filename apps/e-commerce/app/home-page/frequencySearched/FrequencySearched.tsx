@@ -4,10 +4,9 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import { Product } from "@/app/types/products";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
-import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FiHeart, FiShoppingCart, FiStar } from "react-icons/fi";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,19 +16,13 @@ export default function FrequencySearched() {
   const { selectedCurrency } = useLanguage_Currency();
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const { products, status } = useSelector((state: RootState) => state.product);
+  const { products } = useSelector((state: RootState) => state.product);
 
   const {
     handleAddToCart,
     handleAddToFavourite,
     items: favItems,
   } = useCategoryContex();
-
-  useEffect(() => {
-    // if (status === "idle") {
-    dispatch(fetchProducts());
-    // }
-  }, [dispatch, status]);
 
   const recommendedProducts = products;
 
