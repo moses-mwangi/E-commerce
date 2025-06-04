@@ -1,3 +1,5 @@
+"use client";
+
 import { Product } from "@/app/types/products";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
@@ -10,7 +12,6 @@ import { FaArrowRight } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingState from "../../components/loaders/LoadingState";
-import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
 
 export default function NewArrivals() {
   const dispatch: AppDispatch = useDispatch();

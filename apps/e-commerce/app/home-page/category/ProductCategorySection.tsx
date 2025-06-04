@@ -1,3 +1,5 @@
+"use client";
+
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { Card } from "@/components/ui/card";
 import { fetchCategories } from "@/redux/slices/categorySlice";

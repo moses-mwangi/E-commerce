@@ -1,3 +1,5 @@
+"use client";
+
 import LoadingState from "@/app/components/loaders/LoadingState";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { AppDispatch } from "@/redux/store";

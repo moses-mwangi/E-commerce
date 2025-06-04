@@ -13,13 +13,22 @@ import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import NewsletterSection from "./home-page/newsletter/NewsletterSection";
 import LiveChat from "./home-page/hero_section/LiveChat";
-import UserBrowsingHistory from "./home-page/userBrowser/UserBrowsingHistory";
 import FrequencySearched from "./home-page/frequencySearched/FrequencySearched";
 import Carosoul from "./home-page/Carosoul";
 import dynamic from "next/dynamic";
 
 const Hero_Section = dynamic(
   () => import("./home-page/hero_section/Hero_Section")
+);
+
+// import UserBrowsingHistory from "./home-page/userBrowser/UserBrowsingHistory";
+
+const UserBrowsingHistory = dynamic(
+  () => import("./home-page/userBrowser/UserBrowsingHistory"),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
 );
 
 export default function HomePage() {
@@ -30,6 +39,7 @@ export default function HomePage() {
       <Navbar />
       <Hero_Section />
       <ProductCategories />
+
       <div
         className={`sm:grid ${
           recentlyViewed.length > 0
@@ -38,20 +48,14 @@ export default function HomePage() {
         } py-4 sm:py-7 mx-auto sm:px-6 md:px-7 lg:px-9`}
       >
         <UserBrowsingHistory />
-        <FrequencySearched />
+        {/* <FrequencySearched /> */}
       </div>
+
       <Carosoul />
-      <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Qui odit
-        necessitatibus similique quasi commodi at cum harum neque, ipsa,
-        expedita illo! Omnis, labore. Minima eos earum voluptate quaerat
-        suscipit? Itaque.
-      </p>
+
       <NewArrivals />
       <TrendingProducts />
-
       <RecommendedForYou />
-
       <NewsletterSection />
       <Footer />
       <LiveChat />
