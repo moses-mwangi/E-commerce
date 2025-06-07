@@ -7,28 +7,100 @@ import {
   FaInstagram,
   FaYoutube,
   FaTwitter,
+  FaTiktok,
 } from "react-icons/fa";
 import { FaCcVisa, FaCcMastercard, FaCcPaypal, FaCcAmex } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
+import { FaXTwitter } from "react-icons/fa6";
 
 const socialMedia = [
   {
-    icon: <FaFacebookF size={21} />,
+    name: "Facebook",
+    icon: (
+      <Image
+        width={29}
+        height={29}
+        src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+        alt="Facebook"
+        className="object-contain bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
     url: "https://www.facebook.com/",
   },
   {
-    icon: <FaInstagram size={21} />,
+    name: "Instagram",
+    icon: (
+      <Image
+        width={29}
+        height={29}
+        src="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"
+        alt="Instagram"
+        className="object-contain bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
     url: "https://www.instagram.com/",
   },
   {
-    icon: <FaYoutube size={21} />,
+    name: "YouTube",
+    icon: (
+      <Image
+        width={29}
+        height={29}
+        src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg"
+        alt="YouTube"
+        className="w-7 h-7 object-contain bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
     url: "https://www.youtube.com/",
   },
   {
-    icon: <FaLinkedinIn size={21} />,
+    name: "LinkedIn",
+    icon: (
+      <Image
+        width={29}
+        height={29}
+        src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+        alt="LinkedIn"
+        className=" object-contain bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
     url: "https://www.linkedin.com/in/moses-mwangi-5b4ba6292/",
   },
-  { icon: <FaTwitter size={21} />, url: "https://x.com/" },
+  {
+    name: "XTwitter",
+    icon: (
+      <FaXTwitter
+        size={28}
+        className="text-black dark:text-white bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
+    url: "https://x.com/",
+  },
+  {
+    name: "WhatsApp",
+    icon: (
+      <Image
+        width={29}
+        height={29}
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+        alt="WhatsApp"
+        className=" object-contain bg-gray-100 rounded-full p-[px]"
+      />
+    ),
+    url: "https://wa.me/",
+  },
+  {
+    name: "TikTok",
+    icon: (
+      <FaTiktok
+        size={27}
+        className="text-black dark:text-white bg-gray-100 rounded-full p-[4px]"
+      />
+    ),
+
+    url: "https://www.tiktok.com/",
+  },
 ];
 
 export default function Footer() {

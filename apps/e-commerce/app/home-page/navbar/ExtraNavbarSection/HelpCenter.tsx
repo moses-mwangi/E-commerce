@@ -15,19 +15,25 @@ export default function HelpCenter() {
           </h3>
           <div className="space-y-3">
             {[
-              { title: "Order Status", path: "/help-center/order-status" },
+              {
+                title: "Order Status",
+                path: "/supports/help-center/order-status",
+              },
               {
                 title: "Returns & Refunds",
-                path: "/help-center/returns-refunds",
+                path: "/supports/help-center/returns-refunds",
               },
               {
                 title: "Payment Methods",
-                path: "/help-center/payment-methods",
+                path: "/supports/help-center/payment-methods",
               },
-              { title: "Account Issues", path: "/help-center/account-issues" },
+              {
+                title: "Account Issues",
+                path: "/supports/help-center/account-issues",
+              },
               {
                 title: "Product Questions",
-                path: "/help-center/product-questions",
+                path: "/supports/help-center/product-questions",
               },
             ].map((topic, i) => (
               <Link

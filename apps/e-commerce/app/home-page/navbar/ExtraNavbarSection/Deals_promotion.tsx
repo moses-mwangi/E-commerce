@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Gem } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 export default function Deals_promotion() {
@@ -60,7 +61,7 @@ export default function Deals_promotion() {
             Selected items at lowest prices
           </p>
           <Button className="bg-orange-500/85 hover:bg-orange-600 h-7 text-white px-4 py-2 rounded-md text-sm hover:bg-primary-dark transition">
-            Shop Now
+            <Link href="/pages/deals">Shop Now</Link>
           </Button>
         </div>
       </div>
