@@ -33,7 +33,7 @@ export default function SignInBotton() {
 
   return (
     <div className="">
-      {isAuthenticated === true && currentUser ? (
+      {isAuthenticated === true && currentUser && currentUser.name ? (
         <div>
           <UserProfileImage />
         </div>

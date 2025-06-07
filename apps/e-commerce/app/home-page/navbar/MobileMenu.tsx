@@ -150,24 +150,24 @@ export default function MobileMenu({ setIsLoading }: Prop) {
                 onValueChange={(value) => setCurrentTab(value)}
                 className=""
               >
-                <TabsList className="flex justify-between items-center bg-gray-50 rounded-sm">
+                <TabsList className="flex justify-between items-center bg-gray-100 rounded-sm">
                   {tabsValues.map((el) => (
                     <div
                       key={el.value}
-                      className={`w-full h-full py-2 flex items-center justify-center ${
-                        currentTab === el.value ? "bg-gray-100" : ""
+                      className={`w-full h-full py-[10px] flex items-center justify-center ${
+                        currentTab === el.value ? "bg-gray-200" : ""
                       }`}
                     >
                       <TabsTrigger
                         value={el.value}
-                        className={`text-xs text-gray-800 font-semibold border-gray-300 h-full `}
+                        className={`text-[13px] text-gray-800 font-semibold border-gray-300 h-full `}
                       >
                         {el.option}
                       </TabsTrigger>
                     </div>
                   ))}
                 </TabsList>
-                <TabsContent value="category" className="">
+                <TabsContent value="category" className="mt-[6px]">
                   <Card className="rounded-none shadow-none border-none py-3 text-sm text-gray-700">
                     <CardContent className="grid gap-3 px-3 pb-0">
                       <div onClick={() => navigate()} className="">
@@ -215,8 +215,13 @@ export default function MobileMenu({ setIsLoading }: Prop) {
               </Tabs>
 
               <div className="border-t px-3 pt-5">
-                <h3 className="font-semibold text-sm mb-3">Support Options</h3>
-                <Button variant="outline" className="w-full mb-2 h-8">
+                <h3 className="font-semibold text-[15px] mb-3">
+                  Support Options
+                </h3>
+                <Button
+                  variant="outline"
+                  className="w-full mb-2 h-8 bg-gray-100"
+                >
                   <PhoneCall /> +254 725672675
                 </Button>
                 <Button className="w-full bg-orange-500 hover:bg-orange-600 mb-2 h-8">
@@ -229,12 +234,12 @@ export default function MobileMenu({ setIsLoading }: Prop) {
                   />
                   Live Chat
                 </Button>
-                <Button variant="outline" className="w-full h-8">
+                <Button variant="outline" className="w-full h-8 bg-gray-100">
                   📧 moses.mwangi.me@gmail.com
                 </Button>
               </div>
               <div className="border-t px-3 py-5">
-                <h3 className="font-semibold text-sm mb-3">Follow Us</h3>
+                <h3 className="font-semibold text-[15px] mb-3">Follow Us</h3>
                 <div className="flex items-center gap-4">
                   {socialMedia.map((item, idx) => (
                     <Link key={idx} href={item.url} className="">

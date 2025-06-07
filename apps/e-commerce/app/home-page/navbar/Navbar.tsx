@@ -27,7 +27,7 @@ export function MobileNav() {
   return (
     <>
       {isLoading === true && <LoadingState />}
-      <div className="sticky top-0 z-50 flex flex-col gap-2 bg-card px-2 py-2 shadow-xl lg:hidden">
+      <div className="sticky top-0 z-50 flex flex-col gap-2 bg-card px-3 py-2 shadow-xl lg:hidden">
         <div className="flex w-full items-center justify-between">
           <MobileMenu setIsLoading={setIsLoading} />
 
