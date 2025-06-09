@@ -27,7 +27,7 @@ const Sidebar = () => {
   return (
     <>
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded shadow"
+        className="md:hidden fixed top-4 left-4 z-50 bg-gray-200 bg-opacity-90 p-2 rounded shadow"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
         {mobileOpen ? <X size={24} /> : <Menu size={24} />}

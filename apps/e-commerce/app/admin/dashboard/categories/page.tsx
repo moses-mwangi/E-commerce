@@ -75,7 +75,7 @@ export default function CategoriesPage() {
         />
       )}
 
-      <div className="p-6 space-y-6">
+      <div className="p-3 md:p-6 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-800">Categories</h1>
           <div className="flex gap-2 items-center">
@@ -112,84 +112,86 @@ export default function CategoriesPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Products</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {currentProduct.length > 0 ? (
-                  <>
-                    {currentProduct?.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell className="font-medium">
-                          {category.name}
-                        </TableCell>
-                        <TableCell>{category.itemCount}</TableCell>
-                        <TableCell>
-                          {capitalizeWords(String(category.slug))}
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`${
-                              category.status === "active"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-50 text-red-500"
-                            } px-2 py-1 rounded-full text-xs font-semibold `}
-                          >
-                            {capitalizeWords(String(category?.status))}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              onClick={() => {
-                                setIsLoading(true);
-                                push(
-                                  `/admin/dashboard/categories/edit/${category.id}`
-                                );
-                              }}
-                              variant="ghost"
-                              size="sm"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                setShowDeleteDialog(true);
-                                setSelectedCategoryId(category.id);
-                                console.log(category.id);
-                              }}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </>
-                ) : (
+          <div className="relative overflow-x-auto shadow-sm sm:rounded-lg">
+            <div className="block w-full overflow-x-auto">
+              <Table className="w-full min-w-[700px] md:min-w-full">
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-4">
-                      {searchTerm ||
-                      statusFilters.length > 0 ||
-                      paymentFilters.length > 0
-                        ? "No orders match your criteria"
-                        : "No orders found"}
-                    </TableCell>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Products</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {currentProduct.length > 0 ? (
+                    <>
+                      {currentProduct?.map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell className="font-medium">
+                            {category.name}
+                          </TableCell>
+                          <TableCell>{category.itemCount}</TableCell>
+                          <TableCell>
+                            {capitalizeWords(String(category.slug))}
+                          </TableCell>
+                          <TableCell>
+                            <span
+                              className={`${
+                                category.status === "active"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-50 text-red-500"
+                              } px-2 py-1 rounded-full text-xs font-semibold `}
+                            >
+                              {capitalizeWords(String(category?.status))}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                onClick={() => {
+                                  setIsLoading(true);
+                                  push(
+                                    `/admin/dashboard/categories/edit/${category.id}`
+                                  );
+                                }}
+                                variant="ghost"
+                                size="sm"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  setShowDeleteDialog(true);
+                                  setSelectedCategoryId(category.id);
+                                  console.log(category.id);
+                                }}
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-600"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-4">
+                        {searchTerm ||
+                        statusFilters.length > 0 ||
+                        paymentFilters.length > 0
+                          ? "No orders match your criteria"
+                          : "No orders found"}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
           <div className="pt-1">
             <Separator />

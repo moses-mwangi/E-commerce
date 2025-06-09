@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import { Clock, Flame, Truck } from "lucide-react";
+import { Clock, Flame, Star, TrendingUp, Truck, Zap } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ export default function TrendingProductsPage() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6">
-        <div className="bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
+        <div className=" hidden sm:block bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
           <div className="flex items-center gap-3 mb-3">
             <Flame size={24} />
             <h1 className="text-2xl font-bold">TRENDING PRODUCTS</h1>
@@ -92,6 +92,41 @@ export default function TrendingProductsPage() {
           </div>
         </div>
 
+        <div className="sm:hidden mb-6">
+          {/* Mobile Trending Header */}
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-4 shadow-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Flame size={20} className="text-yellow-300" />
+              <h1 className="text-xl font-bold">Trending Now</h1>
+            </div>
+
+            <p className="text-sm mb-3">Top products flying off shelves</p>
+
+            {/* Swipeable Trend Indicators */}
+            <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar">
+              <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                <TrendingUp size={14} />
+                +120% sales
+              </div>
+              <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                <Zap size={14} className="text-yellow-300" />
+                Selling fast
+              </div>
+              <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                <Star size={14} className="text-yellow-300" />
+                4.8+ rating
+              </div>
+            </div>
+          </div>
+
+          {/* Optional Countdown Timer */}
+          <div className="bg-purple-600/10 text-purple-800 px-3 py-2 rounded-lg mt-2 flex items-center justify-between text-xs">
+            <span>🔥 Next update in:</span>
+            <span className="font-mono bg-white/80 text-purple-900 px-2 py-1 rounded">
+              59:43
+            </span>
+          </div>
+        </div>
         {TRENDING_PRODUCTS.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
             {TRENDING_PRODUCTS.map((product) => {

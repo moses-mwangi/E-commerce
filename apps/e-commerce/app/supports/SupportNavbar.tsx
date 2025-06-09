@@ -1,14 +1,19 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import UserProfileImage from "../components/users/UserProfileImage";
 import { FaBell } from "react-icons/fa";
 import Link from "next/link";
 import Logo from "../home-page/navbar/logo/Logo";
 import { Card } from "@/components/ui/card";
 import CartPage from "../home-page/navbar/cart/Cart";
+import MobileMenu from "../home-page/navbar/MobileMenu";
 
 export default function SupportNavbar() {
+  const [isLoading, setIsloading] = useState(false);
   return (
-    <Card className=" rounded-none fixed top-0 left-0 w-full bg-white flex items-center justify-between shadow-md py-2 px-6">
+    <Card className=" rounded-none fixed top-0 left-0 w-full bg-white flex items-center justify-between shadow-md py-2 px-4">
+      <MobileMenu setIsLoading={setIsloading} />
       <div>
         <Logo />
       </div>

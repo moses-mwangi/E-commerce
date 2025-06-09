@@ -6,7 +6,7 @@ import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { add } from "date-fns";
-import { Clock, Truck } from "lucide-react";
+import { Clock, Clock1, Truck } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +17,9 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import Reusable_Category_Sub_Products from "./Reusable_Category_Sub_Products";
+import { FaFire } from "react-icons/fa";
+import { GiLightningFlame } from "react-icons/gi";
+import { BsShieldLock } from "react-icons/bs";
 
 const DISCOUNT_BANDS = [
   { min: 40, label: "Super Deal" },
@@ -71,7 +74,7 @@ export default function FlashDealsPage() {
 
       <Navbar />
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6">
-        <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
+        <div className=" hidden sm:block bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
           <div className="flex items-center gap-3 mb-3">
             <FaBoltLightning size={24} />
             <h1 className="text-2xl font-bold">FLASH DEALS</h1>
@@ -93,6 +96,64 @@ export default function FlashDealsPage() {
                 Ending in: <CountdownTimer endTime="2025-06-30T23:59:59" />
               </span>
             </div>
+          </div>
+        </div>
+
+        <div className="sm:hidden mb-6">
+          <div className="bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-lg p-4 shadow-lg relative overflow-hidden">
+            <GiLightningFlame className="absolute -top-2 -right-2 text-white/10 text-6xl" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <FaBoltLightning
+                  size={20}
+                  className="text-yellow-300 animate-pulse"
+                />
+                <h1 className="text-xl font-bold">FLASH SALE</h1>
+              </div>
+
+              <p className="text-sm mb-3">Unbeatable deals ending soon!</p>
+
+              <div className="mb-3">
+                <div className="flex justify-between text-xs mb-1">
+                  <span>HURRY!</span>
+                  <span>
+                    <CountdownTimer
+                      endTime="2025-06-30T23:59:59"
+                      className="font-mono bg-white/20 px-2 py-0.5 rounded"
+                    />
+                  </span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-1.5">
+                  <div
+                    className="bg-yellow-400 h-1.5 rounded-full"
+                    style={{ width: `${calculateTimePercentage()}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar">
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <FaBoltLightning size={12} />
+                  50-80% OFF
+                </div>
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <Truck size={12} />
+                  Free shipping
+                </div>
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <BsShieldLock size={12} />
+                  Secure checkout
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-red-500/10 text-red-700 px-3 py-2 rounded-lg mt-2 flex items-center justify-between text-xs">
+            <span className="flex items-center gap-1">
+              <FaFire size={12} />
+              <span>Only 23 left at this price!</span>
+            </span>
+            <span className="font-medium">🔥 HOT</span>
           </div>
         </div>
 
@@ -242,40 +303,40 @@ function DealBadge({ type, discount }: { type: string; discount: number }) {
   );
 }
 
-function CountdownTimer({ endTime }: { endTime: string | Date }) {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+interface CountdownTimerProps {
+  endTime: string;
+  className?: string;
+}
+
+function CountdownTimer({ endTime, className }: CountdownTimerProps) {
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      // const end = new Date(endTime);
-      const end = add(new Date(), { hours: 4 });
-      const diff = end.getTime() - now.getTime();
-
-      if (diff <= 0) {
-        clearInterval(interval);
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-      }
-
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / 1000 / 60) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      });
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
-
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, [endTime]);
 
+  function calculateTimeLeft() {
+    const difference = new Date(endTime).getTime() - new Date().getTime();
+    return {
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor(difference / 1000 / 60) % 60,
+      seconds: Math.floor(difference / 1000) % 60,
+    };
+  }
+
   return (
-    <span className="font-mono">
-      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+    <span className={className}>
+      {`${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`}
     </span>
   );
+}
+
+function calculateTimePercentage() {
+  const end = new Date("2025-06-30T23:59:59").getTime();
+  const now = new Date().getTime();
+  const start = new Date("2025-06-28T00:00:00").getTime(); // Adjust start date as needed
+  return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
 }

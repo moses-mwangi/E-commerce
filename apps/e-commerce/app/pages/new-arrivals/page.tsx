@@ -5,7 +5,7 @@ import Navbar from "@/app/home-page/navbar/Navbar";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
-import { Truck } from "lucide-react";
+import { Calendar, Sparkles, Tag, Truck } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ export default function NewArrivalsPage() {
 
       <Navbar />
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6">
-        <div className="bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
+        <div className=" hidden sm:block bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl p-4 sm:px-6 sm:py-6 mb-8">
           <div className="flex items-center gap-3 mb-3">
             <h1 className="text-2xl font-bold">New Arrivals</h1>
           </div>
@@ -81,6 +81,50 @@ export default function NewArrivalsPage() {
               <Truck size={16} />
               <span>Fast & reliable delivery across Kenya</span>
             </div>
+          </div>
+        </div>
+
+        <div className="sm:hidden mb-6">
+          {/* Mobile New Arrivals Header */}
+          <div className="bg-gradient-to-r from-green-500 to-emerald-400 text-white rounded-lg p-4 shadow-md relative overflow-hidden">
+            {/* Decorative corner element */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-bl-full"></div>
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-white/20 p-1 rounded-full">
+                  <Sparkles size={18} className="text-yellow-300" />
+                </div>
+                <h1 className="text-xl font-bold">Just Arrived</h1>
+              </div>
+
+              <p className="text-sm mb-3">Fresh picks added today</p>
+
+              {/* New arrival highlights */}
+              <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar">
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <Truck size={12} />
+                  Kenya-wide delivery
+                </div>
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <Calendar size={12} />
+                  Added today
+                </div>
+                <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
+                  <Tag size={12} />
+                  Limited stock
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Optional: Freshness indicator */}
+          <div className="bg-green-500/10 text-green-700 px-3 py-2 rounded-lg mt-2 flex items-center justify-between text-xs">
+            <span className="flex items-center gap-1">
+              <Sparkles size={12} />
+              <span>12 new products added</span>
+            </span>
+            <span className="font-medium">✨ FRESH</span>
           </div>
         </div>
 

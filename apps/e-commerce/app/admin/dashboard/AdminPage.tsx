@@ -205,7 +205,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <Card className="py-6 px-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center space-x-4">
@@ -294,7 +294,10 @@ export default function AdminDashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-6">
+            <Card className="p-6 min-w-[500px] md:min-w-max">
+              {/* <div className="relative overflow-x-auto shadow-sm sm:rounded-lg">
+            <div className=" w-full overflow-x-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="w-full  p-6 min-w-[500px] md:min-w-full"> */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-800">
                   Sales Overview
@@ -315,7 +318,9 @@ export default function AdminDashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="h-[300px]">
+              <div className="h-[300px] w-full">
+                {/* <div className="relative overflow-x-auto shadow-sm sm:rounded-lg">
+                <div className="h-[300px] w-full overflow-x-auto"> */}
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={handleSales(selectedPeriod)}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
@@ -350,6 +355,7 @@ export default function AdminDashboard() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
+              {/* </div> */}
             </Card>
 
             {/* Revenue by Category */}
