@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
+const userMode_1 = __importDefault(require("../../users/models/userMode"));
+const ordersModel_1 = __importDefault(require("../../order/models/ordersModel"));
 class Payment extends sequelize_1.Model {
 }
 Payment.init({
@@ -16,10 +18,20 @@ Payment.init({
     userId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: userMode_1.default,
+            key: "id",
+        },
+        onDelete: "CASCADE",
     },
     orderId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
+        references: {
+            model: ordersModel_1.default,
+            key: "id",
+        },
+        onDelete: "CASCADE",
     },
     stripePaymentId: {
         type: sequelize_1.DataTypes.STRING,

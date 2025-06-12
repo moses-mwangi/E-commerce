@@ -10,11 +10,11 @@ const paymentModel_1 = __importDefault(require("./paymentModel"));
 function paymentAssociation() {
     paymentModel_1.default.belongsTo(ordersModel_1.default, {
         foreignKey: "orderId",
-        as: "user",
+        as: "order",
     });
     paymentModel_1.default.belongsTo(userMode_1.default, {
         foreignKey: "userId",
-        as: "product",
+        as: "user",
     });
     console.log("✅ Sequelize Associations Set Up! For Payment");
 }

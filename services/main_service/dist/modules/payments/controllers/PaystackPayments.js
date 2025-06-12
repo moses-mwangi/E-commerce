@@ -44,6 +44,11 @@ const paymentModel_1 = __importDefault(require("../models/paymentModel"));
 const logger_1 = __importStar(require("../utils/logger"));
 const express_validator_1 = require("express-validator");
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
+const paymentProducer_1 = require("../../../shared/producers/paymentProducer");
+const itemOrder_1 = __importDefault(require("../../order/models/itemOrder"));
+const productModels_1 = __importDefault(require("../../product/models/product/productModels"));
+const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
+const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const paystackClient = (0, paystack_1.default)(process.env.PAYSTACK_SECRET_KEY);
 const FRONTEND_URL = String(process.env.FRONTEND_URL) || "http://localhost:3000";
 exports.validatePaymentInitialization = [
@@ -183,6 +188,50 @@ const verifyPayment = async (req, res) => {
                 }, { where: { id: metadata.order_id }, transaction: t });
             });
             logger_1.default.info(`Payment verified successfully: ${reference}`);
+            const selectedPayment = await paymentModel_1.default.findOne({
+                where: { reference },
+                attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+                include: [
+                    {
+                        model: ordersModel_1.default,
+                        as: "order",
+                        attributes: [
+                            "totalPrice",
+                            "trackingNumber",
+                            "streetAddress",
+                            "country",
+                            "county",
+                            "city",
+                            "phoneNumber",
+                            "postcode",
+                            "apartment",
+                        ],
+                        include: [
+                            {
+                                model: itemOrder_1.default,
+                                attributes: ["quantity", "price"],
+                                include: [
+                                    {
+                                        model: productModels_1.default,
+                                        attributes: ["name", "price"],
+                                        as: "Product",
+                                        include: [
+                                            {
+                                                model: productImageModel_1.default,
+                                                as: "productImages",
+                                                attributes: ["url", "isMain"],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    { model: userMode_1.default, as: "user", attributes: ["name", "email"] },
+                ],
+            });
+            console.log(selectedPayment);
+            await (0, paymentProducer_1.sendPaymentCreated)(selectedPayment);
             return res.json({
                 success: true,
                 data: verification.data,
@@ -295,10 +344,51 @@ async function handleSuccessfulCharge(data) {
             paymentReference: reference,
         }, { where: { id: Number(metadata.order_id) }, transaction: t });
     });
-    // Here you would:
-    // 1. Send payment confirmation email
+    const selectedPayment = await paymentModel_1.default.findOne({
+        where: { reference: payment.reference },
+        attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+        include: [
+            {
+                model: ordersModel_1.default,
+                as: "order",
+                attributes: [
+                    "totalPrice",
+                    "trackingNumber",
+                    "streetAddress",
+                    "country",
+                    "county",
+                    "city",
+                    "phoneNumber",
+                    "postcode",
+                    "apartment",
+                ],
+                include: [
+                    {
+                        model: itemOrder_1.default,
+                        attributes: ["quantity", "price"],
+                        include: [
+                            {
+                                model: productModels_1.default,
+                                attributes: ["name", "price"],
+                                as: "Product",
+                                include: [
+                                    {
+                                        model: productImageModel_1.default,
+                                        as: "productImages",
+                                        attributes: ["url", "isMain"],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            { model: userMode_1.default, as: "user", attributes: ["name", "email"] },
+        ],
+    });
+    console.log(selectedPayment);
+    await (0, paymentProducer_1.sendPaymentCreated)(selectedPayment);
     // 2. Update inventory
-    // 3. Trigger order fulfillment
     logger_1.default.info(`Successfully processed payment for order ${metadata.order_id}`);
 }
 async function handleSuccessfulTransfer(data) {
@@ -320,6 +410,50 @@ async function handleSuccessfulTransfer(data) {
             paymentReference: reference,
         }, { where: { id: Number(metadata.order_id) }, transaction: t });
     });
+    const selectedPayment = await paymentModel_1.default.findOne({
+        where: { reference },
+        attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+        include: [
+            {
+                model: ordersModel_1.default,
+                as: "order",
+                attributes: [
+                    "totalPrice",
+                    "trackingNumber",
+                    "streetAddress",
+                    "country",
+                    "county",
+                    "city",
+                    "phoneNumber",
+                    "postcode",
+                    "apartment",
+                ],
+                include: [
+                    {
+                        model: itemOrder_1.default,
+                        attributes: ["quantity", "price"],
+                        include: [
+                            {
+                                model: productModels_1.default,
+                                attributes: ["name", "price"],
+                                as: "Product",
+                                include: [
+                                    {
+                                        model: productImageModel_1.default,
+                                        as: "productImages",
+                                        attributes: ["url", "isMain"],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+            { model: userMode_1.default, as: "user", attributes: ["name", "email"] },
+        ],
+    });
+    console.log(selectedPayment);
+    await (0, paymentProducer_1.sendPaymentCreated)(selectedPayment);
 }
 async function handleFailedPayment(data) {
     const { reference, metadata, gateway_response } = data;

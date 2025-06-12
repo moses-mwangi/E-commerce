@@ -1,6 +1,7 @@
 "use client";
 
 import LoadingState from "@/app/components/loaders/LoadingState";
+import QivamallLogo from "@/app/test/page";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -11,7 +12,8 @@ export default function Logo() {
   return (
     <>
       {isLoading && <LoadingState />}
-      <div
+      <QivamallLogo />
+      {/* <div
         className=" cursor-pointer"
         onClick={() => {
           setIsLoading(true);
@@ -26,7 +28,7 @@ export default function Logo() {
           width={100}
           height={50}
         />
-      </div>
+      </div> */}
     </>
   );
 }

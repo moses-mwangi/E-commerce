@@ -10,6 +10,8 @@ import { generateToken } from "../utils/jwt";
 import AppError from "../../../shared/utils/AppError";
 import { sendEmail } from "../utils/email";
 import { Op } from "sequelize";
+import { accountEmailMessage } from "../../../shared/utils/emailUtil";
+import { sendUserCreated } from "../../../shared/producers/accountProducer";
 
 export const signInUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -154,6 +156,8 @@ export const verifyEmail = catchAsync(
     }
 
     await user.update({ emailVerified: true });
+
+    await sendUserCreated(user);
 
     return res.json({ msg: "succesfully" });
   }

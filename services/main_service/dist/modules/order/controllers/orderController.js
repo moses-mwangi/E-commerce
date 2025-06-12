@@ -12,6 +12,7 @@ const itemOrder_1 = __importDefault(require("../models/itemOrder"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
+const orderProducer_1 = require("../../../shared/producers/orderProducer");
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
     const { userId, orderItems: products, shippingAddress, 
     // paymentMethodId,
@@ -61,6 +62,15 @@ exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
         }));
         await itemOrder_1.default.bulkCreate(orderItems, { transaction });
         await transaction.commit();
+        const selectedOrder = await ordersModel_1.default.findByPk(order?.id, {
+            include: [
+                {
+                    model: userMode_1.default,
+                    attributes: ["id", "name", "email", "telephone"],
+                },
+            ],
+        });
+        await (0, orderProducer_1.sendOrderCreated)(selectedOrder);
         res.status(201).json({
             success: true,
             message: "Order placed successfully!",

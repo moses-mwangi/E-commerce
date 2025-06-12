@@ -33,8 +33,9 @@ const allowedOrigins = [
     "https://api.publicapis.org/entries",
     "http://localhost:3001",
     "http://localhost:8000",
-    "https://e-commerce-e-commerce-brown.vercel.app/",
     "https://e-commerce-e-commerce-brown.vercel.app",
+    "https://shop.kivamall.com",
+    "https://kivamall.com",
 ];
 const corsOptions = {
     origin: (origin, callback) => {

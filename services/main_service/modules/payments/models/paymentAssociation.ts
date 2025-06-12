@@ -5,12 +5,12 @@ import Payment from "./paymentModel";
 export default function paymentAssociation() {
   Payment.belongsTo(Order, {
     foreignKey: "orderId",
-    as: "user",
+    as: "order",
   });
 
   Payment.belongsTo(User, {
     foreignKey: "userId",
-    as: "product",
+    as: "user",
   });
 
   console.log("✅ Sequelize Associations Set Up! For Payment");

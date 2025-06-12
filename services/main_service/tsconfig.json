@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-
     "target": "ES2020",
     "module": "CommonJS",
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
     "typeRoots": ["node_modules/@types", "types"],
+    "types": ["node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    "resolveJsonModule": true
   },
   "include": [
     "./**/*.ts",

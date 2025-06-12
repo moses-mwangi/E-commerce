@@ -101,7 +101,7 @@ export default function NewArrivalsPage() {
               <p className="text-sm mb-3">Fresh picks added today</p>
 
               {/* New arrival highlights */}
-              <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar">
+              <div className="flex overflow-x-auto gap-2 pb-1 hide-scrollbar">
                 <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
                   <Truck size={12} />
                   Kenya-wide delivery

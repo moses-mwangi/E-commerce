@@ -6,6 +6,11 @@ import Payment from "../models/paymentModel";
 import logger, { paymentLogger } from "../utils/logger";
 import { body, validationResult } from "express-validator";
 import sequelize from "../../../shared/config/pg_database";
+import { sendPaymentCreated } from "../../../shared/producers/paymentProducer";
+import OrderItem from "../../order/models/itemOrder";
+import Product from "../../product/models/product/productModels";
+import ProductImage from "../../product/models/product/productImageModel";
+import User from "../../users/models/userMode";
 
 const paystackClient = paystack(process.env.PAYSTACK_SECRET_KEY!);
 const FRONTEND_URL =
@@ -219,6 +224,53 @@ export const verifyPayment = async (
 
       logger.info(`Payment verified successfully: ${reference}`);
 
+      const selectedPayment = await Payment.findOne({
+        where: { reference },
+        attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+        include: [
+          {
+            model: Order,
+            as: "order",
+            attributes: [
+              "totalPrice",
+              "trackingNumber",
+              "streetAddress",
+              "country",
+              "county",
+              "city",
+              "phoneNumber",
+              "postcode",
+              "apartment",
+            ],
+            include: [
+              {
+                model: OrderItem,
+                attributes: ["quantity", "price"],
+                include: [
+                  {
+                    model: Product,
+                    attributes: ["name", "price"],
+                    as: "Product",
+                    include: [
+                      {
+                        model: ProductImage,
+                        as: "productImages",
+                        attributes: ["url", "isMain"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          { model: User, as: "user", attributes: ["name", "email"] },
+        ],
+      });
+
+      console.log(selectedPayment);
+
+      await sendPaymentCreated(selectedPayment);
+
       return res.json({
         success: true,
         data: verification.data,
@@ -350,10 +402,53 @@ async function handleSuccessfulCharge(data: WebhookData) {
     );
   });
 
-  // Here you would:
-  // 1. Send payment confirmation email
+  const selectedPayment = await Payment.findOne({
+    where: { reference: payment.reference },
+    attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+    include: [
+      {
+        model: Order,
+        as: "order",
+        attributes: [
+          "totalPrice",
+          "trackingNumber",
+          "streetAddress",
+          "country",
+          "county",
+          "city",
+          "phoneNumber",
+          "postcode",
+          "apartment",
+        ],
+        include: [
+          {
+            model: OrderItem,
+            attributes: ["quantity", "price"],
+            include: [
+              {
+                model: Product,
+                attributes: ["name", "price"],
+                as: "Product",
+                include: [
+                  {
+                    model: ProductImage,
+                    as: "productImages",
+                    attributes: ["url", "isMain"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      { model: User, as: "user", attributes: ["name", "email"] },
+    ],
+  });
+
+  console.log(selectedPayment);
+
+  await sendPaymentCreated(selectedPayment);
   // 2. Update inventory
-  // 3. Trigger order fulfillment
   logger.info(`Successfully processed payment for order ${metadata.order_id}`);
 }
 
@@ -386,6 +481,53 @@ async function handleSuccessfulTransfer(data: WebhookData) {
       { where: { id: Number(metadata.order_id) }, transaction: t }
     );
   });
+
+  const selectedPayment = await Payment.findOne({
+    where: { reference },
+    attributes: ["paymentMethod", "currency", "amount", "createdAt"],
+    include: [
+      {
+        model: Order,
+        as: "order",
+        attributes: [
+          "totalPrice",
+          "trackingNumber",
+          "streetAddress",
+          "country",
+          "county",
+          "city",
+          "phoneNumber",
+          "postcode",
+          "apartment",
+        ],
+        include: [
+          {
+            model: OrderItem,
+            attributes: ["quantity", "price"],
+            include: [
+              {
+                model: Product,
+                attributes: ["name", "price"],
+                as: "Product",
+                include: [
+                  {
+                    model: ProductImage,
+                    as: "productImages",
+                    attributes: ["url", "isMain"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      { model: User, as: "user", attributes: ["name", "email"] },
+    ],
+  });
+
+  console.log(selectedPayment);
+
+  await sendPaymentCreated(selectedPayment);
 }
 
 async function handleFailedPayment(data: WebhookData) {

@@ -8,12 +8,16 @@ import categoryAssociations from "./modules/product/models/category/categoryAsso
 import productAssociation from "./modules/product/models/product/productAssociation";
 import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
 import sequelize from "./shared/config/pg_database";
+import { consumeOrderEvents } from "./shared/jobs/workers/orderConsumer";
+import paymentAssociation from "./modules/payments/models/paymentAssociation";
+import { consumerAccountEvents } from "./shared/jobs/workers/accountConsumer";
+import { consumerPaymentEvents } from "./shared/jobs/workers/paymentConsumer";
 
 orderAssociations();
 categoryAssociations();
 productAssociation();
 reviewAssociation();
-// paymentAssociation();
+paymentAssociation();
 
 dotenv.config();
 dotenv.config({ path: "./.env" });
@@ -41,6 +45,10 @@ const pg_connect = async () => {
   }
 };
 pg_connect();
+
+consumeOrderEvents();
+consumerAccountEvents();
+consumerPaymentEvents();
 
 const numCpu = cpus().length + 6;
 

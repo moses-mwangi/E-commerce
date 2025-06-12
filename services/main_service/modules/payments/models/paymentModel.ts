@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../../shared/config/pg_database";
+import User from "../../users/models/userMode";
+import Order from "../../order/models/ordersModel";
 type PaymentMethod =
   | "card"
   | "bank"
@@ -57,10 +59,20 @@ Payment.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+      onDelete: "CASCADE",
     },
     orderId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: Order,
+        key: "id",
+      },
+      onDelete: "CASCADE",
     },
     stripePaymentId: {
       type: DataTypes.STRING,

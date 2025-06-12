@@ -12,6 +12,7 @@ import ProductImage from "../../product/models/product/productImageModel";
 import sequelize from "../../../shared/config/pg_database";
 import { where } from "sequelize";
 import Payment from "../../payments/models/paymentModel";
+import { sendOrderCreated } from "../../../shared/producers/orderProducer";
 
 export const createOrder = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -99,6 +100,17 @@ export const createOrder = catchAsync(
       await OrderItem.bulkCreate(orderItems, { transaction });
 
       await transaction.commit();
+
+      const selectedOrder = await Order.findByPk(order?.id, {
+        include: [
+          {
+            model: User,
+            attributes: ["id", "name", "email", "telephone"],
+          },
+        ],
+      });
+
+      await sendOrderCreated(selectedOrder);
 
       res.status(201).json({
         success: true,

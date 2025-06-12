@@ -46,6 +46,7 @@ const jwt_1 = require("../utils/jwt");
 const AppError_1 = __importDefault(require("../../../shared/utils/AppError"));
 const email_1 = require("../utils/email");
 const sequelize_1 = require("sequelize");
+const accountProducer_1 = require("../../../shared/producers/accountProducer");
 exports.signInUser = (0, catchSync_1.default)(async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
@@ -153,6 +154,7 @@ exports.verifyEmail = (0, catchSync_1.default)(async (req, res, next) => {
         });
     }
     await user.update({ emailVerified: true });
+    await (0, accountProducer_1.sendUserCreated)(user);
     return res.json({ msg: "succesfully" });
 });
 exports.loginUser = (0, catchSync_1.default)(async (req, res, next) => {

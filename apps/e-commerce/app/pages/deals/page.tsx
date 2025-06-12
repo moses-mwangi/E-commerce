@@ -131,7 +131,7 @@ export default function FlashDealsPage() {
                 </div>
               </div>
 
-              <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar">
+              <div className="flex overflow-x-auto gap-2 pb-1 hide-scrollbar">
                 <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
                   <FaBoltLightning size={12} />
                   50-80% OFF

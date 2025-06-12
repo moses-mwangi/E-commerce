@@ -526,7 +526,7 @@ const DeliveryInformationPage = () => {
               tracking and premium delivery services
             </p>
 
-            <div className="flex overflow-x-auto pb-2 gap-2 no-scrollbar">
+            <div className="flex overflow-x-auto pb-2 gap-2 hide-scrollbar">
               <div className="bg-white/20 px-3 py-1 rounded-full text-xs whitespace-nowrap flex items-center gap-1">
                 <Zap size={12} />
                 Same-day
