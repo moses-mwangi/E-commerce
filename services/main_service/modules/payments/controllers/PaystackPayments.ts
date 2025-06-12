@@ -13,8 +13,9 @@ import ProductImage from "../../product/models/product/productImageModel";
 import User from "../../users/models/userMode";
 
 const paystackClient = paystack(process.env.PAYSTACK_SECRET_KEY!);
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 const FRONTEND_URL =
-  String(process.env.FRONTEND_URL) || "http://localhost:3000";
+  String(process.env.FRONTEND_URL) || "https://www.kivamall.com";
 
 interface PaymentVerificationRequest {
   reference: string;
@@ -109,11 +110,13 @@ export const initializePayment = async (req: Request, res: Response) => {
       reference: reference,
     });
 
+    console.log("INITIATED__PAY", transaction);
+
     const paymentData: any = {
       email,
       amount: Math.round(amount * 100),
       reference: transaction.reference,
-      callback_url: `${FRONTEND_URL}/payment/verify?orderId=${orderId}`,
+      callback_url: `${FRONTEND_URL}/payment_verified?orderId=${orderId}`,
       currency,
       channels,
       metadata: {
@@ -165,6 +168,7 @@ export const initializePayment = async (req: Request, res: Response) => {
       paymentReference: payment.data.reference,
       amount,
     });
+    console.log("Iniated well");
   } catch (error) {
     logger.error("Payment initialization error:", error);
     res.status(500).json({
@@ -299,7 +303,7 @@ export const verifyPayment = async (
 ///////////////// WEBHOOK HANDLERS /////////////
 export const paystackWebhook = async (req: Request, res: Response) => {
   const hash = crypto
-    .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY!)
+    .createHmac("sha512", PAYSTACK_SECRET_KEY!)
     .update(JSON.stringify(req.body))
     .digest("hex");
 
@@ -320,6 +324,8 @@ export const paystackWebhook = async (req: Request, res: Response) => {
     amount: data.amount,
     channel: data.channel,
   });
+
+  console.log("IM IN WEBHOOK", event, data);
 
   logger.info(`Received Paystack webhook event kk: ${event}`, { data });
 
@@ -362,6 +368,8 @@ export const paystackWebhook = async (req: Request, res: Response) => {
 
 async function handleSuccessfulCharge(data: WebhookData) {
   const { reference, metadata, channel, gateway_response, amount } = data;
+
+  console.log("IM IN : handleSuccessfulCharge");
 
   logger.info(`Handling successful charge for ${reference}`);
 
@@ -454,6 +462,7 @@ async function handleSuccessfulCharge(data: WebhookData) {
 
 async function handleSuccessfulTransfer(data: WebhookData) {
   const { reference, metadata } = data;
+  console.log("IM IN : handleSuccessfulTransfer");
 
   logger.info(`Handling successful transfer for ${reference}`);
 
@@ -532,6 +541,8 @@ async function handleSuccessfulTransfer(data: WebhookData) {
 
 async function handleFailedPayment(data: WebhookData) {
   const { reference, metadata, gateway_response } = data;
+
+  console.log("IM IN : handleFailedPayment");
 
   logger.warn(`Handling failed payment for ${reference}`);
 

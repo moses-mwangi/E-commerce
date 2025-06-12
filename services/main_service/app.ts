@@ -41,7 +41,7 @@ const allowedOrigins = [
   "http://localhost:8000",
   "https://e-commerce-e-commerce-brown.vercel.app",
   "https://shop.kivamall.com",
-  "https://kivamall.com",
+  "https://www.kivamall.com",
 ];
 
 const corsOptions = {

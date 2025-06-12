@@ -50,7 +50,8 @@ const productModels_1 = __importDefault(require("../../product/models/product/pr
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const paystackClient = (0, paystack_1.default)(process.env.PAYSTACK_SECRET_KEY);
-const FRONTEND_URL = String(process.env.FRONTEND_URL) || "http://localhost:3000";
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const FRONTEND_URL = String(process.env.FRONTEND_URL) || "https://www.kivamall.com";
 exports.validatePaymentInitialization = [
     (0, express_validator_1.body)("email").isEmail().normalizeEmail(),
     (0, express_validator_1.body)("amount").isNumeric().toFloat(),
@@ -96,11 +97,12 @@ const initializePayment = async (req, res) => {
             paymentMethod: method,
             reference: reference,
         });
+        console.log("INITIATED__PAY", transaction);
         const paymentData = {
             email,
             amount: Math.round(amount * 100),
             reference: transaction.reference,
-            callback_url: `${FRONTEND_URL}/payment/verify?orderId=${orderId}`,
+            callback_url: `${FRONTEND_URL}/payment_verified?orderId=${orderId}`,
             currency,
             channels,
             metadata: {
@@ -146,6 +148,7 @@ const initializePayment = async (req, res) => {
             paymentReference: payment.data.reference,
             amount,
         });
+        console.log("Iniated well");
     }
     catch (error) {
         logger_1.default.error("Payment initialization error:", error);
@@ -259,7 +262,7 @@ exports.verifyPayment = verifyPayment;
 ///////////////// WEBHOOK HANDLERS /////////////
 const paystackWebhook = async (req, res) => {
     const hash = crypto_1.default
-        .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
+        .createHmac("sha512", PAYSTACK_SECRET_KEY)
         .update(JSON.stringify(req.body))
         .digest("hex");
     if (hash !== req.headers["x-paystack-signature"]) {
@@ -277,6 +280,7 @@ const paystackWebhook = async (req, res) => {
         amount: data.amount,
         channel: data.channel,
     });
+    console.log("IM IN WEBHOOK", event, data);
     logger_1.default.info(`Received Paystack webhook event kk: ${event}`, { data });
     try {
         switch (event) {
@@ -317,6 +321,7 @@ const paystackWebhook = async (req, res) => {
 exports.paystackWebhook = paystackWebhook;
 async function handleSuccessfulCharge(data) {
     const { reference, metadata, channel, gateway_response, amount } = data;
+    console.log("IM IN : handleSuccessfulCharge");
     logger_1.default.info(`Handling successful charge for ${reference}`);
     const payment = await paymentModel_1.default.findOne({ where: { reference } });
     if (!payment) {
@@ -393,6 +398,7 @@ async function handleSuccessfulCharge(data) {
 }
 async function handleSuccessfulTransfer(data) {
     const { reference, metadata } = data;
+    console.log("IM IN : handleSuccessfulTransfer");
     logger_1.default.info(`Handling successful transfer for ${reference}`);
     await pg_database_1.default.transaction(async (t) => {
         await paymentModel_1.default.update({
@@ -457,6 +463,7 @@ async function handleSuccessfulTransfer(data) {
 }
 async function handleFailedPayment(data) {
     const { reference, metadata, gateway_response } = data;
+    console.log("IM IN : handleFailedPayment");
     logger_1.default.warn(`Handling failed payment for ${reference}`);
     await pg_database_1.default.transaction(async (t) => {
         await paymentModel_1.default.update({
