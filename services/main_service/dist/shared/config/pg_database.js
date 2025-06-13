@@ -12,7 +12,5 @@ const sequelize = new sequelize_1.Sequelize(url, {
     logging: console.log,
 });
 exports.default = sequelize;
-//postgres://postgres:password@localhost:5432/omnibussines
-//postgresql://postgres:BFZhYcHRCbWenOvSScuDPsGUwtybjeVP@maglev.proxy.rlwy.net:37935/railway
-//postgresql://postgres:BFZhYcHRCbWenOvSScuDPsGUwtybjeVP@postgres.railway.internal:5432/railway
-//postgres://username:randompassword@containers-us-west-141.railway.app:5432/railway
+///postgresql://postgres:BFZhYcHRCbWenOvSScuDPsGUwtybjeVP@maglev.proxy.rlwy.net:37935/railway
+// psql -h maglev.proxy.rlwy.net -U postgres -p 37935 -d railway

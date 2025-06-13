@@ -63,7 +63,7 @@ export default function SignupForm() {
 
   const handleLogInWithGoogle = async () => {
     try {
-      window.location.href = "http://localhost:8000/api/auth/google";
+      window.location.href = "https://kivamall.up.railway.app/api/auth/google";
     } catch (err) {
       console.log(err);
     }

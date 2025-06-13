@@ -83,7 +83,10 @@ function CardPayment() {
   };
 
   const initializePayments = async () => {
-    await axios.post("http://127.0.0.1:8000/api/payments/initialize", cardData);
+    await axios.post(
+      "https://kivamall.up.railway.app/api/payments/initialize",
+      cardData
+    );
   };
 
   const onSuccess = (reference?: any) => {

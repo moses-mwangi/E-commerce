@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 // dotenv.config();
-const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
+const API_URL = process.env.API_URL || "https://kivamall.up.railway.app/api";
 
 interface Review {
   id: string;

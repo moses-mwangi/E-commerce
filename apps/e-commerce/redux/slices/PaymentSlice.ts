@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import toast from "react-hot-toast";
 
 dotenv.config();
-const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
+const API_URL = process.env.API_URL || "https://kivamall.up.railway.app/api";
 
 // Type definitions
 interface PaymentCredentials {
@@ -107,7 +107,8 @@ export const cardPayment = createAsyncThunk(
       const res = await axios.post(`${API_URL}/payment/card`, credentials);
       console.log("Card response", res);
       // toast.success("Card payment processed successfully");
-      window.location.href = "http://localhost:3000/pages/order";
+
+      window.location.href = "https://www.kivamall.com/pages/order";
       return res.data;
     } catch (err) {
       // toast.error("Card payment Failed: Try again");

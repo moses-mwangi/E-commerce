@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { PaymentData } from "@/redux/slices/PaymentSlice";
 import axios from "axios";
 
-const API_URL = process.env.API_URL || "http://127.0.0.1:8000/api";
+const API_URL = process.env.API_URL || "https://kivamall.up.railway.app/api";
 
 export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
   const dispatch: AppDispatch = useDispatch();
