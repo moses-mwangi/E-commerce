@@ -13,6 +13,8 @@ import paymentAssociation from "./modules/payments/models/paymentAssociation";
 import { consumerAccountEvents } from "./shared/jobs/workers/accountConsumer";
 import { consumerPaymentEvents } from "./shared/jobs/workers/paymentConsumer";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 orderAssociations();
 categoryAssociations();
 productAssociation();
@@ -46,7 +48,7 @@ const pg_connect = async () => {
 };
 pg_connect();
 
-if (process.env.NODE_ENV !== "production") {
+if (!isProduction) {
   consumeOrderEvents();
   consumerAccountEvents();
   consumerPaymentEvents();
@@ -54,7 +56,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const numCpu = cpus().length + 6;
 
-if (cluster.isPrimary) {
+if (!isProduction && cluster.isPrimary) {
   console.log(`Primary process ${process.pid} is running`);
 
   for (let i = 0; i < numCpu; i++) {
@@ -69,7 +71,8 @@ if (cluster.isPrimary) {
   });
 } else {
   const workerIndex = cluster.worker?.id;
-  const port = Number(process.env.PORT) + Number(workerIndex);
+  // const port = Number(process.env.PORT) + Number(workerIndex);
+  const port = Number(process.env.PORT);
 
   const server = app.listen(port, "127.0.0.1", () => {
     console.log(`Server running at ${port}`);

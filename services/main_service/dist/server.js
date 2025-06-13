@@ -17,6 +17,7 @@ const orderConsumer_1 = require("./shared/jobs/workers/orderConsumer");
 const paymentAssociation_1 = __importDefault(require("./modules/payments/models/paymentAssociation"));
 const accountConsumer_1 = require("./shared/jobs/workers/accountConsumer");
 const paymentConsumer_1 = require("./shared/jobs/workers/paymentConsumer");
+const isProduction = process.env.NODE_ENV === "production";
 (0, orderAssociations_1.default)();
 (0, categoryAssociations_1.default)();
 (0, productAssociation_1.default)();
@@ -45,13 +46,13 @@ const pg_connect = async () => {
     }
 };
 pg_connect();
-if (process.env.NODE_ENV !== "production") {
+if (!isProduction) {
     (0, orderConsumer_1.consumeOrderEvents)();
     (0, accountConsumer_1.consumerAccountEvents)();
     (0, paymentConsumer_1.consumerPaymentEvents)();
 }
 const numCpu = (0, os_1.cpus)().length + 6;
-if (cluster_1.default.isPrimary) {
+if (!isProduction && cluster_1.default.isPrimary) {
     console.log(`Primary process ${process.pid} is running`);
     for (let i = 0; i < numCpu; i++) {
         cluster_1.default.fork();
@@ -63,7 +64,8 @@ if (cluster_1.default.isPrimary) {
 }
 else {
     const workerIndex = cluster_1.default.worker?.id;
-    const port = Number(process.env.PORT) + Number(workerIndex);
+    // const port = Number(process.env.PORT) + Number(workerIndex);
+    const port = Number(process.env.PORT);
     const server = app_1.default.listen(port, "127.0.0.1", () => {
         console.log(`Server running at ${port}`);
     });
