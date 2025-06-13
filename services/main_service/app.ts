@@ -65,19 +65,45 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "secret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-      maxAge: 8 * 60 * 60 * 1000,
-    },
-  })
-);
+// // Create PostgreSQL connection pool
+// const pgPool = new Pool({
+//   connectionString: process.env.DATABASE_URL || "postgres://postgres:password@localhost:5432/omnibussines",
+//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+// });
+
+// app.use(
+//   session({
+//     store: new pgSession({
+//       pool: pgPool,
+//       tableName: 'user_sessions', // Will be created automatically
+//       pruneSessionInterval: 60 * 60 // Clean up expired sessions hourly
+//     }),
+//     secret: process.env.SESSION_SECRET || "secret",
+//     resave: false,
+//     saveUninitialized: false, // Changed to false for GDPR compliance
+//     cookie: {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production', // Only true in production
+//       sameSite: 'lax', // Recommended for CSRF protection
+//       maxAge: 8 * 60 * 60 * 1000, // 8 hours
+//       // Remove 'expires' as 'maxAge' is sufficient
+//     }
+//   })
+// );
+
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET || "secret",
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//       httpOnly: true,
+//       secure: true,
+//       expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+//       maxAge: 8 * 60 * 60 * 1000,
+//     },
+//   })
+// );
 
 // Initialize Passport
 // app.use(passport.initialize());

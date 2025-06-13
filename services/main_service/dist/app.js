@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const express_session_1 = __importDefault(require("express-session"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = require("./modules/users");
 const order_1 = require("./modules/order");
@@ -53,17 +52,43 @@ app.use((req, res, next) => {
     console.log("Testing middleware");
     next();
 });
-app.use((0, express_session_1.default)({
-    secret: process.env.SESSION_SECRET || "secret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-        maxAge: 8 * 60 * 60 * 1000,
-    },
-}));
+// // Create PostgreSQL connection pool
+// const pgPool = new Pool({
+//   connectionString: process.env.DATABASE_URL || "postgres://postgres:password@localhost:5432/omnibussines",
+//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+// });
+// app.use(
+//   session({
+//     store: new pgSession({
+//       pool: pgPool,
+//       tableName: 'user_sessions', // Will be created automatically
+//       pruneSessionInterval: 60 * 60 // Clean up expired sessions hourly
+//     }),
+//     secret: process.env.SESSION_SECRET || "secret",
+//     resave: false,
+//     saveUninitialized: false, // Changed to false for GDPR compliance
+//     cookie: {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production', // Only true in production
+//       sameSite: 'lax', // Recommended for CSRF protection
+//       maxAge: 8 * 60 * 60 * 1000, // 8 hours
+//       // Remove 'expires' as 'maxAge' is sufficient
+//     }
+//   })
+// );
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET || "secret",
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//       httpOnly: true,
+//       secure: true,
+//       expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+//       maxAge: 8 * 60 * 60 * 1000,
+//     },
+//   })
+// );
 // Initialize Passport
 // app.use(passport.initialize());
 // app.use(passport.session());

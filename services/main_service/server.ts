@@ -91,6 +91,10 @@ if (process.env.NODE_ENV !== "production") {
 // });
 // }
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 const port = Number(process.env.PORT);
 // const server = app.listen(port, "127.0.0.1", () => {
 const server = app.listen(port, "0.0.0.0", () => {
