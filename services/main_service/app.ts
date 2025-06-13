@@ -6,7 +6,6 @@ import cors from "cors";
 
 import { authRouter, userRouter } from "./modules/users";
 import { orderRouter } from "./modules/order";
-import { payments } from "./modules/payments";
 import { paystackPayments } from "./modules/payments";
 import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
@@ -74,7 +73,6 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: true,
-      // maxAge: 30 * 60 * 1000,
       expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
       maxAge: 8 * 60 * 60 * 1000,
     },
@@ -93,7 +91,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
 
-app.use("/api/payment", payments);
+// app.use("/api/payment", payments);
 app.use("/api/payments", paystackPayments);
 
 app.use(globalErrorHandler);
