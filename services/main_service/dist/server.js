@@ -3,12 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const cluster_1 = __importDefault(require("cluster"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const os_1 = require("os");
 const app_1 = __importDefault(require("./app"));
 const orderAssociations_1 = __importDefault(require("./modules/order/models/orderAssociations"));
-const logger_1 = __importDefault(require("./modules/payments/utils/logger"));
 const categoryAssociations_1 = __importDefault(require("./modules/product/models/category/categoryAssociations"));
 const productAssociation_1 = __importDefault(require("./modules/product/models/product/productAssociation"));
 const reviewAssociation_1 = __importDefault(require("./modules/reviews/models/reviewModel/reviewAssociation"));
@@ -51,40 +48,50 @@ if (!isProduction) {
     (0, accountConsumer_1.consumerAccountEvents)();
     (0, paymentConsumer_1.consumerPaymentEvents)();
 }
-const numCpu = (0, os_1.cpus)().length + 6;
-if (!isProduction && cluster_1.default.isPrimary) {
-    console.log(`Primary process ${process.pid} is running`);
-    for (let i = 0; i < numCpu; i++) {
-        cluster_1.default.fork();
-    }
-    cluster_1.default.on("exit", (worker, code, signal) => {
-        console.log(`Worker ${worker.process.pid} exit with code ${code}, signal ${signal}`);
-        cluster_1.default.fork();
-    });
-}
-else {
-    const workerIndex = cluster_1.default.worker?.id;
-    // const port = Number(process.env.PORT) + Number(workerIndex);
-    const port = Number(process.env.PORT);
-    const server = app_1.default.listen(port, "127.0.0.1", () => {
-        console.log(`Server running at ${port}`);
-    });
-    // process.on("unhandledRejection", (err) => {
-    //   console.error("Unhandled Rejection. Shutting down...💥💥💥💥");
-    //   console.error(err);
-    //   server.close(() => {
-    //     process.exit(1);
-    //   });
-    //   app.use((req, res, next) => {
-    //     console.log(`Request received by Worker ${process.pid} on port ${port}`);
-    //     next();
-    //   });
-    // });
-}
-process.on("unhandledRejection", (reason, promise) => {
-    logger_1.default.error("Unhandled Rejection", {
-        promise,
-        reason,
-    });
+// const numCpu = cpus().length + 6;
+// if (!isProduction && cluster.isPrimary) {
+//   console.log(`Primary process ${process.pid} is running`);
+//   for (let i = 0; i < numCpu; i++) {
+//     cluster.fork();
+//   }
+//   cluster.on("exit", (worker, code, signal) => {
+//     console.log(
+//       `Worker ${worker.process.pid} exit with code ${code}, signal ${signal}`
+//     );
+//     cluster.fork();
+//   });
+// } else {
+//   const workerIndex = cluster.worker?.id;
+// const port = Number(process.env.PORT) + Number(workerIndex);
+// const port = Number(process.env.PORT);
+// const server = app.listen(port, "127.0.0.1", () => {
+//   console.log(`Server running at ${port}`);
+// });
+// process.on("unhandledRejection", (err) => {
+//   console.error("Unhandled Rejection. Shutting down...💥💥💥💥");
+//   console.error(err);
+//   server.close(() => {
+//     process.exit(1);
+//   });
+//   app.use((req, res, next) => {
+//     console.log(`Request received by Worker ${process.pid} on port ${port}`);
+//     next();
+//   });
+// });
+// }
+const port = Number(process.env.PORT);
+const server = app_1.default.listen(port, "127.0.0.1", () => {
+    console.log(`Server running at ${port}`);
+});
+// process.on("unhandledRejection", (reason, promise) => {
+//   logger.error("Unhandled Rejection", {
+//     promise,
+//     reason,
+//   });
+// });
+process.on("unhandledRejection", (err) => {
+    console.error("🔥 Unhandled Rejection");
+    console.error(err);
+    process.exit(1);
 });
 // #Moses.mwangi.me=7662

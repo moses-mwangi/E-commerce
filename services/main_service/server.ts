@@ -54,48 +54,60 @@ if (!isProduction) {
   consumerPaymentEvents();
 }
 
-const numCpu = cpus().length + 6;
+// const numCpu = cpus().length + 6;
 
-if (!isProduction && cluster.isPrimary) {
-  console.log(`Primary process ${process.pid} is running`);
+// if (!isProduction && cluster.isPrimary) {
+//   console.log(`Primary process ${process.pid} is running`);
 
-  for (let i = 0; i < numCpu; i++) {
-    cluster.fork();
-  }
+//   for (let i = 0; i < numCpu; i++) {
+//     cluster.fork();
+//   }
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(
-      `Worker ${worker.process.pid} exit with code ${code}, signal ${signal}`
-    );
-    cluster.fork();
-  });
-} else {
-  const workerIndex = cluster.worker?.id;
-  // const port = Number(process.env.PORT) + Number(workerIndex);
-  const port = Number(process.env.PORT);
+//   cluster.on("exit", (worker, code, signal) => {
+//     console.log(
+//       `Worker ${worker.process.pid} exit with code ${code}, signal ${signal}`
+//     );
+//     cluster.fork();
+//   });
+// } else {
+//   const workerIndex = cluster.worker?.id;
+// const port = Number(process.env.PORT) + Number(workerIndex);
+// const port = Number(process.env.PORT);
 
-  const server = app.listen(port, "127.0.0.1", () => {
-    console.log(`Server running at ${port}`);
-  });
+// const server = app.listen(port, "127.0.0.1", () => {
+//   console.log(`Server running at ${port}`);
+// });
 
-  // process.on("unhandledRejection", (err) => {
-  //   console.error("Unhandled Rejection. Shutting down...💥💥💥💥");
-  //   console.error(err);
-  //   server.close(() => {
-  //     process.exit(1);
-  //   });
-  //   app.use((req, res, next) => {
-  //     console.log(`Request received by Worker ${process.pid} on port ${port}`);
-  //     next();
-  //   });
-  // });
-}
+// process.on("unhandledRejection", (err) => {
+//   console.error("Unhandled Rejection. Shutting down...💥💥💥💥");
+//   console.error(err);
+//   server.close(() => {
+//     process.exit(1);
+//   });
+//   app.use((req, res, next) => {
+//     console.log(`Request received by Worker ${process.pid} on port ${port}`);
+//     next();
+//   });
+// });
+// }
 
-process.on("unhandledRejection", (reason, promise) => {
-  logger.error("Unhandled Rejection", {
-    promise,
-    reason,
-  });
+const port = Number(process.env.PORT);
+const server = app.listen(port, "127.0.0.1", () => {
+  console.log(`Server running at ${port}`);
+});
+
+// process.on("unhandledRejection", (reason, promise) => {
+//   logger.error("Unhandled Rejection", {
+//     promise,
+//     reason,
+//   });
+// });
+
+process.on("unhandledRejection", (err: any) => {
+  console.error("🔥 Unhandled Rejection");
+  console.error(err);
+
+  process.exit(1);
 });
 
 // #Moses.mwangi.me=7662
