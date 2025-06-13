@@ -43,7 +43,7 @@ const pg_connect = async () => {
     }
 };
 pg_connect();
-if (!isProduction) {
+if (process.env.NODE_ENV !== "production") {
     (0, orderConsumer_1.consumeOrderEvents)();
     (0, accountConsumer_1.consumerAccountEvents)();
     (0, paymentConsumer_1.consumerPaymentEvents)();
@@ -80,9 +80,11 @@ if (!isProduction) {
 // });
 // }
 const port = Number(process.env.PORT);
-const server = app_1.default.listen(port, "127.0.0.1", () => {
+// const server = app.listen(port, "127.0.0.1", () => {
+const server = app_1.default.listen(port, "0.0.0.0", () => {
     console.log(`Server running at ${port}`);
 });
+server.keepAliveTimeout = 60 * 1000;
 // process.on("unhandledRejection", (reason, promise) => {
 //   logger.error("Unhandled Rejection", {
 //     promise,

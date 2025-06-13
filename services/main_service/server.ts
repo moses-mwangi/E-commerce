@@ -48,7 +48,7 @@ const pg_connect = async () => {
 };
 pg_connect();
 
-if (!isProduction) {
+if (process.env.NODE_ENV !== "production") {
   consumeOrderEvents();
   consumerAccountEvents();
   consumerPaymentEvents();
@@ -92,9 +92,12 @@ if (!isProduction) {
 // }
 
 const port = Number(process.env.PORT);
-const server = app.listen(port, "127.0.0.1", () => {
+// const server = app.listen(port, "127.0.0.1", () => {
+const server = app.listen(port, "0.0.0.0", () => {
   console.log(`Server running at ${port}`);
 });
+
+server.keepAliveTimeout = 60 * 1000;
 
 // process.on("unhandledRejection", (reason, promise) => {
 //   logger.error("Unhandled Rejection", {
