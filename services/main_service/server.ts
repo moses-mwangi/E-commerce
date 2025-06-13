@@ -95,20 +95,13 @@ app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-const port = Number(process.env.PORT);
-// const server = app.listen(port, "127.0.0.1", () => {
+const port = Number(process.env.PORT) || 8000;
 const server = app.listen(port, "0.0.0.0", () => {
   console.log(`Server running at ${port}`);
 });
 
 server.keepAliveTimeout = 60 * 1000;
-
-// process.on("unhandledRejection", (reason, promise) => {
-//   logger.error("Unhandled Rejection", {
-//     promise,
-//     reason,
-//   });
-// });
+server.headersTimeout = 65 * 1000;
 
 process.on("unhandledRejection", (err: any) => {
   console.error("🔥 Unhandled Rejection");

@@ -92,6 +92,8 @@ app.use((req, res, next) => {
 // Initialize Passport
 // app.use(passport.initialize());
 // app.use(passport.session());
+app.get("/", (_req, res) => res.sendStatus(200));
+app.get("/health", (_req, res) => res.sendStatus(200));
 app.use("/api/auth", users_1.authRouter);
 app.use("/api/user", users_1.userRouter);
 app.use("/api/product", product_1.productRouter);

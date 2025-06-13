@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "railway": "node --max-http-header-size=80000 dist/server.js"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",
