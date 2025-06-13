@@ -46,9 +46,11 @@ const pg_connect = async () => {
 };
 pg_connect();
 
-consumeOrderEvents();
-consumerAccountEvents();
-consumerPaymentEvents();
+if (process.env.NODE_ENV !== "production") {
+  consumeOrderEvents();
+  consumerAccountEvents();
+  consumerPaymentEvents();
+}
 
 const numCpu = cpus().length + 6;
 

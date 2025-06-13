@@ -45,9 +45,11 @@ const pg_connect = async () => {
     }
 };
 pg_connect();
-(0, orderConsumer_1.consumeOrderEvents)();
-(0, accountConsumer_1.consumerAccountEvents)();
-(0, paymentConsumer_1.consumerPaymentEvents)();
+if (process.env.NODE_ENV !== "production") {
+    (0, orderConsumer_1.consumeOrderEvents)();
+    (0, accountConsumer_1.consumerAccountEvents)();
+    (0, paymentConsumer_1.consumerPaymentEvents)();
+}
 const numCpu = (0, os_1.cpus)().length + 6;
 if (cluster_1.default.isPrimary) {
     console.log(`Primary process ${process.pid} is running`);
