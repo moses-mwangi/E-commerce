@@ -7,12 +7,13 @@ exports.verifyToken = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const secretKey = String(process.env.JWT_SECRET_KEY) || "your-refresh-secret";
-// const secretKey: Secret = process.env.JWT_SECRET_KEY || "your-refresh-secret";
+// const secretKey = String(process.env.JWT_SECRET_KEY) || "your-refresh-secret";
+const secretKey = process.env.JWT_SECRET_KEY;
+if (!secretKey) {
+    throw new Error("JWT_SECRET_KEY is not defined in environment variables.");
+}
 const generateToken = (user, expiresIn = "1h") => {
-    // const token = jwt.sign(user, secretKey as string, { expiresIn: expiresIn });
-    const token = jsonwebtoken_1.default.sign(user, secretKey, { expiresIn: expiresIn });
-    return token;
+    return jsonwebtoken_1.default.sign(user, secretKey, { expiresIn });
 };
 exports.generateToken = generateToken;
 const verifyToken = (token) => {
@@ -24,3 +25,17 @@ const verifyToken = (token) => {
     }
 };
 exports.verifyToken = verifyToken;
+// export const generateToken = (
+//   user: { id: number; email: string },
+//   expiresIn = "1h"
+// ) => {
+//   const token = jwt.sign(user, secretKey, { expiresIn });
+//   return token;
+// };
+// export const verifyToken = (token: string) => {
+//   try {
+//     return jwt.verify(token, secretKey);
+//   } catch (err) {
+//     throw new Error("Invalid or expired token");
+//   }
+// };

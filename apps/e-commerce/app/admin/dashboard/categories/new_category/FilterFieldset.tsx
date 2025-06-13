@@ -23,11 +23,11 @@ export function FilterFieldset({
   });
 
   return (
-    <div className="p-4 border rounded-lg space-y-4">
+    <div className="p-3 sm:p-4 border rounded-lg space-y-4">
       <div className="flex justify-between items-start">
         <div className="flex-1 mr-4">
           <Input
-            // {...register(`filters.${index}.name`, {
+            className="text-[15px]"
             {...register(`${prefix}.${index}.name`, {
               required: "Filter name is required",
             })}
@@ -48,7 +48,7 @@ export function FilterFieldset({
         {optionFields.map((optionField, optionIndex) => (
           <div key={optionField.id} className="flex gap-2">
             <Input
-              // {...register(`filters.${index}.options.${optionIndex}`, {
+              className="text-[15px]"
               {...register(`${prefix}.${index}.options.${optionIndex}`, {
                 required: "Option is required",
               })}

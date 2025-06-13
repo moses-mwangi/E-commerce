@@ -39,12 +39,7 @@ const paymentMethods: PaymentMethod[] = [
     icon: Card_Payment as unknown as string,
     description: "Pay securely with your card",
   },
-  {
-    id: "mpesa",
-    title: "M-Pesa",
-    icon: M_Pesa as unknown as string,
-    description: "Pay with M-Pesa mobile money",
-  },
+
   {
     id: "mobile money",
     title: "Mobile Money",
@@ -180,11 +175,7 @@ export default function PaymentsForm({ setDetails }: any) {
                           </Elements>
                         </>
                       )}
-                      {method.title === "M-Pesa" && (
-                        <MpesaPayment
-                          onDetailsChange={handleMpesaDetailsChange}
-                        />
-                      )}
+
                       {method.title === "Mobile Money" && (
                         <MobileMoney
                         // onDetailsChange={handleMobileDetailsChange}

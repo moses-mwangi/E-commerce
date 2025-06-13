@@ -82,6 +82,8 @@ export const initializePayment = async (req: Request, res: Response) => {
       amount,
     });
 
+    console.log("START INITIATING PAYMENT :", req.body);
+
     const order = await Order.findByPk(orderId);
     if (!order) {
       logger.error(`Order not found: ${orderId}`);
@@ -168,6 +170,7 @@ export const initializePayment = async (req: Request, res: Response) => {
       paymentReference: payment.data.reference,
       amount,
     });
+
     console.log("Iniated well");
   } catch (error) {
     logger.error("Payment initialization error:", error);
@@ -325,7 +328,7 @@ export const paystackWebhook = async (req: Request, res: Response) => {
     channel: data.channel,
   });
 
-  console.log("IM IN WEBHOOK", event, data);
+  console.log("IM IN WEBHOOK ::", event);
 
   logger.info(`Received Paystack webhook event kk: ${event}`, { data });
 

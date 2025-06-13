@@ -74,6 +74,11 @@
             "date": 1749727774643,
             "name": "logs/combined-2025-06-12.log",
             "hash": "3fca643691e1da8c430a8aee63a548810778a8c7e27b2c179231d120d6985625"
+        },
+        {
+            "date": 1749829515128,
+            "name": "logs/combined-2025-06-13.log",
+            "hash": "3bee33977ef167932d66fc8d7cf42084816ac59184fb8c66e3c64b71b3039087"
         }
     ],
     "hashType": "sha256"

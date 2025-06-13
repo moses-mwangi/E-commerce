@@ -108,17 +108,22 @@ export default function AddNewSubcategory() {
   };
 
   return (
-    <form onSubmit={handleSubmit(categoryFormSubmit)} className="space-y-7 p-7">
-      <div className="flex items-center justify-between">
+    <form
+      onSubmit={handleSubmit(categoryFormSubmit)}
+      className="space-y-7 px-3 sm:px-6 py-4 sm:py-6"
+    >
+      <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Create New Subcategory</h1>
-          <h1 className="text-gray-600 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold">
+            Create New Subcategory
+          </h1>
+          <h1 className="text-gray-600 sm:mt-1">
             Add a new subcategory to your store
           </h1>
         </div>
         <div className="flex items-center space-x-3">
           <Label
-            className="bg-gray-100 text-gray-800 transition-all duration-150 flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
+            className="bg-gray-100 text-gray-800 transition-all duration-150 hidden sm:flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
             onClick={() => {
               push(`/admin/dashboard/categories/edit/${id}`);
               push(`/admin/dashboard/categories/edit/${id}/subcategories`);
@@ -150,11 +155,12 @@ export default function AddNewSubcategory() {
       </div>
       <div className="grid grid-cols-1  gap-6">
         <div className="space-y-6 grid lg:grid-cols-[1.7sssfr,1aafr]">
-          <Card className="space-y-4 p-5">
+          <Card className="space-y-4 p-3 sm:p-5">
             <h2 className="text-lg text-gray-800">Category Details</h2>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("name", { required: "Name is required" })}
                   placeholder="Category Name"
                 />
@@ -163,12 +169,17 @@ export default function AddNewSubcategory() {
                 )}
               </div>
               <div>
-                <Input {...register("icon")} placeholder="Icon (optional)" />
+                <Input
+                  className="text-[15px]"
+                  {...register("icon")}
+                  placeholder="Icon (optional)"
+                />
               </div>
             </div>
             <div className=" grid grid-cols-2 gap-5">
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("itemCount", {
                     required: "itemCount is required",
                   })}
@@ -183,6 +194,7 @@ export default function AddNewSubcategory() {
               </div>
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("slug", { required: "Name is required" })}
                   placeholder="Slug Details"
                 />
@@ -193,10 +205,12 @@ export default function AddNewSubcategory() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Input
+                className="text-[15px]"
                 {...register("banner")}
                 placeholder="Banner URL (optional)"
               />
               <Input
+                className="text-[15px]"
                 {...register("color")}
                 placeholder="Color Theme (optional)"
               />
@@ -214,6 +228,7 @@ export default function AddNewSubcategory() {
 
             <div>
               <Textarea
+                className="text-[15px]"
                 {...register("description", {
                   required: "Description is required",
                 })}
@@ -222,8 +237,7 @@ export default function AddNewSubcategory() {
             </div>
           </Card>
 
-          {/* Category Filters */}
-          <Card className="space-y-4 p-5">
+          <Card className="space-y-4 p-3 sm:p-5">
             <div className="flex justify-between items-center">
               <h3 className="text-lg text-gray-800">Category Filters</h3>
               <Button

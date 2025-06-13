@@ -110,13 +110,13 @@ export default function ProductDetailsPage() {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="px-3 sm:px-6 py-4 sm:py-6 space-y-6">
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-0 items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               onClick={() => router.back()}
-              className="flex items-center gap-2"
+              className="sm:flex items-center gap-2 hidden"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </Button>
@@ -126,6 +126,7 @@ export default function ProductDetailsPage() {
           </div>
           <div className="flex gap-2">
             <Button
+              className="h-9"
               variant="outline"
               onClick={() =>
                 router.push(`/admin/dashboard/products/edit/${id}`)
@@ -134,6 +135,7 @@ export default function ProductDetailsPage() {
               <Edit className="w-4 h-4 mr-2" /> Edit
             </Button>
             <Button
+              className="h-9"
               onClick={() => {
                 setShowDeleteDialog(true);
               }}
@@ -178,7 +180,7 @@ export default function ProductDetailsPage() {
           </Card>
 
           <div className="space-y-6">
-            <Card className="p-6">
+            <Card className="px-3 py-4 sm:px-6 sm:py-6">
               <h2 className="text-2xl font-bold mb-4">
                 {selectedProduct?.name}
               </h2>
@@ -199,16 +201,17 @@ export default function ProductDetailsPage() {
                   </Badge>
                 </div>
 
-                <p className="text-gray-600">{selectedProduct?.description}</p>
+                <p className="text-gray-600 text-[15px]">
+                  {selectedProduct?.description}
+                </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-2 text-gray-600 mb-1">
-                      <DollarSign className="w-4 h-4" />
                       Price
                     </div>
-                    <div className="text-xl font-bold">
-                      ${selectedProduct?.price}
+                    <div className="text-lg font-bold">
+                      KES {selectedProduct?.price}
                     </div>
                   </div>
 
@@ -217,7 +220,7 @@ export default function ProductDetailsPage() {
                       <Package className="w-4 h-4" />
                       Stock
                     </div>
-                    <div className="text-xl font-bold">
+                    <div className="text-lg font-bold">
                       {selectedProduct?.stock} units
                     </div>
                   </div>
@@ -227,7 +230,7 @@ export default function ProductDetailsPage() {
                       <ShoppingCart className="w-4 h-4" />
                       Total Sales
                     </div>
-                    <div className="text-xl font-bold">
+                    <div className="text-lg font-bold">
                       {/* {selectedProduct?.sales} units */}
                       55
                     </div>

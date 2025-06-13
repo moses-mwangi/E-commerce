@@ -83,16 +83,11 @@ function CardPayment() {
   };
 
   const initializePayments = async () => {
-    const datas = await axios.post(
-      "http://127.0.0.1:8000/api/payments/initialize",
-      cardData
-    );
+    await axios.post("http://127.0.0.1:8000/api/payments/initialize", cardData);
   };
 
   const onSuccess = (reference?: any) => {
     toast.success("Payment successful!");
-    console.log("Payment reference:", reference);
-    ////////  I CAN HANDLE SUCCESSFULLY PAYMENTS
   };
 
   const onClose = () => {

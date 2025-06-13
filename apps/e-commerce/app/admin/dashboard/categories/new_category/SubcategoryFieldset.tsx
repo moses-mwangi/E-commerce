@@ -18,7 +18,7 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
   });
 
   return (
-    <div className="p-6 border rounded-lg space-y-6">
+    <div className="p-3 sm:p-6 border rounded-lg space-y-6">
       <div className="flex justify-between items-start">
         <h4 className="text-lg font-medium">Subcategory {index + 1}</h4>
         <Button
@@ -33,6 +33,7 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
 
       <div className="space-y-4">
         <Input
+          className="text-[15px]"
           {...register(`subcategories.${index}.name`, {
             required: "Subcategory name is required",
           })}
@@ -40,6 +41,7 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
         />
         <div>
           <Input
+            className="text-[15px]"
             {...register(`subcategories.${index}.slug`, {
               required: "Name is required",
             })}
@@ -49,6 +51,7 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
         <div>
           <div>
             <Input
+              className="text-[15px]"
               {...register(`subcategories.${index}.itemCount`, {
                 required: "itemCount is required",
               })}
@@ -58,12 +61,14 @@ export function SubcategoryFieldset({ index, register, remove, control }: any) {
           </div>
         </div>
         <Textarea
+          className="text-[15px]"
           {...register(`subcategories.${index}.description`, {
             required: "Description is required",
           })}
           placeholder="Subcategory Description"
         />
         <Input
+          className="text-[15px]"
           {...register(`subcategories.${index}.banner`)}
           placeholder="Banner URL (optional)"
         />

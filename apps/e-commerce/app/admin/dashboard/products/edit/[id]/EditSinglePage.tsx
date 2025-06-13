@@ -246,13 +246,13 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="px-3 py-3 sm:py-5 sm:px-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center gap-4">
           <Button
             variant="ghost"
             onClick={() => router.push("/admin/dashboard/products")}
-            className="flex items-center gap-2"
+            className="sm:flex items-center gap-2 hidden"
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
@@ -278,7 +278,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name}</p>
@@ -294,7 +294,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, brand: e.target.value })
                 }
                 required
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
             </div>
 
@@ -306,7 +306,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, category: value })
                 }
               >
-                <SelectTrigger className=" focus:ring-orange-400">
+                <SelectTrigger className=" focus:ring-orange-400 text-sm sm:text-[15px] text-gray-700">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -332,7 +332,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, subCategory: value })
                 }
               >
-                <SelectTrigger className=" focus:ring-orange-400">
+                <SelectTrigger className=" focus:ring-orange-400 text-sm sm:text-[15px] text-gray-700">
                   <SelectValue placeholder="Select subCategory" />
                 </SelectTrigger>
                 <SelectContent>
@@ -361,7 +361,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, price: e.target.value })
                 }
                 required
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
               {errors.price && (
                 <p className="text-sm text-red-500">{errors.price}</p>
@@ -379,7 +379,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, costPrice: e.target.value })
                 }
                 required
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
               {errors.costPrice && (
                 <p className="text-sm text-red-500">{errors.costPrice}</p>
@@ -396,7 +396,7 @@ export default function EditProductPage() {
                   setFormData({ ...formData, stock: e.target.value })
                 }
                 required
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
               {errors.stock && (
                 <p className="text-sm text-red-500">{errors.stock}</p>
@@ -414,7 +414,7 @@ export default function EditProductPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, discount: e.target.value })
                 }
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
             </div>
 
@@ -430,7 +430,7 @@ export default function EditProductPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, ratings: e.target.value })
                 }
-                className=" focus-visible:ring-orange-400"
+                className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
               />
             </div>
           </div>
@@ -445,7 +445,7 @@ export default function EditProductPage() {
               }
               rows={4}
               required
-              className=" focus-visible:ring-orange-400"
+              className=" focus-visible:ring-orange-400 text-sm sm:text-[15px] text-gray-700"
             />
           </div>
 
@@ -471,7 +471,7 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         updateSpecification(index, "key", e.target.value)
                       }
-                      className=" focus-visible:ring-orange-400"
+                      className=" focus-visible:ring-orange-400 text-[15px] text-gray-700"
                     />
                   </div>
                   <div className="flex-1">
@@ -481,7 +481,7 @@ export default function EditProductPage() {
                       onChange={(e) =>
                         updateSpecification(index, "value", e.target.value)
                       }
-                      className=" focus-visible:ring-orange-400"
+                      className=" focus-visible:ring-orange-400 text-[15px] text-gray-700"
                     />
                   </div>
                   <Button

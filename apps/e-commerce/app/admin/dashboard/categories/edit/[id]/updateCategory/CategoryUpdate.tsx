@@ -145,16 +145,13 @@ export default function CategoryUpdate() {
   }
 
   return (
-    <div className="px-10">
-      <form
-        onSubmit={handleSubmit(categoryFormSubmit)}
-        className="space-y-7 p-7"
-      >
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Update Category</h1>
+    <div className="px-4 sm:px-8 py-4">
+      <form onSubmit={handleSubmit(categoryFormSubmit)} className="space-y-7">
+        <div className="flex flex-col gap-[6px] sm:gap-0 sm:flex-row items-center justify-between">
+          <h1 className="text-xl md:text-2xl font-bold">Update Category</h1>
           <div className="flex gap-2 items-center">
             <Label
-              className="bg-gray-100 text-gray-800 transition-all duration-150 flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
+              className="bg-gray-100 hidden text-gray-800 transition-all duration-150 sm:flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
               onClick={() => {
                 // back();
                 push("/admin/dashboard/categories");
@@ -185,14 +182,14 @@ export default function CategoryUpdate() {
         </div>
 
         {/* Category Details */}
-        <Card className="space-y-4 p-5">
+        <Card className="space-y-4 p-4 sm:p-5">
           <h2 className="text-lg text-gray-800">Category Details</h2>
           <div className="grid grid-cols-2 gap-5">
             <div>
               <Input
                 {...register("name", { required: "Name is required" })}
                 placeholder="Category Name"
-                className="focus-visible:ring-orange-500"
+                className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
               />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -201,7 +198,7 @@ export default function CategoryUpdate() {
             <Input
               {...register("icon")}
               placeholder="Icon (optional)"
-              className="focus-visible:ring-orange-500"
+              className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
             />
           </div>
           <div className="grid grid-cols-2 gap-5">
@@ -209,7 +206,7 @@ export default function CategoryUpdate() {
               <Input
                 {...register("slug", { required: "Slug is required" })}
                 placeholder="Slug"
-                className="focus-visible:ring-orange-500"
+                className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
               />
               {errors.slug && (
                 <p className="text-sm text-red-500">{errors.slug.message}</p>
@@ -218,7 +215,7 @@ export default function CategoryUpdate() {
             <Input
               {...register("banner")}
               placeholder="Banner URL (optional)"
-              className="focus-visible:ring-orange-500"
+              className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
             />
           </div>
 
@@ -226,12 +223,12 @@ export default function CategoryUpdate() {
             <Input
               {...register("color")}
               placeholder="Color Theme (optional)"
-              className="focus-visible:ring-orange-500"
+              className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
             />
             <Input
               {...register("itemCount")}
               placeholder="itemCount (optional)"
-              className="focus-visible:ring-orange-500"
+              className="focus-visible:ring-orange-500 text-gray-700 text-[15px]"
             />
           </div>
           <div className="flex gap-8">
@@ -250,7 +247,7 @@ export default function CategoryUpdate() {
                 required: "Description is required",
               })}
               placeholder="Category Description"
-              className=" h-24 focus-visible:ring-orange-500"
+              className=" h-24 focus-visible:ring-orange-500 text-gray-700 text-[15px]"
             />
             {errors.description && (
               <p className="text-sm text-red-500">
@@ -260,8 +257,7 @@ export default function CategoryUpdate() {
           </div>
         </Card>
 
-        {/* Filters */}
-        <Card className="space-y-4 p-5">
+        <Card className="space-y-4 p-4 sm:p-5">
           <h3 className="text-lg text-gray-800">Category Filters</h3>
           <Button
             type="button"
@@ -271,7 +267,7 @@ export default function CategoryUpdate() {
           >
             <Plus className="w-4 h-4 mr-2" /> Add Filter
           </Button>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {filterFields.map((filter, idx) => (
               <div key={filter.id} className="mt-4">
                 <div className="flex gap-3 pb-2 justify-between items-start">
@@ -292,7 +288,7 @@ export default function CategoryUpdate() {
                   </Button>
                 </div>
                 <Card className=" bg-gray-50/85">
-                  <div className="space-y-2 mt-2 px-6 py-3">
+                  <div className="space-y-2 mt-2 px-3 sm:px-6 py-3">
                     {filter.options.map((_, optionIdx) => (
                       <div key={optionIdx}>
                         <div className="flex gap-2">
@@ -304,7 +300,7 @@ export default function CategoryUpdate() {
                               }
                             )}
                             placeholder="Filter Option"
-                            className="focus-visible:ring-orange-500"
+                            className="focus-visible:ring-orange-500 text-[15px] text-gray-700"
                           />
                           <Button
                             type="button"

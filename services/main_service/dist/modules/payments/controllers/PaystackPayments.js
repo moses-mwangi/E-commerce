@@ -74,6 +74,7 @@ const initializePayment = async (req, res) => {
             userId,
             amount,
         });
+        console.log("START INITIATING PAYMENT :", req.body);
         const order = await ordersModel_1.default.findByPk(orderId);
         if (!order) {
             logger_1.default.error(`Order not found: ${orderId}`);
@@ -280,7 +281,7 @@ const paystackWebhook = async (req, res) => {
         amount: data.amount,
         channel: data.channel,
     });
-    console.log("IM IN WEBHOOK", event, data);
+    console.log("IM IN WEBHOOK ::", event);
     logger_1.default.info(`Received Paystack webhook event kk: ${event}`, { data });
     try {
         switch (event) {

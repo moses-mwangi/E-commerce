@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/card";
 import { useCardContex } from "@/hooks/paymentContext";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
+import axios from "axios";
 
 const mobileNetworks = [
   { id: "mtn", name: "MTN Mobile Money" },
@@ -79,10 +80,30 @@ export default function MobileMoneyPayment() {
 
   const initializePayment = usePaystackPayment(config);
 
+  const cardData = {
+    email: currentUser?.email,
+    reference: reference,
+    name: currentUser?.name,
+    amount: subtotal,
+    orderId: selectedOrder?.id,
+    userId: currentUser?.id,
+    currency: selectedCurrency || "KES",
+    // channels,
+    method: "card",
+    phone: "0725672675",
+    metadata: {
+      name: currentUser?.name,
+      email: currentUser?.email,
+    },
+  };
+
+  const initializePayments = async () => {
+    await axios.post("http://127.0.0.1:8000/api/payments/initialize", cardData);
+  };
+
   const onSuccess = (reference?: any) => {
     setIsProcessing(false);
     toast.success("Payment initiated successfully!");
-    console.log("Payment reference:", reference);
   };
 
   const onClose = () => {
@@ -93,6 +114,7 @@ export default function MobileMoneyPayment() {
   const onSubmit = (data: any) => {
     setIsProcessing(true);
     initializePayment(onSuccess, onClose);
+    initializePayments();
   };
 
   return (

@@ -151,8 +151,11 @@ export default function ProductUploadPage() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="px-3 py-3 sm:py-5 sm:px-6 space-y-6"
+      >
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-0 items-center justify-between">
           <div className="flex items-center space-x-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-800">
@@ -178,7 +181,7 @@ export default function ProductUploadPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Basic Information</h2>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-5">
@@ -211,7 +214,7 @@ export default function ProductUploadPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Media</h2>
               <div
                 {...getRootProps()}
@@ -248,7 +251,7 @@ export default function ProductUploadPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Specifications</h2>
               <div className="space-y-4">
                 <div className="flex space-x-3">
@@ -300,7 +303,7 @@ export default function ProductUploadPage() {
           </div>
 
           <div className="space-y-6">
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Pricing</h2>
               <div className="space-y-4">
                 <div>
@@ -358,7 +361,7 @@ export default function ProductUploadPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Organization</h2>
               <div className="space-y-4">
                 <div>
@@ -415,7 +418,7 @@ export default function ProductUploadPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="px-4 py-4 sm:py-5 sm:px-6">
               <h2 className="text-lg font-medium mb-4">Inventory</h2>
               <div className="space-y-4">
                 <div>

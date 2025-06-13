@@ -105,17 +105,22 @@ export function CategoryForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(categoryFormSubmit)} className="space-y-7 p-7">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Create New Category</h1>
-          <h1 className="text-gray-600 mt-1">
+    <form
+      onSubmit={handleSubmit(categoryFormSubmit)}
+      className="space-y-7 px-3 py-4 sm:px-6 sm:py-6"
+    >
+      <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row items-center justify-between">
+        <div className=" text-center">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold">
+            Create New Category
+          </h1>
+          <h1 className="text-gray-600 sm:mt-1">
             Add a new category to your store
           </h1>
         </div>
         <div className="flex items-center space-x-3">
           <Label
-            className="bg-gray-100 text-gray-800 transition-all duration-150 flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
+            className="bg-gray-100 hidden text-gray-800 transition-all duration-150 sm:flex items-center gap-1 cursor-pointer hover:bg-gray-200 px-3 py-2 rounded-md"
             onClick={() => {
               push(`/admin/dashboard/categories`);
             }}
@@ -145,11 +150,12 @@ export function CategoryForm() {
       </div>
       <div className="grid grid-cols-1  gap-6">
         <div className="space-y-6 grid lg:grid-cols-[1.7sssfr,1aafr]">
-          <Card className="space-y-4 p-5">
+          <Card className="space-y-4 p-3 sm:p-5">
             <h2 className="text-lg text-gray-800">Category Details</h2>
             <div className="grid grid-cols-2 gap-5">
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("name", { required: "Name is required" })}
                   placeholder="Category Name"
                 />
@@ -158,12 +164,17 @@ export function CategoryForm() {
                 )}
               </div>
               <div>
-                <Input {...register("icon")} placeholder="Icon (optional)" />
+                <Input
+                  className="text-[15px]"
+                  {...register("icon")}
+                  placeholder="Icon (optional)"
+                />
               </div>
             </div>
             <div className=" grid grid-cols-2 gap-5">
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("itemCount", {
                     required: "itemCount is required",
                   })}
@@ -178,6 +189,7 @@ export function CategoryForm() {
               </div>
               <div>
                 <Input
+                  className="text-[15px]"
                   {...register("slug", { required: "Name is required" })}
                   placeholder="Slug Details"
                 />
@@ -188,10 +200,12 @@ export function CategoryForm() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Input
+                className="text-[15px]"
                 {...register("banner")}
                 placeholder="Banner URL (optional)"
               />
               <Input
+                className="text-[15px]"
                 {...register("color")}
                 placeholder="Color Theme (optional)"
               />
@@ -209,6 +223,7 @@ export function CategoryForm() {
 
             <div>
               <Textarea
+                className="text-[15px]"
                 {...register("description", {
                   required: "Description is required",
                 })}
@@ -218,7 +233,7 @@ export function CategoryForm() {
           </Card>
 
           {/* Category Filters */}
-          <Card className="space-y-4 p-5">
+          <Card className="space-y-4 p-3 sm:p-5">
             <div className="flex justify-between items-center">
               <h3 className="text-lg text-gray-800">Category Filters</h3>
               <Button
@@ -246,7 +261,7 @@ export function CategoryForm() {
         </div>
         {/* Subcategories */}
         <div>
-          <Card className="space-y-4 p-5">
+          <Card className="space-y-4 p-3 sm:p-5">
             <div className="flex justify-between items-center">
               <h3 className="text-lg text-gray-800">Subcategories</h3>
               <Button
