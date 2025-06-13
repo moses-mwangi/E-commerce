@@ -34,6 +34,10 @@ const pg_connect = async () => {
   try {
     sequelize.authenticate();
     console.log("The PostgreSQL database has successfully connected");
+    if (process.env.NODE_ENV === "production") {
+      sequelize.sync({ alter: true });
+    }
+
     // await sequelize.sync({ force: true });
     // await Payment.sync({ force: true });
 
