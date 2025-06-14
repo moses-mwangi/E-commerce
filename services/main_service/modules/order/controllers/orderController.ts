@@ -13,11 +13,10 @@ import { v4 as uuidv4 } from "uuid";
 import { sendOrderCreated } from "../../../shared/producers/orderProducer";
 
 function generateTrackingNumber() {
-  const cryptoRandom = window.crypto.getRandomValues(new Uint32Array(1))[0];
   const timeComponent = Date.now();
   const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
-  const uuidComponent = uuidv4().split("-")[0];
-  return `${uuidComponent}-${timeComponent}-${cryptoRandom}-${randomSuffix}`;
+  const uuidComponent = uuidv4();
+  return `${uuidComponent}-${timeComponent}-${randomSuffix}`;
 }
 
 export const createOrder = catchAsync(
@@ -35,8 +34,6 @@ export const createOrder = catchAsync(
       fullName,
       postcode,
       apartment,
-
-      // trackingNumber,
     } = req.body;
 
     // const trackingNumber = `${uuidv1()}-${Date.now()}`;

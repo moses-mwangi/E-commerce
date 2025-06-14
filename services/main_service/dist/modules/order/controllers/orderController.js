@@ -15,11 +15,10 @@ const pg_database_1 = __importDefault(require("../../../shared/config/pg_databas
 const uuid_1 = require("uuid");
 const orderProducer_1 = require("../../../shared/producers/orderProducer");
 function generateTrackingNumber() {
-    const cryptoRandom = window.crypto.getRandomValues(new Uint32Array(1))[0];
     const timeComponent = Date.now();
     const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
-    const uuidComponent = (0, uuid_1.v4)().split("-")[0];
-    return `${uuidComponent}-${timeComponent}-${cryptoRandom}-${randomSuffix}`;
+    const uuidComponent = (0, uuid_1.v4)();
+    return `${uuidComponent}-${timeComponent}-${randomSuffix}`;
 }
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
     const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment,
