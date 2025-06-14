@@ -12,18 +12,18 @@ const itemOrder_1 = __importDefault(require("../models/itemOrder"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
-const uuid_1 = require("uuid");
+// import { v1 as uuidv1 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 const orderProducer_1 = require("../../../shared/producers/orderProducer");
-function generateTrackingNumber() {
-    const timeComponent = Date.now();
-    const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
-    const uuidComponent = (0, uuid_1.v4)();
-    return `${uuidComponent}-${timeComponent}-${randomSuffix}`;
-}
+// function generateTrackingNumber() {
+//   const timeComponent = Date.now();
+//   const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
+//   const uuidComponent = uuidv4();
+//   return `${uuidComponent}-${timeComponent}-${randomSuffix}`;
+// }
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
     const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment, trackingNumber, } = req.body;
     // const trackingNumber = `${uuidv1()}-${Date.now()}`;
-    // const trackingNumber = generateTrackingNumber();
     if (!userId || !products || products.length === 0) {
         return next(new AppError_1.default("Missing required fields", 400));
     }

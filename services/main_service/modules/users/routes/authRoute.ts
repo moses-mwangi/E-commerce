@@ -64,7 +64,7 @@ router
 
       if (req.user && token) {
         res.redirect(
-          `http://localhost:3000/token_verification/?token=${token}`
+          `https://www.kivamall.com/token_verification/?token=${token}`
         );
       } else {
         res.status(400).json({
