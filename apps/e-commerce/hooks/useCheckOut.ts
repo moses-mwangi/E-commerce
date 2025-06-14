@@ -170,7 +170,6 @@ export function useCheckOut() {
         };
 
         const orderItems = {
-          trackingNumber: "hhh",
           userId: currentUser?.id,
           totalPrice: totalPrice,
           status: "pending",

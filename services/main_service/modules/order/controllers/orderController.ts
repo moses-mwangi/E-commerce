@@ -9,7 +9,16 @@ import User from "../../users/models/userMode";
 import ProductImage from "../../product/models/product/productImageModel";
 import sequelize from "../../../shared/config/pg_database";
 import { v1 as uuidv1 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { sendOrderCreated } from "../../../shared/producers/orderProducer";
+
+function generateTrackingNumber() {
+  const cryptoRandom = window.crypto.getRandomValues(new Uint32Array(1))[0];
+  const timeComponent = Date.now();
+  const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
+  const uuidComponent = uuidv4().split("-")[0];
+  return `${uuidComponent}-${timeComponent}-${cryptoRandom}-${randomSuffix}`;
+}
 
 export const createOrder = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -30,9 +39,10 @@ export const createOrder = catchAsync(
       // trackingNumber,
     } = req.body;
 
-    const trackingNumber = `${uuidv1()}-${Date.now()}`;
+    // const trackingNumber = `${uuidv1()}-${Date.now()}`;
+    const trackingNumber = generateTrackingNumber();
 
-    if (!userId || !products || products.length === 0 || !shippingAddress) {
+    if (!userId || !products || products.length === 0) {
       return next(new AppError("Missing required fields", 400));
     }
 

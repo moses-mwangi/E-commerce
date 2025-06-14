@@ -14,12 +14,20 @@ const productImageModel_1 = __importDefault(require("../../product/models/produc
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
 const uuid_1 = require("uuid");
 const orderProducer_1 = require("../../../shared/producers/orderProducer");
+function generateTrackingNumber() {
+    const cryptoRandom = window.crypto.getRandomValues(new Uint32Array(1))[0];
+    const timeComponent = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 90000) + 10000;
+    const uuidComponent = (0, uuid_1.v4)().split("-")[0];
+    return `${uuidComponent}-${timeComponent}-${cryptoRandom}-${randomSuffix}`;
+}
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
     const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment,
     // trackingNumber,
      } = req.body;
-    const trackingNumber = `${(0, uuid_1.v1)()}-${Date.now()}`;
-    if (!userId || !products || products.length === 0 || !shippingAddress) {
+    // const trackingNumber = `${uuidv1()}-${Date.now()}`;
+    const trackingNumber = generateTrackingNumber();
+    if (!userId || !products || products.length === 0) {
         return next(new AppError_1.default("Missing required fields", 400));
     }
     const transaction = await pg_database_1.default.transaction();
