@@ -20,7 +20,7 @@ export default function Page() {
     <>
       <SmsSentModal details={details} />
       <div className="bg-gray-50/30 relative">
-        <div className="bg-white flex justify-between shadow-md py-4 px-6">
+        <div className="bg-white flex justify-between shadow-md py-4 px-4 sm:px-6">
           <div>
             <Logo />
           </div>

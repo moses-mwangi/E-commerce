@@ -174,7 +174,7 @@ export default function MobileMoneyPayment() {
             )}
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-md">
+          <div className="bg-blue-50 p-4 rounded-md hidden sm:block">
             <h4 className="font-medium text-blue-800 mb-2">How to pay:</h4>
             <ol className="list-decimal list-inside text-sm text-blue-700 space-y-1">
               <li>Enter your mobile money details above</li>
@@ -190,9 +190,7 @@ export default function MobileMoneyPayment() {
           disabled={isProcessing}
           className="w-full bg-orange-500 hover:bg-orange-600"
         >
-          {isProcessing
-            ? "Processing..."
-            : `Pay ₦${(subtotal * 25).toFixed(2)}`}
+          {isProcessing ? "Processing..." : `Complete payment`}
         </Button>
       </CardFooter>
     </Card>

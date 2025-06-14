@@ -133,7 +133,6 @@ export function useCheckOut() {
   // getFeaturesInBoundingBox();
 
   function onSubmit(data: any) {
-    // console.log(data);
     try {
       if (!id) {
         const orderItem = items.map((el) => {
@@ -155,8 +154,6 @@ export function useCheckOut() {
           ...data,
         };
 
-        // console.log("orders", orderItems);
-        // console.log(data);
         dispatch(createOrder(orderItems));
         dispatch(clearCart());
       } else {
@@ -182,9 +179,8 @@ export function useCheckOut() {
           orderItems: [order],
           ...data,
         };
-        console.log(orderItems);
 
-        // dispatch(createOrder(orderItems));
+        dispatch(createOrder(orderItems));
       }
     } catch (err) {
       console.error(err);

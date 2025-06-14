@@ -60,7 +60,7 @@ export default function CheckOutForm() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <Card className="p-6 bg-white shadow-lg rounded-lg">
+      <Card className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
         <AnimatePresence mode="wait">
           <motion.div
             key="shipping"
@@ -149,7 +149,7 @@ export default function CheckOutForm() {
               </div>
 
               <div className="col-span-2">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Input
                     {...register("streetAddress")}
                     placeholder="Street Address"
@@ -177,15 +177,14 @@ export default function CheckOutForm() {
                 )}
               </div>
 
-              <div>
+              <div className=" col-span-2 sm:col-span-1">
                 <Input
                   {...register("apartment")}
                   placeholder="Apartment, Suite, Unit, Building, Floor (Optional)"
                   className="focus-visible:ring-orange-500/60"
                 />
               </div>
-
-              <div>
+              <div className=" col-span-2 sm:col-span-1">
                 <Input
                   {...register("postcode")}
                   placeholder="Postcode"
@@ -199,7 +198,7 @@ export default function CheckOutForm() {
                 )}
               </div>
 
-              <div>
+              <div className=" col-span-2 sm:col-span-1">
                 <Input
                   {...register("county")}
                   placeholder="State / Province / County"

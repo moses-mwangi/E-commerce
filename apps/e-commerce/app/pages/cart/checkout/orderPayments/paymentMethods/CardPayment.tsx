@@ -192,7 +192,7 @@ function CardPayment() {
             )}
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-md">
+          <div className="bg-blue-50 p-4 rounded-md hidden sm:block">
             <h4 className="font-medium text-blue-800 mb-2">
               How card payment works:
             </h4>

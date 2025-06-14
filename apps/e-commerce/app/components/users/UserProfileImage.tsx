@@ -220,7 +220,7 @@ export default function UserProfileImage() {
           </div>
         </PopoverTrigger>
 
-        <PopoverContent className="w-80 z-40 pt-0 px-0 shadow-xl rounded-lg overflow-hidden">
+        <PopoverContent className="w-80 z-50 pt-0 px-0 shadow-xl rounded-lg overflow-hidden">
           <div className="flex flex-col space-y-[6px]">
             <div className="px-4 flex items-center gap-3 py-3 bg-pink-50">
               <div className="h-11 w-11 flex items-center justify-center font-bold text-white rounded-full bg-pink-500">

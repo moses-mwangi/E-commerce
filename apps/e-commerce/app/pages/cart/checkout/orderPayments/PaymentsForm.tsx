@@ -11,9 +11,9 @@ import React, { useEffect } from "react";
 import bank from "../../../../../public/paymentImages/bank.png";
 import Card_Payment from "../../../../../public/paymentImages/card.png";
 import M_Pesa from "../../../../../public/paymentImages/mpesa.png";
+
 import BankTransferPayment from "../orderPayments/paymentMethods/BankTransferPayment";
 import CardPayment from "../orderPayments/paymentMethods/CardPayment";
-import MpesaPayment from "../orderPayments/paymentMethods/M_pesaPayment";
 import MobileMoney from "./paymentMethods/MobileMoney";
 
 import AvailableCard from "@/app/components/AvailableCards";
@@ -77,7 +77,7 @@ export default function PaymentsForm({ setDetails }: any) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      className="space-y-6 p-0 px-0 py-0"
     >
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-gray-900">Payment Method</h2>
@@ -122,7 +122,7 @@ export default function PaymentsForm({ setDetails }: any) {
                 selectedPayment === method.id
                   ? " bg-orange-50 rounded-b-none"
                   : "bg-gray-50"
-              } flex items-center rounded-lg gap-6 p-6`}
+              } flex items-center rounded-lg gap-6 p-5 sm:p-6`}
             >
               <RadioGroupItem
                 value={method.id}
@@ -141,7 +141,11 @@ export default function PaymentsForm({ setDetails }: any) {
                     alt="method_payment_logo"
                     width={60}
                     height={60}
-                    className="h-11 rounded-full w-11 overflow-hidden"
+                    className={` ${
+                      method.title === "Credit/Debit Card"
+                        ? "h-9 w-9 sm:h-11 sm:w-11"
+                        : "sm:h-11 sm:w-11"
+                    } rounded-full overflow-hidden`}
                   />
                 </div>
                 {method.title === "Credit/Debit sCard" ? (
@@ -201,9 +205,9 @@ export default function PaymentsForm({ setDetails }: any) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className=" max-w-5xl w-full p-4"
+      className=" max-w-5xl w-full py-4 sm:px-4 "
     >
-      <Card className="p-6 bg-white shadow-lg rounded-lg">
+      <Card className="px-3 py-4 sm:px-6 sm:py-5 bg-white shadow-lg rounded-none sm:rounded-lg">
         <AnimatePresence mode="wait">{renderPaymentStep()}</AnimatePresence>
         <Separator className="my-8" />
       </Card>
