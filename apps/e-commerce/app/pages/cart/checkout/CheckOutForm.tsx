@@ -35,7 +35,6 @@ export default function CheckOutForm() {
     loadingLocation,
     handleUseCurrentLocation,
     currentUser,
-
     status,
   } = useCheckOut();
   const formValues = watch();

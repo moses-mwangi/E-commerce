@@ -12,16 +12,17 @@ const itemOrder_1 = __importDefault(require("../models/itemOrder"));
 const userMode_1 = __importDefault(require("../../users/models/userMode"));
 const productImageModel_1 = __importDefault(require("../../product/models/product/productImageModel"));
 const pg_database_1 = __importDefault(require("../../../shared/config/pg_database"));
+const uuid_1 = require("uuid");
 const orderProducer_1 = require("../../../shared/producers/orderProducer");
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
-    const { userId, orderItems: products, shippingAddress, 
-    // paymentMethodId,
-    country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment, trackingNumber, totalPrice, } = req.body;
-    console.log("BODY", req.body);
+    const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment,
+    // trackingNumber,
+     } = req.body;
+    const trackingNumber = `${(0, uuid_1.v1)()}-${Date.now()}`;
     if (!userId || !products || products.length === 0 || !shippingAddress) {
         return next(new AppError_1.default("Missing required fields", 400));
     }
-    const transaction = await pg_database_1.default.transaction(); // Start transaction
+    const transaction = await pg_database_1.default.transaction();
     try {
         const productIds = products.map((item) => item.productId);
         const productList = await productModels_1.default.findAll({
@@ -52,7 +53,6 @@ exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
             fullName,
             postcode,
             apartment,
-            // totalPrice,
         }, { transaction });
         const orderItems = products.map((item) => ({
             orderId: order.id,

@@ -85,9 +85,7 @@ export default function NewArrivalsPage() {
         </div>
 
         <div className="sm:hidden mb-6">
-          {/* Mobile New Arrivals Header */}
           <div className="bg-gradient-to-r from-green-500 to-emerald-400 text-white rounded-lg p-4 shadow-md relative overflow-hidden">
-            {/* Decorative corner element */}
             <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-bl-full"></div>
 
             <div className="relative z-10">
@@ -100,7 +98,6 @@ export default function NewArrivalsPage() {
 
               <p className="text-sm mb-3">Fresh picks added today</p>
 
-              {/* New arrival highlights */}
               <div className="flex overflow-x-auto gap-2 pb-1 hide-scrollbar">
                 <div className="bg-white/20 px-3 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
                   <Truck size={12} />
@@ -118,7 +115,6 @@ export default function NewArrivalsPage() {
             </div>
           </div>
 
-          {/* Optional: Freshness indicator */}
           <div className="bg-green-500/10 text-green-700 px-3 py-2 rounded-lg mt-2 flex items-center justify-between text-xs">
             <span className="flex items-center gap-1">
               <Sparkles size={12} />
@@ -129,7 +125,7 @@ export default function NewArrivalsPage() {
         </div>
 
         {NEW_ARRIVALS.length ? (
-          <div className="flex items-center justify-start overflow-x-scroll hide-scrollbar gap-4 mb-8">
+          <div className=" grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
             {NEW_ARRIVALS.map((arrival) => (
               <div
                 key={arrival.id}
@@ -137,9 +133,9 @@ export default function NewArrivalsPage() {
                   setIsLoading(true);
                   push(
                     `/category/${arrival.category}/${arrival.subCategory}/${arrival.name}?id=${arrival.id}`
-                  );
+                  ); // <div className="flex items-center justify-start overflow-x-scroll hide-scrollbar gap-4 mb-8">
                 }}
-                className="border cursor-pointer min-w-52 bg-white sm:min-w-56 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div className="relative overflow-hidden">
                   <Image
@@ -180,12 +176,12 @@ export default function NewArrivalsPage() {
                 </div>
 
                 <div className="p-3">
-                  <h3 className="font-medium line-clamp-2 mb-2">
+                  <h3 className="font-medium line-clamp-2 mb-2 text-[15px] sm:text-base">
                     {arrival.name}
                   </h3>
 
                   <div className="flex items-end gap-2 mb-2">
-                    <span className="text-red-600 font-bold text-lg">
+                    <span className="text-red-600 font-bold text-[17px] sm:text-lg">
                       {`${arrival.currency} ${arrival.price}`}
                     </span>
                   </div>
@@ -273,7 +269,7 @@ const NewArrivalBadge = ({ type, daysSinceAdded }: NewArrivalBadgeProps) => {
       } text-white text-xs font-bold px-2 py-1 rounded-full inline-flex items-center gap-1`}
     >
       <span>🆕</span>
-      {getTimeText()} | {type}
+      {getTimeText()} <span className=" hidden sm:flex">| {type}</span>
     </div>
   );
 };

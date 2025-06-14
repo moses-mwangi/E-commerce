@@ -58,7 +58,8 @@ export default function TrendingProductsPage() {
             product.subCategory.toLowerCase() === activeSub?.name.toLowerCase()
         );
 
-  const TRENDING_PRODUCTS = products.filter((el) => el.trendingScore >= 60);
+  // const TRENDING_PRODUCTS = products.filter((el) => el.trendingScore >= 60);
+  const TRENDING_PRODUCTS = products;
 
   return (
     <div>

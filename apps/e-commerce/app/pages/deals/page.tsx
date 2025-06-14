@@ -36,7 +36,8 @@ export default function FlashDealsPage() {
   const { categories } = useSelector((state: RootState) => state.category);
   const { products } = useSelector((state: RootState) => state.product);
 
-  const FLASH_DEALS = products.filter((product) => product.dealPrice > 0);
+  // const FLASH_DEALS = products.filter((product) => product.dealPrice > 0);
+  const FLASH_DEALS = products;
 
   const subCategory = categories
     .flatMap((el) => el.subcategories)

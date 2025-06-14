@@ -133,7 +133,7 @@ export function useCheckOut() {
   // getFeaturesInBoundingBox();
 
   function onSubmit(data: any) {
-    console.log(data);
+    // console.log(data);
     try {
       if (!id) {
         const orderItem = items.map((el) => {
@@ -155,8 +155,8 @@ export function useCheckOut() {
           ...data,
         };
 
-        console.log("orders", orderItems);
-        console.log(data);
+        // console.log("orders", orderItems);
+        // console.log(data);
         dispatch(createOrder(orderItems));
         dispatch(clearCart());
       } else {
@@ -171,9 +171,9 @@ export function useCheckOut() {
           quantity: Number(productQuantity),
           price: Number(buyProduct?.price),
         };
-        console.log(buyProduct, productQuantity, order);
 
         const orderItems = {
+          trackingNumber: "hhh",
           userId: currentUser?.id,
           totalPrice: totalPrice,
           status: "pending",
@@ -182,8 +182,9 @@ export function useCheckOut() {
           orderItems: [order],
           ...data,
         };
+        console.log(orderItems);
 
-        dispatch(createOrder(orderItems));
+        // dispatch(createOrder(orderItems));
       }
     } catch (err) {
       console.error(err);

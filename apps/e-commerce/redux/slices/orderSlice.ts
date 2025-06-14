@@ -28,6 +28,7 @@ type OrdersItemType = {
 export const createOrder = createAsyncThunk(
   "orders/create",
   async (orderData: OrdersItemType) => {
+    console.log("ORDERS_ITEMS", orderData);
     try {
       const res = await axios.post(`${API_URL}/order`, orderData);
       toast.success("Order sent succefully");

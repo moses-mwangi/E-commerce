@@ -4,14 +4,11 @@ import AppError from "../../../shared/utils/AppError";
 import Product from "../../product/models/product/productModels";
 import Order from "../models/ordersModel";
 import OrderItem from "../models/itemOrder";
-import Stripe from "stripe";
-import dotenv from "dotenv";
 
 import User from "../../users/models/userMode";
 import ProductImage from "../../product/models/product/productImageModel";
 import sequelize from "../../../shared/config/pg_database";
-import { where } from "sequelize";
-import Payment from "../../payments/models/paymentModel";
+import { v1 as uuidv1 } from "uuid";
 import { sendOrderCreated } from "../../../shared/producers/orderProducer";
 
 export const createOrder = catchAsync(
@@ -20,7 +17,6 @@ export const createOrder = catchAsync(
       userId,
       orderItems: products,
       shippingAddress,
-      // paymentMethodId,
       country,
       county,
       streetAddress,
@@ -30,16 +26,17 @@ export const createOrder = catchAsync(
       fullName,
       postcode,
       apartment,
-      trackingNumber,
-      totalPrice,
+
+      // trackingNumber,
     } = req.body;
-    console.log("BODY", req.body);
+
+    const trackingNumber = `${uuidv1()}-${Date.now()}`;
 
     if (!userId || !products || products.length === 0 || !shippingAddress) {
       return next(new AppError("Missing required fields", 400));
     }
 
-    const transaction = await sequelize.transaction(); // Start transaction
+    const transaction = await sequelize.transaction();
 
     try {
       const productIds = products.map(
@@ -83,7 +80,6 @@ export const createOrder = catchAsync(
           fullName,
           postcode,
           apartment,
-          // totalPrice,
         },
         { transaction }
       );
