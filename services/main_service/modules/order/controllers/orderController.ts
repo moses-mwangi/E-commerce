@@ -34,10 +34,11 @@ export const createOrder = catchAsync(
       fullName,
       postcode,
       apartment,
+      trackingNumber,
     } = req.body;
 
     // const trackingNumber = `${uuidv1()}-${Date.now()}`;
-    const trackingNumber = generateTrackingNumber();
+    // const trackingNumber = generateTrackingNumber();
 
     if (!userId || !products || products.length === 0) {
       return next(new AppError("Missing required fields", 400));
@@ -113,13 +114,12 @@ export const createOrder = catchAsync(
         ],
       });
 
-      await sendOrderCreated(selectedOrder);
-
       res.status(201).json({
         success: true,
         message: "Order placed successfully!",
         order,
       });
+      await sendOrderCreated(selectedOrder);
     } catch (error) {
       await transaction.rollback();
       next(error);
