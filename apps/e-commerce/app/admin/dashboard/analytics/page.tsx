@@ -91,8 +91,8 @@ export default function AnalyticsPage() {
   } = useAnalytics();
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="py-4 px-3 sm:px-6 sm:py-6 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center">
         <div>
           <h1 className="text-2xl font-semibold text-gray-800">
             Analytics Dashboard
@@ -276,7 +276,7 @@ export default function AnalyticsPage() {
         </Card>
 
         <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Sales by Category</h3>
             <div className="flex space-x-2">
               <Select
@@ -357,8 +357,8 @@ export default function AnalyticsPage() {
           )}
         </Card>
 
-        <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
+        <Card className="py-3 sm:py-5">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Orders Overview</h3>
             <div className="flex space-x-2">
               <Select
@@ -468,20 +468,26 @@ export default function AnalyticsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
-                  <TableHead>Units Sold</TableHead>
-                  <TableHead>Revenue</TableHead>
-                  <TableHead>Rating</TableHead>
+                  <TableHead className=" whitespace-nowrap">
+                    Units Sold
+                  </TableHead>
+                  <TableHead className=" whitespace-nowrap">Revenue</TableHead>
+                  <TableHead className=" whitespace-nowrap">Rating</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {topProducts.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium whitespace-nowrap">
                       {product.name}
                     </TableCell>
-                    <TableCell>{product.totalSold}</TableCell>
-                    <TableCell>${product.revenue.toLocaleString()}</TableCell>
-                    <TableCell>
+                    <TableCell className=" whitespace-nowrap">
+                      {product.totalSold}
+                    </TableCell>
+                    <TableCell className=" whitespace-nowrap">
+                      KES {product.revenue.toLocaleString()}
+                    </TableCell>
+                    <TableCell className=" whitespace-nowrap">
                       <div className="flex items-center">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 mr-1" />
                         {product?.ratings?.toFixed(1) || "N/A"}
@@ -494,8 +500,8 @@ export default function AnalyticsPage() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
+        <Card className="py-4 sm:py-5 px-3 sm:px-5">
+          <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:justify-between sm:items-center mb-4">
             <div>
               <h3 className="text-lg font-semibold">Customer Growth</h3>
               <p className="text-sm text-gray-500">
@@ -510,7 +516,7 @@ export default function AnalyticsPage() {
                 )}
               </p>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:space-x-2">
               <Select value={`12`} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-28 h-[31px] focus:ring-orange-500/85">
                   <SelectValue placeholder="Range" />
@@ -522,7 +528,7 @@ export default function AnalyticsPage() {
                 </SelectContent>
               </Select>
               <Button variant="outline" size="sm">
-                <Users className="w-4 h-4 mr-2" />
+                <Users className="w-4 h-4 sm:mr-2" />
                 View Details
               </Button>
             </div>
@@ -578,7 +584,7 @@ export default function AnalyticsPage() {
         </Card>
 
         <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:justify-between sm:items-center mb-4">
             <div>
               <h3 className="text-lg font-semibold">Customer Demographics</h3>
               <p className="text-sm text-gray-500">
@@ -590,7 +596,7 @@ export default function AnalyticsPage() {
               // value={demographicView}
               // onValueChange={setDemographicView}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-32 h-8">
                   <SelectValue placeholder="View" />
                 </SelectTrigger>
                 <SelectContent>
@@ -607,7 +613,7 @@ export default function AnalyticsPage() {
           </div>
 
           <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer className="" width="100%" height="100%">
               <BarChart
                 data={ageDistribution}
                 // layout={
@@ -616,11 +622,7 @@ export default function AnalyticsPage() {
                 margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis
-                  // dataKey={demographicView === "location" ? "value" : "name"}
-                  dataKey={"name"}
-                  tick={{ fontSize: 12 }}
-                />
+                <XAxis dataKey={"name"} tick={{ fontSize: 12 }} />
                 <YAxis
                   // dataKey={demographicView === "location" ? "name" : "value"}
                   dataKey={"name"}

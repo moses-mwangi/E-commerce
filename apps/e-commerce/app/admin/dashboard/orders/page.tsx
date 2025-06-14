@@ -197,12 +197,18 @@ export default function OrdersPage() {
               {currentProduct?.length > 0 ? (
                 currentProduct?.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium whitespace-nowrap">
                       ORD-#{order.id}
                     </TableCell>
-                    <TableCell>{order.User.name}</TableCell>
-                    <TableCell>{format(order.createdAt, "MMM d yy")}</TableCell>
-                    <TableCell>${order.totalPrice}</TableCell>
+                    <TableCell className=" whitespace-nowrap">
+                      {order.User.name}
+                    </TableCell>
+                    <TableCell className=" whitespace-nowrap">
+                      {format(order.createdAt, "MMM d yy")}
+                    </TableCell>
+                    <TableCell className=" whitespace-nowrap">
+                      KES {order.totalPrice}
+                    </TableCell>
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${

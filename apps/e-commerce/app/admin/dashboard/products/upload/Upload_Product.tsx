@@ -134,11 +134,15 @@ export default function ProductUploadPage() {
       //   console.log(key, value);
       // }
 
-      await axios.post("http://127.0.0.1:8000/api/product", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://kivamall.up.railway.app/api/product",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       reset();
       toast.success("Product added successfully!");
     } catch (error) {
