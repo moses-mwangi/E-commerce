@@ -1,7 +1,7 @@
 "use client";
 
 import LoadingState from "@/app/components/loaders/LoadingState";
-import QivamallLogo from "@/app/test/page";
+import QivamallLogo from "@/app/test/Qlogo";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
