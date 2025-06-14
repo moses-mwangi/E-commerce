@@ -21,11 +21,9 @@ function generateTrackingNumber() {
     return `${uuidComponent}-${timeComponent}-${randomSuffix}`;
 }
 exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
-    const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment,
-    // trackingNumber,
-     } = req.body;
+    const { userId, orderItems: products, shippingAddress, country, county, streetAddress, phoneNumber, city, email, fullName, postcode, apartment, trackingNumber, } = req.body;
     // const trackingNumber = `${uuidv1()}-${Date.now()}`;
-    const trackingNumber = generateTrackingNumber();
+    // const trackingNumber = generateTrackingNumber();
     if (!userId || !products || products.length === 0) {
         return next(new AppError_1.default("Missing required fields", 400));
     }
@@ -77,12 +75,12 @@ exports.createOrder = (0, catchSync_1.default)(async (req, res, next) => {
                 },
             ],
         });
-        await (0, orderProducer_1.sendOrderCreated)(selectedOrder);
         res.status(201).json({
             success: true,
             message: "Order placed successfully!",
             order,
         });
+        await (0, orderProducer_1.sendOrderCreated)(selectedOrder);
     }
     catch (error) {
         await transaction.rollback();
