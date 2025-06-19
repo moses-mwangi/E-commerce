@@ -205,8 +205,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="p-3 md:p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="p-3 md:p-6 space-y-4 sm:space-y-6">
+          <div className=" hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <Card className="py-6 px-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -215,7 +215,7 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm text-gray-600">Total Revenue</p>
                   <h3 className="text-2xl font-bold text-gray-900">
-                    ${revenue.toLocaleString()}
+                    KSH {revenue.toLocaleString()}
                   </h3>
                   <p
                     className={`text-xs ${
@@ -291,6 +291,81 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </Card>
+          </div>
+
+          {/* /////////////////////////////////////////////////////// */}
+
+          <div className=" block sm:hidden  sm:px-0">
+            <div className=" grid grid-cols-2 gap-3">
+              <Card className=" px-3 rounded-sm">
+                <h3 className="text-sm font-medium text-gray-500">
+                  Total Revenue
+                </h3>
+                <div className="flex gap-3 items-center">
+                  <p className=" text-[16] sm:text-2xl font-bold mt-1">
+                    KES {revenue.toLocaleString()}
+                  </p>
+                  <span
+                    className={`text-green-600 text-sm ${
+                      salesChange >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {salesChange !== 0 ? "N/C" : `${formattedSalesChange}`}
+                  </span>
+                </div>
+              </Card>
+              <Card className=" px-3 rounded-sm">
+                <h3 className="text-sm font-medium text-gray-500">
+                  Total Orders
+                </h3>
+                <div className="flex gap-2 items-center">
+                  <p className="text-[16] sm:text-2xl font-bold mt-1">
+                    {orders?.length.toLocaleString()}
+                  </p>
+                  <span
+                    className={`text-green-600 text-sm ${
+                      orderChange >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {orderChange === 0
+                      ? "No changes"
+                      : `${formattedOrderChange}`}
+                  </span>
+                </div>
+              </Card>
+              <Card className=" px-3 rounded-sm">
+                <h3 className="text-sm font-medium text-gray-500">
+                  Total Customers
+                </h3>
+                <div className="flex gap-2 items-center">
+                  <h3 className="text-[16] sm:text-2xl font-bold text-gray-900">
+                    {users.length}
+                  </h3>
+                  <p
+                    className={`text-green-600 text-sm ${
+                      customerChange > 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {customerChange !== 0
+                      ? `${formattedCustomerChange}`
+                      : "No new customer"}
+                  </p>
+                </div>
+              </Card>
+              <Card className=" px-3 rounded-sm">
+                <h3 className="text-sm font-medium text-gray-500">Products</h3>
+                <div className="flex items-center gap-3">
+                  <h3 className="text-[16] sm:text-2xl font-bold text-gray-900">
+                    {products.length}
+                  </h3>
+                  <p className="text-xs text-yellow-600">
+                    {products.length < 100
+                      ? `${100 - products.length} low in stock`
+                      : `Enough stock`}
+                  </p>
+                </div>
+              </Card>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

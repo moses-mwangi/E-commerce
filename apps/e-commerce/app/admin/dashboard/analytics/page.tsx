@@ -91,8 +91,8 @@ export default function AnalyticsPage() {
   } = useAnalytics();
 
   return (
-    <div className="py-4 px-3 sm:px-6 sm:py-6 space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-center">
+    <div className="py-4 sm:px-6 sm:py-6 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center px-3 sm:px-0">
         <div>
           <h1 className="text-2xl font-semibold text-gray-800">
             Analytics Dashboard
@@ -102,34 +102,34 @@ export default function AnalyticsPage() {
           </p>
         </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <Button
-              variant={timeRange === "30" ? "default" : "outline"}
-              onClick={() => setTimeRange("30")}
-            >
-              Last 30 Days
-            </Button>
-            <Button
-              variant={timeRange === "all" ? "default" : "outline"}
-              onClick={() => setTimeRange("all")}
-            >
-              All Time
-            </Button>
-            <Button
-              onClick={() => {
-                console.log(currentMonthOrder, lastMonthOrder);
-              }}
-              className="bg-orange-600/95 hover:bg-orange-600/80 flex items-center"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Export Report
-            </Button>
-          </div>
+        <div className="flex justify-between w-full items-center">
+          <Select
+            onValueChange={(value) => setTimeRange(value)}
+            value={timeRange}
+          >
+            <SelectTrigger className="w-32 bg-card text-[15px] h-8 focus:ring-orange-500">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="30">Last 30 Days</SelectItem>
+                <SelectItem value="all">All Time</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={() => {
+              console.log(currentMonthOrder, lastMonthOrder);
+            }}
+            className="bg-orange-600/95 h-8 hover:bg-orange-600/80 flex items-center"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export Report
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className=" hidden sm:grid grid-cols-1 md:grid-cols-4 gap-4 ">
         <Card className="p-4">
           <div className="flex items-center space-x-3">
             <div className="p-3 bg-blue-100 rounded-full">
@@ -140,7 +140,7 @@ export default function AnalyticsPage() {
                 Total Revenue
               </h3>
               <p className="text-2xl font-bold mt-1">
-                ${revenue.toLocaleString()}
+                KES {revenue.toLocaleString()}
               </p>
               <span
                 className={`text-green-600 text-sm ${
@@ -222,15 +222,83 @@ export default function AnalyticsPage() {
           </div>
         </Card>
       </div>
+
+      <div className=" block sm:hidden px-3 sm:px-0">
+        <div className=" grid grid-cols-2 gap-3">
+          <Card className=" px-3 rounded-sm">
+            <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
+            <div className="flex gap-3 items-center">
+              <p className=" text-[16px] sm:text-2xl font-bold mt-1">
+                KES {revenue.toLocaleString()}
+              </p>
+              <span
+                className={`text-green-600 text-sm ${
+                  salesChange >= 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {salesChange === 0
+                  ? "N/A from last month"
+                  : `${formattedSalesChange}`}
+              </span>
+            </div>
+          </Card>
+          <Card className=" px-3 rounded-sm">
+            <h3 className="text-sm font-medium text-gray-500">Total Orders</h3>
+            <div className="flex gap-2 items-center">
+              <p className="text-[16] sm:text-2xl font-bold mt-1">
+                {orders?.length.toLocaleString()}
+              </p>
+              <span
+                className={`text-green-600 text-sm ${
+                  orderChange >= 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {orderChange === 0
+                  ? "No change from last week"
+                  : `${formattedOrderChange}`}
+              </span>
+            </div>
+          </Card>
+          <Card className=" px-3 rounded-sm">
+            <h3 className="text-sm font-medium text-gray-500">New Customers</h3>
+            <div className="flex gap-2 items-center">
+              <p className="text-[16px] sm:text-2xl font-bold mt-1">
+                {newCustomers.toLocaleString()}
+              </p>
+              <span
+                className={`text-green-600 text-sm ${
+                  customerChange > 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {customerChange !== 0 ? `${formattedCustomerChange}` : "▼"}
+              </span>
+            </div>
+          </Card>
+          <Card className=" px-3 rounded-sm">
+            <h3 className="text-sm font-medium text-gray-500">
+              Conversion Rate
+            </h3>
+            <div className="flex items-center gap-3">
+              <p className="text-[17px] sm:text-2xl font-bold mt-1">
+                {conversionRate}%
+              </p>
+              <span className="text-green-600 text-sm">↑ 2%</span>
+            </div>
+          </Card>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6">
+        <Card className="px-3 sm:px-6 py-5 rounded-none sm:rounded-md ">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Revenue Overview</h3>
+            <h3 className="sm:text-lg text-[17px] font-semibold">
+              Revenue Overview
+            </h3>
             <Select
               onValueChange={(value) => setSelectedPeriod(value)}
               value={selectedPeriod}
             >
-              <SelectTrigger className="w-32 bg-gray-100 h-8 focus:ring-orange-500">
+              <SelectTrigger className="w-32 bg-gray-100 h-7 text-[15px] sm:h-8 focus:ring-orange-500">
                 <SelectValue placeholder="Select period" />
               </SelectTrigger>
               <SelectContent>
@@ -242,17 +310,21 @@ export default function AnalyticsPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={handleSales(selectedPeriod)}>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%" className="">
+              <LineChart
+                data={handleSales(selectedPeriod)}
+                width={100}
+                className=""
+              >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} tickMargin={10} />
                 <YAxis
-                  tickFormatter={(value) => `$${value}`}
-                  tick={{ fontSize: 12 }}
+                  tickFormatter={(value) => `KSH ${value}`}
+                  tick={{ fontSize: 11 }}
                 />
                 <Tooltip
-                  formatter={(value) => [`$${value}`, "Revenue"]}
+                  formatter={(value) => [`KSH ${value}`, "Revenue"]}
                   labelFormatter={(label) => `Date: ${label}`}
                   contentStyle={{
                     borderRadius: "8px",
@@ -275,10 +347,10 @@ export default function AnalyticsPage() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center mb-4">
+        <Card className="py-5 px-3 sm:px-6 rounded-none sm:rounded-md">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between sm:items-center mb-4">
             <h3 className="text-lg font-semibold">Sales by Category</h3>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 w-full">
               <Select
 
               //  value={timeRange} onValueChange={setTimeRange}
@@ -292,7 +364,11 @@ export default function AnalyticsPage() {
                   <SelectItem value="all">All Time</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-orange-500 text-white"
+              >
                 View Details
               </Button>
             </div>
@@ -322,6 +398,7 @@ export default function AnalyticsPage() {
                       />
                     ))}
                   </Pie>
+
                   <Tooltip
                     formatter={(value, name, props) => [
                       `$${Number(value).toLocaleString()}`,
@@ -335,14 +412,31 @@ export default function AnalyticsPage() {
                       boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
                     }}
                   />
-                  <Legend
+                  {/* <Legend
                     formatter={(value, entry, index) => (
                       <span className="text-sm">
-                        {value} ($
+                        {value} (ksh
                         {salesByCategory[index]?.value.toLocaleString()})
                       </span>
                     )}
-                  />
+                  /> */}
+                  {window.innerWidth < 640 && (
+                    <Legend
+                      layout="horizontal"
+                      verticalAlign="bottom"
+                      align="center"
+                      wrapperStyle={{
+                        // paddingTop: "20px",
+                        fontSize: window.innerWidth < 400 ? "14px" : "15px",
+                      }}
+                      formatter={(value, entry, index) => (
+                        <span className="">
+                          {value} (ksh
+                          {salesByCategory[index]?.value.toLocaleString()})
+                        </span>
+                      )}
+                    />
+                  )}
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -357,8 +451,8 @@ export default function AnalyticsPage() {
           )}
         </Card>
 
-        <Card className="py-3 sm:py-5">
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center mb-4">
+        <Card className="py-3 sm:py-5 rounded-none sm:rounded-md px-3 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between sm:items-center mb-4">
             <h3 className="text-lg font-semibold">Orders Overview</h3>
             <div className="flex space-x-2">
               <Select
@@ -377,7 +471,11 @@ export default function AnalyticsPage() {
                   <SelectItem value="365">Last Year</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-orange-500 text-card"
+              >
                 View All
               </Button>
             </div>
@@ -386,6 +484,8 @@ export default function AnalyticsPage() {
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
+                width={100}
+                className="w-full"
                 data={chartType === "day" ? dailyOrders : monthlyOrders}
                 margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
@@ -445,12 +545,13 @@ export default function AnalyticsPage() {
             </div>
             <div className="flex items-center text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
-              {growthPercentage}% from previous period
+              {/* {growthPercentage}% from previous period */}
+              {growthPercentage}%
             </div>
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="px-5 sm:px-0 py-5 rounded-none sm:rounded-md">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Top Selling Products</h3>
             <Button
@@ -500,7 +601,7 @@ export default function AnalyticsPage() {
           </div>
         </Card>
 
-        <Card className="py-4 sm:py-5 px-3 sm:px-5">
+        <Card className="py-4 sm:py-5 px-3 sm:px-5 rounded-none sm:rounded-md">
           <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:justify-between sm:items-center mb-4">
             <div>
               <h3 className="text-lg font-semibold">Customer Growth</h3>
@@ -516,7 +617,7 @@ export default function AnalyticsPage() {
                 )}
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:space-x-2">
+            <div className="flex  gap-2 sm:gap-0  sm:space-x-2">
               <Select value={`12`} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-28 h-[31px] focus:ring-orange-500/85">
                   <SelectValue placeholder="Range" />
@@ -583,7 +684,7 @@ export default function AnalyticsPage() {
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="py-5 px-3 sm:px-5 hidden">
           <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row sm:justify-between sm:items-center mb-4">
             <div>
               <h3 className="text-lg font-semibold">Customer Demographics</h3>

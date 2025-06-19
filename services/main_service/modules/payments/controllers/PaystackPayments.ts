@@ -82,8 +82,6 @@ export const initializePayment = async (req: Request, res: Response) => {
       amount,
     });
 
-    console.log("START INITIATING PAYMENT :", req.body);
-
     const order = await Order.findByPk(orderId);
     if (!order) {
       logger.error(`Order not found: ${orderId}`);
@@ -111,8 +109,6 @@ export const initializePayment = async (req: Request, res: Response) => {
       paymentMethod: method,
       reference: reference,
     });
-
-    console.log("INITIATED__PAY", transaction);
 
     const paymentData: any = {
       email,
@@ -170,8 +166,6 @@ export const initializePayment = async (req: Request, res: Response) => {
       paymentReference: payment.data.reference,
       amount,
     });
-
-    console.log("Iniated well");
   } catch (error) {
     logger.error("Payment initialization error:", error);
     res.status(500).json({

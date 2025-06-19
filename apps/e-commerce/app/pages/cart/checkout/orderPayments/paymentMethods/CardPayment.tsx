@@ -4,13 +4,21 @@ import { Label } from "@/components/ui/label";
 import { Controller, useForm } from "react-hook-form";
 import { usePaystackPayment } from "react-paystack";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useCardContex } from "@/hooks/paymentContext";
 import { usePayments } from "@/hooks/usePayment";
 import toast from "react-hot-toast";
 
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface FormValues {
   firstName: string;
@@ -26,6 +34,8 @@ const NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY =
   "pk_test_dd267338c5e11ee647740c3a98a3f62ab72be4cf";
 
 function CardPayment() {
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const { subtotal, currentUser, selectedOrder } = usePayments();
   const { formRef } = useCardContex();
   const { selectedCurrency } = useLanguage_Currency();
@@ -208,6 +218,15 @@ function CardPayment() {
           </div>
         </form>
       </CardContent>
+      <CardFooter className="flex justify-end">
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          disabled={isProcessing}
+          className="w-full bg-orange-500 hover:bg-orange-600"
+        >
+          {isProcessing ? "Processing..." : `Complete payment`}
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
