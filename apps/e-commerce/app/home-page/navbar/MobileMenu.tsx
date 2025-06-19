@@ -79,7 +79,7 @@ const socialMedia = [
         className="h-5 w-5 object-contain"
       />
     ),
-    url: "https://www.instagram.com/",
+    url: "https://www.instagram.com/kivamall.ke/",
   },
   {
     name: "YouTube",

@@ -488,6 +488,7 @@ export default function AnalyticsPage() {
                 className="w-full"
                 data={chartType === "day" ? dailyOrders : monthlyOrders}
                 margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                // domain={['dataMin', 'dataMax']}
               >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} tickMargin={10} />
