@@ -11,6 +11,7 @@ import { productRouter } from "./modules/product";
 import { categoryRouter } from "./modules/product";
 import { reviewRouter } from "./modules/reviews";
 import globalErrorHandler from "./shared/middleware/GlobalErrorHandler";
+import passport from "passport";
 
 const app = express();
 
@@ -91,23 +92,24 @@ app.use((req, res, next) => {
 //   })
 // );
 
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET || "secret",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//       httpOnly: true,
-//       secure: true,
-//       expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-//       maxAge: 8 * 60 * 60 * 1000,
-//     },
-//   })
-// );
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      // httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+      maxAge: 8 * 60 * 60 * 1000,
+    },
+  })
+);
 
 // Initialize Passport
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (_req: any, res: any) => res.sendStatus(200));
 app.get("/health", (_req: any, res: any) => res.sendStatus(200));

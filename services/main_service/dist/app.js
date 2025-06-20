@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_session_1 = __importDefault(require("express-session"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = require("./modules/users");
 const order_1 = require("./modules/order");
@@ -14,6 +15,7 @@ const product_1 = require("./modules/product");
 const product_2 = require("./modules/product");
 const reviews_1 = require("./modules/reviews");
 const GlobalErrorHandler_1 = __importDefault(require("./shared/middleware/GlobalErrorHandler"));
+const passport_1 = __importDefault(require("passport"));
 const app = (0, express_1.default)();
 app.post("/api/payment/card/webhook", body_parser_1.default.raw({ type: "application/json" }), (req, res, next) => {
     req.rawBody = req.body.toString("utf8");
@@ -76,22 +78,21 @@ app.use((req, res, next) => {
 //     }
 //   })
 // );
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET || "secret",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//       httpOnly: true,
-//       secure: true,
-//       expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
-//       maxAge: 8 * 60 * 60 * 1000,
-//     },
-//   })
-// );
+app.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        // httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        expires: new Date(Date.now() + 8 * 60 * 60 * 1000),
+        maxAge: 8 * 60 * 60 * 1000,
+    },
+}));
 // Initialize Passport
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 app.get("/", (_req, res) => res.sendStatus(200));
 app.get("/health", (_req, res) => res.sendStatus(200));
 app.use("/api/auth", users_1.authRouter);

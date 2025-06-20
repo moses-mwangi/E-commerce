@@ -32,7 +32,7 @@ const pg_connect = async () => {
         pg_database_1.default.authenticate();
         console.log("The PostgreSQL database has successfully connected");
         if (process.env.NODE_ENV === "production") {
-            pg_database_1.default.sync({ alter: true });
+            // sequelize.sync({ alter: true });
         }
         // await sequelize.sync({ force: true });
         // await Payment.sync({ force: true });
