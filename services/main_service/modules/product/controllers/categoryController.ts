@@ -183,6 +183,7 @@ export const categoryController = {
         "description",
         "trending",
         "featured",
+        "updatedAt",
       ],
       // limit: limit,
       // offset: categoryOffset, // Pagination for categories
@@ -190,7 +191,14 @@ export const categoryController = {
         {
           model: Subcategory,
           as: "subcategories",
-          attributes: ["id", "name", "slug", "itemCount", "description"],
+          attributes: [
+            "id",
+            "name",
+            "slug",
+            "itemCount",
+            "description",
+            "updatedAt",
+          ],
           // limit: 3, // Limit subcategories
           // offset: 0, // First round, start from 0
           include: [

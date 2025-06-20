@@ -47,37 +47,13 @@ const corsOptions = {
             callback(new Error("Not allowed by CORS"));
         }
     },
-    credentials: true, // This allows cookies to be sent and received if needed
+    credentials: true,
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use((req, res, next) => {
     console.log("Testing middleware");
     next();
 });
-// // Create PostgreSQL connection pool
-// const pgPool = new Pool({
-//   connectionString: process.env.DATABASE_URL || "postgres://postgres:password@localhost:5432/omnibussines",
-//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-// });
-// app.use(
-//   session({
-//     store: new pgSession({
-//       pool: pgPool,
-//       tableName: 'user_sessions', // Will be created automatically
-//       pruneSessionInterval: 60 * 60 // Clean up expired sessions hourly
-//     }),
-//     secret: process.env.SESSION_SECRET || "secret",
-//     resave: false,
-//     saveUninitialized: false, // Changed to false for GDPR compliance
-//     cookie: {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production', // Only true in production
-//       sameSite: 'lax', // Recommended for CSRF protection
-//       maxAge: 8 * 60 * 60 * 1000, // 8 hours
-//       // Remove 'expires' as 'maxAge' is sufficient
-//     }
-//   })
-// );
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "secret",
     resave: false,
@@ -90,7 +66,6 @@ app.use((0, express_session_1.default)({
         maxAge: 8 * 60 * 60 * 1000,
     },
 }));
-// Initialize Passport
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.get("/", (_req, res) => res.sendStatus(200));
@@ -101,7 +76,6 @@ app.use("/api/product", product_1.productRouter);
 app.use("/api/category", product_2.categoryRouter);
 app.use("/api/order", order_1.orderRouter);
 app.use("/api/review", reviews_1.reviewRouter);
-// app.use("/api/payment", payments);
 app.use("/api/payments", payments_1.paystackPayments);
 app.use(GlobalErrorHandler_1.default);
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {

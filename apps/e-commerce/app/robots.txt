@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+
+Sitemap: https://www.kivamall.com/sitemap.xml

@@ -56,7 +56,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // This allows cookies to be sent and received if needed
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -65,32 +65,6 @@ app.use((req, res, next) => {
   console.log("Testing middleware");
   next();
 });
-
-// // Create PostgreSQL connection pool
-// const pgPool = new Pool({
-//   connectionString: process.env.DATABASE_URL || "postgres://postgres:password@localhost:5432/omnibussines",
-//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-// });
-
-// app.use(
-//   session({
-//     store: new pgSession({
-//       pool: pgPool,
-//       tableName: 'user_sessions', // Will be created automatically
-//       pruneSessionInterval: 60 * 60 // Clean up expired sessions hourly
-//     }),
-//     secret: process.env.SESSION_SECRET || "secret",
-//     resave: false,
-//     saveUninitialized: false, // Changed to false for GDPR compliance
-//     cookie: {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production', // Only true in production
-//       sameSite: 'lax', // Recommended for CSRF protection
-//       maxAge: 8 * 60 * 60 * 1000, // 8 hours
-//       // Remove 'expires' as 'maxAge' is sufficient
-//     }
-//   })
-// );
 
 app.use(
   session({
@@ -107,7 +81,6 @@ app.use(
   })
 );
 
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -122,7 +95,6 @@ app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/review", reviewRouter);
 
-// app.use("/api/payment", payments);
 app.use("/api/payments", paystackPayments);
 
 app.use(globalErrorHandler);

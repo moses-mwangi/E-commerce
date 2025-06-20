@@ -15,6 +15,7 @@ export interface Subcategory {
   banner?: string;
   featured: boolean;
   filters: Filter[];
+  updatedAt: Date | string;
 }
 
 export interface Category {
@@ -31,6 +32,7 @@ export interface Category {
   trending: boolean;
   filters: Filter[];
   subcategories: Subcategory[];
+  updatedAt: Date | string;
 }
 
 export interface CategoryState {
