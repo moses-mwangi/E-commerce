@@ -1,0 +1,21 @@
+{
+  "name": "Kivamall",
+  "short_name": "Kivamall",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4ade80",
+  "description": "Kivamall – Kenya’s digital shopping mall",
+  "icons": [
+    {
+      "src": "/socialMedia_Images/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/socialMedia_Images/logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

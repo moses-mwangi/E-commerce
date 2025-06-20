@@ -143,21 +143,44 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kivamall - Kenya's Largest Online Shopping Marketplace",
+    default: "dddKivamall - Kenya's Largest Online Shopping Marketplace",
     template: "%s | Kivamall Kenya",
   },
   description:
-    "Shop online for electronics, fashion, home goods & more in Kenya. Free vendor listings. Secure payments & nationwide delivery.",
+    "Shop online for electronics, fashion, beauty, cosmetics, home decor, construction materials, car accessories, security devices & more in Kenya. Free vendor listings. Secure payments, nationwide delivery, and global export opportunities.",
+  // "Shop online for electronics, fashion, home goods & more in Kenya. Free vendor listings. Secure payments & nationwide delivery.",
   keywords: [
     "Kivamall",
+    "Qivamall",
+    "Kenya ecommerce",
     "online shopping Kenya",
-    "ecommerce Kenya",
     "buy online Kenya",
-    "Kenya digital mall",
-    "electronics Kenya",
-    "fashion Kenya",
-    "free vendor listing",
     "Nairobi online shopping",
+    "electronics Kenya",
+    "mobile phones Kenya",
+    "laptops Kenya",
+    "smartphones Kenya",
+    "fashion Kenya",
+    "shoes Kenya",
+    "clothing Kenya",
+    "beauty products Kenya",
+    "cosmetics Kenya",
+    "home decor Kenya",
+    "furniture Kenya",
+    "construction materials Kenya",
+    "building materials Kenya",
+    "security devices Kenya",
+    "CCTV Kenya",
+    "car accessories Kenya",
+    "vehicle accessories Kenya",
+    "free vendor listing Kenya",
+    "dropshipping Kenya",
+    "wholesale Kenya",
+    "retail Kenya",
+    "export Kenya",
+    "B2B Kenya marketplace",
+    "Kenya marketplace platform",
+    "online marketplace Africa",
   ],
   robots: {
     index: true,
@@ -203,7 +226,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
+      // { url: "/favicon.ico" },
+      { url: "/bg.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
@@ -266,10 +290,9 @@ export default function RootLayout({
             }),
           }}
         />
-        <link rel="icon" href="/bg.png" type="image/png" />
+        {/* <link rel="icon" href="/bg.png" type="image/png" /> */}
       </head>
       <body className="antialiased">
-        {/* <PageLoadingIndicator /> */}
         <Suspense>
           <PageLoadingIndicator />
         </Suspense>

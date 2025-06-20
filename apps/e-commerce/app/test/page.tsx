@@ -25,6 +25,24 @@ import { useDispatch, useSelector } from "react-redux";
 
 import imgs from "../../../public/newArrival/foldedLaptop.png";
 import Reusable_Category_Sub_Products from "../pages/deals/Reusable_Category_Sub_Products";
+// import { Metadata } from "next";
+
+// app/electronics/layout.tsx (or app/electronics/page.tsx if no layout)
+// export const metadata: Metadata = {
+//   title: "Buy Electronics Online in Kenya - Phones, Laptops & More | Kivamall",
+//   description:
+//     "Shop the latest electronics in Kenya: smartphones, laptops, TVs, audio systems, and more. Secure payment and fast delivery.",
+//   keywords: [
+//     "electronics Kenya",
+//     "smartphones Kenya",
+//     "laptops Kenya",
+//     "TVs Kenya",
+//     "audio systems Kenya",
+//     "gaming Kenya",
+//     "buy electronics online Kenya",
+//     "best electronics prices Kenya",
+//   ],
+// };
 
 const DELIVERY_PRODUCTS = [
   {
