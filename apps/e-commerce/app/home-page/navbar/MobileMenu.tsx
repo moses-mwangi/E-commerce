@@ -39,6 +39,21 @@ import {
 } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
 
+const phoneNumber = "254729617393";
+// const defaultMessage = `
+// Hi Welcome to Kivamall! \nKenya’s digital /n \n  shopping mall.
+// We deliver fashion, electronics, beauty, and more!.
+// Vendors can list their products for free. How can we help you today?
+// `;
+
+const defaultMessage = `
+Hello Kivamall 👋,  
+I'm excited to explore Kenya’s digital shopping mall!  
+Looking forward to finding great deals on fashion, electronics, beauty products, and more.  
+I’m also interested in listing my products—love that it's free for vendors!  
+Could you please assist me with getting started?
+`;
+
 const tabsValues = [
   {
     value: "category",
@@ -117,19 +132,19 @@ const socialMedia = [
     ),
     url: "https://x.com/",
   },
-  {
-    name: "WhatsApp",
-    icon: (
-      <Image
-        width={29}
-        height={29}
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-        alt="WhatsApp"
-        className=" object-contain bg-gray-100 rounded-full p-[px]"
-      />
-    ),
-    url: "https://wa.me/",
-  },
+  // {
+  //   name: "WhatsApp",
+  //   icon: (
+  //     <Image
+  //       width={29}
+  //       height={29}
+  //       src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+  //       alt="WhatsApp"
+  //       className=" object-contain bg-gray-100 rounded-full p-[px]"
+  //     />
+  //   ),
+  //   url: "https://wa.me/",
+  // },
   {
     name: "TikTok",
     icon: (
@@ -353,18 +368,23 @@ export default function MobileMenu({ setIsLoading }: Prop) {
                   variant="outline"
                   className="w-full mb-2 h-8 bg-gray-100"
                 >
-                  <PhoneCall /> +254 725672675
+                  <PhoneCall /> +254 729617393
                 </Button>
-                <Button className="w-full bg-orange-500 hover:bg-orange-600 mb-2 h-8">
-                  <Image
-                    width={19}
-                    height={19}
-                    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                    alt="WhatsApp"
-                    className="object-contain"
-                  />
-                  Live Chat
-                </Button>
+                <Link
+                  href={`https://wa.me/${phoneNumber}?text=${defaultMessage}`}
+                  className="w-full"
+                >
+                  <Button className="w-full bg-orange-500 hover:bg-orange-600 mb-2 h-8">
+                    <Image
+                      width={19}
+                      height={19}
+                      src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                      alt="WhatsApp"
+                      className="object-contain"
+                    />
+                    Live Chat
+                  </Button>
+                </Link>
                 <Button variant="outline" className="w-full h-8 bg-gray-100">
                   📧 moses.mwangi.me@gmail.com
                 </Button>

@@ -99,7 +99,6 @@ export default function SignInForm() {
   const handleLogInWithGoogle = async () => {
     try {
       window.location.href = "https://kivamall.up.railway.app/api/auth/google";
-      // window.location.href = "http://127.0.0.1:8000/api/auth/google";
     } catch (err) {
       console.log(err);
     }
