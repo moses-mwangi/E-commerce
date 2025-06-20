@@ -143,7 +143,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "dddKivamall - Kenya's Largest Online Shopping Marketplace",
+    default: "Kivamall - Kenya's Largest Online Shopping Marketplace",
     template: "%s | Kivamall Kenya",
   },
   description:
@@ -194,7 +194,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "PMpnrjvJ6j-AYHmu1vvC_lYGDz2b6Um2_LqXDxYCV6k",
+    google: "KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI",
   },
   alternates: {
     canonical: "https://www.kivamall.com",
@@ -291,6 +291,10 @@ export default function RootLayout({
           }}
         />
         {/* <link rel="icon" href="/bg.png" type="image/png" /> */}
+        <meta
+          name="google-site-verification"
+          content="KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI"
+        />
       </head>
       <body className="antialiased">
         <Suspense>
