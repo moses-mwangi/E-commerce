@@ -181,6 +181,16 @@ export const metadata: Metadata = {
     "B2B Kenya marketplace",
     "Kenya marketplace platform",
     "online marketplace Africa",
+
+    "ecommerce",
+    "ecommerce Nairobi",
+    "buy products online",
+    "Kivamall Kenya",
+    "trusted online store",
+    "nationwide delivery Kenya",
+    "secure online payments",
+    "best prices Kenya",
+    "authentic products Nairobi",
   ],
   robots: {
     index: true,

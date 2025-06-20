@@ -128,7 +128,6 @@ const MobileHeroSection = ({ setIsLoading }: any) => {
 
   const handleNavigateToCategory = () => {
     setIsLoading(true);
-    // router.push("/category");
   };
 
   return (
