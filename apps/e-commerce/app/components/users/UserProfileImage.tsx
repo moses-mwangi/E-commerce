@@ -161,11 +161,6 @@
 
 "use client";
 
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { logoutUser } from "@/redux/slices/userSlice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -269,14 +264,16 @@ export default function UserProfileImage() {
                 router.push("/pages/favourites");
               }}
             />
-            <MenuItem
-              label="Admin"
-              icon={<User2 className="w-5 h-5" />}
-              onClick={() => {
-                setIsLoading(true);
-                router.push("/admin");
-              }}
-            />
+            {currentUser?.tradeRole === "adminn" && (
+              <MenuItem
+                label="Admin"
+                icon={<User2 className="w-5 h-5" />}
+                onClick={() => {
+                  setIsLoading(true);
+                  router.push("/admin");
+                }}
+              />
+            )}
             <MenuItem
               label="Account"
               icon={<Settings2 className="w-5 h-5" />}
