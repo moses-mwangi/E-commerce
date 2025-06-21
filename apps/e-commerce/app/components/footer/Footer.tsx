@@ -177,7 +177,7 @@ export default function Footer() {
           <ul className="space-y-2">
             <li>
               <a href="#" className="hover:text-gray-400">
-                Request for Quotation
+                How to shop prodcts
               </a>
             </li>
             <li>
@@ -193,11 +193,6 @@ export default function Footer() {
             <li>
               <a href="#" className="hover:text-gray-400">
                 Sales Tax & VAT
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-gray-400">
-                Industry Reads & News
               </a>
             </li>
           </ul>
@@ -228,11 +223,11 @@ export default function Footer() {
                 Partnerships
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="#" className="hover:text-gray-400">
                 Supplier App
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
 
@@ -261,7 +256,8 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="/supports/about_us/career"
+                // href="/supports/about_us/career"
+                href="#"
                 className="hover:text-gray-400"
               >
                 Careers

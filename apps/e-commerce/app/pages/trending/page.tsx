@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Reusable_Category_Sub_Products from "../deals/Reusable_Category_Sub_Products";
+import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
 
 const TRENDING_BANDS = [
   { min: 90, label: "Hot 🔥" },
@@ -262,13 +263,14 @@ export default function TrendingProductsPage() {
           </div>
         )}
 
-        <Reusable_Category_Sub_Products
+        {/* <Reusable_Category_Sub_Products
           activeTabProduct={activeTabProduct}
           categories={categories}
           subCategory={subCategory}
           active={active}
           setActive={setActive}
-        />
+        /> */}
+        <Reccomeded />
       </div>
       <Footer />
     </div>

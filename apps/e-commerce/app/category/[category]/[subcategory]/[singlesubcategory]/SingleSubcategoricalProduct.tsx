@@ -436,7 +436,7 @@ export default function SingleSuCategoricalProductPage() {
             <RelatedProducts product={product} />
           </div>
 
-          <div className="">
+          <div className=" hidden sm:block">
             <ARProductViewer productName={product.name} />
           </div>
 

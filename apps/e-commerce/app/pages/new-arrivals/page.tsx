@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { differenceInDays } from "date-fns";
+import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
 
 export default function NewArrivalsPage() {
   const dispatch: AppDispatch = useDispatch();
@@ -229,13 +230,14 @@ export default function NewArrivalsPage() {
             </div>
           </div>
         )}
-        <Reusable_Category_Sub_Products
+        {/* <Reusable_Category_Sub_Products
           activeTabProduct={activeTabProduct}
           categories={categories}
           subCategory={subCategory}
           active={active}
           setActive={setActive}
-        />
+        /> */}
+        <Reccomeded />
       </div>
       <Footer />
     </div>

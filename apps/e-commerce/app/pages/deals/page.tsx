@@ -20,6 +20,7 @@ import Reusable_Category_Sub_Products from "./Reusable_Category_Sub_Products";
 import { FaFire } from "react-icons/fa";
 import { GiLightningFlame } from "react-icons/gi";
 import { BsShieldLock } from "react-icons/bs";
+import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
 
 const DISCOUNT_BANDS = [
   { min: 40, label: "Super Deal" },
@@ -274,13 +275,14 @@ export default function FlashDealsPage() {
           </div>
         )}
 
-        <Reusable_Category_Sub_Products
+        {/* <Reusable_Category_Sub_Products
           activeTabProduct={activeTabProduct}
           categories={categories}
           subCategory={subCategory}
           active={active}
           setActive={setActive}
-        />
+        /> */}
+        <Reccomeded />
       </div>
       <Footer />
     </div>
