@@ -3,6 +3,7 @@
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+
 // import QivamallLogo from "./Qlogo";
 
 export default function Logo() {
@@ -19,8 +20,8 @@ export default function Logo() {
         }}
       >
         <h1
-          // style={{ fontFamily: "var(--font-inter)" }}
-          className="text-3xl font-extrabold tracking-wide text-slate-800"
+          style={{ fontFamily: "var(--font-inter)" }}
+          className=" text-2xl sm:text-3xl font-extrabold tracking-wide text-slate-800"
         >
           <span className="text-orange-600">Q</span>ivamall
         </h1>

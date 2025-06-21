@@ -32,7 +32,7 @@ export default function CategoryPage() {
 
       <div className="min-h-screen bg-gray-50">
         <div
-          className={`relative h-[320px] bg-gray-900 backsg`}
+          className={`relative h-[240px] sm:h-[320px] bg-gray-900 backsg`}
           style={{
             backgroundImage: categoryData?.banner
               ? `url(${categoryData.banner})`

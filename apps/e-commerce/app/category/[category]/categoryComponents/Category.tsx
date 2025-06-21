@@ -70,7 +70,7 @@ export default function Category() {
     <>
       {isLoading && <LoadingState />}
 
-      <div className="bg-gray-50 px-3 sm:px-6 rounded-xl mx-auto container pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
+      <div className="bg-gray-50 px-3 sm:px-6 sm:rounded-xl mx-auto container pt-4 sm:pt-6 pb-8 sm:pb-16 dark:bg-gray-900 min-h-screen">
         <div className="mb-5 sm:mb-8">
           <div className="flex sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 pb-4 sm:pb-6">
             <h2 className=" hidden sm:flex text-[17px] sm:text-xl font-semibold">

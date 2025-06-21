@@ -419,7 +419,7 @@ const HeroSection = () => {
                     <p className="font-medium text-sm truncate">
                       Wireless Headphones
                     </p>
-                    <p className="text-xs text-gray-500">$199.99</p>
+                    <p className="text-xs text-gray-500">Ksh 199.99</p>
                   </div>
                 </motion.div>
 
@@ -443,7 +443,7 @@ const HeroSection = () => {
                     <p className="font-medium text-sm truncate">
                       Smart Watch Pro
                     </p>
-                    <p className="text-xs text-gray-500">$249.99</p>
+                    <p className="text-xs text-gray-500">Ksh 249.99</p>
                   </div>
                 </motion.div>
 

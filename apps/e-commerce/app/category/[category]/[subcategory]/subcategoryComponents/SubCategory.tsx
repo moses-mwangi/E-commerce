@@ -65,8 +65,8 @@ export default function SubCategory() {
   return (
     <>
       {isLoading && <LoadingState />}
-      <div className="sm:px-6 px-2 containesr pb-16 bg-white dark:bg-gray-900 min-h-screen">
-        <div className="mx-auto px-">
+      <div className="sm:px-6 containesr pb-16 bg-white dark:bg-gray-900 min-h-screen">
+        <div className="mx-auto px-2 sm:px-0">
           <div className="flex items-center text-xs sm:text-sm py-3 sm:py-4 overflow-x-auto whitespace-nowrap">
             <Link
               href={`/category`}
@@ -87,7 +87,7 @@ export default function SubCategory() {
             <span className=" text-gray-800 capitalize">{decodedSub}</span>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl px-3 sm:px-5 py-4 min-h-screen">
+        <div className="bg-gray-50 sm:rounded-xl px-3 sm:px-5 py-4 min-h-screen">
           <div className=" grid gap-2 mb-6">
             <h1 className="sm:text-3xl text-xl font-bold text-gray-800 dark:text-gray-200">
               {capitalizeWords(decodedSub)}

@@ -14,6 +14,7 @@ import SignInBotton from "./sign_In_Up_Button/SignInButton";
 
 import LoadingState from "@/app/components/loaders/LoadingState";
 import MobileMenu from "./MobileMenu";
+import { QivamallLogo } from "./logo/Qlogo";
 
 export function MobileNav() {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +38,7 @@ export function MobileNav() {
             }}
             className=""
           >
-            HYPERMART
+            <Logo />
           </div>
 
           <div className="flex items-center gap-2 py-1">

@@ -79,8 +79,8 @@ export default function FavouritesProductPage() {
   return (
     <>
       {isLoading === true && <LoadingState />}
-      <div className="px-2 sm:px-6 md:px-8 lg:px-44 mt-4 sm:mt-6 md:mt-8 min-h-screen">
-        <div className="flex sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className=" sm:px-6 md:px-8 lg:px-44 mt-4 sm:mt-6 md:mt-8 min-h-screen">
+        <div className="px-2 sm:px-0  flex sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
             Your Favourites
           </h1>
@@ -95,7 +95,7 @@ export default function FavouritesProductPage() {
           </Link>
         </div>
 
-        <Card className="containerCart rounded-xl mb-10 mx-auto px-4 py-4">
+        <Card className="bg-gray-50 rounded-none sm:rounded-xl mb-10 mx-auto sm:px-4 py-4">
           {favItems.length === 0 && (
             <div className="text-center py-8 sm:py-16 min-h-[40svh]">
               <h1 className="text-xl sm:text-2xl font-bold text-center mb-3">
@@ -118,7 +118,7 @@ export default function FavouritesProductPage() {
           )}
 
           {favItems.length > 0 && (
-            <Card className="mb-4">
+            <div className="mb-4">
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="flex sm:flex-row justify-between items-start sm:items-center gap-4">
                   <p className="">Favourite Items</p>
@@ -206,7 +206,7 @@ export default function FavouritesProductPage() {
                   </div>
                 ))}
               </CardContent>
-            </Card>
+            </div>
           )}
         </Card>
       </div>

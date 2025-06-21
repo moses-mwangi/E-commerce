@@ -62,7 +62,7 @@ export default function Reccomeded() {
               <Card
                 key={product.id}
                 onClick={() => handleRouteProduct(product.id)}
-                className={` bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden`}
+                className={` bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden`}
               >
                 <div
                   className={`h-32 sm:h-44  bg-gray-200 relative dark:bg-gray-700 overflow-hidden hover:cursor-pointer`}
