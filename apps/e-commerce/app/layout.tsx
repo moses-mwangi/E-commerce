@@ -267,7 +267,7 @@ export const metadata: Metadata = {
     ],
   },
 
-  manifest: "/manifest.json",
+  manifest: "/site.webmanifest.json",
   themeColor: "#ffffff",
   appleWebApp: {
     title: "Kivamall",
