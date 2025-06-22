@@ -4,6 +4,7 @@ import LoadingState from "@/app/components/loaders/LoadingState";
 import { Card } from "@/components/ui/card";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import slugify from "@/utils/slungify";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +38,7 @@ const CategoriesSection = () => {
                 key={index}
                 onClick={() => {
                   setIsLoading(true);
-                  router.push(`/category/${category.name}`);
+                  router.push(`/category/${slugify(category.name)}`);
                 }}
                 className="flex-shrink-0 group sm:bg-white bg-gray-50/60 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 flex gap-2 sm:gap-0 sm:flex-col items-center cursor-pointer border border-gray-100 hover:border-blue-200"
               >

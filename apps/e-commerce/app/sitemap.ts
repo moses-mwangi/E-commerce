@@ -38,6 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const categories = categoriesRes.data?.data?.categories || [];
     const products = productsRes.data?.products || [];
 
+    ///// The Home page site map eg. "https://www.kivamall.com"
     const baseUrls: MetadataRoute.Sitemap = [
       {
         url: "https://www.kivamall.com",
@@ -59,36 +60,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     ];
 
-    const categoryUrls = categories.map((category) => ({
-      url: `https://www.kivamall.com/category/${slugify(category.name)}`,
-      lastModified: getValidDate(category.updatedAt),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
-
-    const subCategoryUrls = categories.flatMap((category) =>
-      (category.subcategories || []).map((sub) => ({
-        url: `https://www.kivamall.com/category/${slugify(
-          category.name
-        )}/${slugify(sub.name)}`,
-        lastModified: getValidDate(sub.updatedAt ?? category.updatedAt),
+    const categoryUrls = categories.map((category) => {
+      const categorySlug = slugify(category.name);
+      return {
+        url: `https://www.kivamall.com/category/${categorySlug}`,
+        lastModified: getValidDate(category.updatedAt),
         changeFrequency: "weekly" as const,
         priority: 0.8,
-      }))
+      };
+    });
+
+    const subCategoryUrls = categories.flatMap((category) =>
+      (category.subcategories || []).map((sub) => {
+        return {
+          url: `https://www.kivamall.com/category/${slugify(
+            category.name
+          )}/${slugify(sub.name)}`,
+          lastModified: getValidDate(sub.updatedAt ?? category.updatedAt),
+          changeFrequency: "weekly" as const,
+          priority: 0.8,
+        };
+      })
     );
 
-    const productUrls = products.map((product: any) => ({
-      url: `https://www.kivamall.com/category/${slugify(
-        product.category
-      )}/${slugify(product.subCategory)}/${slugify(product.name)}?id=${
-        product.id
-      }`,
-      lastModified: getValidDate(product.updatedAt),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    }));
+    const productUrls = products.map((product) => {
+      return {
+        url: `https://www.kivamall.com/category/${slugify(
+          product.category
+        )}/${slugify(product.subCategory)}/${slugify(product.name)}`,
 
-    return [...baseUrls, ...categoryUrls, ...subCategoryUrls, ...productUrls];
+        lastModified: getValidDate(product.updatedAt),
+        changeFrequency: "weekly" as const,
+        priority: 0.9,
+      };
+    });
+
+    return [
+      ...baseUrls,
+      ...categoryUrls,
+      ...subCategoryUrls,
+      ...productUrls,
+    ].filter(Boolean);
   } catch (error) {
     console.error("Sitemap generation error:", error);
     return [

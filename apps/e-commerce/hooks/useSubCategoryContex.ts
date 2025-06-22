@@ -4,6 +4,7 @@ import { fetchCategories } from "@/redux/slices/categorySlice";
 import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import slugify from "@/utils/slungify";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -53,11 +54,10 @@ function useSubCategoryContex() {
 
   const id = searchParams.get("id");
   const subFilter = categories
-    .find((el) => el.name.toLowerCase() === decodedCategory.toLowerCase())
+    .find((el) => slugify(el.name) === slugify(decodedCategory))
     ?.subcategories?.find(
       (sub) =>
-        String(sub.id) === id ||
-        sub.name.toLowerCase() === decodedSub.toLowerCase()
+        String(sub.id) === id || slugify(sub.name) === slugify(decodedSub)
     );
 
   const handleAddToCart = (id: any) => {
@@ -94,8 +94,8 @@ function useSubCategoryContex() {
 
   const subCategoryProduct = products.filter(
     (el) =>
-      el.category.toLowerCase() === decodedCategory.toLowerCase() &&
-      el.subCategory.toLowerCase() === decodedSub.toLowerCase()
+      slugify(el.category) === slugify(decodedCategory) &&
+      slugify(el.subCategory) === slugify(decodedSub)
   );
 
   const filteredProducts = subCategoryProduct
@@ -134,7 +134,9 @@ function useSubCategoryContex() {
       const param = new URLSearchParams();
       param.set("id", id);
       router.push(
-        `/category/${category}/${subcategory}/${name}?${param.toString()}`
+        `/category/${slugify(String(category))}/${slugify(
+          String(subcategory)
+        )}/${slugify(name)}?${param.toString()}`
       );
       dispatch(addToRecentlyViewed(product));
     }

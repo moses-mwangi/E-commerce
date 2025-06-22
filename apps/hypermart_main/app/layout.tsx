@@ -5,6 +5,46 @@ import "./globals.css";
 import "nprogress/nprogress.css";
 import Navbar from "./components/home/Navbar";
 
+// import { Metadata } from "next";
+// import { categoryMetadata } from "./metadataUtils";
+
+// export async function generateMetadata(
+//   // parent: any,
+//   {
+//     params,
+//   }: {
+//     params: { category: string };
+//   }
+// ): Promise<Metadata> {
+//   const decodedCategory = decodeURIComponent(params?.category)
+//     .replace(/-/g, " ")
+//     .replace(/\b\w/g, (c) => c.toUpperCase());
+
+//   const normalizedCategory = Object.keys(categoryMetadata).find(
+//     (key) => key.toLowerCase() === decodedCategory.toLowerCase()
+//   );
+
+//   const metadatas = normalizedCategory
+//     ? categoryMetadata[normalizedCategory]
+//     : undefined;
+
+//   const jsonLd = {
+//     "@context": "https://schema.org",
+//     "@type": "WebPage",
+//     name: metadatas?.title?.toString() ?? "",
+//     description: metadatas?.description?.toString() ?? "",
+//     url: `https://www.kivamall.com/category/${params?.category ?? ""}`,
+//   };
+
+//   return {
+//     ...metadatas,
+//     other: {
+//       ...metadatas?.other,
+//       "json-ld": JSON.stringify(jsonLd),
+//     },
+//   };
+// }
+
 // Define Inter font
 const inter = Inter({
   variable: "--inter",

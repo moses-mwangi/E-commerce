@@ -148,7 +148,6 @@ export const metadata: Metadata = {
   },
   description:
     "Shop online for electronics, fashion, beauty, cosmetics, home decor, construction materials, car accessories, security devices & more in Kenya. Free vendor listings. Secure payments, nationwide delivery, and global export opportunities.",
-  // "Shop online for electronics, fashion, home goods & more in Kenya. Free vendor listings. Secure payments & nationwide delivery.",
   keywords: [
     "Kivamall",
     "Qivamall",
@@ -191,10 +190,15 @@ export const metadata: Metadata = {
     "secure online payments",
     "best prices Kenya",
     "authentic products Nairobi",
+
+    "fashion Kenya",
+    "home decor Nairobi",
   ],
+
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -208,16 +212,20 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://www.kivamall.com",
+    languages: {
+      "en-KE": "https://www.kivamall.com",
+    },
   },
   openGraph: {
-    title: "Kivamall - Kenya's Online Shopping Destination",
+    title: "Kivamall - Kenya's #1 Online Marketplace",
     description:
       "Discover thousands of products from Kenyan vendors. Electronics, fashion, home & living, and more with secure payments.",
     url: "https://www.kivamall.com",
-    siteName: "Kivamall",
+    siteName: "Kivamall Kenya",
     images: [
       {
         url: "https://www.kivamall.com/socialMedia_Images/og-image.png",
+        secureUrl: "https://www.kivamall.com/socialMedia_Images/og-image.png",
         width: 1200,
         height: 630,
         alt: "Kivamall - Kenya's Online Marketplace",
@@ -228,15 +236,21 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kivamall - Kenya's Online Shopping Destination",
+    title: "Kivamall - Kenya's Online Shopping",
     description:
       "Discover thousands of products from Kenyan vendors. Electronics, fashion, home & living, and more with secure payments.",
-    images: ["https://www.kivamall.com/socialMedia_Images/og-image.png"],
     creator: "@kivamallkenya",
+
+    images: {
+      url: "https://www.kivamall.com/socialMedia_Images/og-image.png",
+      alt: "Kivamall Twitter Card",
+      width: 1200,
+      height: 628,
+    },
   },
   icons: {
     icon: [
-      // { url: "/favicon.ico" },
+      { url: "/favicon.ico" },
       { url: "/bg.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -244,8 +258,22 @@ export const metadata: Metadata = {
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#5bbad5",
+      },
+    ],
   },
-  manifest: "/site.webmanifest",
+
+  manifest: "/manifest.json",
+  themeColor: "#ffffff",
+  appleWebApp: {
+    title: "Kivamall",
+    statusBarStyle: "black-translucent",
+    capable: true,
+  },
   metadataBase: new URL("https://www.kivamall.com"),
   category: "ecommerce",
 };
@@ -300,7 +328,7 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* <link rel="icon" href="/bg.png" type="image/png" /> */}
+        <link rel="icon" href="/bg.png" type="image/png" />
         <meta
           name="google-site-verification"
           content="KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI"

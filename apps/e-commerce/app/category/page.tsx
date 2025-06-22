@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Link from "next/link";
 import Footer from "../components/footer/Footer";
-import CategoriesSection from "../home-page/category/ProductCategorySection";
 import Navbar from "../home-page/navbar/Navbar";
+
+import CategoriesSection from "../home-page/category/ProductCategorySection";
 import Reccomeded from "../home-page/recommedation/RecommedationProduct";
 import { Category } from "../types/category";
 

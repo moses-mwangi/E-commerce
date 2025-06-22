@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { categoryMetadata } from "./metadataUtils";
+import slugify from "@/utils/slungify";
 
 export async function generateMetadata(
   // parent: any,
@@ -9,31 +10,30 @@ export async function generateMetadata(
     params: { category: string };
   }
 ): Promise<Metadata> {
-  const decodedCategory = decodeURIComponent(params?.category)
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const categoryFromUrl = decodeURIComponent(params?.category || "");
+  const normalizedUrlCategory = slugify(categoryFromUrl.toLowerCase());
 
-  const normalizedCategory = Object.keys(categoryMetadata).find(
-    (key) => key.toLowerCase() === decodedCategory.toLowerCase()
+  const matchedCategory = Object.keys(categoryMetadata).find(
+    (key) => slugify(key.toLowerCase()) === normalizedUrlCategory
   );
 
-  const metadatas = normalizedCategory
-    ? categoryMetadata[normalizedCategory]
-    : undefined;
+  if (!matchedCategory) {
+    return {
+      title: "Shop Categories - Kivamall",
+      description: "Browse our wide range of products at Kivamall Kenya",
+    };
+  }
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: metadatas?.title?.toString() ?? "",
-    description: metadatas?.description?.toString() ?? "",
-    url: `https://www.kivamall.com/category/${params?.category ?? ""}`,
-  };
+  const categoryMeta = categoryMetadata[matchedCategory];
+  const canonicalUrl =
+    (categoryMeta.alternates?.canonical as string) ||
+    `https://www.kivamall.com/category/${slugify(matchedCategory)}`;
 
   return {
-    ...metadatas,
-    other: {
-      ...(metadatas as any)?.other,
-      "json-ld": JSON.stringify(jsonLd),
+    ...categoryMeta,
+    metadataBase: new URL("https://www.kivamall.com"),
+    alternates: {
+      canonical: canonicalUrl,
     },
   };
 }

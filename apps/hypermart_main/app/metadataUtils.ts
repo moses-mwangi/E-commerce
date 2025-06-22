@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const categoryMetadata: Record<string, Metadata> = {
-  "health-beauty": {
+  "Health & Beauty": {
     title:
       "Buy Beauty Products Online Kenya | Skincare, Makeup, Haircare - Kivamall",
     description:
@@ -30,20 +30,19 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Beauty Products Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/health-beauty",
+      url: "https://www.kivamall.com/category/Health & Beauty",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/health-beauty",
+      canonical: "https://www.kivamall.com/category/Health & Beauty",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Beauty Products Kenya | Kivamall Cosmetics & Skincare",
         description: "Kenya's largest online beauty store with 1000+ products",
-        url: "https://www.kivamall.com/category/health-beauty",
-        mainEntityOfPage: "https://www.kivamall.com/category/health-beauty",
+        url: "https://www.kivamall.com/category/Health & Beauty",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -57,21 +56,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Health & Beauty",
-              item: "https://www.kivamall.com/category/health-beauty",
+              item: "https://www.kivamall.com/category/Health & Beauty",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/health-beauty?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "fashions-accessories": {
+  "Fashions & Accessories": {
     title:
       "Online Fashion Store Kenya | Clothing, Shoes, Bags & Accessories - Kivamall",
     description:
@@ -100,23 +93,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Fashion Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/fashions-accessories",
+      url: "https://www.kivamall.com/category/Fashions & Accessories",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/fashions-accessories",
+      canonical: "https://www.kivamall.com/category/Fashions & Accessories",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Fashion Store Kenya | Kivamall Clothing & Accessories",
         description:
           "Kenya's trendiest online fashion destination for the whole family",
-        url: "https://www.kivamall.com/category/fashions-accessories",
-        mainEntityOfPage:
-          "https://www.kivamall.com/category/fashions-accessories",
-
+        url: "https://www.kivamall.com/category/Fashions & Accessories",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -129,22 +119,16 @@ export const categoryMetadata: Record<string, Metadata> = {
             {
               "@type": "ListItem",
               position: 2,
-              name: "Fashions & accessories",
-              item: "https://www.kivamall.com/category/fashions-accessories",
+              name: "Fashions & Accessories",
+              item: "https://www.kivamall.com/category/Fashions & Accessories",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/fashions-accessories?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "home-kitchen": {
+  "Home & Kitchen": {
     title:
       "Home & Kitchen Appliances Kenya | Cookware, Electronics, Furniture - Kivamall",
     description:
@@ -173,22 +157,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Home & Kitchen Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/home-kitchen",
+      url: "https://www.kivamall.com/category/Home & Kitchen",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/home-kitchen",
+      canonical: "https://www.kivamall.com/category/Home & Kitchen",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Home Appliances Kenya | Kivamall Kitchen & Furniture",
         description:
           "Kenya's most reliable home appliances and furniture store",
-        url: "https://www.kivamall.com/category/home-kitchen",
-        mainEntityOfPage: "https://www.kivamall.com/category/home-kitchen",
-
+        url: "https://www.kivamall.com/category/Home & Kitchen",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -202,21 +184,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Home & Kitchen",
-              item: "https://www.kivamall.com/category/home-kitchen",
+              item: "https://www.kivamall.com/category/Home & Kitchen",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/home-kitchen?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "home-decor": {
+  "Home Decor": {
     title:
       "Home Decor & Interior Design Items Kenya | Wall Art, Lighting - Kivamall",
     description:
@@ -246,22 +222,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Home Decor Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/home-decor",
+      url: "https://www.kivamall.com/category/Home Decor",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/home-decor",
+      canonical: "https://www.kivamall.com/category/Home Decor",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Home Decor Kenya | Kivamall Interior Design Solutions",
         description:
           "Kenya's premier destination for premium home decor and interior design",
-        url: "https://www.kivamall.com/category/home-decor",
-        mainEntityOfPage: "https://www.kivamall.com/category/home-decor",
-
+        url: "https://www.kivamall.com/category/Home Decor",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -275,21 +249,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Home Decor",
-              item: "https://www.kivamall.com/category/home-decor",
+              item: "https://www.kivamall.com/category/Home Decor",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/home-decor?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "jewelry-watches": {
+  "Jewelry & Watches": {
     title: "Jewelry & Luxury Watches Kenya | Gold, Diamonds - Kivamall",
     description:
       "Shop genuine jewelry & luxury watches in Kenya. 100% authentic gold, diamonds, and premium timepieces with certification and lifetime warranty.",
@@ -317,22 +285,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Jewelry & Watches Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/jewelry-watches",
+      url: "https://www.kivamall.com/category/Jewelry & Watches",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/jewelry-watches",
+      canonical: "https://www.kivamall.com/category/Jewelry & Watches",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Jewelry & Watches Kenya | Kivamall Luxury Timepieces",
         description:
           "Kenya's trusted source for certified luxury jewelry and watches",
-        url: "https://www.kivamall.com/category/jewelry-watches",
-        mainEntityOfPage: "https://www.kivamall.com/category/jewelry-watches",
-
+        url: "https://www.kivamall.com/category/Jewelry & Watches",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -346,21 +312,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Jewelry & Watches",
-              item: "https://www.kivamall.com/category/jewelry-watches",
+              item: "https://www.kivamall.com/category/Jewelry & Watches",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/jewelry-watches?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "consumer-electronics": {
+  "Consumer Electronics": {
     title: "Electronics Store Kenya | Phones, Laptops, TVs, Gadgets - Kivamall",
     description:
       "Kenya's trusted electronics shop. Buy smartphones, laptops, TVs, audio devices & gadgets with warranty. Official distributor of major tech brands.",
@@ -388,23 +348,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Electronics Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/consumer-electronics",
+      url: "https://www.kivamall.com/category/Consumer Electronics",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/consumer-electronics",
+      canonical: "https://www.kivamall.com/category/Consumer Electronics",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Electronics Kenya | Kivamall Official Tech Store",
         description:
           "Kenya's authorized electronics retailer with genuine products and warranties",
-        url: "https://www.kivamall.com/category/consumer-electronics",
-        mainEntityOfPage:
-          "https://www.kivamall.com/category/consumer-electronics",
-
+        url: "https://www.kivamall.com/category/Consumer Electronics",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -418,21 +375,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Consumer Electronics",
-              item: "https://www.kivamall.com/category/consumer-electronics",
+              item: "https://www.kivamall.com/category/Consumer Electronics",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/consumer-electronics?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "security-devices": {
+  "Security Devices": {
     title:
       "Security Systems Kenya | CCTV Cameras, Alarms, Smart Locks - Kivamall",
     description:
@@ -461,22 +412,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Security Devices Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/security-devices",
+      url: "https://www.kivamall.com/category/Security Devices",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/security-devices",
+      canonical: "https://www.kivamall.com/category/Security Devices",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Security Systems Kenya | Kivamall Professional Solutions",
         description:
           "Kenya's leading provider of professional security systems and surveillance equipment",
-        url: "https://www.kivamall.com/category/security-devices",
-        mainEntityOfPage: "https://www.kivamall.com/category/security-devices",
-
+        url: "https://www.kivamall.com/category/Security Devices",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -490,21 +439,15 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Security Devices",
-              item: "https://www.kivamall.com/category/security-devices",
+              item: "https://www.kivamall.com/category/Security Devices",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/security-devices?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
 
-  "car-accessories": {
+  "Car Accessories": {
     title:
       "Car Accessories & Parts Kenya | Premium Auto Care Products - Kivamall",
     description:
@@ -533,22 +476,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Car Accessories Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/car-accessories",
+      url: "https://www.kivamall.com/category/Car Accessories",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/car-accessories",
+      canonical: "https://www.kivamall.com/category/Car Accessories",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Car Accessories Kenya | Kivamall Auto Enhancements",
         description:
           "Kenya's premier destination for premium car accessories and auto care products",
-        url: "https://www.kivamall.com/category/car-accessories",
-        mainEntityOfPage: "https://www.kivamall.com/category/car-accessories",
-
+        url: "https://www.kivamall.com/category/Car Accessories",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -562,21 +503,14 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Car Accessories",
-              item: "https://www.kivamall.com/category/car-accessories",
+              item: "https://www.kivamall.com/category/Car Accessories",
             },
           ],
-        },
-        potentialAction: {
-          "@type": "SearchAction",
-          target:
-            "https://www.kivamall.com/category/car-accessories?q={search_term_string}",
-          "query-input": "required name=search_term_string",
         },
       }),
     },
   },
-
-  construction: {
+  Construction: {
     title:
       "Construction Materials & Equipment Kenya | Building Supplies Online - Kivamall",
     description:
@@ -610,22 +544,20 @@ export const categoryMetadata: Record<string, Metadata> = {
           alt: "Kivamall Construction Materials Collection",
         },
       ],
-      url: "https://www.kivamall.com/category/construction",
+      url: "https://www.kivamall.com/category/Construction",
       type: "website",
     },
     alternates: {
-      canonical: "https://www.kivamall.com/category/construction",
+      canonical: "https://www.kivamall.com/category/Construction",
     },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
+        "@type": "WebPage",
         name: "Construction Materials Kenya | Kivamall Building Supplies",
         description:
           "Kenya's premier online construction store for building materials and equipment",
-        url: "https://www.kivamall.com/category/construction",
-        mainEntityOfPage: "https://www.kivamall.com/category/construction",
-
+        url: "https://www.kivamall.com/category/Construction",
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
@@ -639,14 +571,14 @@ export const categoryMetadata: Record<string, Metadata> = {
               "@type": "ListItem",
               position: 2,
               name: "Construction",
-              item: "https://www.kivamall.com/category/construction",
+              item: "https://www.kivamall.com/category/Construction",
             },
           ],
         },
         potentialAction: {
           "@type": "SearchAction",
           target:
-            "https://www.kivamall.com/category/construction?q={search_term_string}",
+            "https://www.kivamall.com/category/Construction?q={search_term_string}",
           "query-input": "required name=search_term_string",
         },
       }),

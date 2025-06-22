@@ -18,7 +18,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -35,6 +40,7 @@ import ImageScrol from "./ImageScrol";
 import LiveChat from "./LiveChat";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
+import slugify from "@/utils/slungify";
 
 const productFeatures = [
   {
@@ -60,6 +66,7 @@ export default function SingleSuCategoricalProductPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const { push } = useRouter();
+  const path = usePathname();
 
   const { category, subcategory } = useParams();
   const dispatch: AppDispatch = useDispatch();
@@ -85,7 +92,15 @@ export default function SingleSuCategoricalProductPage() {
 
   const { products } = useSelector((state: RootState) => state.product);
   const { items } = useSelector((state: RootState) => state.favourite);
-  const product = products.find((el) => el.id === Number(id));
+
+  const productName = String(path.split("/").at(-1));
+  const product = products.find(
+    (el) =>
+      slugify(el.category) === slugify(decodedCategory) &&
+      slugify(el.subCategory) === slugify(decodedSub) &&
+      slugify(el.name) == slugify(productName)
+  );
+
   const mainImageIndex =
     Number(product?.productImages.findIndex((el) => el.isMain === true)) || 0;
 

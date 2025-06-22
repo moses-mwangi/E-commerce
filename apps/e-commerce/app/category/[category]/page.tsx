@@ -9,6 +9,7 @@ import { fetchProducts } from "@/redux/slices/productSlice";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import Category from "./categoryComponents/Category";
 import Footer from "@/app/components/footer/Footer";
+import slugify from "@/utils/slungify";
 
 export default function CategoryPage() {
   const { category } = useParams();
@@ -20,10 +21,16 @@ export default function CategoryPage() {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const decodedCategory = decodeURIComponent(String(category));
+  // const decodedCategory = decodeURIComponent(String(category));
+
+  // const categoryData = categories.find(
+  //   (el) => el.name.toLowerCase() === decodedCategory.toLowerCase()
+  // );
+
+  const decodedCategory = slugify(decodeURIComponent(String(category)));
 
   const categoryData = categories.find(
-    (el) => el.name.toLowerCase() === decodedCategory.toLowerCase()
+    (el) => slugify(el.name.toLowerCase()) === decodedCategory.toLowerCase()
   );
 
   return (

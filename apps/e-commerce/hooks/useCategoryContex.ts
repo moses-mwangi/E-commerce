@@ -4,10 +4,12 @@ import { fetchCategories } from "@/redux/slices/categorySlice";
 import { addToFav, setFav } from "@/redux/slices/favoriteSlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import slugify from "@/utils/slungify";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { string } from "zod";
 
 function useCategoryContex() {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +43,7 @@ function useCategoryContex() {
   const decodedCategory = decodeURIComponent(String(category));
 
   const subFilter = categories.find(
-    (el) => el.name.toLowerCase() === decodedCategory.toLowerCase()
+    (el) => slugify(el.name) === slugify(decodedCategory)
   );
 
   const capitalizeWords = (str: string) => {
@@ -74,11 +76,11 @@ function useCategoryContex() {
   };
 
   const subCategoryProduct = products.filter(
-    (el) => el.category.toLowerCase() === decodedCategory.toLowerCase()
+    (el) => slugify(el.category) === slugify(decodedCategory)
   );
 
   const categoryData = categories.find(
-    (el) => el.name.toLowerCase() === decodedCategory.toLowerCase()
+    (el) => slugify(el.name) === slugify(decodedCategory)
   );
 
   const filteredProducts = subCategoryProduct
@@ -118,9 +120,9 @@ function useCategoryContex() {
       const param = new URLSearchParams();
       param.set("id", id);
       router.push(
-        `/category/${category}/${
+        `/category/${slugify(String(category))}/${slugify(
           proCategory?.subCategory
-        }/${name}?${param.toString()}`
+        )}/${slugify(name)}?${param.toString()}`
       );
 
       dispatch(addToRecentlyViewed(proCategory));
@@ -132,7 +134,9 @@ function useCategoryContex() {
     const param = new URLSearchParams();
     param.set("id", String(id));
     router.push(
-      `/category/${category}/${name.toLowerCase()}?${param.toString()}`
+      `/category/${slugify(String(category))}/${slugify(
+        name
+      )}?${param.toString()}`
     );
   };
 

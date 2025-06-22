@@ -8,6 +8,7 @@ import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import { fetchCategories } from "@/redux/slices/categorySlice";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/redux/store";
+import slugify from "@/utils/slungify";
 import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,7 +35,9 @@ export default function Reccomeded() {
     if (product) {
       setIsLoading(true);
       push(
-        `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+        `/category/${slugify(product.category)}/${slugify(
+          product.subCategory
+        )}/${slugify(product.name)}?id=${product.id}`
       );
       dispatch(addToRecentlyViewed(product));
     }
