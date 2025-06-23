@@ -615,8 +615,12 @@ function BankTransferPayment() {
               )}
             </div>
 
-            <div>
-              <Label className="block text-sm font-medium text-gray-700 mb-1">
+            <h1 className=" mt-4 py-5 text-[14px] font-semibold">
+              The Bank Transfer Service Cooming soon
+            </h1>
+
+            {/* <div>
+              <Label className="block  text-sm font-medium text-gray-700 mb-1">
                 Phone Number
               </Label>
               <Controller
@@ -672,7 +676,7 @@ function BankTransferPayment() {
                   {errors.bankCode.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <div className="bg-blue-50 p-4 rounded-md">
               <h4 className="font-medium text-blue-800 mb-2">
@@ -691,7 +695,7 @@ function BankTransferPayment() {
           </form>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end">
+      {/* <CardFooter className="flex justify-end">
         <Button
           onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
@@ -699,7 +703,7 @@ function BankTransferPayment() {
         >
           {isLoading ? "Processing..." : "Initiate Bank Transfer"}
         </Button>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }

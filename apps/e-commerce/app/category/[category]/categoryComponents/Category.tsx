@@ -393,7 +393,7 @@ export default function Category() {
                         onClick={() => handleRoute(product.name, product.id)}
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                        View
+                        View ddd
                       </Button>
                     </div>
                   </CardContent>

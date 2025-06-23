@@ -28,7 +28,7 @@ import {
 import ButtonLoader from "../components/loaders/ButtonLoader";
 
 export default function AdminEntryPage() {
-  const { users, currentUser } = useSelector((state: RootState) => state.user);
+  const { users } = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch();
 
   const { push, back } = useRouter();

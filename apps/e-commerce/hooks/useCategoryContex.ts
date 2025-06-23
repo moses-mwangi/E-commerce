@@ -119,6 +119,11 @@ function useCategoryContex() {
       setIsLoading(true);
       const param = new URLSearchParams();
       param.set("id", id);
+      console.log(
+        `/category/${slugify(String(category))}/${slugify(
+          proCategory?.subCategory
+        )}/${slugify(name)}?${param.toString()}`
+      );
       router.push(
         `/category/${slugify(String(category))}/${slugify(
           proCategory?.subCategory

@@ -28,6 +28,7 @@ import axios from "axios";
 const mobileNetworks = [
   { id: "mtn", name: "MTN Mobile Money" },
   { id: "airtel", name: "Airtel Money" },
+  { id: "m-pesa", name: "M-pesa Transfer" },
   { id: "vodafone", name: "Vodafone Cash" },
   { id: "tigo", name: "Tigo Pesa" },
 ];
@@ -135,10 +136,10 @@ export default function MobileMoneyPayment() {
         >
           <div>
             <Label className="block text-sm font-medium text-gray-700 mb-1">
-              Mobile Network
+              Mobile Network (optional)
             </Label>
             <Select value={network} onValueChange={setNetwork}>
-              <SelectTrigger className="w-full bg-gray-50">
+              <SelectTrigger className="w-full focus:ring-orange-500 bg-gray-50">
                 <SelectValue placeholder="Select network" />
               </SelectTrigger>
               <SelectContent>

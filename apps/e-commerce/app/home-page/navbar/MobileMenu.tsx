@@ -38,6 +38,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
+import slugify from "@/utils/slungify";
 
 const phoneNumber = "254729617393";
 // const defaultMessage = `
@@ -273,7 +274,7 @@ export default function MobileMenu({ setIsLoading }: Prop) {
                                 onClick={(e) => {
                                   if (e.target === e.currentTarget) {
                                     navigate();
-                                    push(`/category/${category.name}`);
+                                    push(`/category/${slugify(category.name)}`);
                                   }
                                 }}
                               >
@@ -299,7 +300,9 @@ export default function MobileMenu({ setIsLoading }: Prop) {
                                         onClick={() => {
                                           navigate();
                                           push(
-                                            `/category/${category.name}/${subcategory.name}`
+                                            `/category/${slugify(
+                                              category.name
+                                            )}/${slugify(subcategory.name)}`
                                           );
                                         }}
                                         className="py-2 px-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md cursor-pointer transition-colors"

@@ -12,6 +12,7 @@ import OrderSummaryCard from "./OrderSummaryCard";
 import PaymentProgress from "./PaymentProgress";
 import PaymentsForm from "./PaymentsForm";
 import SmsSentModal from "./SmsSentModal";
+import FavouriteProduct from "@/app/home-page/navbar/favouriteButton/FavouriteProductIcon";
 
 export default function Page() {
   const [details, setDetails] = useState();
@@ -25,18 +26,19 @@ export default function Page() {
             <Logo />
           </div>
           <div>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 sm:space-x-6">
               <Link
                 href="#"
                 className="text-gray-700 hover:text-blue-600 relative"
               >
                 <div className="relative">
                   <FaBell className="text-gray-700/65 text-2xl cursor-pointer" />
-                  <span className="absolute -top-[6px] -right-[6px] bg-red-500/90 text-white text-xs rounded-full w-4 h-4 flex justify-center items-center">
+                  {/* <span className="absolute -top-[6px] -right-[6px] bg-red-500/90 text-white text-xs rounded-full w-4 h-4 flex justify-center items-center">
                     3
-                  </span>
+                  </span> */}
                 </div>
               </Link>
+              <FavouriteProduct />
               <CartPage />
               <UserProfileImage />
             </div>
