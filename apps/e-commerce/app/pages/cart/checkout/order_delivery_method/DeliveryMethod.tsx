@@ -20,19 +20,19 @@ const deliveryOptions = [
     id: "standard",
     title: "Standard Delivery",
     description: "3-5 business days",
-    price: "Free",
+    price: "Free for order > Ksh 7500",
   },
   {
     id: "express",
     title: "Express Delivery",
     description: "1-2 business days",
-    price: "$9.99",
+    price: "Ksh 599",
   },
   {
     id: "same-day",
     title: "Same Day Delivery",
     description: "Delivered today",
-    price: "$14.99",
+    price: "Ksh 899",
   },
 ];
 
