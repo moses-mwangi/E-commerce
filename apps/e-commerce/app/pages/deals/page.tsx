@@ -21,6 +21,7 @@ import { FaFire } from "react-icons/fa";
 import { GiLightningFlame } from "react-icons/gi";
 import { BsShieldLock } from "react-icons/bs";
 import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
+import slugify from "@/utils/slungify";
 
 const DISCOUNT_BANDS = [
   { min: 40, label: "Super Deal" },
@@ -173,7 +174,9 @@ export default function FlashDealsPage() {
                   onClick={() => {
                     setIsLoading(true);
                     push(
-                      `/category/${deal.category}/${deal.subCategory}/${deal.name}?id=${deal.id}`
+                      `/category/${slugify(deal.category)}/${slugify(
+                        deal.subCategory
+                      )}/${slugify(deal.name)}?id=${deal.id}`
                     );
                   }}
                 >

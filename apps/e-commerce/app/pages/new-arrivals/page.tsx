@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import LoadingState from "@/app/components/loaders/LoadingState";
 import { differenceInDays } from "date-fns";
 import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
+import slugify from "@/utils/slungify";
 
 export default function NewArrivalsPage() {
   const dispatch: AppDispatch = useDispatch();
@@ -133,7 +134,9 @@ export default function NewArrivalsPage() {
                 onClick={() => {
                   setIsLoading(true);
                   push(
-                    `/category/${arrival.category}/${arrival.subCategory}/${arrival.name}?id=${arrival.id}`
+                    `/category/${slugify(arrival.category)}/${slugify(
+                      arrival.subCategory
+                    )}/${slugify(arrival.name)}?id=${arrival.id}`
                   ); // <div className="flex items-center justify-start overflow-x-scroll hide-scrollbar gap-4 mb-8">
                 }}
                 className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"

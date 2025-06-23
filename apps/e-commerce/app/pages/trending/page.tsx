@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Reusable_Category_Sub_Products from "../deals/Reusable_Category_Sub_Products";
 import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
+import slugify from "@/utils/slungify";
 
 const TRENDING_BANDS = [
   { min: 90, label: "Hot 🔥" },
@@ -143,7 +144,9 @@ export default function TrendingProductsPage() {
                   onClick={() => {
                     setIsLoading(true);
                     push(
-                      `/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`
+                      `/category/${slugify(product.category)}/${slugify(
+                        product.subCategory
+                      )}/${slugify(product.name)}?id=${product.id}`
                     );
                   }}
                 >
