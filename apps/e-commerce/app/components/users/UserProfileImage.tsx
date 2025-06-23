@@ -270,7 +270,7 @@ export default function UserProfileImage() {
                 icon={<User2 className="w-5 h-5" />}
                 onClick={() => {
                   setIsLoading(true);
-                  router.push("/admin");
+                  router.push("/admin/dashboard");
                 }}
               />
             )}

@@ -11,6 +11,7 @@ import { FiHeart, FiShoppingCart, FiStar } from "react-icons/fi";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
 import useLanguage_Currency from "../navbar/language_currency_change/useLanguage_Currency";
+import slugify from "@/utils/slungify";
 
 export default function FrequencySearched() {
   const { selectedCurrency } = useLanguage_Currency();
@@ -95,7 +96,9 @@ export default function FrequencySearched() {
               </div>
               <div className="px-3 py-3">
                 <Link
-                  href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
+                  href={`/category/${slugify(product.category)}/${slugify(
+                    product.subCategory
+                  )}/${slugify(product.name)}?id=${product.id}`}
                   onClick={() => handleRouteProduct(product)}
                 >
                   <h3 className="w-full overflow-hidden text-[15px] whitespace-nowrap truncate font-medium text-gray-900 mb-1">

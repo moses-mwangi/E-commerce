@@ -38,7 +38,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const categories = categoriesRes.data?.data?.categories || [];
     const products = productsRes.data?.products || [];
 
-    ///// The Home page site map eg. "https://www.kivamall.com"
     const baseUrls: MetadataRoute.Sitemap = [
       {
         url: "https://www.kivamall.com",

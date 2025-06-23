@@ -23,8 +23,10 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
 
   useEffect(() => {
     async function getPayments() {
-      const res = await axios.get(`${API_URL}/payment`);
-      setPayments(res.data.payment);
+      try {
+        const res = await axios.get(`${API_URL}/payment`);
+        setPayments(res.data.payment);
+      } catch (err) {}
     }
     getPayments();
   }, [dispatch]);
@@ -40,7 +42,6 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {/* Processing Time */}
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Processing:</span>
               <span>
@@ -52,7 +53,6 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
               </span>
             </div>
 
-            {/* Shipping Time */}
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Shipping:</span>
               <span>
@@ -62,7 +62,6 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
               </span>
             </div>
 
-            {/* Payment Status */}
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Payment Status:</span>
               <span
@@ -81,13 +80,11 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
               </span>
             </div>
 
-            {/* Estimated Delivery Date */}
             <div className="flex justify-between text-sm font-medium pb-4">
               <span className="text-gray-500">Estimated Delivery:</span>
               <span>{calculateEstimatedDelivery(order)}</span>
             </div>
 
-            {/* Tracking Component */}
             <OrderTracking
               order={order}
               // carrier={order?.carrier || "Standard Shipping"}
@@ -100,7 +97,6 @@ export default function EstimatingTheDeliveryTime({ order }: { order: Order }) {
   );
 }
 
-// Calculate estimated delivery date
 export function calculateEstimatedDelivery(order: Order) {
   if (order.status === "delivered") {
     return `Delivered on ${format(

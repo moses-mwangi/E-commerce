@@ -13,6 +13,7 @@ import Navbar from "../home-page/navbar/Navbar";
 import CategoriesSection from "../home-page/category/ProductCategorySection";
 import Reccomeded from "../home-page/recommedation/RecommedationProduct";
 import { Category } from "../types/category";
+import slugify from "@/utils/slungify";
 
 const CategoryCard = ({
   category,
@@ -31,11 +32,11 @@ const CategoryCard = ({
     className="flex-shrink-0"
   >
     <Link
-      href={`/category/${
+      href={`/category/${slugify(
         categories.find((el) =>
           el.subcategories.some((s) => s.name === category.name)
-        )?.name
-      }/${category.name}`}
+        )?.name || ""
+      )}/${slugify(category.name)}`}
       className="group block w-full"
     >
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden border-2 border-gray-100 shadow-sm group-hover:border-orange-300 transition-all">

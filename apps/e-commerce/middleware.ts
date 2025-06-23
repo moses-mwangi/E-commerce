@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const adminPathRegex = /^\/admin(?:\/.*)?$/;
+const protectedRoutes = [
+  "/admin",
+  "/pages/cart/checkout",
+  "/pages/account",
+  "/pages/order",
+];
+
 export function middleware(req: NextRequest) {
-  const protectedRoutes = [
-    "/admins",
-    "/pages/cart/checkout",
-    "/pages/account",
-    "/order",
-  ];
+  const { pathname } = req.nextUrl;
+
   const isProtectedRoute = protectedRoutes.some((route) =>
-    req.nextUrl.pathname.startsWith(route)
+    pathname.startsWith(route)
   );
 
   if (!isProtectedRoute) {
@@ -23,14 +27,21 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/registration/signin", req.url));
   }
 
+  const base64Payload = token.split(".")[1];
+  const payload = JSON.parse(atob(base64Payload));
+
+  if (pathname.startsWith("/admin") && payload.tradeRole !== "admin") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/admins/:path*",
+    "/admin/:path*",
     "/pages/cart/checkout/:path*",
     "/pages/account/:path*",
-    "/order/:path*",
+    "/pages/order/:path*",
   ],
 };

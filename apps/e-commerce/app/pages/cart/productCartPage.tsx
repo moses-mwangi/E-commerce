@@ -26,6 +26,7 @@ import { Product } from "@/app/types/products";
 import useLanguage_Currency from "@/app/home-page/navbar/language_currency_change/useLanguage_Currency";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import Image from "next/image";
+import slugify from "@/utils/slungify";
 
 interface CartItem {
   productId: number;
@@ -42,19 +43,6 @@ export default function ProductCartPage() {
   const { categories } = useSelector((state: RootState) => state.category);
   const { products } = useSelector((state: RootState) => state.product);
   const { items: cartItems } = useSelector((state: RootState) => state.cart);
-
-  const proSubCategory = categories
-    .find((category) =>
-      cartItems.some(
-        (item) =>
-          item.product.category?.toLowerCase() === category.name.toLowerCase()
-      )
-    )
-    ?.subcategories.find(
-      (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
-    );
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -157,11 +145,17 @@ export default function ProductCartPage() {
                           }
                           alt={product.name}
                           className="w-full h-full object-cover rounded-md"
+                          width={200}
+                          height={200}
                         />
                       </div>
                       <div className="space-y-2 sm:space-y-1">
                         <Link
-                          href={`/category/${product.category}/${proSubCategory?.name}/${product.name}?id=${product.id}`}
+                          href={`/category/${slugify(
+                            product.category
+                          )}/${slugify(product.subCategory)}/${slugify(
+                            product.name
+                          )}?id=${product.id}`}
                           onClick={() => {
                             setIsLoading(true);
                             dispatch(addToRecentlyViewed(item.product));

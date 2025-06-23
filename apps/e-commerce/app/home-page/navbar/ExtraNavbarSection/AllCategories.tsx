@@ -4,6 +4,7 @@ import { Category, Subcategory } from "@/app/types/category";
 import { Product } from "@/app/types/products";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import { AppDispatch } from "@/redux/store";
+import slugify from "@/utils/slungify";
 import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +48,7 @@ export default function AllCategories({
               }}
               onClick={() => {
                 setIsLoading(true);
-                push(`/category/${category.name}`);
+                push(`/category/${slugify(category.name)}`);
               }}
               className="py-1 cursor-pointer w-full text-[15px]"
             >
@@ -68,7 +69,7 @@ export default function AllCategories({
       <div className="h-full max-h-[300px]">
         <div className="overflow-y-scroll overflow-x-hidden h-full">
           <Link
-            href={`/category/${isCategory}`}
+            href={`/category/${slugify(isCategory ? isCategory : "")}`}
             onClick={() => setIsLoading(true)}
             className="text-[15px] font-semibold px-2 flex gap-2 hover:underline hover:text-blue-500 transition-all duration-200 items-center py-3"
           >
@@ -80,7 +81,11 @@ export default function AllCategories({
                 className="py-1 cursor-pointer text-gray-700 w-full text-[15px]"
                 onClick={() => {
                   setIsLoading(true);
-                  push(`/category/${isCategory}/${subCategory.name}`);
+                  push(
+                    `/category/${slugify(
+                      isCategory ? isCategory : ""
+                    )}/${slugify(subCategory.name)}`
+                  );
                 }}
                 onMouseEnter={() => {
                   setIsSubCategory(subCategory.name);
@@ -103,7 +108,9 @@ export default function AllCategories({
 
       <div className="mr-4 overflow-y-scroll overflow-x-hidden h-full max-h-[300px]">
         <Link
-          href={`/category/${isCategory}/${isSubCategory}`}
+          href={`/category/${slugify(isCategory ? isCategory : "")}/${slugify(
+            isSubCategory ? isSubCategory : ""
+          )}`}
           onClick={() => setIsLoading(true)}
           className="text-[15px] font-semibold px-2 flex gap-2 hover:underline hover:text-blue-500 transition-all duration-200 items-center py-3"
         >
@@ -117,7 +124,9 @@ export default function AllCategories({
               onClick={() => {
                 setIsLoading(true);
                 push(
-                  `/category/${isCategory}/${isSubCategory}/${subProduct.name}?id=${subProduct.id}`
+                  `/category/${slugify(isCategory ? isCategory : "")}/${slugify(
+                    isSubCategory ? isSubCategory : ""
+                  )}/${slugify(subProduct.name)}?id=${subProduct.id}`
                 );
                 dispatch(addToRecentlyViewed(subProduct));
               }}

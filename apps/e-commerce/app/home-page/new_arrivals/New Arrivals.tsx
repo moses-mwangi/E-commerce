@@ -12,6 +12,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { FiHeart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingState from "../../components/loaders/LoadingState";
+import slugify from "@/utils/slungify";
 
 export default function NewArrivals() {
   const dispatch: AppDispatch = useDispatch();
@@ -90,7 +91,9 @@ export default function NewArrivals() {
                 </div>
 
                 <Link
-                  href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
+                  href={`/category/${slugify(product.category)}/${slugify(
+                    product.subCategory
+                  )}/${slugify(product.name)}?id=${product.id}`}
                   onClick={() => handleRouteProduct(product)}
                   className="flex flex-col px-2 pb-2 sm:px-3 sm:py-3 "
                 >

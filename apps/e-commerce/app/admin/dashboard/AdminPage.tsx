@@ -127,7 +127,10 @@ export default function AdminDashboard() {
     dispatch(fetchCategories());
     dispatch(fetchOrders());
     dispatch(fetchProducts());
-  }, [dispatch]);
+    // if (currentUser?.tradeRole !== "admin") {
+    //   window.location.href = "/";
+    // }
+  }, [dispatch, currentUser?.tradeRole]);
 
   const handleSales = (daysAgo: number | string) => {
     const startDate = subDays(new Date(), Number(daysAgo));

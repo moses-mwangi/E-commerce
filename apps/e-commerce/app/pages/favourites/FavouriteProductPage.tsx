@@ -20,30 +20,19 @@ import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import { fetchProducts } from "@/redux/slices/productSlice";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import slugify from "@/utils/slungify";
 
 export default function FavouritesProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const { products } = useSelector((state: RootState) => state.product);
-  const { categories } = useSelector((state: RootState) => state.category);
 
   const { selectedCurrency } = useLanguage_Currency();
 
   const { items: favItems } = useSelector(
     (state: RootState) => state.favourite
   );
-
-  const proSubCategory = categories
-    .find((category) =>
-      favItems.some(
-        (item) =>
-          item.product.category?.toLowerCase() === category.name.toLowerCase()
-      )
-    )
-    ?.subcategories.find(
-      (subcat) => subcat.name.toLowerCase() === "smartphones & accessories"
-    );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -56,7 +45,6 @@ export default function FavouritesProductPage() {
         });
 
       dispatch(setFav(favProducts));
-      dispatch(fetchProducts());
     }
   }, [dispatch, products]);
 
@@ -156,7 +144,11 @@ export default function FavouritesProductPage() {
                       />
                       <div className="flex-1 sm:hidden min-w-0">
                         <Link
-                          href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                          href={`/category/${slugify(
+                            item.product.category
+                          )}/${slugify(item.product.subCategory)}/${slugify(
+                            item.product.name
+                          )}?id=${item.product.id}`}
                           onClick={() => {
                             setIsLoading(true);
                             dispatch(addToRecentlyViewed(item.product));
@@ -175,7 +167,11 @@ export default function FavouritesProductPage() {
 
                     <div className="flex-1 hidden sm:block min-w-0">
                       <Link
-                        href={`/category/${item.product.category}/${proSubCategory?.name}/${item.product.name}?id=${item.product.id}`}
+                        href={`/category/${slugify(
+                          item.product.category
+                        )}/${slugify(item.product.subCategory)}/${slugify(
+                          item.product.name
+                        )}?id=${item.product.id}`}
                         onClick={() => {
                           setIsLoading(true);
                           dispatch(addToRecentlyViewed(item.product));

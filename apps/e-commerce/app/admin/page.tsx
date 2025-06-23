@@ -56,6 +56,10 @@ export default function AdminEntryPage() {
 
     dispatch(fetchUsers());
     dispatch(getCurrentUser());
+
+    // if (currentUser?.tradeRole !== "admin") {
+    //   console.log("NOT ADMIN");
+    // }
   }, [dispatch]);
 
   const validateForm = () => {

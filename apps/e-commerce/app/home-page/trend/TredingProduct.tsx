@@ -12,6 +12,7 @@ import Link from "next/link";
 import useCategoryContex from "@/hooks/useCategoryContex";
 import { Product } from "@/app/types/products";
 import { addToRecentlyViewed } from "@/redux/slices/BrowsingHistory";
+import slugify from "@/utils/slungify";
 
 export default function NewArrivals() {
   const dispatch: AppDispatch = useDispatch();
@@ -91,7 +92,9 @@ export default function NewArrivals() {
                 </div>
 
                 <Link
-                  href={`/category/${product.category}/${product.subCategory}/${product.name}?id=${product.id}`}
+                  href={`/category/${slugify(product.category)}/${slugify(
+                    product.subCategory
+                  )}/${slugify(product.name)}?id=${product.id}`}
                   onClick={() => handleRouteProduct(product)}
                   className="flex flex-col items-center  px-2 pb-2 sm:px-3 sm:py-3 "
                 >

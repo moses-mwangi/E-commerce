@@ -11,8 +11,8 @@ import { useDispatch } from "react-redux";
 import useBrowsingHistory from "./useBrowsingHistory";
 import { clearRecentlyViewed } from "@/redux/slices/BrowsingHistory";
 import dynamic from "next/dynamic";
+import slugify from "@/utils/slungify";
 
-// import FrequencySearched from "../frequencySearched/FrequencySearched";
 const FrequencySearched = dynamic(
   () => import("../frequencySearched/FrequencySearched"),
   {
@@ -112,7 +112,9 @@ export default function UserBrowsingHistory() {
                 </div>
                 <div className="py-4 px-3">
                   <Link
-                    href={`/category/${item.category}/${item.subCategory}/${item.name}?id=${item.id}`}
+                    href={`/category/${slugify(item.category)}/${slugify(
+                      item.subCategory
+                    )}/${slugify(item.name)}?id=${item.id}`}
                     onClick={() => handleRouteProduct(item.id)}
                     className="flex flex-col items-start"
                   >
