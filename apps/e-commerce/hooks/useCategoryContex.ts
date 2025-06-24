@@ -83,20 +83,27 @@ function useCategoryContex() {
     (el) => slugify(el.name) === slugify(decodedCategory)
   );
 
+  // console.log(subCategoryProduct);
+
   const filteredProducts = subCategoryProduct
     .filter((product) => {
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const matchesBrand =
-        selectedBrands.length === 0 ||
-        selectedBrands.includes(String(product.brand));
-      const matchesPrice =
-        product.price >= priceRange[0] && product.price <= priceRange[1];
-      const matchesRating =
-        selectedRatings.length === 0 ||
-        selectedRatings.includes(Math.floor(product.ratings));
-      return matchesSearch && matchesBrand && matchesPrice && matchesRating;
+      // const matchesSearch = slugify(product.name)
+      //   .toLowerCase()
+      //   .includes(slugify(searchQuery).toLowerCase());
+
+      // const matchesBrand =
+      //   selectedBrands.length === 0 ||
+      //   selectedBrands.includes(String(product.brand));
+
+      // const matchesPrice =
+      //   product.price >= priceRange[0] && product.price <= priceRange[1];
+
+      // const matchesRating =
+      //   selectedRatings.length === 0 ||
+      //   selectedRatings.includes(Math.floor(product.ratings));
+
+      // return matchesSearch && matchesBrand && matchesPrice && matchesRating;
+      return product;
     })
     .sort((a, b) => {
       switch (sortBy) {

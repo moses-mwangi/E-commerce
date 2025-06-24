@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const adminPathRegex = /^\/admin(?:\/.*)?$/;
 const protectedRoutes = [
-  "/admin",
+  "/adminv",
   "/pages/cart/checkout",
   "/pages/account",
   "/pages/order",
