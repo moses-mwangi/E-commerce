@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import Reusable_Category_Sub_Products from "../deals/Reusable_Category_Sub_Products";
 import Reccomeded from "@/app/home-page/recommedation/RecommedationProduct";
 import slugify from "@/utils/slungify";
 

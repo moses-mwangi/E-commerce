@@ -30,9 +30,9 @@ export function middleware(req: NextRequest) {
   const base64Payload = token.split(".")[1];
   const payload = JSON.parse(atob(base64Payload));
 
-  if (pathname.startsWith("/admin") && payload.tradeRole !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
+  // if (pathname.startsWith("/admin") && payload.tradeRole !== "admin") {
+  //   return NextResponse.redirect(new URL("/", req.url));
+  // }
 
   return NextResponse.next();
 }
