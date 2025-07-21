@@ -42,7 +42,8 @@ export const createProduct = catchAsync(
 
     // Validate and upload images
     const files = req.files as Express.Multer.File[];
-    if (!files || files.length < 4) {
+    // if (!files || files.length < 4) {
+    if (!files || files.length < 1) {
       return next(new AppError("At least 4 images are required", 400));
     }
 
@@ -108,7 +109,8 @@ export const createProduct = catchAsync(
       .filter((result) => result.status === "fulfilled" && result.value)
       .map((result) => (result as PromiseFulfilledResult<string>).value);
 
-    if (imageUrls.length < 4) {
+    // if (imageUrls.length < 4) {
+    if (imageUrls.length < 1) {
       return next(new AppError("At least 4 images must be uploaded", 400));
     }
 

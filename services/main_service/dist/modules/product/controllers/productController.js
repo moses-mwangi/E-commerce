@@ -30,7 +30,8 @@ exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
     }
     // Validate and upload images
     const files = req.files;
-    if (!files || files.length < 4) {
+    // if (!files || files.length < 4) {
+    if (!files || files.length < 1) {
         return next(new AppError_1.default("At least 4 images are required", 400));
     }
     const uploadWithRetry = async (file, retries = 4) => {
@@ -84,7 +85,8 @@ exports.createProduct = (0, catchSync_1.default)(async (req, res, next) => {
     const imageUrls = results
         .filter((result) => result.status === "fulfilled" && result.value)
         .map((result) => result.value);
-    if (imageUrls.length < 4) {
+    // if (imageUrls.length < 4) {
+    if (imageUrls.length < 1) {
         return next(new AppError_1.default("At least 4 images must be uploaded", 400));
     }
     // Start a transaction

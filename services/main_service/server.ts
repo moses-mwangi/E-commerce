@@ -1,15 +1,13 @@
-import cluster from "cluster";
 import dotenv from "dotenv";
-import { cpus } from "os";
 import app from "./app";
 import orderAssociations from "./modules/order/models/orderAssociations";
-import logger from "./modules/payments/utils/logger";
+import paymentAssociation from "./modules/payments/models/paymentAssociation";
 import categoryAssociations from "./modules/product/models/category/categoryAssociations";
 import productAssociation from "./modules/product/models/product/productAssociation";
 import reviewAssociation from "./modules/reviews/models/reviewModel/reviewAssociation";
 import sequelize from "./shared/config/pg_database";
+
 import { consumeOrderEvents } from "./shared/jobs/workers/orderConsumer";
-import paymentAssociation from "./modules/payments/models/paymentAssociation";
 import { consumerAccountEvents } from "./shared/jobs/workers/accountConsumer";
 import { consumerPaymentEvents } from "./shared/jobs/workers/paymentConsumer";
 
@@ -50,6 +48,7 @@ const pg_connect = async () => {
     console.log("Unable to connect to database", err);
   }
 };
+
 pg_connect();
 
 if (process.env.NODE_ENV !== "production") {

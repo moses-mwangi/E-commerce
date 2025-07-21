@@ -98,8 +98,12 @@ export default function ProductUploadPage() {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-    if (!Array.isArray(data.images) || data.images.length < 5) {
+    // if (!Array.isArray(data.images) || data.images.length < 5) {
+    //   toast.error("Please select at least 5 images.");
+    //   return;
+    // }
+
+    if (!Array.isArray(data.images) || data.images.length < 1) {
       toast.error("Please select at least 5 images.");
       return;
     }
