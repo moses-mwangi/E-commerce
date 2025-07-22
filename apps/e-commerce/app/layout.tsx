@@ -1,130 +1,3 @@
-// "use client";
-
-// import { Poppins } from "next/font/google";
-// import { Provider } from "react-redux";
-// import { cn } from "@/lib/utils";
-// import "./globals.css";
-// import { store } from "@/redux/store";
-// import { Toaster } from "react-hot-toast";
-// import dynamic from "next/dynamic";
-// import ErrorBoundary from "./components/errorBoundaries/ErrorBoundary";
-// import PageLoadingIndicator from "./components/loaders/PageLoadingIndicator";
-// import { Suspense } from "react";
-// import LoadingState from "./components/loaders/LoadingState";
-
-// import "nprogress/nprogress.css";
-
-// const I18nProvider = dynamic(
-//   () => import("./components/language_change/I18nProvider"),
-//   {
-//     ssr: false,
-//     // loading: () => (
-//     //   <div className="min-h-screen flex items-center justify-center">
-//     //     <div className="animate-pulse">Loading translations...</div>
-//     //   </div>
-//     // ),
-//   }
-// );
-
-// const poppins = Poppins({
-//   variable: "--poppins",
-//   subsets: ["latin"],
-//   weight: ["400", "500", "600", "700"],
-//   display: "swap",
-// });
-
-// const ddddd = {
-//   title: "ssKivamall - Kenya's Online Store",
-//   description:
-//     "Welcome to Kivamall – Kenya’s digital shopping mall. Shop fashion, electronics, beauty, and more. Vendors can list their products for free.",
-//   keywords: [
-//     "Kivamall",
-//     "Kenya online shopping",
-//     "ecommerce Kenya",
-//     "digital mall",
-//     "shop electronics Kenya",
-//     "sell products online Kenya",
-//   ],
-//   openGraph: {
-//     title: "Kivamall - Kenya's Online Store",
-//     description:
-//       "Shop fashion, electronics, beauty, and more. Vendors can list their products for free.",
-//     url: "https://www.kivamall.com",
-//     siteName: "Kivamall",
-//     images: [
-//       {
-//         url: "https://www.kivamall.com/og-image.jpg", // 🔁 Use your real OG image
-//         width: 1200,
-//         height: 630,
-//         alt: "Kivamall",
-//       },
-//     ],
-//     locale: "en_US",
-//     type: "website",
-//   },
-//   twitter: {
-//     card: "summary_large_image",
-//     title: "Kivamall - Kenya's Online Store",
-//     description:
-//       "Shop fashion, electronics, beauty, and more. Vendors can list their products for free.",
-//     images: ["https://www.kivamall.com/og-image.jpg"],
-//   },
-//   metadataBase: new URL("https://www.kivamall.com"),
-// };
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     <html lang="en" className={cn(poppins.variable)}>
-//       <head>
-//         <meta name="viewport" content="width=device-width, initial-scale=1" />
-//         <meta name="description" content="Your e-commerce store description" />
-//       </head>
-//       <body className="antialiased">
-//         <Suspense>
-//           <PageLoadingIndicator />
-//         </Suspense>
-//         <Toaster
-//           position="top-right"
-//           toastOptions={{
-//             duration: 4000,
-//             style: {
-//               background: "#333",
-//               color: "#fff",
-//             },
-//             success: {
-//               duration: 3000,
-//               iconTheme: {
-//                 primary: "#4ade80",
-//                 secondary: "#fff",
-//               },
-//             },
-//             error: {
-//               duration: 4000,
-//               iconTheme: {
-//                 primary: "#ef4444",
-//                 secondary: "#fff",
-//               },
-//             },
-//           }}
-//         />
-//         <Provider store={store}>
-//           <I18nProvider>
-//             <ErrorBoundary>
-//               <Suspense fallback={<LoadingState />}>
-//                 <main className=" min-h-screen">{children}</main>
-//               </Suspense>
-//             </ErrorBoundary>
-//           </I18nProvider>
-//         </Provider>
-//       </body>
-//     </html>
-//   );
-// }
-
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
@@ -132,7 +5,6 @@ import { Metadata } from "next";
 import PageLoadingIndicator from "./components/loaders/PageLoadingIndicator";
 import ClientWrapper from "./ClientProviders";
 import { Suspense } from "react";
-import LoadingState from "./components/loaders/LoadingState";
 
 const poppins = Poppins({
   variable: "--poppins",
@@ -146,6 +18,7 @@ export const metadata: Metadata = {
     default: "Kivamall - Kenya's Largest Online Shopping Marketplace",
     template: "%s | Kivamall Kenya",
   },
+  // logo: "https://www.kivamall.com/logos/logo-512x512.png",
   description:
     "Shop online for electronics, fashion, beauty, cosmetics, home decor, construction materials, car accessories, security devices & more in Kenya. Free vendor listings. Secure payments, nationwide delivery, and global export opportunities.",
   keywords: [
@@ -230,6 +103,37 @@ export const metadata: Metadata = {
         height: 630,
         alt: "Kivamall - Kenya's Online Marketplace",
       },
+      // {
+      //   url: "https://www.kivamall.com/socialMedia_Images/og-facebook.png",
+      //   secureUrl:
+      //     "https://www.kivamall.com/socialMedia_Images/og-facebook.png",
+      //   width: 1200,
+      //   height: 630,
+      //   alt: "Kivamall Facebook Preview",
+      // },
+      // {
+      //   url: "https://www.kivamall.com/socialMedia_Images/og-instagram.png",
+      //   secureUrl:
+      //     "https://www.kivamall.com/socialMedia_Images/og-instagram.png",
+      //   width: 1200,
+      //   height: 630,
+      //   alt: "Kivamall Instagram Preview",
+      // },
+      // {
+      //   url: "https://www.kivamall.com/socialMedia_Images/og-linkedin.png",
+      //   secureUrl:
+      //     "https://www.kivamall.com/socialMedia_Images/og-linkedin.png",
+      //   width: 1200,
+      //   height: 630,
+      //   alt: "Kivamall LinkedIn Preview",
+      // },
+      // {
+      //   url: "https://www.kivamall.com/socialMedia_Images/og-tiktok.png",
+      //   secureUrl: "https://www.kivamall.com/socialMedia_Images/og-tiktok.png",
+      //   width: 1200,
+      //   height: 630,
+      //   alt: "Kivamall TikTok Preview",
+      // },
     ],
     locale: "en_KE",
     type: "website",
@@ -251,7 +155,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/bg.png", sizes: "16x16", type: "image/png" },
+      { url: "/logos/kivamall.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
@@ -267,7 +171,7 @@ export const metadata: Metadata = {
     ],
   },
 
-  manifest: "/site.webmanifest.json",
+  // manifest: "/site.webmanifest",
   themeColor: "#ffffff",
   appleWebApp: {
     title: "Kivamall",
@@ -311,24 +215,31 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Kivamall",
               url: "https://www.kivamall.com",
-              logo: "https://www.kivamall.com/socialMedia_Images/logo.png",
+              description:
+                "Kenya's Largest Online Shopping Marketplace for electronics, fashion, beauty products, and more",
+              logo: "https://www.kivamall.com/logos/kivamall.png",
               sameAs: [
                 "https://www.instagram.com/kivamall.ke/",
-                "https://www.facebook.com/kivamallkenya",
-                "https://twitter.com/kivamallkenya",
+                "https://www.facebook.com/profile.php?id=61577725620473/",
+                "https://www.tiktok.com/@kivamall/",
+                "https://www.linkedin.com/company/108217082/",
+
+                // "https://www.linkedin.com/company/kivamall",
+                // "https://www.facebook.com/kivamallkenya",
+                // "https://www.youtube.com/@kivamall",
+                // "https://twitter.com/kivamallkenya",
               ],
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+254700000000",
+                telephone: "+254725672675",
                 contactType: "customer service",
-                email: "support@kivamall.com",
+                email: "moses.mwangi.me@gmail.com",
                 areaServed: "KE",
                 availableLanguage: "en",
               },
             }),
           }}
         />
-        <link rel="icon" href="/bg.png" type="image/png" />
         <meta
           name="google-site-verification"
           content="KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI"

@@ -36,6 +36,9 @@ export const categoryMetadata: Record<string, Metadata> = {
     alternates: {
       canonical: "https://www.kivamall.com/category/health-beauty",
     },
+    verification: {
+      google: "KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI",
+    },
     other: {
       "json-ld": JSON.stringify({
         "@context": "https://schema.org",

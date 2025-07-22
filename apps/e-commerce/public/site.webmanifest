@@ -8,12 +8,12 @@
   "description": "Kivamall – Kenya’s digital shopping mall",
   "icons": [
     {
-      "src": "/socialMedia_Images/logo.png",
+      "src": "/logos/kivamall.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/socialMedia_Images/logo.png",
+      "src": "/logos/kivamall.png",
       "type": "image/png",
       "sizes": "512x512"
     }

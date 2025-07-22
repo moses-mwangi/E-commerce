@@ -1,42 +1,49 @@
 import { Metadata } from "next";
-import { categoryMetadata } from "./metadataUtils";
 import slugify from "@/utils/slungify";
+import { getSubCategoryMetadata } from "./subCategoryMetadataUtils";
 
-export async function generateMetadata(
-  // parent: any,
-  {
-    params,
-  }: {
-    params: { category: string };
-  }
-): Promise<Metadata> {
+export async function generateMetadata({
+  // export async function generateMetadata({
+  params,
+}: {
+  params: {
+    category: string;
+    subcategory: string;
+  };
+}): Promise<Metadata> {
   const categoryFromUrl = decodeURIComponent(params?.category || "");
-  const normalizedUrlCategory = slugify(categoryFromUrl.toLowerCase());
+  const subCategoryFromUrl = decodeURIComponent(params?.subcategory || "");
 
-  const matchedCategory = Object.keys(categoryMetadata).find(
-    (key) => slugify(key.toLowerCase()) === normalizedUrlCategory
+  const normalizedUrlCategory = slugify(categoryFromUrl.toLowerCase());
+  const normalizedUrlSubCategory = slugify(subCategoryFromUrl.toLowerCase());
+
+  const subCategoryMetadata = await getSubCategoryMetadata(
+    normalizedUrlCategory,
+    normalizedUrlSubCategory
   );
 
-  if (!matchedCategory) {
-    return {
-      title: "Shop Categories - Kivamall",
-      description: "Browse our wide range of products at Kivamall Kenya",
-    };
-  }
-
-  const categoryMeta = categoryMetadata[matchedCategory];
-  const canonicalUrl =
-    (categoryMeta.alternates?.canonical as string) ||
-    `https://www.kivamall.com/category/${slugify(matchedCategory)}`;
-
-  return {
-    ...categoryMeta,
-    metadataBase: new URL("https://www.kivamall.com"),
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+  return subCategoryMetadata;
 }
+
+export const LocalBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Kivamall",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Kamukunji Trade Centre, Sheikh Karume Road",
+    addressLocality: "Nairobi",
+    postalCode: "00100",
+    addressCountry: "KE",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: "-1.2849",
+    longitude: "36.8426",
+  },
+  telephone: "+254725672675",
+  openingHours: "Mo-Fr 09:00-17:00",
+};
 
 export default function SubCategoryLayout({
   children,

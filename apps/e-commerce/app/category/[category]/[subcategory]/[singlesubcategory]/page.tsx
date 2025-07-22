@@ -7,17 +7,17 @@ import { getProductMetadata } from "./productMetadataUtils";
 
 // import { getProductMetadata } from "@/utils/metadataUtils";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { category: string; subcategory: string; singlesubcategory: string };
-}): Promise<Metadata> {
-  return await getProductMetadata(
-    params.category,
-    params.subcategory,
-    params.singlesubcategory
-  );
-}
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: { category: string; subcategory: string; singlesubcategory: string };
+// }): Promise<Metadata> {
+//   return await getProductMetadata(
+//     params.category,
+//     params.subcategory,
+//     params.singlesubcategory
+//   );
+// }
 
 export default function page() {
   return (
