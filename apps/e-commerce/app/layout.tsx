@@ -244,6 +244,7 @@ export default function RootLayout({
           name="google-site-verification"
           content="KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI"
         />
+        <meta name="/logos/kivamall.png" content="/logos/kivamall.png" />
       </head>
       <body className="antialiased">
         <Suspense>

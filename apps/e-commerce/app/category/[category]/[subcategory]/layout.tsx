@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import slugify from "@/utils/slungify";
 import { getSubCategoryMetadata } from "./subCategoryMetadataUtils";
+import Head from "next/head";
 
 export async function generateMetadata({
-  // export async function generateMetadata({
   params,
 }: {
   params: {
@@ -29,6 +29,19 @@ export const LocalBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "Kivamall",
+  url: "https://www.kivamall.com",
+  logo: "https://www.kivamall.com/logos/kivamall.png",
+  sameAs: [
+    "https://www.instagram.com/kivamall.ke/",
+    "https://www.facebook.com/profile.php?id=61577725620473/",
+    "https://www.tiktok.com/@kivamall/",
+    "https://www.linkedin.com/company/108217082/",
+
+    // "https://www.linkedin.com/company/kivamall",
+    // "https://www.facebook.com/kivamallkenya",
+    // "https://www.youtube.com/@kivamall",
+    // "https://twitter.com/kivamallkenya",
+  ],
   address: {
     "@type": "PostalAddress",
     streetAddress: "Kamukunji Trade Centre, Sheikh Karume Road",
@@ -51,51 +64,23 @@ export default function SubCategoryLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
+    <>
+      <Head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Kivamall",
-              description:
-                "Kenya's Largest Online Shopping Marketplace for electronics, fashion, beauty products, and more",
-              url: "https://www.kivamall.com",
-              logo: "https://www.kivamall.com/logos/kivamall.png",
-              sameAs: [
-                "https://www.instagram.com/kivamall.ke/",
-                "https://www.facebook.com/profile.php?id=61577725620473/",
-                "https://www.tiktok.com/@kivamall/",
-                "https://www.linkedin.com/company/108217082/",
-
-                // "https://www.linkedin.com/company/kivamall",
-                // "https://www.facebook.com/kivamallkenya",
-                // "https://www.youtube.com/@kivamall",
-                // "https://twitter.com/kivamallkenya",
-              ],
-              contactPoint: {
-                "@type": "ContactPoint",
-                telephone: "+254725672675",
-                contactType: "customer service",
-                email: "moses.mwangi.me@gmail.com",
-                areaServed: "KE",
-                availableLanguage: "en",
-              },
-            }),
+            __html: JSON.stringify(LocalBusinessSchema),
           }}
         />
         <meta
           name="google-site-verification"
           content="KkSiGxDsOVL1yR49qNvUrjSy-c1hJAIOt5lBH1tW3BI"
         />
-      </head>
-      <body>
-        <div className="flex min-h-screen ">
-          <div className="flex-1 w-full">{children}</div>
-        </div>
-      </body>
-    </html>
+      </Head>
+
+      <div className="flex min-h-screen ">
+        <div className="flex-1 w-full">{children}</div>
+      </div>
+    </>
   );
 }

@@ -258,7 +258,8 @@ export const getSubCategoryMetadata = async (
         "@type": "Organization",
         name: "Kivamall",
         url: BASE_URL,
-        logo: `${BASE_URL}/logo.png`,
+        // logo: `${BASE_URL}/logo.png`,
+        logo: `${BASE_URL}/logos/kivamall.png`,
       },
       potentialAction: {
         "@type": "SearchAction",
